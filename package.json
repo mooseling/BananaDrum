@@ -1,5 +1,9 @@
 {
   "name": "banana-drum",
   "version": "0.0.1",
-  "description": "Music sequencer web-app designed for samba bands"
+  "description": "Music sequencer web-app designed for samba bands",
+  "types": "types.d.ts",
+  "devDependencies": {
+    "typescript": "^4.4.3"
+  }
 }
