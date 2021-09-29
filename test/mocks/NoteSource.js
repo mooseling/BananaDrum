@@ -1,10 +1,9 @@
 export class NoteSource {
   constructor() {
-    this.requestRecord = [];
-
+    this.requestLog = [];
   }
 
   getNotes(intervalStart, intervalEnd) {
-    this.requestRecord.push([intervalStart, intervalEnd]);
+    this.requestLog.push([intervalStart, intervalEnd]);
   }
 }
