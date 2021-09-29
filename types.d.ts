@@ -4,5 +4,5 @@ declare interface PlayableNote {
 }
 
 declare interface NoteSource {
-  getNotes(startTime: number, endTime: number): PlayableNote[]
+  getNotes(intervalStart: number, intervalEnd: number): PlayableNote[]
 }
