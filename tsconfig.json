@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "module": "es6",
+    "lib": ["es2015", "dom"],
+    "target": "es6"
+  }
+}
