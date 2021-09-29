@@ -7,6 +7,7 @@
     "url" : "https://github.com/mooseling/BananaDrum.git"
   },
   "license": "ISC",
+  "type": "module",
   "types": "types.d.ts",
   "devDependencies": {
     "chai": "^4.3.4",
