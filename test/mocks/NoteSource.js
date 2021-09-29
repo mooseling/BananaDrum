@@ -5,5 +5,11 @@ export class NoteSource {
 
   getNotes(intervalStart, intervalEnd) {
     this.requestLog.push([intervalStart, intervalEnd]);
+    return [
+      {
+        time: 0,
+        audioBuffer: new AudioBuffer()
+      }
+    ];
   }
 }
