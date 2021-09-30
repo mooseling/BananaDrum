@@ -1,5 +1,5 @@
 const lookahead = 0.25; // (s) Look 250ms ahead for notes
-const loopFrequency = 0.125 // (s)
+const loopFrequency = 125 // (ms) - mixed units are confusing, but we can skip some pointless maths
 
 export function AudioPlayer(noteSource: NoteSource) {
   const audioContext = new AudioContext();
