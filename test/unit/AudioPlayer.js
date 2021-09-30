@@ -24,6 +24,11 @@ describe('AudioPlayer', () => {
     let lastRequestStart = requestLog[0][0];
     for (let i = 1; i < requestLog.length; i++) {
       let thisRequestStart = requestLog[i][0];
+      if (thisRequestStart <= lastRequestStart) {
+        console.log('Test will fail: thisRequestStart <= lastRequestStart'); console.log(`(${thisRequestStart} <= ${lastRequestStart})`);
+        console.log("Here's the whole thing");
+        console.log(requestLog);
+      }
       assert(thisRequestStart > lastRequestStart);
       lastRequestStart = thisRequestStart;
     }
