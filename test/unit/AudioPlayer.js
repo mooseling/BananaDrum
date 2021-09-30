@@ -13,12 +13,21 @@ describe('AudioPlayer', () => {
     audioPlayer.play();
     await promiseTimeout(() => assert(requestLog.length > 0), 100);
   });
+  it('makes more than one request per second', async () => {
+    const initialRequestCount = requestLog.length;
+    await promiseTimeout(() => 0, 1000);
+    const newRequestCount = requestLog.length - initialRequestCount;
+    if (newRequestCount <= 1) {
+      console.log(`AudioPlayer only made ${newRequestCount} requests for notes. Here they are:`);
+      console.log(requestLog);
+    }
+    assert(newRequestCount > 1);
+  });
   it('stops making requests when asked to pause', async () => {
     audioPlayer.pause();
     const requestNumber = requestLog.length;
     await promiseTimeout(() => assert(requestLog.length === requestNumber), 1000);
   });
-  it('makes more than one request per second', () => assert(requestLog.length > 1));
   it('requests time intervals with positive length', () => requestLog.forEach(request => assert(request[0] < request[1])));
   it('requests intervals in increasing order', () => {
     let lastRequestStart = requestLog[0][0];
