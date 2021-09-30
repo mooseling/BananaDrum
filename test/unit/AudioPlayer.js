@@ -50,4 +50,17 @@ describe('AudioPlayer', () => {
       lastRequestStart = thisRequestStart;
     }
   });
+
+  it('makes requests that cover a continuous interval', () => {
+    let lastRequestEnd = requestLog[0][1];
+    for (let i = 1; i < requestLog.length; i++) {
+      let thisRequestStart = requestLog[i][0];
+      if (thisRequestStart > lastRequestEnd) {
+        console.log('Request log:');
+        console.log(requestLog);
+      }
+      assert(thisRequestStart <= lastRequestEnd);
+      lastRequestEnd = requestLog[i][1];
+    }
+  });
 });
