@@ -3,7 +3,7 @@ export class NoteSource {
     this.requestLog = [];
   }
 
-  getNotes(intervalStart, intervalEnd) {
+  getPlayableNotes(intervalStart, intervalEnd) {
     this.requestLog.push([intervalStart, intervalEnd]);
     return [
       {

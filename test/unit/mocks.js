@@ -9,7 +9,7 @@ describe('NoteSource mock', () => {
   it('logs requests correctly', () => {
     const intervalStart = 1;
     const intervalEnd = 530453080;
-    noteSource.getNotes(intervalStart, intervalEnd);
+    noteSource.getPlayableNotes(intervalStart, intervalEnd);
     assert(noteSource.requestLog.length === 1);
     assert(noteSource.requestLog[0].length === 2);
     assert(noteSource.requestLog[0][0] === intervalStart);
