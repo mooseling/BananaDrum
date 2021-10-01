@@ -23,3 +23,6 @@ declare interface Arrangement {
   tracks: Track[]
 }
 
+declare interface TimeConverter {
+  convertToRealTime(timing:string): number
+}
