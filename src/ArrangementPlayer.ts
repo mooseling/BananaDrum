@@ -1,12 +1,13 @@
 import {AudioPlayer} from './AudioPlayer.js';
 import {TimeConverter} from './TimeConverter.js';
 
-export function ArrangementPlayer() {
+export function ArrangementPlayer(library:Library) {
   let loadedArrangement: Arrangement|null = null;
   let timeSignature: string|null = null;
   let tempo: number|null = null;
   const playableNotes: PlayableNote[] = [];
-  const audioPlayer = AudioPlayer({getPlayableNotes});
+  const noteSource: NoteSource = {getPlayableNotes, library};
+  const audioPlayer = AudioPlayer(noteSource);
   let timeConverter: TimeConverter|null = null;
 
   return {load, play};

@@ -1,10 +1,9 @@
 const lookahead = 0.25; // (s) Look 250ms ahead for notes
 const loopFrequency = 125 // (ms) - mixed units are confusing, but we can skip some pointless maths
 
-export function AudioPlayer(playableNoteSource: PlayableNoteSource) {
+export function AudioPlayer(noteSource: NoteSource) {
   const audioContext = new AudioContext();
   audioContext.suspend();
-  const audioBufferLibrary = {};
   let nextIteration: number|null = null;
 
   return {play, pause};
@@ -23,7 +22,7 @@ export function AudioPlayer(playableNoteSource: PlayableNoteSource) {
 
   function loop() {
     const currentTime = audioContext.getOutputTimestamp().contextTime;
-    const notesToSchedule = playableNoteSource.getPlayableNotes(currentTime, currentTime + lookahead);
+    const notesToSchedule = noteSource.getPlayableNotes(currentTime, currentTime + lookahead);
     notesToSchedule.forEach(note => scheduleNote(note));
     nextIteration = setTimeout(loop, loopFrequency);
   }
@@ -42,14 +41,9 @@ export function AudioPlayer(playableNoteSource: PlayableNoteSource) {
   }
 
   async function getAudioBuffer(note: Note) {
-    const existingAudioBuffer = audioBufferLibrary[note.file];
-    if (existingAudioBuffer)
-      return existingAudioBuffer;
+    const audio = noteSource.library.getAudio(note.instrumentId, note.styleId);
 
-    const response = await fetch(note.file);
-    const arrayBuffer = await response.arrayBuffer();
-    const newAudioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-    audioBufferLibrary[note.file] = newAudioBuffer;
+    const newAudioBuffer = await audioContext.decodeAudioData(audio);
     return newAudioBuffer;
   }
 }

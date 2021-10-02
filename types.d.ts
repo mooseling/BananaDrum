@@ -1,6 +1,7 @@
 declare interface Note {
   timing: string,
-  file: string
+  instrumentId: string,
+  styleId: string
 }
 
 declare interface PlayableNote {
@@ -9,7 +10,8 @@ declare interface PlayableNote {
   played?: boolean
 }
 
-declare interface PlayableNoteSource {
+declare interface NoteSource {
+  library:Library,
   getPlayableNotes(intervalStart: number, intervalEnd: number): PlayableNote[]
 }
 
