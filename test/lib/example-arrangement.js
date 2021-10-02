@@ -3,12 +3,12 @@ export const exampleArrangement = {
   tempo:120,
   tracks:[
     // snare
-    {notes:[{file:'sounds/snare.mp3', timing:'1.2'},{file:'sounds/snare.mp3', timing:'1.4'}]},
+    {notes:[{instrumentId:'snare', styleId:'accent', timing:'1.2'},{instrumentId:'snare', styleId:'accent', timing:'1.4'}]},
 
     // hihat
-    {notes:[{file:'sounds/hihat.mp3', timing:'1'},{file:'sounds/hihat.mp3', timing:'1.1.3'},{file:'sounds/hihat.mp3', timing:'1.2'},{file:'sounds/hihat.mp3', timing:'1.2.3'},{file:'sounds/hihat.mp3', timing:'1.3'},{file:'sounds/hihat.mp3', timing:'1.3.3'},{file:'sounds/hihat.mp3', timing:'1.4'},{file:'sounds/hihat.mp3', timing:'1.4.3'}]},
+    {notes:[{instrumentId:'hihat', styleId:'closed', timing:'1'},{instrumentId:'hihat', styleId:'closed', timing:'1.1.3'},{instrumentId:'hihat', styleId:'closed', timing:'1.2'},{instrumentId:'hihat', styleId:'closed', timing:'1.2.3'},{instrumentId:'hihat', styleId:'closed', timing:'1.3'},{instrumentId:'hihat', styleId:'closed', timing:'1.3.3'},{instrumentId:'hihat', styleId:'closed', timing:'1.4'},{instrumentId:'hihat', styleId:'closed', timing:'1.4.3'}]},
 
     // kick
-    {notes:[{file: 'sounds/kick.mp3', timing:'1'},{file: 'sounds/kick.mp3', timing:'1.3'}]}
+    {notes:[{instrumentId:'kick', styleId:'kick', timing:'1'},{instrumentId:'kick', styleId:'kick', timing:'1.3'}]}
   ]
 };
