@@ -1,6 +1,8 @@
+/* global fetch */
 import {assert} from 'chai';
 import {NoteSource} from '../mocks/NoteSource.js';
 import '../mocks/WebAudio.js';
+import '../mocks/fetch.js';
 
 
 describe('NoteSource mock', function() {
@@ -15,5 +17,21 @@ describe('NoteSource mock', function() {
     assert(noteSource.requestLog[0].length === 2);
     assert(noteSource.requestLog[0][0] === intervalStart);
     assert(noteSource.requestLog[0][1] === intervalEnd);
+  });
+});
+
+
+describe('fetch() mock', function() {
+  const requestPath = 'hello/borp';
+  const fetchPromise = fetch(requestPath); // Will be a promise at this point
+  const requestLog = fetch.getRequestLog();
+  const latestRequest = requestLog[requestLog.length - 1];
+
+  it('requests the correct path', () => assert(latestRequest === requestPath));
+
+  it('returns a response we can get an arrayBuffer from', async () => {
+    const response = await fetchPromise;
+    const arrayBuffer = await response.arrayBuffer();
+    return assert(arrayBuffer instanceof ArrayBuffer);
   });
 });
