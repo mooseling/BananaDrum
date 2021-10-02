@@ -1,28 +1,22 @@
 import * as AudioGetter from 'AudioGetter.js';
 
+const instruments: InstrumentLibrary = {};
 let libraryLoaded = false;
 let loadPromiseResolver: Function|undefined;
 const loadPromise: Promise<void> = new Promise(resolve => loadPromiseResolver = resolve);
 
 
-export function load() {
-  if (!libraryLoaded) {
-    const audioPromises: Promise<ArrayBuffer>[] = [];
-    for (const instrumentId in instruments) {
-      const instrument = instruments[instrumentId];
-      for (const styleId in instrument.noteStyles) {
-        const noteStyle = instrument.noteStyles[styleId];
-        const audioPromise = AudioGetter.get(noteStyle.file);
-        audioPromises.push(audioPromise);
-        audioPromise.then(audio => noteStyle.audio = audio);
-      }
-    }
-    Promise.all(audioPromises).then(() => {
-      loadPromiseResolver();
-      libraryLoaded = true;
-    });
-  }
 
+
+// ==================================================================
+//                          Public Functions
+// ==================================================================
+
+export function load(libraryToLoad:InstrumentLibrary) {
+  if (!libraryLoaded) {
+    populateLibrary(libraryToLoad);
+    loadAllAudio(); // This will eventually cause loadPromise to resolve
+  }
   return loadPromise;
 }
 
@@ -39,33 +33,47 @@ export function getAudio(instrumentId:string, styleId:string): ArrayBuffer {
 }
 
 
-const instruments: InstrumentLibrary = {
-  kick: {
-    displayName: 'Kick drum',
-    noteStyles: {
-      kick: {
-        file: 'kick.mp3'
-        // displayName, symbol
-      }
-    }
-  },
-  snare: {
-    displayName: 'Snare',
-    noteStyles: {
-      accent:{
-        file: 'snare.mp3'
-      },
-      roll:{
-        file: 'roll.mp3'
-      }
-    }
-  },
-  hihat: {
-    displayName: 'Hi Hat',
-    noteStyles: {
-      closed: {
-        file: 'hihat.mp3'
-      }
+
+
+// ==================================================================
+//                          Private Functions
+// ==================================================================
+
+function populateLibrary(libraryToLoad:InstrumentLibrary): void {
+  for (const instrumentId in libraryToLoad) {
+    const instrument = libraryToLoad[instrumentId];
+    instruments[instrumentId] = {
+      displayName: instrument.displayName,
+      noteStyles: unpackNoteStyles(instrument)
     }
   }
-};
+}
+
+
+function unpackNoteStyles(instrument:Instrument): NoteStyleSet {
+  const noteStyles:NoteStyleSet = {};
+  for (const styleId in instrument.noteStyles) {
+    noteStyles[styleId] = {
+      file: instrument.noteStyles[styleId].file
+    };
+  }
+  return noteStyles;
+}
+
+
+function loadAllAudio(): void {
+  const audioPromises: Promise<ArrayBuffer>[] = [];
+  for (const instrumentId in instruments) {
+    const instrument = instruments[instrumentId];
+    for (const styleId in instrument.noteStyles) {
+      const noteStyle = instrument.noteStyles[styleId];
+      const audioPromise = AudioGetter.get(noteStyle.file);
+      audioPromises.push(audioPromise);
+      audioPromise.then(audio => noteStyle.audio = audio);
+    }
+  }
+  Promise.all(audioPromises).then(() => {
+    loadPromiseResolver();
+    libraryLoaded = true;
+  });
+}
