@@ -7,8 +7,12 @@ export class NoteSource {
     this.requestLog.push([intervalStart, intervalEnd]);
     return [
       {
-        time: 0,
-        audioBuffer: new AudioBuffer()
+        realTime: 0,
+        note: {
+          timing: '1',
+          instrumentId: 'kick',
+          styleId: 'kick'
+        }
       }
     ];
   }

@@ -28,5 +28,6 @@ global.AudioContext = class {
 global.AudioBuffer = class {};
 
 global.AudioBufferSourceNode = class {
+  connect() {}
   start() {}
 };
