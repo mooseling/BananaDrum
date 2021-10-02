@@ -32,11 +32,13 @@ declare interface NoteStyle {
   audio?: ArrayBuffer
 }
 
+declare interface NoteStyleSet {
+  [styleId: string]: NoteStyle
+}
+
 declare interface Instrument {
   displayName: string,
-  noteStyles: {
-    [styleId: string]: NoteStyle
-  }
+  noteStyles: NoteStyleSet
 }
 
 declare interface InstrumentLibrary {
