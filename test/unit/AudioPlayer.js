@@ -4,7 +4,7 @@ import '../mocks/WebAudio.js';
 import {AudioPlayer} from '../../dist/AudioPlayer.js';
 import {promiseTimeout} from '../lib/promiseTimeout.js';
 
-describe('AudioPlayer', () => {
+describe('AudioPlayer', function() {
   const noteSource = new NoteSource();
   const requestLog = noteSource.requestLog;
   const audioPlayer = new AudioPlayer(noteSource);
