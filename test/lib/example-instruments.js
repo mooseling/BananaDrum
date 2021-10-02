@@ -1,4 +1,4 @@
-export const instruments = {
+export const instrumentCollection = {
   kick: {
     displayName: 'Kick drum',
     noteStyles: {

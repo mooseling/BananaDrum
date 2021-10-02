@@ -1,9 +1,9 @@
 import {assert} from 'chai';
 import * as Library from '../../dist/Library.js';
-import {instruments as exampleLibrary} from '../lib/example-library.js';
+import {instrumentCollection} from '../lib/example-instruments.js';
 
 describe('Library', function() {
-  const loadPromise = Library.load(exampleLibrary);
+  const loadPromise = Library.load(instrumentCollection);
 
   it('returns ArrayBuffers', async () => {
     await loadPromise;
