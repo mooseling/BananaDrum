@@ -2,10 +2,13 @@ import {assert} from 'chai';
 import {NoteSource} from '../mocks/NoteSource.js';
 import '../mocks/WebAudio.js';
 import {AudioPlayer} from '../../dist/AudioPlayer.js';
+import * as Library from '../../dist/Library.js';
 import {promiseTimeout} from '../lib/promiseTimeout.js';
+import {instrumentCollection} from '../lib/example-instruments.js';
 
 describe('AudioPlayer', function() {
-  const noteSource = new NoteSource();
+  Library.load(instrumentCollection);
+  const noteSource = new NoteSource(Library);
   const requestLog = noteSource.requestLog;
   const audioPlayer = new AudioPlayer(noteSource);
 
