@@ -2,7 +2,8 @@ import {assert} from 'chai';
 import {NoteSource} from '../mocks/NoteSource.js';
 import '../mocks/WebAudio.js';
 
-describe('NoteSource mock', () => {
+
+describe('NoteSource mock', function() {
   const noteSource = new NoteSource();
   it('has a log of requested notes', () => assert(Array.isArray(noteSource.requestLog)));
   it('starts with no logged requests', () => assert(noteSource.requestLog.length === 0));
