@@ -11,6 +11,11 @@ export function AudioPlayer(noteSource: NoteSource) {
 
 
 
+
+  // ==================================================================
+  //                          Public Functions
+  // ==================================================================
+
   function play() {
     audioContext.resume();
     loop();
@@ -20,6 +25,13 @@ export function AudioPlayer(noteSource: NoteSource) {
     audioContext.suspend();
     clearTimeout(nextIteration);
   }
+
+
+
+
+  // ==================================================================
+  //                          Private Functions
+  // ==================================================================
 
   function loop() {
     const currentTime = audioContext.getOutputTimestamp().contextTime;
