@@ -48,6 +48,6 @@ declare interface InstrumentCollection {
 }
 
 declare interface Library {
-  load(): Promise<void>,
+  load(libraryToLoad:InstrumentCollection): Promise<void>,
   getAudio(instrumentId:string, styleId:string): ArrayBuffer
 }
