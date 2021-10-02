@@ -41,6 +41,11 @@ declare interface Instrument {
   noteStyles: NoteStyleSet
 }
 
-declare interface InstrumentLibrary {
+declare interface InstrumentCollection {
   [instrumentId: string]: Instrument
+}
+
+declare interface Library {
+  load(): Promise<void>,
+  getAudio(instrumentId:string, styleId:string): ArrayBuffer
 }

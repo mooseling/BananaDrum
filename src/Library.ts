@@ -1,6 +1,6 @@
 import * as AudioGetter from './AudioGetter.js';
 
-const instruments: InstrumentLibrary = {};
+const instruments: InstrumentCollection = {};
 let libraryLoaded = false;
 let loadPromiseResolver: Function|undefined;
 const loadPromise: Promise<void> = new Promise(resolve => loadPromiseResolver = resolve);
@@ -12,7 +12,7 @@ const loadPromise: Promise<void> = new Promise(resolve => loadPromiseResolver = 
 //                          Public Functions
 // ==================================================================
 
-export function load(libraryToLoad:InstrumentLibrary) {
+export function load(libraryToLoad:InstrumentCollection) {
   if (!libraryLoaded) {
     populateLibrary(libraryToLoad);
     loadAllAudio(); // This will eventually cause loadPromise to resolve
@@ -39,7 +39,7 @@ export function getAudio(instrumentId:string, styleId:string): ArrayBuffer {
 //                          Private Functions
 // ==================================================================
 
-function populateLibrary(libraryToLoad:InstrumentLibrary): void {
+function populateLibrary(libraryToLoad:InstrumentCollection): void {
   for (const instrumentId in libraryToLoad) {
     const instrument = libraryToLoad[instrumentId];
     instruments[instrumentId] = {
