@@ -4,6 +4,7 @@ const loopFrequency = 125 // (ms) - mixed units are confusing, but we can skip s
 export function AudioPlayer(noteSource: NoteSource) {
   const audioContext = new AudioContext();
   audioContext.suspend();
+  const audioBufferCache = {};
   let nextIteration: number|null = null;
 
   return {play, pause};
@@ -41,9 +42,30 @@ export function AudioPlayer(noteSource: NoteSource) {
   }
 
   async function getAudioBuffer(note: Note) {
-    const audio = noteSource.library.getAudio(note.instrumentId, note.styleId);
+    const cachedAudioBuffer = getFromCache(note);
+    if (cachedAudioBuffer instanceof Promise)
+      return await cachedAudioBuffer;
+    if (cachedAudioBuffer)
+      return cachedAudioBuffer;
 
-    const newAudioBuffer = await audioContext.decodeAudioData(audio);
+    const audio = noteSource.library.getAudio(note.instrumentId, note.styleId);
+    const audioBufferPromise = audioContext.decodeAudioData(audio);
+    cache(note, audioBufferPromise);
+    const newAudioBuffer = await audioBufferPromise;
+    cache(note, newAudioBuffer);
+
     return newAudioBuffer;
+  }
+
+  function getFromCache(note: Note): AudioBuffer|Promise<AudioBuffer>|undefined {
+    const {instrumentId, styleId} = note;
+    return audioBufferCache[instrumentId]?.[styleId];
+  }
+
+  function cache(note:Note, thingToCache: AudioBuffer|Promise<AudioBuffer>): void {
+    const {instrumentId, styleId} = note;
+    if (!audioBufferCache[instrumentId])
+      audioBufferCache[instrumentId] = {};
+    audioBufferCache[instrumentId][styleId] = thingToCache;
   }
 }
