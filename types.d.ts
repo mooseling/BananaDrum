@@ -26,3 +26,19 @@ declare interface Arrangement {
 declare interface TimeConverter {
   convertToRealTime(timing:string): number
 }
+
+declare interface NoteStyle {
+  file: string,
+  audio?: ArrayBuffer
+}
+
+declare interface Instrument {
+  displayName: string,
+  noteStyles: {
+    [styleId: string]: NoteStyle
+  }
+}
+
+declare interface InstrumentLibrary {
+  [instrumentId: string]: Instrument
+}
