@@ -22,16 +22,25 @@ describe('NoteSource mock', function() {
 
 
 describe('fetch() mock', function() {
-  const requestPath = 'hello/borp';
-  const fetchPromise = fetch(requestPath); // Will be a promise at this point
+  const url = 'hello/borp';
+  const fetchPromise = fetch(url); // Will be a promise at this point
   const requestLog = fetch.getRequestLog();
   const latestRequest = requestLog[requestLog.length - 1];
 
-  it('requests the correct path', () => assert(latestRequest === requestPath));
+  let promiseResolver;
+  const arrayBufferPromise = new Promise(resolve => promiseResolver = resolve);
 
-  it('returns a response we can get an arrayBuffer from', async () => {
+  it('requests the correct path', () => assert(latestRequest === url));
+
+  it('returns a response we can get an ArrayBuffer from...', async () => {
     const response = await fetchPromise;
     const arrayBuffer = await response.arrayBuffer();
-    return assert(arrayBuffer instanceof ArrayBuffer);
+    promiseResolver(arrayBuffer); // To pass this onto later tests...
+    assert(arrayBuffer instanceof ArrayBuffer);
+  });
+
+  it('...and the ArrayBuffer has the url attached', async () => {
+    const arrayBuffer = await arrayBufferPromise;
+    assert(arrayBuffer.requestUrl === url);
   });
 });
