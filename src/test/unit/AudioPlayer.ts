@@ -9,10 +9,13 @@ import {instrumentCollection} from '../lib/example-instruments.js';
 const library = Library();
 
 describe('AudioPlayer', async function() {
-  await library.load(instrumentCollection);
   const noteSource = new NoteSourceMock(library);
   const requestLog = noteSource.requestLog;
   const audioPlayer = AudioPlayer(noteSource);
+
+  before('Loading library...', async () => {
+    await library.load(instrumentCollection);
+  });
 
 
   it('doesn\'t request any notes initially', () => assert(requestLog.length === 0));
