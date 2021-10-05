@@ -1,10 +1,11 @@
-import {exampleArrangement} from '../lib/example-arrangement.js';
-import {instrumentCollection} from '../lib/example-instruments.js';
-import {ArrangementPlayer} from '../../dist/ArrangementPlayer.js';
-import * as Library from '../../dist/Library.js';
+import {exampleArrangement} from '../../dist/test/lib/example-arrangement.js';
+import {instrumentCollection} from '../../dist/test/lib/example-instruments.js';
+import {ArrangementPlayer} from '../../dist/prod/ArrangementPlayer.js';
+import {Library} from '../../dist/prod/Library.js';
+const library = Library();
 
 document.addEventListener('click', () => {
-  Library.load(instrumentCollection).then(() => {
+  library.load(instrumentCollection).then(() => {
     const arrangementPlayer = new ArrangementPlayer(Library);
     arrangementPlayer.load(exampleArrangement);
     arrangementPlayer.play();
