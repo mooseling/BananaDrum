@@ -1,5 +1,5 @@
-import './unit/TimeConverter.js';
-import './unit/mocks.js';
-import './unit/AudioGetter.js';
-import './unit/Library.js';
-import './unit/AudioPlayer.js';
+import '../dist/test/unit/TimeConverter.js';
+import '../dist/test/unit/mocks.js';
+import '../dist/test/unit/AudioGetter.js';
+import '../dist/test/unit/Library.js';
+import '../dist/test/unit/AudioPlayer.js';
