@@ -1,10 +1,10 @@
-import * as mockLog from './MockLogging.js';
+import * as log from '../lib/logging.js';
 
 interface TrackedArrayBuffer extends ArrayBuffer {
   requestUrl?: string
 }
 
-const requestLog:string[] = mockLog.get('fetchRequestLog') || mockLog.set('fetchRequestLog', []);
+const requestLog:string[] = log.get('fetchRequestLog') || log.set('fetchRequestLog', []);
 export async function fetchMock(requestUrl:string) {
   requestLog.push(requestUrl);
   return new ResponseMock(requestUrl);

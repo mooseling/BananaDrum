@@ -3,7 +3,7 @@ import {assert} from 'chai';
 import {NoteSourceMock} from '../mocks/NoteSource.js';
 import '../mocks/WebAudio.js';
 import '../mocks/fetch.js';
-import * as mockLog from '../mocks/MockLogging.js';
+import * as log from '../lib/logging.js';
 import {instrumentCollection} from '../lib/example-instruments.js';
 import {Library} from '../../prod/Library.js';
 
@@ -39,7 +39,7 @@ describe('NoteSource mock', function() {
 describe('fetch() mock', function() {
   const url = 'hello/borp';
   const fetchPromise = fetch(url); // Will be a promise at this point
-  const requestLog = mockLog.get('fetchRequestLog');
+  const requestLog = log.get('fetchRequestLog');
   const latestRequest = requestLog[requestLog.length - 1];
 
   let promiseResolver;

@@ -2,12 +2,12 @@
 import {assert} from 'chai';
 import '../mocks/fetch.js';
 import {AudioGetter} from '../../prod/AudioGetter.js';
-import * as mockLog from '../mocks/MockLogging.js';
+import * as log from '../lib/logging.js';
 
 describe('AudioGetter', function() {
   const filename = 'boop.mp3';
   const audioPromise = AudioGetter.get(filename);
-  const requestLog = mockLog.get('fetchRequestLog');
+  const requestLog = log.get('fetchRequestLog');
   const latestRequest = requestLog[requestLog.length - 1];
 
   it('requests the correct file', () => assert(latestRequest.endsWith(filename)));
