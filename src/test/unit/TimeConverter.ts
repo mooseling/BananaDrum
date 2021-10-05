@@ -1,5 +1,7 @@
 import {assert} from 'chai';
-import {TimeConverter} from '../../dist/TimeConverter.js';
+import {TimeConverter} from '../../prod/TimeConverter.js';
+
+type TestCase = [string, number];
 
 describe('TimeConverter', function() {
   describe('4/4 time, 120bpm', function() {
@@ -7,7 +9,7 @@ describe('TimeConverter', function() {
 
     it('returns 0 on the 1', () => assert(basicTimeConverter.convertToRealTime('1') === 0));
 
-    const testCases = [
+    const testCases:TestCase[] = [
       ['3.3.1', 5],
       ['3.3', 5],
       ['13.3.1', 25],
@@ -33,7 +35,7 @@ describe('TimeConverter', function() {
 
     it('returns 0 on the 1', () => assert(basicTimeConverter.convertToRealTime('1') === 0));
 
-    const testCases = [
+    const testCases:TestCase[] = [
       ['3.3.1', 3],
       ['3.3', 3],
       ['3.3.1.1.1.1', 3],

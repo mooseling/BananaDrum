@@ -1,15 +1,30 @@
 /* global fetch */
 import {assert} from 'chai';
-import {NoteSource} from '../mocks/NoteSource.js';
+import {NoteSourceMock} from '../mocks/NoteSource.js';
 import '../mocks/WebAudio.js';
 import '../mocks/fetch.js';
+import * as mockLog from '../mocks/MockLogging.js';
+import {instrumentCollection} from '../lib/example-instruments.js';
+import {Library} from '../../prod/Library.js';
+
+const library = Library();
+const loadPromise = library.load(instrumentCollection);
 
 
 describe('NoteSource mock', function() {
-  const noteSource = new NoteSource();
-  it('has a log of requested notes', () => assert(Array.isArray(noteSource.requestLog)));
-  it('starts with no logged requests', () => assert(noteSource.requestLog.length === 0));
-  it('logs requests correctly', () => {
+  const noteSource = new NoteSourceMock(library);
+  it('has a log of requested notes', async () => {
+    await loadPromise;
+    assert(Array.isArray(noteSource.requestLog));
+  });
+
+  it('starts with no logged requests', async () => {
+    await loadPromise;
+    assert(noteSource.requestLog.length === 0);
+  });
+
+  it('logs requests correctly', async () => {
+    await loadPromise;
     const intervalStart = 1;
     const intervalEnd = 530453080;
     noteSource.getPlayableNotes(intervalStart, intervalEnd);
@@ -24,7 +39,7 @@ describe('NoteSource mock', function() {
 describe('fetch() mock', function() {
   const url = 'hello/borp';
   const fetchPromise = fetch(url); // Will be a promise at this point
-  const requestLog = fetch.getRequestLog();
+  const requestLog = mockLog.get('fetchRequestLog');
   const latestRequest = requestLog[requestLog.length - 1];
 
   let promiseResolver;
@@ -39,8 +54,8 @@ describe('fetch() mock', function() {
     assert(arrayBuffer instanceof ArrayBuffer);
   });
 
-  it('...and the ArrayBuffer has the url attached', async () => {
-    const arrayBuffer = await arrayBufferPromise;
-    assert(arrayBuffer.requestUrl === url);
-  });
+  // it('...and the ArrayBuffer has the url attached', async () => {
+  //   const arrayBuffer = await arrayBufferPromise;
+  //   assert(arrayBuffer.requestUrl === url);
+  // });
 });

@@ -1,16 +1,18 @@
 import {assert} from 'chai';
-import {NoteSource} from '../mocks/NoteSource.js';
+import {NoteSourceMock} from '../mocks/NoteSource.js';
 import '../mocks/WebAudio.js';
-import {AudioPlayer} from '../../dist/AudioPlayer.js';
-import * as Library from '../../dist/Library.js';
+import {AudioPlayer} from '../../prod/AudioPlayer.js';
+import {Library} from '../../prod/Library.js';
 import {promiseTimeout} from '../lib/promiseTimeout.js';
 import {instrumentCollection} from '../lib/example-instruments.js';
 
-describe('AudioPlayer', function() {
-  Library.load(instrumentCollection);
-  const noteSource = new NoteSource(Library);
+const library = Library();
+
+describe('AudioPlayer', async function() {
+  await library.load(instrumentCollection);
+  const noteSource = new NoteSourceMock(library);
   const requestLog = noteSource.requestLog;
-  const audioPlayer = new AudioPlayer(noteSource);
+  const audioPlayer = AudioPlayer(noteSource);
 
 
   it('doesn\'t request any notes initially', () => assert(requestLog.length === 0));

@@ -1,5 +1,5 @@
-export function promiseTimeout(callback, time) {
-  return new Promise(resolve => setTimeout(() => {
+export function promiseTimeout(callback:Function, time:number) {
+  return new Promise<void>(resolve => setTimeout(() => {
     callback();
     resolve();
   }, time));

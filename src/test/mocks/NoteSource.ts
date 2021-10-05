@@ -1,9 +1,13 @@
-export class NoteSource {
-  constructor() {
+export class NoteSourceMock implements NoteSource {
+  requestLog: [number, number][];
+  library:Library;
+
+  constructor(library:Library) {
     this.requestLog = [];
+    this.library = library;
   }
 
-  getPlayableNotes(intervalStart, intervalEnd) {
+  getPlayableNotes(intervalStart:number, intervalEnd:number) {
     this.requestLog.push([intervalStart, intervalEnd]);
     return [
       {
