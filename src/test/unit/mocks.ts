@@ -11,6 +11,20 @@ const library = Library();
 const loadPromise = library.load(instrumentCollection);
 
 
+describe('Logging', function() {
+  const itemsToLog = [];
+  log.set('logTest', itemsToLog);
+  const returnedVar = log.get('logTest');
+
+  it('returns things you set', () => assert(returnedVar === itemsToLog));
+
+  it('is useful for adding things to arrays', () => {
+    itemsToLog[0] = 'boink';
+    assert(returnedVar[0] === 'boink');
+  })
+});
+
+
 describe('NoteSource mock', function() {
   const noteSource = new NoteSourceMock(library);
   it('has a log of requested notes', async () => {
