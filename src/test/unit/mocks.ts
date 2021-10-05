@@ -59,7 +59,7 @@ describe('fetch() mock', function() {
   let promiseResolver;
   const arrayBufferPromise = new Promise(resolve => promiseResolver = resolve);
 
-  it('requests the correct path', () => assert(latestRequest === url));
+  it('requests and logs the correct path', () => assert(latestRequest === url));
 
   it('returns a response we can get an ArrayBuffer from...', async () => {
     const response = await fetchPromise;
