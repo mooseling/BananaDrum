@@ -1,6 +1,6 @@
 // Currently this module knows where we keep sound files
 // Later we will probably want to move this to a config file
-let path = 'sounds';
+const path = 'sounds';
 
 export const AudioGetter:AudioGetter = {
   async get(filename: string): Promise<ArrayBuffer> {
