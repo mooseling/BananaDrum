@@ -1,7 +1,7 @@
 /* global fetch */
 import {assert} from 'chai';
 import '../mocks/fetch.js';
-import * as AudioGetter from '../../dist/AudioGetter.js';
+import {AudioGetter} from '../../prod/AudioGetter.js';
 
 describe('AudioGetter', function() {
   const filename = 'boop.mp3';

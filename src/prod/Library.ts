@@ -1,4 +1,4 @@
-import * as AudioGetter from './AudioGetter.js';
+import {AudioGetter} from './AudioGetter.js';
 
 const instruments: InstrumentCollection = {};
 let libraryLoaded = false;

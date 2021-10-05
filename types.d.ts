@@ -51,3 +51,7 @@ declare interface Library {
   load(libraryToLoad:InstrumentCollection): Promise<void>,
   getAudio(instrumentId:string, styleId:string): ArrayBuffer
 }
+
+declare interface AudioGetter {
+  get(filename: string): Promise<ArrayBuffer>
+}
