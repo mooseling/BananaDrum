@@ -1,4 +1,4 @@
-export const exampleArrangement = {
+export const exampleArrangement:Arrangement = {
   timeSignature:'4/4',
   tempo:120,
   tracks:[
