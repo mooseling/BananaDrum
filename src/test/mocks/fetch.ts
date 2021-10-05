@@ -1,20 +1,26 @@
-const requestLog = [];
+import * as mockLog from './MockLogging.js';
 
-global.fetch = async function(requestUrl) {
+interface TrackedArrayBuffer extends ArrayBuffer {
+  requestUrl?: string
+}
+
+const requestLog:string[] = mockLog.get('fetchRequestLog') || mockLog.set('fetchRequestLog', []);
+export async function fetchMock(requestUrl:string) {
   requestLog.push(requestUrl);
   return new ResponseMock(requestUrl);
-};
+}
 
-global.fetch.getRequestLog = () => requestLog;
+
 
 class ResponseMock {
-  constructor(requestUrl) {
+  requestUrl: string;
+  constructor(requestUrl: string) {
     this.requestUrl = requestUrl;
   }
 
   // We use arrayBuffer() for fetching audio files
   async arrayBuffer() {
-    const arrayBuffer = new ArrayBuffer();
+    const arrayBuffer:TrackedArrayBuffer = new ArrayBuffer(8);
     arrayBuffer.requestUrl = this.requestUrl; // We want to check this in tests
     return arrayBuffer;
   }

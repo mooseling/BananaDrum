@@ -1,4 +1,8 @@
-global.AudioContext = class {
+export class AudioContextMock {
+  timestamp:number;
+  contextTime:number;
+  running:boolean;
+
   constructor() {
     this.timestamp = Date.now();
     this.contextTime = 0;
@@ -25,9 +29,9 @@ global.AudioContext = class {
   }
 };
 
-global.AudioBuffer = class {};
+export class AudioBufferMock {};
 
-global.AudioBufferSourceNode = class {
+export class AudioBufferSourceNodeMock {
   connect() {}
   start() {}
 };
