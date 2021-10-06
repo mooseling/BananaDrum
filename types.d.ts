@@ -22,6 +22,7 @@ declare interface Track {
 declare interface Arrangement {
   timeSignature: string,
   tempo: number,
+  length: number,
   tracks: Track[]
 }
 

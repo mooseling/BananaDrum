@@ -1,6 +1,7 @@
 export const exampleArrangement:Arrangement = {
   timeSignature:'4/4',
   tempo:120,
+  length:1, // bars
   tracks:[
     // snare
     {notes:[{instrumentId:'snare', styleId:'accent', timing:'1.2'},{instrumentId:'snare', styleId:'accent', timing:'1.4'}]},
