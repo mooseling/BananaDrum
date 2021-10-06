@@ -2,16 +2,22 @@ import {AudioPlayer} from './AudioPlayer.js';
 import {TimeConverter} from './TimeConverter.js';
 
 export function ArrangementPlayer(library:Library) {
-  let loadedArrangement: Arrangement|null = null;
-  let timeSignature: string|null = null;
-  let tempo: number|null = null;
   const playableNotes: PlayableNote[] = [];
   const noteSource: NoteSource = {getPlayableNotes, library};
   const audioPlayer = AudioPlayer(noteSource);
+  let loadedArrangement: Arrangement|null = null;
+  let timeSignature: string|null = null;
+  let tempo: number|null = null;
   let timeConverter: TimeConverter|null = null;
 
   return {load, play};
 
+
+
+
+  // ==================================================================
+  //                          Public Functions
+  // ==================================================================
 
   function load(arrangement: Arrangement) {
     loadedArrangement = arrangement;
@@ -23,6 +29,12 @@ export function ArrangementPlayer(library:Library) {
   function play() {
     audioPlayer.play();
   }
+
+
+
+  // ==================================================================
+  //                          Private Functions
+  // ==================================================================
 
   function getPlayableNotes(intervalStart: number, intervalEnd: number): PlayableNote[] {
     const wantedNotes = [];
