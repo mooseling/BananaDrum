@@ -1,11 +1,13 @@
 import {assert} from 'chai';
 import {Library} from '../../prod/Library.js';
 import {instrumentCollection} from '../lib/example-instruments.js';
+import * as log from '../lib/logging.js';
 
 const library = Library();
 
 describe('Library', function() {
   const audioFromLibrary:any = {};
+  const arrayBufferLog:Map<ArrayBuffer, string> = log.get('arrayBuffers') || log.set('arrayBuffers', new Map());
 
   before('Load library', async () => {
     library.load(instrumentCollection);
@@ -20,10 +22,9 @@ describe('Library', function() {
     assert(audioFromLibrary.hihat instanceof ArrayBuffer);
   });
 
-  // it('returns the correct ArrayBuffers', async () => {
-  //   await loadPromise;
-  //   assert(library.getAudio('kick', 'kick').requestUrl === 'sounds/kick.mp3');
-  //   assert(library.getAudio('snare', 'accent').requestUrl === 'sounds/snare.mp3');
-  //   assert(library.getAudio('hihat', 'closed').requestUrl === 'sounds/hihat.mp3');
-  // });
+  it('returns the correct ArrayBuffers', async () => {
+    assert(arrayBufferLog.get(audioFromLibrary.kick) === 'sounds/kick.mp3');
+    assert(arrayBufferLog.get(audioFromLibrary.snare) === 'sounds/snare.mp3');
+    assert(arrayBufferLog.get(audioFromLibrary.hihat) === 'sounds/hihat.mp3');
+  });
 });
