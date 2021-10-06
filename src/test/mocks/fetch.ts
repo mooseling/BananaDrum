@@ -1,8 +1,6 @@
 import * as log from '../lib/logging.js';
 
-interface TrackedArrayBuffer extends ArrayBuffer {
-  requestUrl?: string
-}
+
 
 const requestLog:string[] = log.get('fetchRequestLog') || log.set('fetchRequestLog', []);
 export async function fetchMock(requestUrl:string) {
@@ -12,6 +10,7 @@ export async function fetchMock(requestUrl:string) {
 
 
 
+const arrayBufferLog:Map<ArrayBuffer, string> = log.get('arrayBuffers') || log.set('arrayBuffers', new Map());
 class ResponseMock {
   requestUrl: string;
   constructor(requestUrl: string) {
@@ -20,8 +19,8 @@ class ResponseMock {
 
   // We use arrayBuffer() for fetching audio files
   async arrayBuffer() {
-    const arrayBuffer:TrackedArrayBuffer = new ArrayBuffer(8);
-    arrayBuffer.requestUrl = this.requestUrl; // We want to check this in tests
+    const arrayBuffer = new ArrayBuffer(8);
+    arrayBufferLog.set(arrayBuffer, this.requestUrl); // We want to check this in tests
     return arrayBuffer;
   }
 }
