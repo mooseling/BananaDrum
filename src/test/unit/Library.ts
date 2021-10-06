@@ -5,13 +5,19 @@ import {instrumentCollection} from '../lib/example-instruments.js';
 const library = Library();
 
 describe('Library', function() {
-  const loadPromise = library.load(instrumentCollection);
+  const audioFromLibrary:any = {};
+
+  before('Load library', async () => {
+    library.load(instrumentCollection);
+    audioFromLibrary.kick = library.getAudio('kick', 'kick');
+    audioFromLibrary.snare = library.getAudio('snare', 'accent');
+    audioFromLibrary.hihat = library.getAudio('hihat', 'closed');
+  });
 
   it('returns ArrayBuffers', async () => {
-    await loadPromise;
-    assert(library.getAudio('kick', 'kick') instanceof ArrayBuffer);
-    assert(library.getAudio('snare', 'accent') instanceof ArrayBuffer);
-    assert(library.getAudio('hihat', 'closed') instanceof ArrayBuffer);
+    assert(audioFromLibrary.kick instanceof ArrayBuffer);
+    assert(audioFromLibrary.snare instanceof ArrayBuffer);
+    assert(audioFromLibrary.hihat instanceof ArrayBuffer);
   });
 
   // it('returns the correct ArrayBuffers', async () => {
