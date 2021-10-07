@@ -1,16 +1,14 @@
 import {AudioPlayer} from './AudioPlayer.js';
 import {TimeConverter} from './TimeConverter.js';
 
-export function ArrangementPlayer(library:Library) {
-  const playableNotes: PlayableNote[] = [];
-  const noteSource: NoteSource = {getPlayableNotes, library};
+export function ArrangementPlayer(library:Library, arrangement:Arrangement) {
+  const noteSource:NoteSource = {getPlayableNotes, library};
   const audioPlayer = AudioPlayer(noteSource);
-  let loadedArrangement: Arrangement|null = null;
-  let timeSignature: string|null = null;
-  let tempo: number|null = null;
-  let timeConverter: TimeConverter|null = null;
+  const {timeSignature, tempo} = arrangement;
+  const timeConverter:TimeConverter = TimeConverter(timeSignature, tempo);
+  const playableNotes:PlayableNote[] = extractPlayableNotes();
 
-  return {load, play};
+  return {play};
 
 
 
@@ -18,13 +16,6 @@ export function ArrangementPlayer(library:Library) {
   // ==================================================================
   //                          Public Functions
   // ==================================================================
-
-  function load(arrangement: Arrangement) {
-    loadedArrangement = arrangement;
-    ({timeSignature, tempo} = loadedArrangement);
-    timeConverter = TimeConverter(timeSignature, tempo);
-    arrangement.tracks.forEach(track => track.notes.forEach(note => playableNotes.push(getPlayableNote(note))));
-  }
 
   function play() {
     audioPlayer.play();
@@ -45,6 +36,12 @@ export function ArrangementPlayer(library:Library) {
       }
     }
     return wantedNotes;
+  }
+
+  function extractPlayableNotes() {
+    const playableNotes = [];
+    arrangement.tracks.forEach(track => track.notes.forEach(note => playableNotes.push(getPlayableNote(note))));
+    return playableNotes;
   }
 
   function getPlayableNote(note: Note): PlayableNote {
