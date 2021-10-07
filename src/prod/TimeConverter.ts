@@ -11,7 +11,7 @@
 // It is confusing.
 
 // Assumption: tempo is quarter-notes per minute, no matter the time signature
-export function TimeConverter(timeSignature:string, tempo:number): TimeConverter {
+export function TimeConverter({timeSignature, tempo}:ArrangementDetails): TimeConverter {
   const [beatsPerBar, beatUnit] = timeSignature.split('/').map(stringValue => Number(stringValue));
 
   // Lay some ground work...

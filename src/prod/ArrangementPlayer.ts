@@ -4,8 +4,7 @@ import {TimeConverter} from './TimeConverter.js';
 export function ArrangementPlayer(library:Library, arrangement:Arrangement) {
   const noteSource:NoteSource = {getPlayableNotes, library};
   const audioPlayer = AudioPlayer(noteSource);
-  const {timeSignature, tempo} = arrangement;
-  const timeConverter:TimeConverter = TimeConverter(timeSignature, tempo);
+  const timeConverter:TimeConverter = TimeConverter(arrangement);
   const playableNotes:PlayableNote[] = extractPlayableNotes();
 
   return {play};

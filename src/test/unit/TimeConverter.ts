@@ -5,7 +5,8 @@ type TestCase = [string, number];
 
 describe('TimeConverter', function() {
   describe('4/4 time, 120bpm', function() {
-    const basicTimeConverter = TimeConverter('4/4', 120);
+    const params:ArrangementDetails = {timeSignature:'4/4', tempo:120, length:1};
+    const basicTimeConverter = TimeConverter(params);
 
     it('returns 0 on the 1', () => assert(basicTimeConverter.convertToRealTime('1') === 0));
 
@@ -31,7 +32,8 @@ describe('TimeConverter', function() {
   });
 
   describe('6/8 time, 140bpm', function() {
-    const basicTimeConverter = TimeConverter('6/8', 140);
+    const params:ArrangementDetails = {timeSignature:'6/8', tempo:140, length:1};
+    const basicTimeConverter = TimeConverter(params);
 
     it('returns 0 on the 1', () => assert(basicTimeConverter.convertToRealTime('1') === 0));
 

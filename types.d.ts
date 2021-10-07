@@ -19,10 +19,13 @@ declare interface Track {
   notes: Note[]
 }
 
-declare interface Arrangement {
+declare interface ArrangementDetails {
   timeSignature: string,
   tempo: number,
-  length: number,
+  length: number
+}
+
+declare interface Arrangement extends ArrangementDetails {
   tracks: Track[]
 }
 
