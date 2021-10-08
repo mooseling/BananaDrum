@@ -6,8 +6,9 @@ export function ArrangementPlayer(library:Library, arrangement:Arrangement) {
   const audioPlayer = AudioPlayer(noteSource);
   const timeConverter:TimeConverter = TimeConverter(arrangement);
   const playableNotes:PlayableNote[] = extractPlayableNotes();
+  let isLooping = false;
 
-  return {play};
+  return {play, loop};
 
 
 
@@ -20,6 +21,10 @@ export function ArrangementPlayer(library:Library, arrangement:Arrangement) {
     audioPlayer.play();
   }
 
+  function loop(turnLoopingOn:boolean = true) {
+    isLooping = turnLoopingOn;
+  }
+
 
 
   // ==================================================================
@@ -28,12 +33,26 @@ export function ArrangementPlayer(library:Library, arrangement:Arrangement) {
 
   function getPlayableNotes(intervalStart: number, intervalEnd: number): PlayableNote[] {
     const wantedNotes = [];
-    for (const note of playableNotes) {
-      if (!note.played && note.realTime >= intervalStart && note.realTime <= intervalEnd) {
-        wantedNotes.push(note);
-        note.played = true;
+
+    if (isLooping) {
+      const loopAdjustedIntervals = timeConverter.getLoopAdjustedIntervals(intervalStart, intervalEnd);
+      loopAdjustedIntervals.forEach(({loopNumber, intervalStart, intervalEnd}) => {
+        for (const note of playableNotes) {
+          if (!note.loopsPlayed.includes(loopNumber) && note.realTime >= intervalStart && note.realTime <= intervalEnd) {
+            wantedNotes.push(getLoopAdjustedNote(note, loopNumber));
+            note.loopsPlayed.push(loopNumber);
+          }
+        }
+      });
+    } else {
+      for (const note of playableNotes) {
+        if (!note.loopsPlayed.includes(0) && note.realTime >= intervalStart && note.realTime <= intervalEnd) {
+          wantedNotes.push(note);
+          note.loopsPlayed.push(0);
+        }
       }
     }
+
     return wantedNotes;
   }
 
@@ -44,6 +63,20 @@ export function ArrangementPlayer(library:Library, arrangement:Arrangement) {
   }
 
   function getPlayableNote(note: Note): PlayableNote {
-    return {note, realTime: timeConverter.convertToRealTime(note.timing)};
+    return {
+      note,
+      realTime: timeConverter.convertToRealTime(note.timing),
+      loopsPlayed: []
+    };
+  }
+
+
+
+  function getLoopAdjustedNote(note:PlayableNote, loopNumber:number):PlayableNote {
+    return {
+      realTime: timeConverter.getLoopAdjustedRealTime(note.realTime, loopNumber),
+      note: note.note,
+      loopsPlayed: note.loopsPlayed
+    };
   }
 }

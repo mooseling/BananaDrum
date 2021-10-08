@@ -7,7 +7,7 @@ declare interface Note {
 declare interface PlayableNote {
   realTime: number,
   note: Note,
-  played?: boolean
+  loopsPlayed: number[]
 }
 
 declare interface NoteSource {
