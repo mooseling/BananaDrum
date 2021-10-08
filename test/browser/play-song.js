@@ -7,6 +7,7 @@ const library = Library();
 document.addEventListener('click', () => {
   library.load(instrumentCollection).then(() => {
     const arrangementPlayer = new ArrangementPlayer(library, exampleArrangement);
+    arrangementPlayer.loop();
     arrangementPlayer.play();
   });
 });
