@@ -11,7 +11,7 @@
 // It is confusing.
 
 // Assumption: tempo is quarter-notes per minute, no matter the time signature
-export function TimeConverter({timeSignature, tempo}:ArrangementDetails): TimeConverter {
+export function TimeConverter({timeSignature, tempo, length}:ArrangementDetails): TimeConverter {
   const [beatsPerBar, beatUnit] = timeSignature.split('/').map(stringValue => Number(stringValue));
 
   // Lay some ground work...
@@ -23,7 +23,9 @@ export function TimeConverter({timeSignature, tempo}:ArrangementDetails): TimeCo
   const secondsPerQuarterNote = 60 / tempo;
   const secondsPerBeat = secondsPerQuarterNote * quarterNotesPerBeat;
 
-  return {convertToRealTime};
+  const realTimeLength = convertToRealTime((length + 1).toString());
+
+  return {convertToRealTime, getLoopAdjustedIntervals, getLoopAdjustedRealTime};
 
 
   function convertToRealTime(timing:string): number {
@@ -46,6 +48,43 @@ export function TimeConverter({timeSignature, tempo}:ArrangementDetails): TimeCo
     }
 
     return seconds;
+  }
+
+  function getLoopAdjustedIntervals(intervalStart:number, intervalEnd:number):AdjustedInterval[] {
+    const startLoopNumber = Math.floor(intervalStart / realTimeLength);
+    const adjustedStart = intervalStart % realTimeLength;
+    const endLoopNumber = Math.floor(intervalEnd / realTimeLength);
+    const adjustedEnd = intervalEnd % realTimeLength;
+
+    if (startLoopNumber === endLoopNumber) {
+      return [
+        {
+          loopNumber:startLoopNumber,
+          intervalStart:adjustedStart,
+          intervalEnd:adjustedEnd
+        }
+      ];
+    }
+
+    // If the end-loop is different to the start-loop, this interval is overflowing the loopNumber
+    // So we return a segment at the end of the loop, and a segment at the beginning
+    // We're assuming at the moment that a note-request-interval is not longer than a loop
+    return [
+      {
+        loopNumber:startLoopNumber,
+        intervalStart:adjustedStart,
+        intervalEnd:realTimeLength
+      },
+      {
+        loopNumber:endLoopNumber,
+        intervalStart:0,
+        intervalEnd:adjustedEnd
+      }
+    ];
+  }
+
+  function getLoopAdjustedRealTime(realTime:number, loopNumber:number) {
+    return realTime + (loopNumber * realTimeLength)
   }
 }
 
