@@ -34,7 +34,7 @@ export function AudioPlayer(noteSource: NoteSource) {
   // ==================================================================
 
   function loop() {
-    const currentTime = audioContext.getOutputTimestamp().contextTime;
+    const currentTime = audioContext.currentTime;
     const notesToSchedule = noteSource.getPlayableNotes(currentTime, currentTime + lookahead);
     notesToSchedule.forEach(note => scheduleNote(note));
     nextIteration = setTimeout(loop, loopFrequency);

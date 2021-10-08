@@ -24,8 +24,8 @@ export class AudioContextMock {
     }
   }
 
-  getOutputTimestamp() {
-    return {contextTime:(this.running ? this.contextTime + Date.now() - this.timestamp : this.contextTime) / 1000};
+  get currentTime() {
+    return (this.running ? this.contextTime + Date.now() - this.timestamp : this.contextTime) / 1000
   }
 };
 
