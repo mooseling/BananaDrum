@@ -8,7 +8,7 @@ export function ArrangementPlayer(library:Library, arrangement:Arrangement) {
   const playableNotes:PlayableNote[] = extractPlayableNotes();
   let isLooping = false;
 
-  return {play, loop};
+  return {play, pause, loop};
 
 
 
@@ -19,6 +19,10 @@ export function ArrangementPlayer(library:Library, arrangement:Arrangement) {
 
   function play() {
     audioPlayer.play();
+  }
+
+  function pause() {
+    audioPlayer.pause();
   }
 
   function loop(turnLoopingOn:boolean = true) {
