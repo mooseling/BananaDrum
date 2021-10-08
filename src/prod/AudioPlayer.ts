@@ -17,13 +17,18 @@ export function AudioPlayer(noteSource: NoteSource) {
   // ==================================================================
 
   function play() {
-    audioContext.resume();
-    loop();
+    if (nextIteration === null) {
+      audioContext.resume();
+      loop();
+    }
   }
 
   function pause() {
-    audioContext.suspend();
-    clearTimeout(nextIteration);
+    if (nextIteration !== null) {
+      audioContext.suspend();
+      clearTimeout(nextIteration);
+      nextIteration = null;
+    }
   }
 
 
