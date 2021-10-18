@@ -1,7 +1,7 @@
 import {AudioPlayer} from './AudioPlayer.js';
 import {TimeConverter} from './TimeConverter.js';
 
-export function ArrangementPlayer(library:Library, arrangement:Arrangement) {
+export function ArrangementPlayer(library:Library, arrangement:Arrangement): ArrangementPlayer {
   const noteSource:NoteSource = {getPlayableNotes, library};
   const audioPlayer = AudioPlayer(noteSource);
   const timeConverter:TimeConverter = TimeConverter(arrangement);
