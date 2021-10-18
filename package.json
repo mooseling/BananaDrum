@@ -8,7 +8,6 @@
   },
   "license": "ISC",
   "type": "module",
-  "types": "types.d.ts",
   "devDependencies": {
     "@types/chai": "^4.2.22",
     "@types/mocha": "^9.0.0",
