@@ -1,11 +1,14 @@
 import {AudioPlayer} from './AudioPlayer.js';
 import {TimeConverter} from './TimeConverter.js';
 
-export function ArrangementPlayer(library:Library, arrangement:Arrangement): ArrangementPlayer {
-  const noteSource:NoteSource = {getPlayableNotes, library};
-  const audioPlayer = AudioPlayer(noteSource);
+export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
+  const noteEventSource:NoteEventSource = {getNoteEvents};
+  const audioPlayer = AudioPlayer(noteEventSource);
   const timeConverter:TimeConverter = TimeConverter(arrangement);
-  const playableNotes:PlayableNote[] = extractPlayableNotes();
+  const noteEvents:NoteEvent[] = extractPlayableNotes();
+  // To prevent playing note-events multiple times,
+  // we keep track of which loops we've played them in
+  const noteHistory = NotePlayHistory();
   let isLooping = false;
 
   return {play, pause, loop};
@@ -35,24 +38,24 @@ export function ArrangementPlayer(library:Library, arrangement:Arrangement): Arr
   //                          Private Functions
   // ==================================================================
 
-  function getPlayableNotes(intervalStart: number, intervalEnd: number): PlayableNote[] {
+  function getNoteEvents(interval:Interval): NoteEvent[] {
     const wantedNotes = [];
 
     if (isLooping) {
-      const loopAdjustedIntervals = timeConverter.getLoopAdjustedIntervals(intervalStart, intervalEnd);
-      loopAdjustedIntervals.forEach(({loopNumber, intervalStart, intervalEnd}) => {
-        for (const note of playableNotes) {
-          if (!note.loopsPlayed.includes(loopNumber) && note.realTime >= intervalStart && note.realTime <= intervalEnd) {
-            wantedNotes.push(getLoopAdjustedNote(note, loopNumber));
-            note.loopsPlayed.push(loopNumber);
+      const loopAdjustedIntervals = timeConverter.getLoopAdjustedIntervals(interval);
+      loopAdjustedIntervals.forEach(({loopNumber, start, end}) => {
+        for (const noteEvent of noteEvents) {
+          if (!noteHistory.check(noteEvent, loopNumber) && noteEvent.realTime >= start && noteEvent.realTime <= end) {
+            wantedNotes.push(getLoopAdjustedNote(noteEvent, loopNumber));
+            noteHistory.record(noteEvent, loopNumber);
           }
         }
       });
     } else {
-      for (const note of playableNotes) {
-        if (!note.loopsPlayed.includes(0) && note.realTime >= intervalStart && note.realTime <= intervalEnd) {
-          wantedNotes.push(note);
-          note.loopsPlayed.push(0);
+      for (const noteEvent of noteEvents) {
+        if (!noteHistory.check(noteEvent, 0) && noteEvent.realTime >= interval.start && noteEvent.realTime <= interval.end) {
+          wantedNotes.push(noteEvent);
+          noteHistory.record(noteEvent, 0);
         }
       }
     }
@@ -62,25 +65,52 @@ export function ArrangementPlayer(library:Library, arrangement:Arrangement): Arr
 
   function extractPlayableNotes() {
     const playableNotes = [];
-    arrangement.tracks.forEach(track => track.notes.forEach(note => playableNotes.push(getPlayableNote(note))));
+    arrangement.tracks.forEach(track => track.notes.forEach(note => playableNotes.push(getNoteEvent(note))));
     return playableNotes;
   }
 
-  function getPlayableNote(note: Note): PlayableNote {
+  function getNoteEvent(note: Note): NoteEvent {
     return {
       note,
-      realTime: timeConverter.convertToRealTime(note.timing),
-      loopsPlayed: []
+      realTime: timeConverter.convertToRealTime(note.timing)
     };
   }
 
 
 
-  function getLoopAdjustedNote(note:PlayableNote, loopNumber:number):PlayableNote {
+  function getLoopAdjustedNote(noteEvent:NoteEvent, loopNumber:number): NoteEvent {
     return {
-      realTime: timeConverter.getLoopAdjustedRealTime(note.realTime, loopNumber),
-      note: note.note,
-      loopsPlayed: note.loopsPlayed
+      realTime: timeConverter.getLoopAdjustedRealTime(noteEvent.realTime, loopNumber),
+      note: noteEvent.note
     };
+  }
+}
+
+
+
+
+function NotePlayHistory():NotePlayHistory {
+  const noteRecords:Map<NoteEvent, number[]> = new Map();
+
+  return {
+    record(noteEvent:NoteEvent, loopNumber:number) {
+      const noteHistory = getOrCreateHistory(noteEvent);
+      noteHistory.push(loopNumber);
+    },
+    check(noteEvent:NoteEvent, loopNumber:number) {
+      const noteHistory = noteRecords.get(noteEvent);
+      if (noteHistory)
+        return noteHistory.includes(loopNumber);
+      return false;
+    }
+  };
+
+  function getOrCreateHistory(noteEvent:NoteEvent) {
+    const existingHistory = noteRecords.get(noteEvent);
+    if (existingHistory)
+      return existingHistory;
+    const noteHistory = [];
+    noteRecords.set(noteEvent, noteHistory);
+    return noteHistory;
   }
 }
