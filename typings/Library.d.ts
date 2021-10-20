@@ -1,15 +1,26 @@
 declare interface Library {
-  load(libraryToLoad:InstrumentCollection): Promise<void>,
-  getAudio(instrumentId:string, styleId:string): ArrayBuffer
+  load(): Promise<void>,
+  getInstrument(instrumentId:string): Instrument
 }
 
-declare interface InstrumentCollection {
-  [instrumentId: string]: Instrument
+declare type InstrumentCollection = PackedInstrument[]
+
+declare interface PackedInstrument {
+  instrumentId: string
+  displayName: string
+  packedNoteStyles: PackedNoteStyle[]
+}
+
+declare interface PackedNoteStyle {
+  noteStyleId: string
+  file: string
 }
 
 declare interface Instrument {
-  displayName: string,
+  instrumentId: string
+  displayName: string
   noteStyles: NoteStyleSet
+  createUntimedNote(noteStyleId:string): UntimedNote
 }
 
 declare interface NoteStyleSet {
@@ -17,6 +28,7 @@ declare interface NoteStyleSet {
 }
 
 declare interface NoteStyle {
-  file: string,
-  audio?: ArrayBuffer
+  noteStyleId: string
+  file: string
+  audioBuffer: AudioBuffer
 }
