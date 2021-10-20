@@ -1,14 +1,14 @@
 /* global fetch */
 import {assert} from 'chai';
-import {NoteSourceMock} from '../mocks/NoteSource.js';
+// import {NoteSourceMock} from '../mocks/NoteSource.js';
 import '../mocks/WebAudio.js';
 import '../mocks/fetch.js';
 import * as log from '../lib/logging.js';
 import {instrumentCollection} from '../lib/example-instruments.js';
 import {Library} from '../../prod/Library.js';
 
-const library = Library();
-const loadPromise = library.load(instrumentCollection);
+const library = Library(instrumentCollection);
+const loadPromise = library.load();
 
 
 describe('Logging', function() {
@@ -25,29 +25,29 @@ describe('Logging', function() {
 });
 
 
-describe('NoteSource mock', function() {
-  const noteSource = new NoteSourceMock(library);
-  it('has a log of requested notes', async () => {
-    await loadPromise;
-    assert(Array.isArray(noteSource.requestLog));
-  });
-
-  it('starts with no logged requests', async () => {
-    await loadPromise;
-    assert(noteSource.requestLog.length === 0);
-  });
-
-  it('logs requests correctly', async () => {
-    await loadPromise;
-    const intervalStart = 1;
-    const intervalEnd = 530453080;
-    noteSource.getPlayableNotes(intervalStart, intervalEnd);
-    assert(noteSource.requestLog.length === 1);
-    assert(noteSource.requestLog[0].length === 2);
-    assert(noteSource.requestLog[0][0] === intervalStart);
-    assert(noteSource.requestLog[0][1] === intervalEnd);
-  });
-});
+// describe('NoteSource mock', function() {
+//   const noteSource = new NoteSourceMock(library);
+//   it('has a log of requested notes', async () => {
+//     await loadPromise;
+//     assert(Array.isArray(noteSource.requestLog));
+//   });
+//
+//   it('starts with no logged requests', async () => {
+//     await loadPromise;
+//     assert(noteSource.requestLog.length === 0);
+//   });
+//
+//   it('logs requests correctly', async () => {
+//     await loadPromise;
+//     const intervalStart = 1;
+//     const intervalEnd = 530453080;
+//     noteSource.getPlayableNotes(intervalStart, intervalEnd);
+//     assert(noteSource.requestLog.length === 1);
+//     assert(noteSource.requestLog[0].length === 2);
+//     assert(noteSource.requestLog[0][0] === intervalStart);
+//     assert(noteSource.requestLog[0][1] === intervalEnd);
+//   });
+// });
 
 
 describe('fetch() mock', function() {

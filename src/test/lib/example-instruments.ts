@@ -1,30 +1,37 @@
-export const instrumentCollection:InstrumentCollection = {
-  kick: {
+export const instrumentCollection:InstrumentCollection = [
+  {
+    instrumentId: 'kick',
     displayName: 'Kick drum',
-    noteStyles: {
-      kick: {
+    packedNoteStyles: [
+      {
+        noteStyleId: 'kick',
         file: 'kick.mp3'
         // displayName, symbol
       }
-    }
+    ]
   },
-  snare: {
+  {
+    instrumentId: 'snare',
     displayName: 'Snare',
-    noteStyles: {
-      accent:{
+    packedNoteStyles: [
+      {
+        noteStyleId: 'accent',
         file: 'snare.mp3'
       },
-      roll:{
+      {
+        noteStyleId: 'roll',
         file: 'roll.mp3'
       }
-    }
+    ]
   },
-  hihat: {
+  {
+    instrumentId: 'hihat',
     displayName: 'Hi Hat',
-    noteStyles: {
-      closed: {
+    packedNoteStyles: [
+      {
+        noteStyleId: 'closed',
         file: 'hihat.mp3'
       }
-    }
+    ]
   }
-};
+];
