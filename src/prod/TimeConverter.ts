@@ -50,18 +50,18 @@ export function TimeConverter({timeSignature, tempo, length}:ArrangementDetails)
     return seconds;
   }
 
-  function getLoopAdjustedIntervals(intervalStart:number, intervalEnd:number):AdjustedInterval[] {
-    const startLoopNumber = Math.floor(intervalStart / realTimeLength);
-    const adjustedStart = intervalStart % realTimeLength;
-    const endLoopNumber = Math.floor(intervalEnd / realTimeLength);
-    const adjustedEnd = intervalEnd % realTimeLength;
+  function getLoopAdjustedIntervals(interval:Interval):AdjustedInterval[] {
+    const startLoopNumber = Math.floor(interval.start / realTimeLength);
+    const adjustedStart = interval.start % realTimeLength;
+    const endLoopNumber = Math.floor(interval.end / realTimeLength);
+    const adjustedEnd = interval.end % realTimeLength;
 
     if (startLoopNumber === endLoopNumber) {
       return [
         {
           loopNumber:startLoopNumber,
-          intervalStart:adjustedStart,
-          intervalEnd:adjustedEnd
+          start:adjustedStart,
+          end:adjustedEnd
         }
       ];
     }
@@ -72,13 +72,13 @@ export function TimeConverter({timeSignature, tempo, length}:ArrangementDetails)
     return [
       {
         loopNumber:startLoopNumber,
-        intervalStart:adjustedStart,
-        intervalEnd:realTimeLength
+        start:adjustedStart,
+        end:realTimeLength
       },
       {
         loopNumber:endLoopNumber,
-        intervalStart:0,
-        intervalEnd:adjustedEnd
+        start:0,
+        end:adjustedEnd
       }
     ];
   }
