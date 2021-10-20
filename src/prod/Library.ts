@@ -1,38 +1,37 @@
 import {AudioGetter} from './AudioGetter.js';
 
-const instruments: InstrumentCollection = {};
-let libraryLoaded = false;
-let loadPromiseResolver: Function|undefined;
-const loadPromise: Promise<void> = new Promise(resolve => loadPromiseResolver = resolve);
+const audioCtx = new AudioContext(); // Just for creating AudioBuffers
 
 
 
 
 
-export function Library():Library {
-  return {load, getAudio};
+export function Library(instrumentCollection:InstrumentCollection):Library {
+  let loaded = false;
+  const instruments: {[instrumentId:string]:Instrument} = {};
+  let loadPromiseResolver: Function|undefined;
+  const loadPromise: Promise<void> = new Promise(resolve => loadPromiseResolver = resolve);
+
+  return {load, getInstrument};
 
   // ==================================================================
   //                          Public Functions
   // ==================================================================
-  function load(libraryToLoad:InstrumentCollection) {
-    if (!libraryLoaded) {
-      populateLibrary(libraryToLoad);
-      loadAllAudio(); // This will eventually cause loadPromise to resolve
+  function load() {
+    if (!loaded) {
+      loadInstruments().then(() => {
+        loaded = true;
+        loadPromiseResolver();
+      });
     }
     return loadPromise;
   }
 
 
-  function getAudio(instrumentId:string, styleId:string): ArrayBuffer {
-    if (!libraryLoaded)
-      throw 'Trying to get audio from Library before loading the library!';
-
-    const noteStyle = instruments?.[instrumentId].noteStyles?.[styleId];
-    if (!noteStyle)
-      throw `Missing instrument (${instrumentId}) or style (${styleId})`;
-
-    return noteStyle.audio;
+  function getInstrument(instrumentId:string): Instrument {
+    if (!loaded)
+      throw 'Trying to get instruments before library is loaded';
+    return instruments[instrumentId];
   }
 
 
@@ -42,42 +41,42 @@ export function Library():Library {
   //                          Private Functions
   // ==================================================================
 
-  function populateLibrary(libraryToLoad:InstrumentCollection): void {
-    for (const instrumentId in libraryToLoad) {
-      const instrument = libraryToLoad[instrumentId];
-      instruments[instrumentId] = {
-        displayName: instrument.displayName,
-        noteStyles: unpackNoteStyles(instrument)
-      }
-    }
-  }
-
-
-  function unpackNoteStyles(instrument:Instrument): NoteStyleSet {
-    const noteStyles:NoteStyleSet = {};
-    for (const styleId in instrument.noteStyles) {
-      noteStyles[styleId] = {
-        file: instrument.noteStyles[styleId].file
-      };
-    }
-    return noteStyles;
-  }
-
-
-  function loadAllAudio(): void {
-    const audioPromises: Promise<ArrayBuffer>[] = [];
-    for (const instrumentId in instruments) {
-      const instrument = instruments[instrumentId];
-      for (const styleId in instrument.noteStyles) {
-        const noteStyle = instrument.noteStyles[styleId];
-        const audioPromise = AudioGetter.get(noteStyle.file);
-        audioPromises.push(audioPromise);
-        audioPromise.then(audio => noteStyle.audio = audio);
-      }
-    }
-    Promise.all(audioPromises).then(() => {
-      loadPromiseResolver();
-      libraryLoaded = true;
+  function loadInstruments(): Promise<any> {
+    const instrumentPromises:Promise<any>[] = [];
+    instrumentCollection.forEach(packedInstrument => {
+      const {instrumentId} = packedInstrument;
+      const instrumentPromise = Instrument(packedInstrument);
+      instrumentPromises.push(instrumentPromise);
+      instrumentPromise.then(instrument => instruments[instrumentId] = instrument);
     });
+    return Promise.all(instrumentPromises);
   }
+}
+
+
+async function Instrument(packedInstrument:PackedInstrument): Promise<Instrument> {
+  const {instrumentId, packedNoteStyles, displayName} = packedInstrument;
+  const noteStyles = await unpackNoteStyles(packedNoteStyles);
+  const instrument = {instrumentId, noteStyles, displayName, createUntimedNote};
+
+  return instrument;
+
+
+  function createUntimedNote(noteStyleId:string): UntimedNote {
+    const noteStyle = noteStyles[noteStyleId]
+    return {instrument, noteStyle, audioBuffer:noteStyle.audioBuffer};
+  }
+}
+
+
+async function unpackNoteStyles(packedNoteStyles:PackedNoteStyle[]): Promise<NoteStyleSet> {
+  const noteStyles:NoteStyleSet = {};
+  const getAudioPromises:Promise<AudioBuffer>[] = [];
+  packedNoteStyles.forEach(async ({noteStyleId, file}) => {
+    const arrayBuffer = await AudioGetter.get(file);
+    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+    noteStyles[noteStyleId] = {noteStyleId, file, audioBuffer};
+  });
+  await Promise.all(getAudioPromises);
+  return noteStyles;
 }
