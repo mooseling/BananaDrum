@@ -1,13 +1,8 @@
 /* jshint browser:true */
-import {exampleArrangement} from '../../dist/test/lib/example-arrangement.js';
-import {instrumentCollection} from '../../dist/test/lib/example-instruments.js';
-import {ArrangementPlayer} from '../../dist/prod/ArrangementPlayer.js';
-import {Library} from '../../dist/prod/Library.js';
-const library = Library();
+import {createExamplePlayer} from '../../dist/test/lib/example-player.js';
 
 document.getElementById('load-button').addEventListener('click', function() {
-  library.load(instrumentCollection).then(() => {
-    const arrangementPlayer = new ArrangementPlayer(library, exampleArrangement);
+  createExamplePlayer().then(arrangementPlayer => {
     arrangementPlayer.loop();
     const playButton = document.getElementById('play-button');
     const pauseButton = document.getElementById('pause-button');
