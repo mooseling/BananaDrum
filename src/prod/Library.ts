@@ -71,12 +71,13 @@ async function Instrument(packedInstrument:PackedInstrument): Promise<Instrument
 
 async function unpackNoteStyles(packedNoteStyles:PackedNoteStyle[]): Promise<NoteStyleSet> {
   const noteStyles:NoteStyleSet = {};
-  const getAudioPromises:Promise<AudioBuffer>[] = [];
-  packedNoteStyles.forEach(async ({noteStyleId, file}) => {
-    const arrayBuffer = await AudioGetter.get(file);
-    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-    noteStyles[noteStyleId] = {noteStyleId, file, audioBuffer};
+  const unpackPromises:Promise<any>[] = [];
+  packedNoteStyles.forEach(({noteStyleId, file}) => {
+    unpackPromises.push(AudioGetter.get(file).then(async arrayBuffer => {
+      const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+      noteStyles[noteStyleId] = {noteStyleId, file, audioBuffer};
+    }));
   });
-  await Promise.all(getAudioPromises);
+  await Promise.all(unpackPromises);
   return noteStyles;
 }
