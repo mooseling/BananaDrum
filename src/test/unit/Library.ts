@@ -5,26 +5,30 @@ import * as log from '../lib/logging.js';
 
 const library = Library(instrumentCollection);
 
-describe('Library', function() {
-  const audioFromLibrary:any = {};
-  const arrayBufferLog:Map<ArrayBuffer, string> = log.get('arrayBuffers') || log.set('arrayBuffers', new Map());
-
-  before('Load library', () => {
-    return library.load();
-    // audioFromLibrary.kick = library.getAudio('kick', 'kick');
-    // audioFromLibrary.snare = library.getAudio('snare', 'accent');
-    // audioFromLibrary.hihat = library.getAudio('hihat', 'closed');
+describe('Unloaded Library', function() {
+  it('throws an error when you access instruments', () => {
+    let error:any;
+    try {
+      library.instruments;
+    } catch (thrownThing) {
+      error = thrownThing;
+    }
+    assert(error !== undefined);
   });
+});
 
-  // it('returns ArrayBuffers', async () => {
-  //   assert(audioFromLibrary.kick instanceof ArrayBuffer);
-  //   assert(audioFromLibrary.snare instanceof ArrayBuffer);
-  //   assert(audioFromLibrary.hihat instanceof ArrayBuffer);
-  // });
-  //
-  // it('returns the correct ArrayBuffers', async () => {
-  //   assert(arrayBufferLog.get(audioFromLibrary.kick) === 'sounds/kick.mp3');
-  //   assert(arrayBufferLog.get(audioFromLibrary.snare) === 'sounds/snare.mp3');
-  //   assert(arrayBufferLog.get(audioFromLibrary.hihat) === 'sounds/hihat.mp3');
-  // });
+describe('Loaded Library', function() {
+  before('Load library', () => library.load());
+
+  it('has instruments', () => assert(Object.keys(library.instruments).length > 0));
+
+  it('those instruments can create untimed-notes with AudioBuffers', () => {
+    for (const instrumentId in library.instruments) {
+      const instrument = library.instruments[instrumentId];
+      for (const noteStyleId in instrument.noteStyles) {
+        const untimedNote:UntimedNote = instrument.createUntimedNote(noteStyleId);
+        assert(untimedNote.audioBuffer instanceof AudioBuffer);
+      }
+    }
+  });
 });
