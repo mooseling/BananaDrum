@@ -1,8 +1,5 @@
-/* global fetch */
 import {assert} from 'chai';
 // import {NoteSourceMock} from '../mocks/NoteSource.js';
-import '../mocks/WebAudio.js';
-import '../mocks/fetch.js';
 import * as log from '../lib/logging.js';
 import {instrumentCollection} from '../lib/example-instruments.js';
 import {Library} from '../../prod/Library.js';
