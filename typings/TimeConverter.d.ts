@@ -1,12 +1,12 @@
 declare interface TimeConverter {
-  convertToRealTime(timing:string): number,
+  convertToRealTime(timing:Timing): RealTime,
   getLoopAdjustedIntervals(interval:Interval): AdjustedInterval[],
-  getLoopAdjustedRealTime(realTime:number, loopNumber:number): number
+  getLoopAdjustedRealTime(realTime:RealTime, loopNumber:number): RealTime
 }
 
 declare interface Interval {
-  start: number,
-  end: number
+  start: RealTime
+  end: RealTime
 }
 
 declare interface AdjustedInterval extends Interval {

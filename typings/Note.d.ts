@@ -4,14 +4,17 @@ declare interface UntimedNote {
   audioBuffer: AudioBuffer
 }
 declare interface Note extends UntimedNote {
-  timing: string
+  timing: Timing
 }
 
 declare interface NoteEvent {
-  realTime: number,
+  realTime: RealTime,
   note: Note
 }
 
 declare interface NoteEventSource {
   getNoteEvents(interval:Interval): NoteEvent[]
 }
+
+declare type Timing = string
+declare type RealTime = number

@@ -27,6 +27,6 @@ declare interface PackedTrack {
 }
 
 declare interface PackedNote {
-  noteStyleId:string
-  timing:string
+  noteStyleId: string
+  timing: Timing
 }
