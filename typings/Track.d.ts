@@ -2,6 +2,7 @@ declare interface Track {
   instrument: Instrument
   notes: Note[]
   edit(command: EditCommand): void
+  subscribe(callback:() => void): void
 }
 
 declare interface TrackBuilder {

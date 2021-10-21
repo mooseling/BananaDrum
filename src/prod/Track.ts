@@ -1,5 +1,10 @@
 function trackBuilder(instrument:Instrument, notes:Note[]): Track {
-  return {instrument, notes, edit};
+  let subscribers: (() => void)[] = [];
+  return {instrument, notes, edit, subscribe};
+
+  // ==================================================================
+  //                          Public Functions
+  // ==================================================================
 
   function edit(command:EditCommand) {
     const {timing, newValue} = command;
@@ -20,6 +25,22 @@ function trackBuilder(instrument:Instrument, notes:Note[]): Track {
     // If we're this far, newValue is a noteStyleId
     const untimedNote = instrument.createUntimedNote(newValue);
     notes.push(Object.assign({timing}, untimedNote));
+
+    // A change has been made, notify subscribers
+    publish();
+  }
+
+
+  function subscribe(callback:() => void): void {
+    subscribers.push(callback);
+  }
+
+    // ==================================================================
+    //                          Private Functions
+    // ==================================================================
+
+  function publish(): void {
+    subscribers.forEach(callback => callback());
   }
 }
 
