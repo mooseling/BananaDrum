@@ -12,8 +12,8 @@ describe('AudioGetter', function() {
 
   it('requests the correct file', () => assert(latestRequest.endsWith(filename)));
 
-  it('returns a promise for an ArrayBuffer', async () => {
+  it('returns a promise for an AudioBuffer', async () => {
     const audio = await audioPromise;
-    assert(audio instanceof ArrayBuffer);
+    assert(audio instanceof AudioBuffer);
   });
 });

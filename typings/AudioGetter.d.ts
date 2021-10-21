@@ -1,3 +1,3 @@
 declare interface AudioGetter {
-  get(filename: string): Promise<ArrayBuffer>
+  get(filename: string): Promise<AudioBuffer>
 }

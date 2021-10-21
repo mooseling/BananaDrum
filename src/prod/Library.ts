@@ -1,7 +1,5 @@
 import {AudioGetter} from './AudioGetter.js';
 
-const audioCtx = new AudioContext(); // Just for creating AudioBuffers
-
 
 
 
@@ -76,10 +74,7 @@ async function unpackNoteStyles(packedNoteStyles:PackedNoteStyle[]): Promise<Not
   const noteStyles:NoteStyleSet = {};
   const unpackPromises:Promise<any>[] = [];
   packedNoteStyles.forEach(({noteStyleId, file}) => {
-    unpackPromises.push(AudioGetter.get(file).then(async arrayBuffer => {
-      const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-      noteStyles[noteStyleId] = {noteStyleId, file, audioBuffer};
-    }));
+    unpackPromises.push(AudioGetter.get(file).then(audioBuffer => noteStyles[noteStyleId] = {noteStyleId, file, audioBuffer}));
   });
   await Promise.all(unpackPromises);
   return noteStyles;
