@@ -5,7 +5,7 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   const noteEventSource:NoteEventSource = {getNoteEvents};
   const audioPlayer = AudioPlayer(noteEventSource);
   const timeConverter:TimeConverter = TimeConverter(arrangement);
-  const noteEvents:NoteEvent[] = extractPlayableNotes();
+  const noteEvents:NoteEvent[] = extractNoteEvents();
   // To prevent playing note-events multiple times,
   // we keep track of which loops we've played them in
   const noteHistory = NotePlayHistory();
@@ -63,11 +63,13 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
     return wantedNotes;
   }
 
-  function extractPlayableNotes() {
-    const playableNotes = [];
-    arrangement.tracks.forEach(track => track.notes.forEach(note => playableNotes.push(getNoteEvent(note))));
-    return playableNotes;
+
+  function extractNoteEvents() {
+    const noteEvents = [];
+    arrangement.tracks.forEach(track => track.notes.forEach(note => noteEvents.push(getNoteEvent(note))));
+    return noteEvents;
   }
+
 
   function getNoteEvent(note: Note): NoteEvent {
     return {
@@ -75,7 +77,6 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
       realTime: timeConverter.convertToRealTime(note.timing)
     };
   }
-
 
 
   function getLoopAdjustedNote(noteEvent:NoteEvent, loopNumber:number): NoteEvent {
