@@ -27,6 +27,12 @@ export class AudioContextMock {
   get currentTime() {
     return (this.running ? this.contextTime + Date.now() - this.timestamp : this.contextTime) / 1000
   }
+
+  decodeAudioData(arrayBuffer:ArrayBuffer): Promise<AudioBufferMock> {
+    const audioBufferMock = new AudioBufferMock();
+    const promise = new Promise(resolve => resolve(audioBufferMock));
+    return promise;
+  }
 };
 
 export class AudioBufferMock {};

@@ -25,6 +25,18 @@ describe('Logging', function() {
 });
 
 
+describe('WebAudio mock', function() {
+  describe('AudioContext Mock', function() {
+    const ctx = new AudioContext();
+    it('can create AudioBuffers', async () => {
+      const arrayBuffer = new ArrayBuffer(8);
+      const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+      assert(audioBuffer instanceof AudioBuffer);
+    });
+  });
+});
+
+
 // describe('NoteSource mock', function() {
 //   const noteSource = new NoteSourceMock(library);
 //   it('has a log of requested notes', async () => {
