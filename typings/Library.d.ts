@@ -1,6 +1,6 @@
 declare interface Library {
-  load(): Promise<void>,
-  getInstrument(instrumentId:string): Instrument
+  load(): Promise<void>
+  instruments: {[instrumentId:string]: Instrument}
 }
 
 declare type InstrumentCollection = PackedInstrument[]

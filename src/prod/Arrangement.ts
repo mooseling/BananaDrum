@@ -12,7 +12,7 @@ function arrangementBuilder(library:Library, packedArrangement?:PackedArrangemen
 
 
 function unpackTrack(library:Library, packedTrack:PackedTrack): Track {
-  const instrument = library.getInstrument(packedTrack.instrumentId);
+  const instrument = library.instruments[packedTrack.instrumentId];
   const notes = [];
   packedTrack.packedNotes.forEach(packedNote => notes.push(unpackNote(packedNote, instrument)));
   return {instrument, notes};

@@ -12,7 +12,10 @@ export function Library(instrumentCollection:InstrumentCollection):Library {
   let loadPromiseResolver: Function|undefined;
   const loadPromise: Promise<void> = new Promise(resolve => loadPromiseResolver = resolve);
 
-  return {load, getInstrument};
+  return {
+    load,
+    get instruments() {return getInstruments()}
+  };
 
   // ==================================================================
   //                          Public Functions
@@ -28,10 +31,10 @@ export function Library(instrumentCollection:InstrumentCollection):Library {
   }
 
 
-  function getInstrument(instrumentId:string): Instrument {
+  function getInstruments() {
     if (!loaded)
       throw 'Trying to get instruments before library is loaded';
-    return instruments[instrumentId];
+    return instruments;
   }
 
 
