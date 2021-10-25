@@ -1,5 +1,4 @@
-/* jshint browser:true */
-import {createExamplePlayer} from '../../dist/test/lib/example-player.js';
+import {createExamplePlayer} from './example-player.js';
 
 document.getElementById('load-button').addEventListener('click', function() {
   createExamplePlayer().then(arrangementPlayer => {

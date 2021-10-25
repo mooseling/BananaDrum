@@ -9,6 +9,9 @@
   "license": "ISC",
   "type": "module",
   "devDependencies": {
+    "@babel/cli": "^7.15.7",
+    "@babel/core": "^7.15.8",
+    "@babel/preset-typescript": "^7.15.0",
     "@types/chai": "^4.2.22",
     "@types/mocha": "^9.0.0",
     "chai": "^4.3.4",
@@ -16,7 +19,9 @@
     "typescript": "^4.4.3"
   },
   "scripts": {
-    "pretest": "tsc",
-    "test": "mocha"
+    "pretest": "npm run build",
+    "test": "mocha \"dist/test/index.js\"",
+    "babel": "babel src --out-dir dist --extensions \".ts,.js\"",
+    "build": "tsc && npm run babel"
   }
 }

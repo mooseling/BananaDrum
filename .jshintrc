@@ -2,6 +2,5 @@
   "undef":true,
   "unused":true,
   "esversion":11,
-  "globals":{"it":true, "describe": true, "AudioBuffer": true},
   "node":true
 }
