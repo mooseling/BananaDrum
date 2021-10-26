@@ -26,10 +26,9 @@
   },
   "scripts": {
     "pretest": "npm run build",
-    "test": "mocha \"dist/test/index.js\"",
+    "test": "tsc && mocha \"dist/test.js\"",
     "babel": "babel src --out-dir dist --extensions \".ts,.js,.tsx,.jsx\"",
-    "build": "tsc && npm run babel",
-    "webpack": "webpack"
+    "build": "webpack"
   },
   "dependencies": {
     "react": "^17.0.2",
