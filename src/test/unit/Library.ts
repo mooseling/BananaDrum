@@ -1,7 +1,7 @@
 import {assert} from 'chai';
-import {Library} from '../../prod/Library.js';
-import {instrumentCollection} from '../lib/example-instruments.js';
-import * as log from '../lib/logging.js';
+import {Library} from '../../prod/Library';
+import {instrumentCollection} from '../lib/example-instruments';
+import * as log from '../lib/logging';
 
 const library = Library(instrumentCollection);
 

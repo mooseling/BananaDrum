@@ -1,8 +1,8 @@
 import {assert} from 'chai';
-// import {NoteSourceMock} from '../mocks/NoteSource.js';
-import * as log from '../lib/logging.js';
-import {instrumentCollection} from '../lib/example-instruments.js';
-import {Library} from '../../prod/Library.js';
+// import {NoteSourceMock} from '../mocks/NoteSource';
+import * as log from '../lib/logging';
+import {instrumentCollection} from '../lib/example-instruments';
+import {Library} from '../../prod/Library';
 
 const library = Library(instrumentCollection);
 const loadPromise = library.load();

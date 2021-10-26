@@ -6,6 +6,8 @@
     "lib": ["esnext", "dom"],
     "target": "esnext",
     "moduleResolution": "node",
-    "noEmit": true
+    "esModuleInterop": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
   }
 }

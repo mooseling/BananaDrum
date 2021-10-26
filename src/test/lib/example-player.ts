@@ -1,8 +1,8 @@
-import {exampleArrangement} from './example-arrangement.js';
-import {instrumentCollection} from './example-instruments.js';
-import {Library} from '../../prod/Library.js';
-import {Arrangement} from '../../prod/Arrangement.js';
-import {ArrangementPlayer} from '../../prod/ArrangementPlayer.js';
+import {exampleArrangement} from './example-arrangement';
+import {instrumentCollection} from './example-instruments';
+import {Library} from '../../prod/Library';
+import {Arrangement} from '../../prod/Arrangement';
+import {ArrangementPlayer} from '../../prod/ArrangementPlayer';
 
 
 

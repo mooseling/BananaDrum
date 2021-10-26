@@ -1,5 +1,5 @@
-import {AudioPlayer} from './AudioPlayer.js';
-import {TimeConverter} from './TimeConverter.js';
+import {AudioPlayer} from './AudioPlayer';
+import {TimeConverter} from './TimeConverter';
 
 export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   const noteEventSource:NoteEventSource = {getNoteEvents};

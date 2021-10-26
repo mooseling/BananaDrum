@@ -1,4 +1,4 @@
-import {createExamplePlayer} from './example-player.js';
+import {createExamplePlayer} from './example-player';
 
 document.getElementById('load-button').addEventListener('click', function() {
   createExamplePlayer().then(arrangementPlayer => {

@@ -1,4 +1,4 @@
-import {AudioGetter} from './AudioGetter.js';
+import {AudioGetter} from './AudioGetter';
 
 
 

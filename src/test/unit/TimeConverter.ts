@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import {TimeConverter} from '../../prod/TimeConverter.js';
+import {TimeConverter} from '../../prod/TimeConverter';
 
 type TestCase = [string, number];
 
