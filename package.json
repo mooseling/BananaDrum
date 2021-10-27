@@ -25,8 +25,8 @@
     "webpack-cli": "^4.9.1"
   },
   "scripts": {
-    "pretest": "npm run build",
-    "test": "tsc && mocha \"dist/test.js\"",
+    "pretest": "tsc && npm run build",
+    "test": "mocha \"dist/test.js\"",
     "babel": "babel src --out-dir dist --extensions \".ts,.js,.tsx,.jsx\"",
     "build": "webpack"
   },
