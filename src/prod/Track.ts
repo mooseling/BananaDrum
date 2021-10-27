@@ -1,6 +1,6 @@
 function trackBuilder(instrument:Instrument, notes:Note[]): Track {
   let subscribers: (() => void)[] = [];
-  return {instrument, notes, edit, subscribe};
+  return {instrument, notes, edit, subscribe, getNoteAt};
 
   // ==================================================================
   //                          Public Functions
@@ -33,6 +33,18 @@ function trackBuilder(instrument:Instrument, notes:Note[]): Track {
 
   function subscribe(callback:() => void): void {
     subscribers.push(callback);
+  }
+
+
+  function getNoteAt(timing:Timing): Note|undefined {
+    let foundNote: Note|undefined;
+    notes.some(note => {
+      if (note.timing === timing) {
+        foundNote = note;
+        return true;
+      }
+    });
+    return foundNote;
   }
 
     // ==================================================================

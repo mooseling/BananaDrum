@@ -3,6 +3,7 @@ declare interface Track {
   notes: Note[]
   edit(command: EditCommand): void
   subscribe(callback:() => void): void
+  getNoteAt(timing:Timing): Note|undefined
 }
 
 declare interface TrackBuilder {
