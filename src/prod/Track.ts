@@ -16,6 +16,7 @@ function trackBuilder(instrument:Instrument, notes?:Note[]): Track {
     notes.some((note, index) => {
       if (note.timing === timing) {
         notes.splice(index);
+        publish();
         return true;
       }
     });
