@@ -5,3 +5,4 @@ import './unit/mocks';
 import './unit/AudioGetter';
 import './unit/Library';
 import './unit/AudioPlayer';
+import './unit/Track';
