@@ -6,3 +6,4 @@ import './unit/AudioGetter';
 import './unit/Library';
 import './unit/AudioPlayer';
 import './unit/Track';
+import './unit/Arrangement';
