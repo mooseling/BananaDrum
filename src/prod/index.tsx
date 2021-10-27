@@ -9,7 +9,9 @@ window.React = React;
 
 
 document.getElementById('load-button').addEventListener('click', function() {
-  createExamplePlayer().then(arrangementPlayer => {
+  createExamplePlayer().then(({arrangement, arrangementPlayer}) => {
+
+    ReactDOM.render(<ArrangementViewer arrangement={arrangement}/>, document.getElementById('wrapper'));
     arrangementPlayer.loop();
     const playButton = document.getElementById('play-button');
     const pauseButton = document.getElementById('pause-button');
@@ -22,5 +24,3 @@ document.getElementById('load-button').addEventListener('click', function() {
     this.remove();
   });
 });
-
-ReactDOM.render(<ArrangementViewer/>, document.getElementById('wrapper'));
