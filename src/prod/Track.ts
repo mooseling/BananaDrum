@@ -1,5 +1,7 @@
-function trackBuilder(instrument:Instrument, notes:Note[]): Track {
+function trackBuilder(instrument:Instrument, notes?:Note[]): Track {
   let subscribers: (() => void)[] = [];
+  if (!notes)
+    notes = [];
   return {instrument, notes, edit, subscribe, getNoteAt};
 
   // ==================================================================

@@ -7,7 +7,7 @@ declare interface Track {
 }
 
 declare interface TrackBuilder {
-  (instrument:Instrument, notes:Note[]): Track
+  (instrument:Instrument, notes?:Note[]): Track
   unpack(library:Library, packedTrack:PackedTrack): Track
 }
 
