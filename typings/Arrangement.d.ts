@@ -9,6 +9,7 @@ declare interface ArrangementDetails {
 }
 
 declare interface Arrangement extends ArrangementDetails {
+  library: Library
   tracks: Track[]
   getSixteenths(): Timing[]
 }

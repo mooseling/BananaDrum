@@ -5,7 +5,7 @@ export const Arrangement:ArrangementBuilder = arrangementBuilder;
 function arrangementBuilder(library:Library, packedArrangement?:PackedArrangement): Arrangement {
   let {timeSignature, tempo, length} = packedArrangement || {timeSignature:'4/4', tempo:120, length:1};
   const tracks:Track[] = [];
-  const arrangement:Arrangement = {timeSignature, tempo, length, tracks, getSixteenths};
+  const arrangement:Arrangement = {library, timeSignature, tempo, length, tracks, getSixteenths};
   if (packedArrangement)
     packedArrangement.packedTracks.forEach(packedTrack => tracks.push(Track.unpack(library, packedTrack)));
 
