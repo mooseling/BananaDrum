@@ -25,7 +25,7 @@ export function TimeConverter({timeSignature, tempo, length}:ArrangementDetails)
 
   const realTimeLength = convertToRealTime((length + 1).toString());
 
-  return {convertToRealTime, getLoopAdjustedIntervals, getLoopAdjustedRealTime};
+  return {convertToRealTime, getLoopIntervals, getLoopRealTime};
 
 
   function convertToRealTime(timing:string): number {
@@ -50,7 +50,10 @@ export function TimeConverter({timeSignature, tempo, length}:ArrangementDetails)
     return seconds;
   }
 
-  function getLoopAdjustedIntervals(interval:Interval):AdjustedInterval[] {
+  // Takes an interval whose times may be beyond the end of the loop
+  // And returns up to two intervals with times within the loop
+  // The two new intervals will cover the same total amount of time
+  function getLoopIntervals(interval:Interval):LoopInterval[] {
     const startLoopNumber = Math.floor(interval.start / realTimeLength);
     const adjustedStart = interval.start % realTimeLength;
     const endLoopNumber = Math.floor(interval.end / realTimeLength);
@@ -83,7 +86,9 @@ export function TimeConverter({timeSignature, tempo, length}:ArrangementDetails)
     ];
   }
 
-  function getLoopAdjustedRealTime(realTime:number, loopNumber:number) {
+  // Take a time relative to the start of a particular loop
+  // And return a time relative to time zero
+  function getLoopRealTime(realTime:number, loopNumber:number) {
     return realTime + (loopNumber * realTimeLength)
   }
 }
