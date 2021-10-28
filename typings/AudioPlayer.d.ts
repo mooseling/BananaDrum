@@ -9,5 +9,5 @@ declare interface AudioEvent {
 }
 
 declare interface AudioEventSource {
-  getAudioEvents(interval:Interval): AudioEvent[]
+  get(interval:Interval): AudioEvent[]
 }

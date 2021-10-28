@@ -40,7 +40,7 @@ export function AudioPlayer(audioEventSource: AudioEventSource): AudioPlayer {
   function loop() {
     const currentTime = audioContext.currentTime;
     const interval:Interval = {start:currentTime, end: currentTime + lookahead};
-    const audioEventsToSchedule = audioEventSource.getAudioEvents(interval);
+    const audioEventsToSchedule = audioEventSource.get(interval);
     audioEventsToSchedule.forEach(audioEvent => schedule(audioEvent));
     nextIteration = setTimeout(loop, loopFrequency);
   }

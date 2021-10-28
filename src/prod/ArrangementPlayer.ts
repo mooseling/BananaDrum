@@ -2,7 +2,7 @@ import {AudioPlayer} from './AudioPlayer';
 import {TimeConverter} from './TimeConverter';
 
 export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
-  const audioEventSource:AudioEventSource = {getAudioEvents};
+  const audioEventSource:AudioEventSource = {get:getAudioEvents};
   const audioPlayer = AudioPlayer(audioEventSource);
   const timeConverter:TimeConverter = TimeConverter(arrangement);
   const noteEvents:NoteEvent[] = extractNoteEvents();
