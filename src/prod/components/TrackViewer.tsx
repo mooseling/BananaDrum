@@ -1,3 +1,6 @@
+import {NoteViewer} from './NoteViewer';
+
+
 export function TrackViewer({track, arrangement}:{track:Track, arrangement:Arrangement}): JSX.Element {
   return (
     <div className="track-viewer">
@@ -23,12 +26,5 @@ function NoteLine({track, arrangement}:{track:Track, arrangement:Arrangement}): 
   return (<div className="note-line">
     {sixteenths.map(timing => ({timing, note:track.getNoteAt(timing)}))
       .map(({timing, note}) => <NoteViewer note={note} key={timing}/>)}
-  </div>);
-}
-
-
-function NoteViewer({note}:{note:Note|null}): JSX.Element {
-  return (<div className="note-viewer">
-    {note ? note.noteStyle.noteStyleId : ''}
   </div>);
 }
