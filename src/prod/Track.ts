@@ -1,8 +1,11 @@
-function trackBuilder(instrument:Instrument, notes?:Note[]): Track {
+function trackBuilder(instrument:Instrument, packedNotes:PackedNote[]): Track {
   let subscribers: (() => void)[] = [];
-  if (!notes)
-    notes = [];
-  return {instrument, notes, edit, subscribe, getNoteAt};
+  const notes = [];
+  const track:Track = {instrument, notes, edit, subscribe, getNoteAt};
+  if (packedNotes)
+    unpackNotes();
+
+  return track;
 
   // ==================================================================
   //                          Public Functions
@@ -21,33 +24,29 @@ function trackBuilder(instrument:Instrument, notes?:Note[]): Track {
       }
     });
 
-    // Passing in null is the way to delete a note, so we just stop here
+    // Passing in null is the way to delete a note
     if (newValue === null)
       return;
 
     // If we're this far, newValue is a noteStyleId
-    const untimedNote = instrument.createUntimedNote(newValue);
-    notes.push(Object.assign({timing}, untimedNote));
+    notes.push({timing, track, noteStyle:instrument.noteStyles[newValue]});
 
     // A change has been made, notify subscribers
     publish();
   }
 
 
+  // You can subscribe to changes in this Track
   function subscribe(callback:() => void): void {
     subscribers.push(callback);
   }
 
 
   function getNoteAt(timing:Timing): Note|undefined {
-    let foundNote: Note|undefined;
-    notes.some(note => {
-      if (note.timing === timing) {
-        foundNote = note;
-        return true;
-      }
-    });
-    return foundNote;
+    for (const note of notes) {
+      if (note.timing === timing)
+        return note;
+    }
   }
 
     // ==================================================================
@@ -57,21 +56,23 @@ function trackBuilder(instrument:Instrument, notes?:Note[]): Track {
   function publish(): void {
     subscribers.forEach(callback => callback());
   }
+
+
+  // Only call if packedNotes is defined
+  function unpackNotes(): void {
+    packedNotes.forEach(packedNote => notes.push(unpackNote(packedNote)));
+  }
+
+  function unpackNote(packedNote:PackedNote): Note {
+    const {timing, noteStyleId} = packedNote;
+    return {timing, track, noteStyle:instrument.noteStyles[noteStyleId]}
+  }
 }
 
 
 trackBuilder.unpack = function(library:Library, packedTrack:PackedTrack): Track {
   const instrument = library.instruments[packedTrack.instrumentId];
-  const notes:Note[] = [];
-  packedTrack.packedNotes.forEach(packedNote => notes.push(unpackNote(packedNote, instrument)));
-  return Track(instrument, notes);
-}
-
-
-function unpackNote(packedNote:PackedNote, instrument:Instrument): Note {
-  const {timing, noteStyleId} = packedNote;
-  const untimedNote:UntimedNote = instrument.createUntimedNote(noteStyleId);
-  return Object.assign({timing}, untimedNote);
+  return Track(instrument, packedTrack.packedNotes);
 }
 
 export const Track:TrackBuilder = trackBuilder;

@@ -1,9 +1,6 @@
 import {AudioGetter} from './AudioGetter';
 
 
-
-
-
 export function Library(instrumentCollection:InstrumentCollection):Library {
   let loaded = false;
   const instruments: {[instrumentId:string]:Instrument} = {};
@@ -58,24 +55,16 @@ export function Library(instrumentCollection:InstrumentCollection):Library {
 async function Instrument(packedInstrument:PackedInstrument): Promise<Instrument> {
   const {instrumentId, packedNoteStyles, displayName} = packedInstrument;
   const noteStyles = await unpackNoteStyles(packedNoteStyles);
-  const instrument = {instrumentId, noteStyles, displayName, createUntimedNote};
-
-  return instrument;
-
-
-  function createUntimedNote(noteStyleId:string): UntimedNote {
-    const noteStyle = noteStyles[noteStyleId]
-    return {instrument, noteStyle, audioBuffer:noteStyle.audioBuffer};
-  }
+  return {instrumentId, noteStyles, displayName};
 }
 
 
-async function unpackNoteStyles(packedNoteStyles:PackedNoteStyle[]): Promise<NoteStyleSet> {
-  const noteStyles:NoteStyleSet = {};
+async function unpackNoteStyles(packedNoteStyles:PackedNoteStyle[]): Promise<{[id:string]: NoteStyle}> {
+  const noteStyles:{[id:string]: NoteStyle} = {};
   const unpackPromises:Promise<any>[] = [];
-  packedNoteStyles.forEach(({noteStyleId, file}) => {
-    unpackPromises.push(AudioGetter.get(file).then(audioBuffer => noteStyles[noteStyleId] = {noteStyleId, file, audioBuffer}));
-  });
+  packedNoteStyles.forEach(({noteStyleId, file}) => unpackPromises.push(
+    AudioGetter.get(file).then(audioBuffer => noteStyles[noteStyleId] = {noteStyleId, audioBuffer})
+  ));
   await Promise.all(unpackPromises);
   return noteStyles;
 }

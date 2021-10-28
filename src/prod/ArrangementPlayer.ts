@@ -2,8 +2,8 @@ import {AudioPlayer} from './AudioPlayer';
 import {TimeConverter} from './TimeConverter';
 
 export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
-  const noteEventSource:NoteEventSource = {getNoteEvents};
-  const audioPlayer = AudioPlayer(noteEventSource);
+  const audioEventSource:AudioEventSource = {getAudioEvents};
+  const audioPlayer = AudioPlayer(audioEventSource);
   const timeConverter:TimeConverter = TimeConverter(arrangement);
   const noteEvents:NoteEvent[] = extractNoteEvents();
   // To prevent playing note-events multiple times,
@@ -38,15 +38,15 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   //                          Private Functions
   // ==================================================================
 
-  function getNoteEvents(interval:Interval): NoteEvent[] {
-    const wantedNotes = [];
+  function getAudioEvents(interval:Interval): AudioEvent[] {
+    const audioEvents: AudioEvent[] = [];
 
     if (isLooping) {
       const loopAdjustedIntervals = timeConverter.getLoopAdjustedIntervals(interval);
       loopAdjustedIntervals.forEach(({loopNumber, start, end}) => {
         for (const noteEvent of noteEvents) {
           if (!noteHistory.check(noteEvent, loopNumber) && noteEvent.realTime >= start && noteEvent.realTime <= end) {
-            wantedNotes.push(getLoopAdjustedNote(noteEvent, loopNumber));
+            audioEvents.push(getAudioEvent(noteEvent, loopNumber));
             noteHistory.record(noteEvent, loopNumber);
           }
         }
@@ -54,17 +54,17 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
     } else {
       for (const noteEvent of noteEvents) {
         if (!noteHistory.check(noteEvent, 0) && noteEvent.realTime >= interval.start && noteEvent.realTime <= interval.end) {
-          wantedNotes.push(noteEvent);
+          audioEvents.push(getAudioEvent(noteEvent, 0));
           noteHistory.record(noteEvent, 0);
         }
       }
     }
 
-    return wantedNotes;
+    return audioEvents;
   }
 
 
-  function extractNoteEvents() {
+  function extractNoteEvents(): NoteEvent[] {
     const noteEvents = [];
     arrangement.tracks.forEach(track => track.notes.forEach(note => noteEvents.push(getNoteEvent(note))));
     return noteEvents;
@@ -79,10 +79,10 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   }
 
 
-  function getLoopAdjustedNote(noteEvent:NoteEvent, loopNumber:number): NoteEvent {
+  function getAudioEvent(noteEvent:NoteEvent, loopNumber:number): AudioEvent {
     return {
       realTime: timeConverter.getLoopAdjustedRealTime(noteEvent.realTime, loopNumber),
-      note: noteEvent.note
+      audioBuffer: noteEvent.note.noteStyle.audioBuffer
     };
   }
 }
