@@ -13,9 +13,9 @@ describe('Track', function() {
   let updateCount = 0;
   const logUpdate = () => updateCount++;
 
-  before('Load arrangement', () => createTestEcosystem().then(({library}) => {
-    instrument = library.instruments.snare;
-    track = Track(instrument); // Initialise a track with no notes yet
+  before('Load arrangement', () => createTestEcosystem().then(({arrangement}) => {
+    instrument = arrangement.library.instruments.snare;
+    track = Track(arrangement, instrument); // Initialise a track with no notes yet
     track.subscribe(logUpdate);
   }));
 

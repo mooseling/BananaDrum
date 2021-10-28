@@ -1,4 +1,5 @@
 declare interface Track {
+  arrangement: Arrangement
   instrument: Instrument
   notes: Note[] // Exposed so the track can be played
   edit(command: EditCommand): void
@@ -7,8 +8,8 @@ declare interface Track {
 }
 
 declare interface TrackBuilder {
-  (instrument:Instrument, packedNotes?:PackedNote[]): Track
-  unpack(library:Library, packedTrack:PackedTrack): Track
+  (arrangement:Arrangement, instrument:Instrument, packedNotes?:PackedNote[]): Track
+  unpack(arrangement:Arrangement, packedTrack:PackedTrack): Track
 }
 
 declare interface PackedTrack {

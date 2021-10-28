@@ -7,7 +7,7 @@ function arrangementBuilder(library:Library, packedArrangement?:PackedArrangemen
   const tracks:Track[] = [];
   const arrangement:Arrangement = {library, timeSignature, tempo, length, tracks, getSixteenths};
   if (packedArrangement)
-    packedArrangement.packedTracks.forEach(packedTrack => tracks.push(Track.unpack(library, packedTrack)));
+    packedArrangement.packedTracks.forEach(packedTrack => tracks.push(Track.unpack(arrangement, packedTrack)));
 
   return arrangement;
 

@@ -1,7 +1,7 @@
-function trackBuilder(instrument:Instrument, packedNotes:PackedNote[]): Track {
+function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNotes:PackedNote[]): Track {
   let subscribers: (() => void)[] = [];
   const notes = [];
-  const track:Track = {instrument, notes, edit, subscribe, getNoteAt};
+  const track:Track = {arrangement, instrument, notes, edit, subscribe, getNoteAt};
   if (packedNotes)
     unpackNotes();
 
@@ -71,9 +71,9 @@ function trackBuilder(instrument:Instrument, packedNotes:PackedNote[]): Track {
 }
 
 
-trackBuilder.unpack = function(library:Library, packedTrack:PackedTrack): Track {
-  const instrument = library.instruments[packedTrack.instrumentId];
-  return Track(instrument, packedTrack.packedNotes);
+trackBuilder.unpack = function(arrangement:Arrangement, packedTrack:PackedTrack): Track {
+  const instrument = arrangement.library.instruments[packedTrack.instrumentId];
+  return Track(arrangement, instrument, packedTrack.packedNotes);
 }
 
 export const Track:TrackBuilder = trackBuilder;
