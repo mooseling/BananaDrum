@@ -47,6 +47,7 @@ function trackBuilder(instrument:Instrument, packedNotes:PackedNote[]): Track {
       if (note.timing === timing)
         return note;
     }
+    return {timing, track, noteStyle:null};
   }
 
     // ==================================================================

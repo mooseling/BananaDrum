@@ -46,10 +46,10 @@ describe('Track', function() {
     assert(note.timing === timing);
   });
 
-  it("...but doesn't return a note if there isn't one at that time", () => {
+  it("...and returns a null-note if there isn't one at that time", () => {
     const timing = getUniqueTiming();
     const note = track.getNoteAt(timing);
-    assert(note === undefined);
+    assert(note.noteStyle === null);
   });
 
   it('allows deleting notes', () => {
@@ -59,7 +59,7 @@ describe('Track', function() {
     assert(note);
     track.edit({timing, newValue:null});
     const deletedNote = track.getNoteAt(timing);
-    assert(deletedNote === undefined);
+    assert(deletedNote.noteStyle === null);
   });
 
   it('notifies subscribers after deleting a note', () => {
