@@ -15,6 +15,3 @@ declare interface NoteEvent {
 declare interface NoteEventSource {
   getNoteEvents(interval:Interval): NoteEvent[]
 }
-
-declare type Timing = string
-declare type RealTime = number

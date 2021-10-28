@@ -4,7 +4,7 @@ export const getUniqueTiming: () => Timing = (function(){
   let lastTiming: null|Timing = null;
 
   return () => {
-    let newTiming: Timing = lastTiming === null ? '1' : getNewTiming(lastTiming);
+    let newTiming: Timing = lastTiming === null ? '1.1.1' : getNewTiming(lastTiming);
     lastTiming = newTiming;
     return newTiming;
   }
@@ -14,7 +14,7 @@ function getNewTiming(lastTiming:Timing): Timing {
   const lastTimingBits = lastTiming.split('.').map(bit => Number(bit));
   const [bars, beats = 1] = lastTimingBits;
   if (beats === 4)
-    return `${bars + 1}`;
+    return `${bars + 1}.1.1`;
   else
-    return `${bars}.${beats + 1}`;
+    return `${bars}.${beats + 1}.1`;
 }
