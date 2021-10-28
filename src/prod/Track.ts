@@ -1,7 +1,12 @@
+import {TimeConverter} from './TimeConverter';
+
+
 function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNotes:PackedNote[]): Track {
   let subscribers: (() => void)[] = [];
+  const timeConverter = TimeConverter(arrangement);
   const notes = [];
-  const track:Track = {arrangement, instrument, notes, edit, subscribe, getNoteAt};
+  const noteEvents:NoteEvent[] = extractNoteEvents();
+  const track:Track = {arrangement, instrument, notes, edit, subscribe, getNoteAt, getNoteEvents};
   if (packedNotes)
     unpackNotes();
 
@@ -50,6 +55,17 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
     return {timing, track, noteStyle:null};
   }
 
+
+  function getNoteEvents(interval:Interval):NoteEvent[] {
+    const noteEventsInInterval: NoteEvent[] = [];
+    for (const noteEvent of noteEvents) {
+      if (noteEvent.realTime >= interval.start && noteEvent.realTime <= interval.end) {
+        noteEventsInInterval.push(noteEvent);
+      }
+    }
+    return noteEventsInInterval;
+  }
+
     // ==================================================================
     //                          Private Functions
     // ==================================================================
@@ -67,6 +83,19 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
   function unpackNote(packedNote:PackedNote): Note {
     const {timing, noteStyleId} = packedNote;
     return {timing, track, noteStyle:instrument.noteStyles[noteStyleId]}
+  }
+
+  function extractNoteEvents(): NoteEvent[] {
+    const noteEvents = [];
+    arrangement.tracks.forEach(track => track.notes.forEach(note => noteEvents.push(getNoteEvent(note))));
+    return noteEvents;
+  }
+
+  function getNoteEvent(note: Note): NoteEvent {
+    return {
+      note,
+      realTime: timeConverter.convertToRealTime(note.timing)
+    };
   }
 }
 

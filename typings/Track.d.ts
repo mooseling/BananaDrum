@@ -5,6 +5,7 @@ declare interface Track {
   edit(command: EditCommand): void
   subscribe(callback:() => void): void
   getNoteAt(timing:Timing): Note
+  getNoteEvents(interval:Interval): NoteEvent[]
 }
 
 declare interface TrackBuilder {

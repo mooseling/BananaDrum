@@ -5,7 +5,6 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   const audioEventSource:AudioEventSource = {get:getAudioEvents};
   const audioPlayer = AudioPlayer(audioEventSource);
   const timeConverter:TimeConverter = TimeConverter(arrangement);
-  const noteEvents:NoteEvent[] = extractNoteEvents();
   // To prevent playing note-events multiple times,
   // we keep track of which loops we've played them in
   const noteHistory = NotePlayHistory();
@@ -38,50 +37,46 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   //                          Private Functions
   // ==================================================================
 
+  // The interval may be beyond the end of the arrangement
+  // If we're looping we'll use TimeConverter to resolve it within loops
   function getAudioEvents(interval:Interval): AudioEvent[] {
     const audioEvents: AudioEvent[] = [];
 
     if (isLooping) {
-      const loopAdjustedIntervals = timeConverter.getLoopAdjustedIntervals(interval);
-      loopAdjustedIntervals.forEach(({loopNumber, start, end}) => {
+      const loopIntervals = timeConverter.getLoopIntervals(interval);
+      loopIntervals.forEach(loopInterval => {
+        const {loopNumber} = loopInterval;
+        arrangement.tracks.forEach(track => {
+          const noteEvents = track.getNoteEvents(loopInterval);
+          for (const noteEvent of noteEvents) {
+            if (!noteHistory.check(noteEvent, loopNumber)) {
+              audioEvents.push(getAudioEvent(noteEvent, loopNumber));
+              noteHistory.record(noteEvent, loopNumber);
+            }
+          }
+        });
+      });
+    } else {
+      arrangement.tracks.forEach(track => {
+        const noteEvents = track.getNoteEvents(interval);
         for (const noteEvent of noteEvents) {
-          if (!noteHistory.check(noteEvent, loopNumber) && noteEvent.realTime >= start && noteEvent.realTime <= end) {
-            audioEvents.push(getAudioEvent(noteEvent, loopNumber));
-            noteHistory.record(noteEvent, loopNumber);
+          if (!noteHistory.check(noteEvent, 0)) {
+            audioEvents.push(getAudioEvent(noteEvent, 0));
+            noteHistory.record(noteEvent, 0);
           }
         }
       });
-    } else {
-      for (const noteEvent of noteEvents) {
-        if (!noteHistory.check(noteEvent, 0) && noteEvent.realTime >= interval.start && noteEvent.realTime <= interval.end) {
-          audioEvents.push(getAudioEvent(noteEvent, 0));
-          noteHistory.record(noteEvent, 0);
-        }
-      }
     }
 
     return audioEvents;
   }
 
 
-  function extractNoteEvents(): NoteEvent[] {
-    const noteEvents = [];
-    arrangement.tracks.forEach(track => track.notes.forEach(note => noteEvents.push(getNoteEvent(note))));
-    return noteEvents;
-  }
-
-
-  function getNoteEvent(note: Note): NoteEvent {
-    return {
-      note,
-      realTime: timeConverter.convertToRealTime(note.timing)
-    };
-  }
 
 
   function getAudioEvent(noteEvent:NoteEvent, loopNumber:number): AudioEvent {
     return {
-      realTime: timeConverter.getLoopAdjustedRealTime(noteEvent.realTime, loopNumber),
+      realTime: timeConverter.getLoopRealTime(noteEvent.realTime, loopNumber),
       audioBuffer: noteEvent.note.noteStyle.audioBuffer
     };
   }
