@@ -10,7 +10,7 @@ declare interface ArrangementDetails {
 
 declare interface Arrangement extends ArrangementDetails {
   tracks: Track[]
-  getSixteenthCount(): number
+  getSixteenths(): Timing[]
 }
 
 declare interface PackedArrangement extends ArrangementDetails {

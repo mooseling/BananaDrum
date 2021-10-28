@@ -17,8 +17,16 @@ describe('Arrangement', function() {
       assert(arrangement.length === 1);
     });
 
-    it('says it has 16 sixteenths', () => {
-      assert(arrangement.getSixteenthCount() === 16);
-    });
+    it('gives back the right set of sixteenths', () => assert(checkSixteenths(arrangement.getSixteenths())));
   });
 });
+
+function checkSixteenths(sixteenths:Timing[]): boolean {
+  const expected = [
+    '1.1.1', '1.1.2', '1.1.3', '1.1.4',
+    '1.2.1', '1.2.2', '1.2.3', '1.2.4',
+    '1.3.1', '1.3.2', '1.3.3', '1.3.4',
+    '1.4.1', '1.4.2', '1.4.3', '1.4.4',
+  ];
+  return sixteenths.every((value, index) => value === expected[index]);
+}
