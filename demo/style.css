@@ -1,0 +1,26 @@
+.track-viewer {
+  display: flex;
+  height:50pt;
+}
+
+.track-viewer > * {
+  display: inline-block;
+}
+
+.track-meta {
+  width: 50pt;
+  border: 1px solid black;
+  height: 100%;
+}
+
+.note-line {
+  display: flex;
+  height:100%;
+}
+
+.note-viewer {
+  width:50pt;
+  border: 1px solid black;
+  display: inline-block;
+  height: 100%;
+}
