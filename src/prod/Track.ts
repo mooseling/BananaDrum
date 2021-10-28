@@ -18,23 +18,14 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
   function edit(command:EditCommand) {
     const {timing, newValue} = command;
-
-    // Remove existing note if one is found
-    // This assumes there will be 1 at the most
-    notes.some((note, index) => {
-      if (note.timing === timing) {
-        notes.splice(index);
-        publish();
-        return true;
-      }
-    });
+    removeNoteAt(timing);
 
     // Passing in null is the way to delete a note
     if (newValue === null)
       return;
 
     // If we're this far, newValue is a noteStyleId
-    notes.push({timing, track, noteStyle:instrument.noteStyles[newValue]});
+    addNote({timing, track, noteStyle:instrument.noteStyles[newValue]});
 
     // A change has been made, notify subscribers
     publish();
@@ -87,15 +78,29 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
   function extractNoteEvents(): NoteEvent[] {
     const noteEvents = [];
-    arrangement.tracks.forEach(track => track.notes.forEach(note => noteEvents.push(getNoteEvent(note))));
+    arrangement.tracks.forEach(track => track.notes.forEach(note => noteEvents.push(
+      {
+        note,
+        realTime: timeConverter.convertToRealTime(note.timing)
+      }
+    )));
     return noteEvents;
   }
 
-  function getNoteEvent(note: Note): NoteEvent {
-    return {
-      note,
-      realTime: timeConverter.convertToRealTime(note.timing)
-    };
+  // Remove existing note if one is found
+  // This assumes there will be 1 at the most
+  function removeNoteAt(timing:Timing) {
+    notes.some((note, index) => {
+      if (note.timing === timing) {
+        notes.splice(index);
+        publish();
+        return true;
+      }
+    });
+  }
+
+  function addNote(note:Note) {
+    notes.push(note);
   }
 }
 
