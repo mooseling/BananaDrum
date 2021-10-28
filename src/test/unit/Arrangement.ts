@@ -3,7 +3,7 @@ import {createTestEcosystem} from '../lib/createTestEcosystem';
 import {Arrangement} from '../../prod/Arrangement';
 
 
-describe('Track', function() {
+describe('Arrangement', function() {
   let library: Library|undefined;
 
   before('Load library', () => createTestEcosystem().then(eco => library = eco.library));
