@@ -1,5 +1,6 @@
-export function NoteViewer({note}:{note:Note|null}): JSX.Element {
+export function NoteViewer({note}:{note:Note}): JSX.Element {
+  const {noteStyle} = note;
   return (<div className="note-viewer">
-    {note ? note.noteStyle.noteStyleId : ''}
+    {noteStyle ? noteStyle.noteStyleId : ''}
   </div>);
 }

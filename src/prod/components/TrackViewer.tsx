@@ -24,7 +24,7 @@ function TrackMeta({track}:{track:Track}): JSX.Element {
 function NoteLine({track, arrangement}:{track:Track, arrangement:Arrangement}): JSX.Element {
   const sixteenths:Timing[] = arrangement.getSixteenths();
   return (<div className="note-line">
-    {sixteenths.map(timing => ({timing, note:track.getNoteAt(timing)}))
-      .map(({timing, note}) => <NoteViewer note={note} key={timing}/>)}
+    {sixteenths.map(timing => track.getNoteAt(timing))
+      .map(note => <NoteViewer note={note} key={note.timing}/>)}
   </div>);
 }
