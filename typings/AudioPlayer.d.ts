@@ -3,7 +3,11 @@ interface AudioPlayer {
   pause(): void
 }
 
-interface AudioBufferCache {
-  get(key:ArrayBuffer): AudioBuffer|Promise<AudioBuffer>|undefined
-  set(key:ArrayBuffer, thing:AudioBuffer|Promise<AudioBuffer>): void
+declare interface AudioEvent {
+  realTime: RealTime
+  audioBuffer: AudioBuffer
+}
+
+declare interface AudioEventSource {
+  getAudioEvents(interval:Interval): AudioEvent[]
 }

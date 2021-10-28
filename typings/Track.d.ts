@@ -1,13 +1,13 @@
 declare interface Track {
   instrument: Instrument
-  notes: Note[]
+  notes: Note[] // Exposed so the track can be played
   edit(command: EditCommand): void
   subscribe(callback:() => void): void
-  getNoteAt(timing:Timing): Note|undefined
+  getNoteAt(timing:Timing): Note
 }
 
 declare interface TrackBuilder {
-  (instrument:Instrument, notes?:Note[]): Track
+  (instrument:Instrument, packedNotes?:PackedNote[]): Track
   unpack(library:Library, packedTrack:PackedTrack): Track
 }
 

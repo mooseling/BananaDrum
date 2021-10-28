@@ -1,17 +1,6 @@
-declare interface UntimedNote {
-  instrument: Instrument,
-  noteStyle: NoteStyle,
-  audioBuffer: AudioBuffer
-}
-declare interface Note extends UntimedNote {
+declare interface Note {
   timing: Timing
-}
-
-declare interface NoteEvent {
-  realTime: RealTime,
-  note: Note
-}
-
-declare interface NoteEventSource {
-  getNoteEvents(interval:Interval): NoteEvent[]
+  track: Track
+  noteStyle: NoteStyle|null // null means this is a rest
+  // It simplifies UI things if we can still have a Note object for rests
 }

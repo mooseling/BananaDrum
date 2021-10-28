@@ -19,16 +19,10 @@ declare interface PackedNoteStyle {
 declare interface Instrument {
   instrumentId: string
   displayName: string
-  noteStyles: NoteStyleSet
-  createUntimedNote(noteStyleId:string): UntimedNote
-}
-
-declare interface NoteStyleSet {
-  [styleId: string]: NoteStyle
+  noteStyles: {[styleId: string]: NoteStyle}
 }
 
 declare interface NoteStyle {
   noteStyleId: string
-  file: string
   audioBuffer: AudioBuffer
 }
