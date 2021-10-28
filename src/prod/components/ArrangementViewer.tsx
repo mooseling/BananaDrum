@@ -3,7 +3,12 @@ import {TrackViewer} from './TrackViewer';
 export function ArrangementViewer({arrangement}:{arrangement:Arrangement}): JSX.Element {
   return (
     <div className="arrangement-viewer">
-      {arrangement.tracks.map(track => <TrackViewer track={track}/>)}
+      {arrangement.tracks.map(track => (
+        <TrackViewer
+          track={track}
+          key={track.instrument.instrumentId}
+          arrangement={arrangement}/>
+      ))}
     </div>
   );
 }
