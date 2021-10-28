@@ -16,7 +16,6 @@ function arrangementBuilder(library:Library, packedArrangement?:PackedArrangemen
     const [beatUnit, beatsPerBar] = (this.timeSignature as string).split('/').map(value => Number(value));
     const bars: number = this.length;
     const sixteenthsPerBeat = 16 / beatUnit;
-    const sixteenthsPerBar = sixteenthsPerBeat * beatsPerBar;
     const sixteenths: Timing[] = [];
 
     // A possible optimisation is to initialise sixteenths as new Array(sixteenthCount)
