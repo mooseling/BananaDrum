@@ -78,14 +78,18 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
   function extractNoteEvents(): NoteEvent[] {
     const noteEvents = [];
-    arrangement.tracks.forEach(track => track.notes.forEach(note => noteEvents.push(
-      {
-        note,
-        realTime: timeConverter.convertToRealTime(note.timing)
-      }
-    )));
+    arrangement.tracks.forEach(track => track.notes.forEach(note => noteEvents.push(createNoteEvent(note))));
     return noteEvents;
   }
+
+
+  function createNoteEvent(note:Note) {
+    return {
+      note,
+      realTime: timeConverter.convertToRealTime(note.timing)
+    };
+  }
+
 
   // Remove existing note if one is found
   // This assumes there will be 1 at the most
@@ -93,14 +97,27 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
     notes.some((note, index) => {
       if (note.timing === timing) {
         notes.splice(index);
+        removeNoteEvent(note);
         publish();
         return true;
       }
     });
   }
 
+
+  function removeNoteEvent(note:Note) {
+    noteEvents.some((noteEvent, index) => {
+      if (noteEvent.note === note) {
+        noteEvents.splice(index);
+        return true;
+      }
+    });
+  }
+
+
   function addNote(note:Note) {
     notes.push(note);
+    noteEvents.push(createNoteEvent(note));
   }
 }
 
