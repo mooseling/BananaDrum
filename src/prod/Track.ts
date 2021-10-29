@@ -2,10 +2,10 @@ import {TimeConverter} from './TimeConverter';
 
 
 function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNotes:PackedNote[]): Track {
-  let subscribers: (() => void)[] = [];
+  let subscribers: ((...args:any[]) => void)[] = [];
   const timeConverter = TimeConverter(arrangement);
-  const notes = [];
-  const noteEvents:NoteEvent[] = extractNoteEvents();
+  const notes:Note[] = [];
+  const noteEvents:NoteEvent[] = [];
   const track:Track = {arrangement, instrument, notes, edit, subscribe, getNoteAt, getNoteEvents};
   if (packedNotes)
     unpackNotes();
@@ -16,9 +16,12 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
   //                          Public Functions
   // ==================================================================
 
+  // Add, remove, or change notes
+  // Publishes every time it makes a change
   function edit(command:EditCommand) {
     const {timing, newValue} = command;
-    removeNoteAt(timing);
+    if (removeNoteAt(timing))
+      publish();
 
     // Passing in null is the way to delete a note
     if (newValue === null)
@@ -26,8 +29,6 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
     // If we're this far, newValue is a noteStyleId
     addNote({timing, track, noteStyle:instrument.noteStyles[newValue]});
-
-    // A change has been made, notify subscribers
     publish();
   }
 
@@ -68,18 +69,12 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
   // Only call if packedNotes is defined
   function unpackNotes(): void {
-    packedNotes.forEach(packedNote => notes.push(unpackNote(packedNote)));
+    packedNotes.forEach(packedNote => addNote(unpackNote(packedNote)));
   }
 
   function unpackNote(packedNote:PackedNote): Note {
     const {timing, noteStyleId} = packedNote;
     return {timing, track, noteStyle:instrument.noteStyles[noteStyleId]}
-  }
-
-  function extractNoteEvents(): NoteEvent[] {
-    const noteEvents = [];
-    arrangement.tracks.forEach(track => track.notes.forEach(note => noteEvents.push(createNoteEvent(note))));
-    return noteEvents;
   }
 
 
@@ -93,12 +88,12 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
   // Remove existing note if one is found
   // This assumes there will be 1 at the most
+  // Returns true if it removes a note
   function removeNoteAt(timing:Timing) {
-    notes.some((note, index) => {
+    return notes.some((note, index) => {
       if (note.timing === timing) {
         notes.splice(index, 1);
         removeNoteEvent(note);
-        publish();
         return true;
       }
     });
@@ -106,7 +101,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
 
   function removeNoteEvent(note:Note) {
-    noteEvents.some((noteEvent, index) => {
+    return noteEvents.some((noteEvent, index) => {
       if (noteEvent.note === note) {
         noteEvents.splice(index, 1);
         return true;
