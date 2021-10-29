@@ -20,6 +20,8 @@ document.getElementById('load-button').addEventListener('click', function() {
     playButton.style.display = '';
     pauseButton.style.display = '';
 
+    document.getElementById('explanation').innerHTML = 'To edit the song, click the boxes.'
+
     // @ts-ignore
     window.arrangement = arrangement;
 
