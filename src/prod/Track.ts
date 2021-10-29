@@ -96,7 +96,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
   function removeNoteAt(timing:Timing) {
     notes.some((note, index) => {
       if (note.timing === timing) {
-        notes.splice(index);
+        notes.splice(index, 1);
         removeNoteEvent(note);
         publish();
         return true;
@@ -108,7 +108,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
   function removeNoteEvent(note:Note) {
     noteEvents.some((noteEvent, index) => {
       if (noteEvent.note === note) {
-        noteEvents.splice(index);
+        noteEvents.splice(index, 1);
         return true;
       }
     });
