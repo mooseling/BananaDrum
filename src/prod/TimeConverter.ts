@@ -11,19 +11,9 @@
 // It is confusing.
 
 // Assumption: tempo is quarter-notes per minute, no matter the time signature
-export function TimeConverter({timeSignature, tempo, length}:TimeParams): TimeConverter {
-  const [beatsPerBar, beatUnit] = timeSignature.split('/').map(stringValue => Number(stringValue));
-
-  // Lay some ground work...
-  const quarterNotesPerBeat = 4 / beatUnit;
-  const quarterNotesPerBar = quarterNotesPerBeat * beatsPerBar;
-
-  // And produce our actually useful values
-  const secondsPerBar = (quarterNotesPerBar / tempo) * 60;
-  const secondsPerQuarterNote = 60 / tempo;
-  const secondsPerBeat = secondsPerQuarterNote * quarterNotesPerBeat;
-
-  const realTimeLength = convertToRealTime((length + 1).toString());
+export function TimeConverter(params:PackedTimeParams): TimeConverter {
+  const {secondsPerBar, secondsPerSixteenth, secondsPerBeat} = calcNoteTimes(params);
+  const realTimeLength = convertToRealTime(`${params.length + 1}.1.1`);
 
   return {convertToRealTime, getLoopIntervals, getLoopRealTime};
 
@@ -35,17 +25,16 @@ export function TimeConverter({timeSignature, tempo, length}:TimeParams): TimeCo
     const barMultiplier = multipliers[0];
     seconds += barMultiplier * secondsPerBar;
 
-    const beatMultipler = multipliers[1]; // Usually quarter-beats
-    if (beatMultipler)
-      seconds += beatMultipler * secondsPerBeat;
+    const beatMultiplier = multipliers[1]; // Usually quarter-beats
+    seconds += beatMultiplier * secondsPerBeat;
 
-    for (let timingLevel = 2; timingLevel < multipliers.length; timingLevel++) {
-      const multiplier = multipliers[timingLevel];
-      // secondsPerNthNote = (secondsPerQuarterNote * 4) / (4**timingLevel)
-      // n = 16 at timingLevel = 2, 64 at 3, 256 at 4, ...
-      const secondsPerNthNote = secondsPerQuarterNote / (4**(timingLevel - 1));
-      seconds += multiplier * secondsPerNthNote;
-    }
+    const sixteenthMultiplier = multipliers[2];
+    seconds += sixteenthMultiplier * secondsPerSixteenth;
+
+    // Now for the optional 4th bit
+    const sixtyfourthMultiplier = multipliers[3];
+    if (sixtyfourthMultiplier)
+      seconds += sixteenthMultiplier * secondsPerSixteenth / 4;
 
     return seconds;
   }
@@ -53,11 +42,11 @@ export function TimeConverter({timeSignature, tempo, length}:TimeParams): TimeCo
   // Takes an interval whose times may be beyond the end of the loop
   // And returns up to two intervals with times within the loop
   // The two new intervals will cover the same total amount of time
-  function getLoopIntervals(interval:Interval):LoopInterval[] {
-    const startLoopNumber = Math.floor(interval.start / realTimeLength);
-    const adjustedStart = interval.start % realTimeLength;
-    const endLoopNumber = Math.floor(interval.end / realTimeLength);
-    const adjustedEnd = interval.end % realTimeLength;
+  function getLoopIntervals({start, end}:Interval):LoopInterval[] {
+    const startLoopNumber = Math.floor(start / realTimeLength);
+    const adjustedStart = start % realTimeLength;
+    const endLoopNumber = Math.floor(end / realTimeLength);
+    const adjustedEnd = end % realTimeLength;
 
     if (startLoopNumber === endLoopNumber) {
       return [
@@ -89,8 +78,24 @@ export function TimeConverter({timeSignature, tempo, length}:TimeParams): TimeCo
   // Take a time relative to the start of a particular loop
   // And return a time relative to time zero
   function getLoopRealTime(realTime:number, loopNumber:number) {
-    return realTime + (loopNumber * realTimeLength)
+    return realTime + (loopNumber * realTimeLength);
   }
+}
+
+
+function calcNoteTimes({timeSignature, tempo}:PackedTimeParams) {
+  const [beatsPerBar, beatUnit] = timeSignature.split('/').map(stringValue => Number(stringValue));
+
+  // Lay some ground work...
+  const sixteenthsPerBeat = 16 / beatUnit;
+  const sixteenthsPerBar = sixteenthsPerBeat * beatsPerBar;
+
+  // And produce our actually useful values
+  const secondsPerBar = (sixteenthsPerBar / tempo) * 15;
+  const secondsPerSixteenth = 15 / tempo;
+  const secondsPerBeat = secondsPerSixteenth * sixteenthsPerBeat;
+
+  return {secondsPerBar, secondsPerSixteenth, secondsPerBeat};
 }
 
 // timingBit looks like '2', '3T', or '1TT'
