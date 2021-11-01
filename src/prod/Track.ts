@@ -3,7 +3,7 @@ import {TimeConverter} from './TimeConverter';
 
 function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNotes:PackedNote[]): Track {
   let subscribers: ((...args:any[]) => void)[] = [];
-  const timeConverter = TimeConverter(arrangement);
+  const timeConverter = TimeConverter(arrangement.timeParams);
   const notes:Note[] = [];
   const noteEvents:NoteEvent[] = [];
   const track:Track = {arrangement, instrument, notes, edit, subscribe, getNoteAt, getNoteEvents};

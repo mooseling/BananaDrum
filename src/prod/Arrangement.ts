@@ -3,9 +3,9 @@ import {Track} from './Track';
 export const Arrangement:ArrangementBuilder = arrangementBuilder;
 
 function arrangementBuilder(library:Library, packedArrangement?:PackedArrangement): Arrangement {
-  let {timeSignature, tempo, length} = packedArrangement || {timeSignature:'4/4', tempo:120, length:1};
+  const timeParams = packedArrangement?.timeParams || {timeSignature:'4/4', tempo:120, length:1};
   const tracks:Track[] = [];
-  const arrangement:Arrangement = {library, timeSignature, tempo, length, tracks, getSixteenths};
+  const arrangement:Arrangement = {library, timeParams, tracks, getSixteenths};
   if (packedArrangement)
     packedArrangement.packedTracks.forEach(packedTrack => tracks.push(Track.unpack(arrangement, packedTrack)));
 
@@ -13,8 +13,8 @@ function arrangementBuilder(library:Library, packedArrangement?:PackedArrangemen
 
 
   function getSixteenths(): Timing[] {
-    const [beatUnit, beatsPerBar] = (this.timeSignature as string).split('/').map(value => Number(value));
-    const bars: number = this.length;
+    const [beatUnit, beatsPerBar] = timeParams.timeSignature.split('/').map(value => Number(value));
+    const bars: number = timeParams.length;
     const sixteenthsPerBeat = 16 / beatUnit;
     const sixteenths: Timing[] = [];
 

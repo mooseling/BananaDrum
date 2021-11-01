@@ -4,7 +4,7 @@ import {TimeConverter} from './TimeConverter';
 export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   const audioEventSource:AudioEventSource = {get:getAudioEvents};
   const audioPlayer = AudioPlayer(audioEventSource);
-  const timeConverter:TimeConverter = TimeConverter(arrangement);
+  const timeConverter:TimeConverter = TimeConverter(arrangement.timeParams);
   // To prevent playing note-events multiple times,
   // we keep track of which loops we've played them in
   const noteHistory = NotePlayHistory();

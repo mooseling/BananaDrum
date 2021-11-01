@@ -1,7 +1,9 @@
 export const exampleArrangement:PackedArrangement = {
-  timeSignature: '4/4',
-  tempo: 120,
-  length: 1, // bars
+  timeParams: {
+    timeSignature: '4/4',
+    tempo: 120,
+    length: 1, // bars
+  },
   packedTracks: [
     // snare
     {

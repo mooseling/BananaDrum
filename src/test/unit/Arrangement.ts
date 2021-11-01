@@ -12,9 +12,9 @@ describe('Arrangement', function() {
     const arrangement = Arrangement(library);
 
     it('is 4/4, 120bpm, 1 bar', () => {
-      assert(arrangement.timeSignature === '4/4');
-      assert(arrangement.tempo === 120);
-      assert(arrangement.length === 1);
+      assert(arrangement.timeParams.timeSignature === '4/4');
+      assert(arrangement.timeParams.tempo === 120);
+      assert(arrangement.timeParams.length === 1);
     });
 
     it('gives back the right set of sixteenths', () => assert(checkSixteenths(arrangement.getSixteenths())));
