@@ -2,12 +2,6 @@ declare interface ArrangementBuilder {
   (library:Library, packedArrangement?:PackedArrangement): Arrangement
 }
 
-declare interface TimeParams {
-  timeSignature: string
-  tempo: number
-  length: number
-}
-
 declare interface Arrangement {
   timeParams: TimeParams
   library: Library
@@ -16,6 +10,6 @@ declare interface Arrangement {
 }
 
 declare interface PackedArrangement {
-  timeParams: TimeParams
+  timeParams: PackedTimeParams
   packedTracks: PackedTrack[]
 }

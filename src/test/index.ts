@@ -1,4 +1,5 @@
 import './lib/set-global-mocks';
+import './unit/TimeParams';
 import './unit/TimeConverter';
 import './unit/test-lib';
 import './unit/mocks';

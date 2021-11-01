@@ -1,9 +1,8 @@
-declare interface Track {
+declare interface Track extends Publisher {
   arrangement: Arrangement
   instrument: Instrument
   notes: Note[] // Exposed so the track can be played
   edit(command: EditCommand): void
-  subscribe(callback:(...args:any[]) => void): void
   getNoteAt(timing:Timing): Note
   getNoteEvents(interval:Interval): NoteEvent[]
 }

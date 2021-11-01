@@ -1,9 +1,12 @@
 import {Track} from './Track';
+import {TimeParams} from './TimeParams';
+
+const defaultTimeParams = {timeSignature:'4/4', tempo:120, length:1};
 
 export const Arrangement:ArrangementBuilder = arrangementBuilder;
 
 function arrangementBuilder(library:Library, packedArrangement?:PackedArrangement): Arrangement {
-  const timeParams = packedArrangement?.timeParams || {timeSignature:'4/4', tempo:120, length:1};
+  const timeParams = TimeParams(packedArrangement?.timeParams || defaultTimeParams);
   const tracks:Track[] = [];
   const arrangement:Arrangement = {library, timeParams, tracks, getSixteenths};
   if (packedArrangement)

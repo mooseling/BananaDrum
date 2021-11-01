@@ -34,7 +34,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
 
   // You can subscribe to changes in this Track
-  function subscribe(callback:() => void): void {
+  function subscribe(callback:(...args:any[]) => void): void {
     subscribers.push(callback);
   }
 
