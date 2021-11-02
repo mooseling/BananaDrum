@@ -5,8 +5,9 @@ import {TimeConverter} from './TimeConverter';
 export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   const audioEventSource:AudioEventSource = {get:getAudioEvents};
   const audioPlayer = AudioPlayer(audioEventSource);
-  const timeConverter:TimeConverter = TimeConverter(arrangement.timeParams);
   const offsetter = Offsetter(arrangement.timeParams.tempo);
+  let timeConverter:TimeConverter = TimeConverter(arrangement.timeParams);
+  arrangement.timeParams.subscribe(handleTimeParamsChange);
   // To prevent playing note-events multiple times,
   // we keep track of which loops we've played them in
   const noteHistory = NotePlayHistory();
@@ -82,6 +83,12 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
       realTime: timeConverter.getLoopRealTime(noteEvent.realTime, loopNumber),
       audioBuffer: noteEvent.note.noteStyle.audioBuffer
     };
+  }
+
+
+  function handleTimeParamsChange() {
+    timeConverter = TimeConverter(arrangement.timeParams);
+    offsetter.update(arrangement.timeParams.tempo, audioPlayer.getTime());
   }
 }
 
