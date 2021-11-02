@@ -51,14 +51,8 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
   }
 
 
-  function getNoteEvents(interval:Interval):NoteEvent[] {
-    const noteEventsInInterval: NoteEvent[] = [];
-    for (const noteEvent of noteEvents) {
-      if (noteEvent.realTime >= interval.start && noteEvent.realTime <= interval.end) {
-        noteEventsInInterval.push(noteEvent);
-      }
-    }
-    return noteEventsInInterval;
+  function getNoteEvents({start, end}:Interval):NoteEvent[] {
+    return noteEvents.filter(({realTime}) => realTime >= start && realTime <= end);
   }
 
     // ==================================================================
