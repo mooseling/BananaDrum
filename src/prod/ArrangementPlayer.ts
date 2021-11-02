@@ -80,7 +80,7 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
 
   function getAudioEvent(noteEvent:NoteEvent, loopNumber:number): AudioEvent {
     return {
-      realTime: timeConverter.getLoopRealTime(noteEvent.realTime, loopNumber),
+      realTime: offsetter.unoffset(timeConverter.getLoopRealTime(noteEvent.realTime, loopNumber)),
       audioBuffer: noteEvent.note.noteStyle.audioBuffer
     };
   }
