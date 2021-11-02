@@ -1,6 +1,7 @@
 interface AudioPlayer {
   play(): void
   pause(): void
+  getTime(): RealTime
 }
 
 declare interface AudioEvent {

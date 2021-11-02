@@ -6,7 +6,7 @@ export function AudioPlayer(audioEventSource: AudioEventSource): AudioPlayer {
   audioContext.suspend();
   let nextIteration: number|null = null;
 
-  return {play, pause};
+  return {play, pause, getTime};
 
 
 
@@ -28,6 +28,10 @@ export function AudioPlayer(audioEventSource: AudioEventSource): AudioPlayer {
       clearTimeout(nextIteration);
       nextIteration = null;
     }
+  }
+
+  function getTime() {
+    return audioContext.currentTime;
   }
 
 
