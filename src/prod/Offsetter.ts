@@ -1,10 +1,10 @@
 function OffsetterBuilder(tempo:number): Offsetter {
   let offset = 0;
 
-  return {getTime, getInterval, update};
+  return {getTime, getInterval, unoffset, update};
 
 
-  function getTime(time:number): RealTime {
+  function getTime(time:RealTime): RealTime {
     return time + offset;
   }
 
@@ -13,6 +13,10 @@ function OffsetterBuilder(tempo:number): Offsetter {
       start: start + offset,
       end: end + offset
     };
+  }
+
+  function unoffset(time:RealTime): RealTime {
+    return time - offset;
   }
 
   function update(newTempo: number, audioTime:RealTime) {

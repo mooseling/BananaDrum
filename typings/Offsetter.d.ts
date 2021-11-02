@@ -1,6 +1,7 @@
 declare interface Offsetter {
-  getTime(time:RealTime): number
+  getTime(time:RealTime): RealTime
   getInterval(interval:Interval): Interval
+  unoffset(time:RealTime): RealTime
   update(tempo:number, audioTime:RealTime):void
 }
 
