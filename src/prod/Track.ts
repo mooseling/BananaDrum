@@ -2,8 +2,11 @@ import {TimeConverter} from './TimeConverter';
 
 
 function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNotes:PackedNote[]): Track {
-  let subscribers: ((...args:any[]) => void)[] = [];
-  const timeConverter = TimeConverter(arrangement.timeParams);
+  // We keep a TimeConverter here but recreate it if timeParams change
+  let timeConverter = TimeConverter(arrangement.timeParams);
+  arrangement.timeParams.subscribe(handleTimeParamsChange);
+
+  const subscribers: ((...args:any[]) => void)[] = [];
   const notes:Note[] = [];
   const noteEvents:NoteEvent[] = [];
   const track:Track = {arrangement, instrument, notes, edit, subscribe, getNoteAt, getNoteEvents};
@@ -113,6 +116,12 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
   function addNote(note:Note) {
     notes.push(note);
     noteEvents.push(createNoteEvent(note));
+  }
+
+
+  function handleTimeParamsChange() {
+    timeConverter = TimeConverter(arrangement.timeParams);
+    noteEvents.forEach(noteEvent => noteEvent.realTime = timeConverter.convertToRealTime(noteEvent.note.timing));
   }
 }
 
