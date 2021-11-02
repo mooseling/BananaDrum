@@ -1,10 +1,12 @@
 import {AudioPlayer} from './AudioPlayer';
+import {Offsetter} from './Offsetter';
 import {TimeConverter} from './TimeConverter';
 
 export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   const audioEventSource:AudioEventSource = {get:getAudioEvents};
   const audioPlayer = AudioPlayer(audioEventSource);
   const timeConverter:TimeConverter = TimeConverter(arrangement.timeParams);
+  const offsetter = Offsetter(arrangement.timeParams.tempo);
   // To prevent playing note-events multiple times,
   // we keep track of which loops we've played them in
   const noteHistory = NotePlayHistory();
@@ -41,9 +43,10 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   // If we're looping we'll use TimeConverter to resolve it within loops
   function getAudioEvents(interval:Interval): AudioEvent[] {
     const audioEvents: AudioEvent[] = [];
+    const offsetInterval = offsetter.getInterval(interval);
 
     if (isLooping) {
-      const loopIntervals = timeConverter.getLoopIntervals(interval);
+      const loopIntervals = timeConverter.getLoopIntervals(offsetInterval);
       loopIntervals.forEach(loopInterval => {
         const {loopNumber} = loopInterval;
         arrangement.tracks.forEach(track => {
@@ -58,7 +61,7 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
       });
     } else {
       arrangement.tracks.forEach(track => {
-        const noteEvents = track.getNoteEvents(interval);
+        const noteEvents = track.getNoteEvents(offsetInterval);
         for (const noteEvent of noteEvents) {
           if (!noteHistory.check(noteEvent, 0)) {
             audioEvents.push(getAudioEvent(noteEvent, 0));
