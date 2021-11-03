@@ -1,6 +1,6 @@
 .track-viewer {
   display: flex;
-  height:50pt;
+  height:54pt;
 }
 
 .track-viewer > * {
@@ -10,7 +10,9 @@
 .track-meta {
   width: 50pt;
   border: 1px solid black;
-  height: 100%;
+  background-color: #eee;
+  height: 50pt;
+  padding: 2pt;
 }
 
 .note-line {
@@ -22,5 +24,9 @@
   width:50pt;
   border: 1px solid black;
   display: inline-block;
-  height: 100%;
+  height: 50pt;
+  padding: 2pt;
+  text-align: center;
+  line-height: 50pt;
+  cursor: pointer;
 }

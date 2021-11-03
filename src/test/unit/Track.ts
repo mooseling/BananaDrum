@@ -38,7 +38,7 @@ describe('Track', function() {
 
   it('can be asked for a note at a timing', () => {
     const timing = getUniqueTiming();
-    const noteStyleId = 'roll'
+    const noteStyleId = 'sidestick'
     track.edit({timing, newValue:noteStyleId});
     const note = track.getNoteAt(timing);
     assert(note);

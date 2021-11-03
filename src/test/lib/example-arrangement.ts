@@ -5,19 +5,36 @@ export const exampleArrangement:PackedArrangement = {
     length: 1, // bars
   },
   packedTracks: [
-    // snare
     {
-      instrumentId: 'snare',
-      packedNotes: [{noteStyleId:'accent', timing:'1.2.1'},{noteStyleId:'accent', timing:'1.4.1'}]},
-
-    // hihat
+      instrumentId: 'ride',
+      packedNotes: []
+    },{
+      instrumentId: 'crash',
+      packedNotes: []
+    },
     {
       instrumentId: 'hihat',
-      packedNotes: [{noteStyleId:'closed', timing:'1.1.1'},{noteStyleId:'closed', timing:'1.1.3'},{noteStyleId:'closed', timing:'1.2.1'},{noteStyleId:'closed', timing:'1.2.3'},{noteStyleId:'closed', timing:'1.3.1'},{noteStyleId:'closed', timing:'1.3.3'},{noteStyleId:'closed', timing:'1.4.1'},{noteStyleId:'closed', timing:'1.4.3'}]},
-
-    // kick
+      packedNotes: [{noteStyleId:'closed', timing:'1.1.1'},{noteStyleId:'closed', timing:'1.1.3'},{noteStyleId:'closed', timing:'1.2.1'},{noteStyleId:'closed', timing:'1.2.3'},{noteStyleId:'closed', timing:'1.3.1'},{noteStyleId:'closed', timing:'1.3.3'},{noteStyleId:'closed', timing:'1.4.1'},{noteStyleId:'closed', timing:'1.4.3'}]
+    },
+    {
+      instrumentId: 'snare',
+      packedNotes: [{noteStyleId:'accent', timing:'1.2.1'},{noteStyleId:'accent', timing:'1.4.1'}]
+    },
     {
       instrumentId: 'kick',
-      packedNotes: [{noteStyleId:'kick', timing:'1.1.1'},{noteStyleId:'kick', timing:'1.3.1'}]}
+      packedNotes: [{noteStyleId:'accent', timing:'1.1.1'},{noteStyleId:'accent', timing:'1.3.1'}]
+    },
+    {
+      instrumentId: 'hightom',
+      packedNotes: []
+    },
+    {
+      instrumentId: 'midtom',
+      packedNotes: []
+    },
+    {
+      instrumentId: 'floortom',
+      packedNotes: []
+    }
   ]
 };
