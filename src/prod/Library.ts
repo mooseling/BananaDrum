@@ -60,11 +60,15 @@ async function Instrument(packedInstrument:PackedInstrument): Promise<Instrument
 
 
 async function unpackNoteStyles(packedNoteStyles:PackedNoteStyle[]): Promise<{[id:string]: NoteStyle}> {
-  const noteStyles:{[id:string]: NoteStyle} = {};
+  const noteStyles:{[id:string]: NoteStyle|null} = {};
   const unpackPromises:Promise<any>[] = [];
-  packedNoteStyles.forEach(({noteStyleId, file}) => unpackPromises.push(
-    AudioGetter.get(file).then(audioBuffer => noteStyles[noteStyleId] = {noteStyleId, audioBuffer})
-  ));
+  packedNoteStyles.forEach(({noteStyleId, file}) => {
+    noteStyles[noteStyleId] = null; // Set this so that they appear in the original order
+    unpackPromises.push(
+      AudioGetter.get(file)
+        .then(audioBuffer => noteStyles[noteStyleId] = {noteStyleId, audioBuffer})
+    );
+  });
   await Promise.all(unpackPromises);
   return noteStyles;
 }
