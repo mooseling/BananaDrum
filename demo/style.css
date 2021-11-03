@@ -30,3 +30,11 @@
   line-height: 50pt;
   cursor: pointer;
 }
+
+.arrangement-controls {
+    padding: 20pt;
+}
+
+.time-controls input {
+    width: 40pt;
+}
