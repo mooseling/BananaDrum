@@ -13,6 +13,7 @@
   background-color: #eee;
   height: 50pt;
   padding: 2pt;
+  flex-shrink: 0;
 }
 
 .note-line {
