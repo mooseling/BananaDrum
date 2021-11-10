@@ -1,3 +1,6 @@
+import React from 'react'
+import './note-viewer.css'
+
 export function NoteViewer({note}:{note:Note}): JSX.Element {
   const {noteStyle} = note;
   return (<div className="note-viewer" onClick={handleClick}>

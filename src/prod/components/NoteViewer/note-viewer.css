@@ -1,0 +1,16 @@
+
+.note-line {
+  display: flex;
+  height:100%;
+}
+
+.note-viewer {
+  width:50pt;
+  border: 1px solid black;
+  display: inline-block;
+  height: 50pt;
+  padding: 2pt;
+  text-align: center;
+  line-height: 50pt;
+  cursor: pointer;
+}
