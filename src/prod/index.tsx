@@ -9,6 +9,10 @@ window.React = React;
 
 
 document.getElementById('load-button').addEventListener('click', function() {
+  const loadingMessage = document.createElement('div');
+  loadingMessage.id = 'loading-message';
+  loadingMessage.innerText = 'Loading...';
+  this.replaceWith(loadingMessage);
   createTestEcosystem().then(({arrangement, arrangementPlayer}) => {
     ReactDOM.render(<ArrangementViewer arrangement={arrangement}/>, document.getElementById('wrapper'));
     arrangementPlayer.loop();
@@ -25,6 +29,6 @@ document.getElementById('load-button').addEventListener('click', function() {
     // @ts-ignore
     window.arrangement = arrangement;
 
-    this.remove();
+    loadingMessage.remove();
   });
 });
