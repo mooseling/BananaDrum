@@ -5,15 +5,15 @@ export const instrumentCollection:InstrumentCollection = [
     packedNoteStyles: [
       {
         noteStyleId: 'tap',
-        file: 'ride_tap.wav'
+        file: 'ride_tap.mp3'
       },
       {
         noteStyleId: 'crash',
-        file: 'ride_crash.wav'
+        file: 'ride_crash.mp3'
       },
       {
         noteStyleId: 'bell',
-        file: 'ride_bell.wav'
+        file: 'ride_bell.mp3'
       }
     ]
   },
@@ -23,15 +23,15 @@ export const instrumentCollection:InstrumentCollection = [
     packedNoteStyles: [
       {
         noteStyleId: 'crash',
-        file: 'crash_crash.wav'
+        file: 'crash_crash.mp3'
       },
       {
         noteStyleId: 'tap',
-        file: 'crash_tap.wav'
+        file: 'crash_tap.mp3'
       },
       {
         noteStyleId: 'bell',
-        file: 'crash_bell.wav'
+        file: 'crash_bell.mp3'
       }
     ]
   },
@@ -41,19 +41,19 @@ export const instrumentCollection:InstrumentCollection = [
     packedNoteStyles: [
       {
         noteStyleId: 'closed',
-        file: 'hihat_closed.wav'
+        file: 'hihat_closed.mp3'
       },
       {
         noteStyleId: 'open',
-        file: 'hihat_open.wav'
+        file: 'hihat_open.mp3'
       },
       {
         noteStyleId: 'foot',
-        file: 'hihat_foot.wav'
+        file: 'hihat_foot.mp3'
       },
       {
         noteStyleId: 'trash',
-        file: 'hihat_trash.wav'
+        file: 'hihat_trash.mp3'
       }
     ]
   },
@@ -63,19 +63,19 @@ export const instrumentCollection:InstrumentCollection = [
     packedNoteStyles: [
       {
         noteStyleId: 'accent',
-        file: 'snare_accent.wav'
+        file: 'snare_accent.mp3'
       },
       {
         noteStyleId: 'ghost',
-        file: 'snare_ghost.wav'
+        file: 'snare_ghost.mp3'
       },
       {
         noteStyleId: 'rimshot',
-        file: 'snare_rimshot.wav'
+        file: 'snare_rimshot.mp3'
       },
       {
         noteStyleId: 'sidestick',
-        file: 'snare_sidestick.wav'
+        file: 'snare_sidestick.mp3'
       }
     ]
   },
@@ -85,11 +85,11 @@ export const instrumentCollection:InstrumentCollection = [
     packedNoteStyles: [
       {
         noteStyleId: 'accent',
-        file: 'kick_accent.wav'
+        file: 'kick_accent.mp3'
       },
       {
         noteStyleId: 'ghost',
-        file: 'kick_ghost.wav'
+        file: 'kick_ghost.mp3'
         // displayName, symbol
       }
     ]
@@ -100,11 +100,11 @@ export const instrumentCollection:InstrumentCollection = [
     packedNoteStyles: [
       {
         noteStyleId: 'accent',
-        file: 'hightom_accent.wav'
+        file: 'hightom_accent.mp3'
       },
       {
         noteStyleId: 'ghost',
-        file: 'hightom_ghost.wav'
+        file: 'hightom_ghost.mp3'
       }
     ]
   },
@@ -114,11 +114,11 @@ export const instrumentCollection:InstrumentCollection = [
     packedNoteStyles: [
       {
         noteStyleId: 'accent',
-        file: 'midtom_accent.wav'
+        file: 'midtom_accent.mp3'
       },
       {
         noteStyleId: 'ghost',
-        file: 'midtom_ghost.wav'
+        file: 'midtom_ghost.mp3'
       }
     ]
   },
@@ -128,11 +128,11 @@ export const instrumentCollection:InstrumentCollection = [
     packedNoteStyles: [
       {
         noteStyleId: 'accent',
-        file: 'floortom_accent.wav'
+        file: 'floortom_accent.mp3'
       },
       {
         noteStyleId: 'ghost',
-        file: 'floortom_ghost.wav'
+        file: 'floortom_ghost.mp3'
       }
     ]
   }
