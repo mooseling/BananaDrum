@@ -119,6 +119,11 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
   function handleTimeParamsChange() {
     timeConverter = TimeConverter(arrangement.timeParams);
+
+    // Remove notes which are now at invalid times
+    notes.filter(note => !arrangement.timeParams.isValid(note.timing)).forEach(removeNote);
+
+    // Real-times for notes need to be recalculated on time signature or tempo changes
     noteEvents.forEach(noteEvent => noteEvent.realTime = timeConverter.convertToRealTime(noteEvent.note.timing));
   }
 }
