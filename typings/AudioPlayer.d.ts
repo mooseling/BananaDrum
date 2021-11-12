@@ -1,4 +1,8 @@
-interface AudioPlayer {
+declare interface AudioPlayerBuilder {
+  (audioEventSource:AudioEventSource): AudioPlayer
+}
+
+declare interface AudioPlayer {
   play(): void
   pause(): void
   getTime(): RealTime
