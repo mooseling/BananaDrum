@@ -3,7 +3,7 @@ import {Offsetter} from './Offsetter';
 import {TimeConverter} from './TimeConverter';
 
 export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
-  const audioEventSource:AudioEventSource = {get:getAudioEvents};
+  const audioEventSource:AudioEventSource = {getAudioEvents};
   const audioPlayer = AudioPlayer(audioEventSource);
   const offsetter = Offsetter(arrangement.timeParams.tempo);
   let timeConverter:TimeConverter = TimeConverter(arrangement.timeParams);

@@ -44,7 +44,7 @@ function AudioPlayerBuilder(audioEventSource: AudioEventSource): AudioPlayer {
   function loop() {
     const currentTime = audioContext.currentTime;
     const interval:Interval = {start:currentTime, end: currentTime + lookahead};
-    const audioEventsToSchedule = audioEventSource.get(interval);
+    const audioEventsToSchedule = audioEventSource.getAudioEvents(interval);
     audioEventsToSchedule.forEach(audioEvent => schedule(audioEvent));
     nextIteration = setTimeout(loop, loopFrequency);
   }
