@@ -92,8 +92,12 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   }
 }
 
-
-
+// To prevent double-playing notes, we keep track of which ones we've already provided
+// We will be moving this functionality down into AudioPlayer soon
+interface NotePlayHistory {
+  record(audioEvent:AudioEvent, loopNumber:number): void
+  check(audioEvent:AudioEvent, loopNumber:number): boolean
+}
 
 function NotePlayHistory():NotePlayHistory {
   const noteRecords:Map<NoteEvent, number[]> = new Map();

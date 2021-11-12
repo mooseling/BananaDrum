@@ -11,6 +11,7 @@ declare interface AudioPlayer {
 declare interface AudioEvent {
   realTime: RealTime
   audioBuffer: AudioBuffer
+  note: Note // In the future, this could be a more general "source" property
 }
 
 declare interface AudioEventSource {
