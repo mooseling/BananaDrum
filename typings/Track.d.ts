@@ -1,10 +1,8 @@
-declare interface Track extends Publisher {
+declare interface Track extends Publisher, AudioEventSource {
   arrangement: Arrangement
   instrument: Instrument
-  notes: Note[] // Exposed so the track can be played
   edit(command: EditCommand): void
   getNoteAt(timing:Timing): Note
-  getNoteEvents(interval:Interval): NoteEvent[]
 }
 
 declare interface TrackBuilder {
