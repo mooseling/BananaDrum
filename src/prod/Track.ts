@@ -1,5 +1,4 @@
 import {TimeConverter} from './TimeConverter';
-import {Note} from './Note';
 
 
 function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNotes:PackedNote[]): Track {
@@ -10,7 +9,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
   const subscribers: ((...args:any[]) => void)[] = [];
   const notes:Note[] = [];
   const audioEvents:AudioEvent[] = [];
-  const track:Track = {arrangement, instrument, edit, subscribe, getNoteAt, getAudioEvents, convertToRealTime};
+  const track:Track = {arrangement, instrument, edit, subscribe, getNoteAt, getAudioEvents};
   if (packedNotes)
     unpackNotes();
 
@@ -32,7 +31,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
       return;
 
     // If we're this far, newValue is a noteStyleId
-    const newNote:Note = Note({timing, track, noteStyle:instrument.noteStyles[newValue]});
+    const newNote:Note = {timing, track, noteStyle:instrument.noteStyles[newValue]};
     addNote(newNote);
     publish();
   }
@@ -49,12 +48,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
       if (note.timing === timing)
         return note;
     }
-    return Note({timing, track, noteStyle:null}); // return a rest if no note is found
-  }
-
-
-  function convertToRealTime(timing:Timing): RealTime {
-    return timeConverter.convertToRealTime(timing);
+    return {timing, track, noteStyle:null}; // return a rest if no note is found
   }
 
 
@@ -78,7 +72,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
   function unpackNote(packedNote:PackedNote): Note {
     const {timing, noteStyleId} = packedNote;
-    return Note({timing, track, noteStyle:instrument.noteStyles[noteStyleId]});
+    return {timing, track, noteStyle:instrument.noteStyles[noteStyleId]};
   }
 
 
@@ -112,7 +106,16 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
   function addNote(note:Note) {
     notes.push(note);
-    audioEvents.push(note.createAudioEvent());
+    audioEvents.push(createAudioEvent(note));
+  }
+
+
+  function createAudioEvent(note:Note): AudioEvent {
+    return {
+      note,
+      realTime: timeConverter.convertToRealTime(note.timing),
+      audioBuffer: note.noteStyle.audioBuffer
+    };
   }
 
 

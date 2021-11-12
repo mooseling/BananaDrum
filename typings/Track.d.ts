@@ -3,7 +3,6 @@ declare interface Track extends Publisher, AudioEventSource {
   instrument: Instrument
   edit(command: EditCommand): void
   getNoteAt(timing:Timing): Note
-  convertToRealTime(timing:Timing): RealTime
 }
 
 declare interface TrackBuilder {
