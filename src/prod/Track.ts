@@ -87,13 +87,17 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
   // This assumes there will be 1 at the most
   // Returns true if it removes a note
   function removeNoteAt(timing:Timing) {
-    return notes.some((note, index) => {
-      if (note.timing === timing) {
-        notes.splice(index, 1);
-        removeNoteEvent(note);
-        return true;
-      }
-    });
+    const note = notes.filter(note => note.timing === timing)[0];
+    if (note) {
+      removeNote(note);
+      return true;
+    }
+  }
+
+
+  function removeNote(note:Note) {
+    notes.splice(notes.indexOf(note), 1);
+    removeNoteEvent(note);
   }
 
 
