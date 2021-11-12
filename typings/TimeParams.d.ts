@@ -4,4 +4,6 @@ declare interface PackedTimeParams {
   length: number
 }
 
-declare type TimeParams = PackedTimeParams & Publisher
+declare interface TimeParams extends PackedTimeParams, Publisher {
+  isValid(timing:Timing): boolean
+}

@@ -26,6 +26,17 @@ return {
   },
   subscribe(callback: (...args:any[]) => void) {
     subscribers.push(callback);
+  },
+  // Timings
+  isValid(timing:Timing) {
+    const [bar, beat] = timing.split('.').map(bit => Number(bit));
+    if (bar > length)
+      return false; // timing falls outside the arrangement entirely
+
+    const beatsPerBar = Number(timeSignature.split('/')[0]);
+    if (beat > beatsPerBar)
+      return false;
+    return true;
   }
 }
 
