@@ -1,10 +1,10 @@
 import {NoteViewer} from './NoteViewer';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 
 
 export function TrackViewer({track, arrangement}:{track:Track, arrangement:Arrangement}): JSX.Element {
-  let [x, update] = useState(0);
-  track.subscribe(() => update(x + 1));
+  let [state, update] = useState({track, arrangement});
+  useEffect(() => track.subscribe(() => update({track, arrangement})), []);
   return (
     <div className="track-viewer">
       <TrackMeta track={track}/>

@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 
 
 export function ArrangementControls({arrangement}:{arrangement:Arrangement}): JSX.Element {
@@ -13,8 +13,8 @@ export function ArrangementControls({arrangement}:{arrangement:Arrangement}): JS
 function TimeControls({arrangement}:{arrangement:Arrangement}): JSX.Element {
   const {timeParams} = arrangement;
   const [displayTempo, updateDisplayTempo] = useState(String(timeParams.tempo));
-  const [state, setState] = useState(0);
-  timeParams.subscribe(() => setState(state + 1));
+  let [state, update] = useState({arrangement});
+  useEffect(() => timeParams.subscribe(() => update({arrangement})), []);
 
   return (
     <div className="time-controls">
