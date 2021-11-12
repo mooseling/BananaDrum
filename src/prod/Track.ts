@@ -1,4 +1,5 @@
 import {TimeConverter} from './TimeConverter';
+import {Note} from './Note';
 
 
 function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNotes:PackedNote[]): Track {
@@ -8,8 +9,8 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
   const subscribers: ((...args:any[]) => void)[] = [];
   const notes:Note[] = [];
-  const noteEvents:NoteEvent[] = [];
-  const track:Track = {arrangement, instrument, notes, edit, subscribe, getNoteAt, getNoteEvents};
+  const audioEvents:AudioEvent[] = [];
+  const track:Track = {arrangement, instrument, edit, subscribe, getNoteAt, getAudioEvents, convertToRealTime};
   if (packedNotes)
     unpackNotes();
 
@@ -31,7 +32,8 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
       return;
 
     // If we're this far, newValue is a noteStyleId
-    addNote({timing, track, noteStyle:instrument.noteStyles[newValue]});
+    const newNote:Note = Note({timing, track, noteStyle:instrument.noteStyles[newValue]});
+    addNote(newNote);
     publish();
   }
 
@@ -42,17 +44,22 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
   }
 
 
-  function getNoteAt(timing:Timing): Note|undefined {
+  function getNoteAt(timing:Timing): Note {
     for (const note of notes) {
       if (note.timing === timing)
         return note;
     }
-    return {timing, track, noteStyle:null};
+    return Note({timing, track, noteStyle:null}); // return a rest if no note is found
   }
 
 
-  function getNoteEvents({start, end}:Interval):NoteEvent[] {
-    return noteEvents.filter(({realTime}) => realTime >= start && realTime <= end);
+  function convertToRealTime(timing:Timing): RealTime {
+    return timeConverter.convertToRealTime(timing);
+  }
+
+
+  function getAudioEvents({start, end}:Interval):AudioEvent[] {
+    return audioEvents.filter(({realTime}) => realTime >= start && realTime <= end);
   }
 
     // ==================================================================
@@ -71,15 +78,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
   function unpackNote(packedNote:PackedNote): Note {
     const {timing, noteStyleId} = packedNote;
-    return {timing, track, noteStyle:instrument.noteStyles[noteStyleId]}
-  }
-
-
-  function createNoteEvent(note:Note) {
-    return {
-      note,
-      realTime: timeConverter.convertToRealTime(note.timing)
-    };
+    return Note({timing, track, noteStyle:instrument.noteStyles[noteStyleId]});
   }
 
 
@@ -97,14 +96,14 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
   function removeNote(note:Note) {
     notes.splice(notes.indexOf(note), 1);
-    removeNoteEvent(note);
+    removeAudioEvent(note);
   }
 
 
-  function removeNoteEvent(note:Note) {
-    return noteEvents.some((noteEvent, index) => {
-      if (noteEvent.note === note) {
-        noteEvents.splice(index, 1);
+  function removeAudioEvent(note:Note) {
+    return audioEvents.some((audioEvent, index) => {
+      if (audioEvent.note === note) {
+        audioEvents.splice(index, 1);
         return true;
       }
     });
@@ -113,7 +112,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
   function addNote(note:Note) {
     notes.push(note);
-    noteEvents.push(createNoteEvent(note));
+    audioEvents.push(note.createAudioEvent());
   }
 
 
@@ -124,7 +123,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
     notes.filter(note => !arrangement.timeParams.isValid(note.timing)).forEach(removeNote);
 
     // Real-times for notes need to be recalculated on time signature or tempo changes
-    noteEvents.forEach(noteEvent => noteEvent.realTime = timeConverter.convertToRealTime(noteEvent.note.timing));
+    audioEvents.forEach(audioEvent => audioEvent.realTime = timeConverter.convertToRealTime(audioEvent.note.timing));
   }
 }
 

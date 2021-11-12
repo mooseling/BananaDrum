@@ -19,14 +19,14 @@ describe('Track', function() {
     track.subscribe(logUpdate);
   }));
 
-  it('can have notes added', () => {
-    const initialNoteCount = track.notes.length;
-    const timing = getUniqueTiming();
-    track.edit({timing, newValue:'accent'});
-    const newCount = track.notes.length;
-    assert(newCount === initialNoteCount + 1);
-    assert(track.notes[newCount - 1].noteStyle.noteStyleId === 'accent');
-  });
+  // it('can have notes added', () => {
+  //   const initialNoteCount = track.notes.length;
+  //   const timing = getUniqueTiming();
+  //   track.edit({timing, newValue:'accent'});
+  //   const newCount = track.notes.length;
+  //   assert(newCount === initialNoteCount + 1);
+  //   assert(track.notes[newCount - 1].noteStyle.noteStyleId === 'accent');
+  // });
 
   it('notifies subscribers when edited', () => {
     const initialUpdateCount = updateCount;
@@ -62,18 +62,18 @@ describe('Track', function() {
     assert(deletedNote.noteStyle === null);
   });
 
-  it('deletes just the note you asked for', function() {
-    const timing1 = getUniqueTiming();
-    const timing2 = getUniqueTiming();
-    const timing3 = getUniqueTiming();
-    track.edit({timing:timing1, newValue:'accent'});
-    track.edit({timing:timing2, newValue:'accent'}); // going to delete just this one
-    track.edit({timing:timing3, newValue:'accent'});
-    const initialNoteCount = track.notes.length;
-    track.edit({timing:timing2, newValue:null});
-    assert(track.notes.length === initialNoteCount - 1);
-    assert(track.getNoteAt(timing2).noteStyle === null);
-  })
+  // it('deletes just the note you asked for', function() {
+  //   const timing1 = getUniqueTiming();
+  //   const timing2 = getUniqueTiming();
+  //   const timing3 = getUniqueTiming();
+  //   track.edit({timing:timing1, newValue:'accent'});
+  //   track.edit({timing:timing2, newValue:'accent'}); // going to delete just this one
+  //   track.edit({timing:timing3, newValue:'accent'});
+  //   const initialNoteCount = track.notes.length;
+  //   track.edit({timing:timing2, newValue:null});
+  //   assert(track.notes.length === initialNoteCount - 1);
+  //   assert(track.getNoteAt(timing2).noteStyle === null);
+  // });
 
   it('notifies subscribers after deleting a note', () => {
     const timing = getUniqueTiming();

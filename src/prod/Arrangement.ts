@@ -8,13 +8,22 @@ export const Arrangement:ArrangementBuilder = arrangementBuilder;
 function arrangementBuilder(library:Library, packedArrangement?:PackedArrangement): Arrangement {
   const timeParams = TimeParams(packedArrangement?.timeParams || defaultTimeParams);
   const tracks:Track[] = [];
-  const arrangement:Arrangement = {library, timeParams, tracks, getSixteenths};
+  const arrangement:Arrangement = {library, timeParams, tracks, getAudioEvents, getSixteenths};
   if (packedArrangement)
     packedArrangement.packedTracks.forEach(packedTrack => tracks.push(Track.unpack(arrangement, packedTrack)));
 
   return arrangement;
 
 
+  function getAudioEvents(interval:Interval): AudioEvent[] {
+    const audioEvents:AudioEvent[] = [];
+    tracks.forEach(track => audioEvents.push(...track.getAudioEvents(interval)));
+    return audioEvents;
+  }
+
+
+  // Returns an array of timings, representing each sixteenth in the arrangement
+  // The UI uses it to generate all the note-viewers
   function getSixteenths(): Timing[] {
     const [beatUnit, beatsPerBar] = timeParams.timeSignature.split('/').map(value => Number(value));
     const bars: number = timeParams.length;

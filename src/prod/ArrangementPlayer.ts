@@ -43,34 +43,21 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   // The interval may be beyond the end of the arrangement
   // If we're looping we'll use TimeConverter to resolve it within loops
   function getAudioEvents(interval:Interval): AudioEvent[] {
-    const audioEvents: AudioEvent[] = [];
+    const audioEvents:AudioEvent[] = [];
     const offsetInterval = offsetter.getInterval(interval);
 
-    if (isLooping) {
-      const loopIntervals = timeConverter.getLoopIntervals(offsetInterval);
-      loopIntervals.forEach(loopInterval => {
-        const {loopNumber} = loopInterval;
-        arrangement.tracks.forEach(track => {
-          const noteEvents = track.getNoteEvents(loopInterval);
-          for (const noteEvent of noteEvents) {
-            if (!noteHistory.check(noteEvent, loopNumber)) {
-              audioEvents.push(getAudioEvent(noteEvent, loopNumber));
-              noteHistory.record(noteEvent, loopNumber);
-            }
-          }
-        });
-      });
-    } else {
-      arrangement.tracks.forEach(track => {
-        const noteEvents = track.getNoteEvents(offsetInterval);
-        for (const noteEvent of noteEvents) {
-          if (!noteHistory.check(noteEvent, 0)) {
-            audioEvents.push(getAudioEvent(noteEvent, 0));
-            noteHistory.record(noteEvent, 0);
-          }
+    const loopIntervals:LoopInterval[] = isLooping ?
+      timeConverter.getLoopIntervals(offsetInterval) :
+      [{...interval, loopNumber:0}];
+    loopIntervals.forEach(loopInterval => {
+      const {loopNumber} = loopInterval;
+      arrangement.getAudioEvents(loopInterval).forEach(audioEvent => {
+        if (!noteHistory.check(audioEvent, loopNumber)) {
+          audioEvents.push(adjustAudioEvent(audioEvent, loopNumber));
+          noteHistory.record(audioEvent, loopNumber);
         }
       });
-    }
+    });
 
     return audioEvents;
   }
@@ -78,10 +65,11 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
 
 
 
-  function getAudioEvent(noteEvent:NoteEvent, loopNumber:number): AudioEvent {
+  function adjustAudioEvent(audioEvent:AudioEvent, loopNumber:number): AudioEvent {
     return {
-      realTime: offsetter.unoffset(timeConverter.getLoopRealTime(noteEvent.realTime, loopNumber)),
-      audioBuffer: noteEvent.note.noteStyle.audioBuffer
+      realTime: offsetter.unoffset(timeConverter.getLoopRealTime(audioEvent.realTime, loopNumber)),
+      audioBuffer: audioEvent.audioBuffer,
+      note:audioEvent.note
     };
   }
 
@@ -100,27 +88,27 @@ interface NotePlayHistory {
 }
 
 function NotePlayHistory():NotePlayHistory {
-  const noteRecords:Map<NoteEvent, number[]> = new Map();
+  const noteRecords:Map<AudioEvent, number[]> = new Map();
 
   return {
-    record(noteEvent:NoteEvent, loopNumber:number) {
-      const noteHistory = getOrCreateHistory(noteEvent);
+    record(audioEvent:AudioEvent, loopNumber:number) {
+      const noteHistory = getOrCreateHistory(audioEvent);
       noteHistory.push(loopNumber);
     },
-    check(noteEvent:NoteEvent, loopNumber:number) {
-      const noteHistory = noteRecords.get(noteEvent);
+    check(audioEvent:AudioEvent, loopNumber:number) {
+      const noteHistory = noteRecords.get(audioEvent);
       if (noteHistory)
         return noteHistory.includes(loopNumber);
       return false;
     }
   };
 
-  function getOrCreateHistory(noteEvent:NoteEvent) {
-    const existingHistory = noteRecords.get(noteEvent);
+  function getOrCreateHistory(audioEvent:AudioEvent) {
+    const existingHistory = noteRecords.get(audioEvent);
     if (existingHistory)
       return existingHistory;
     const noteHistory = [];
-    noteRecords.set(noteEvent, noteHistory);
+    noteRecords.set(audioEvent, noteHistory);
     return noteHistory;
   }
 }
