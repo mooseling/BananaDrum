@@ -12,9 +12,16 @@ export function Library(instrumentCollection:InstrumentCollection):Library {
     get instruments() {return getInstruments()}
   };
 
+
+
+
+
+
   // ==================================================================
   //                          Public Functions
   // ==================================================================
+
+
   function load() {
     if (!loaded) {
       loadInstruments().then(() => {
@@ -35,9 +42,12 @@ export function Library(instrumentCollection:InstrumentCollection):Library {
 
 
 
+
+
   // ==================================================================
   //                          Private Functions
   // ==================================================================
+
 
   function loadInstruments(): Promise<any> {
     const instrumentPromises:Promise<any>[] = [];

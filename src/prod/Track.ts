@@ -15,9 +15,15 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
   return track;
 
+
+
+
+
+
   // ==================================================================
   //                          Public Functions
   // ==================================================================
+
 
   // Add, remove, or change notes
   // Publishes every time it makes a change
@@ -56,9 +62,15 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
     return audioEvents.filter(({realTime}) => realTime >= start && realTime <= end);
   }
 
-    // ==================================================================
-    //                          Private Functions
-    // ==================================================================
+
+
+
+
+
+  // ==================================================================
+  //                          Private Functions
+  // ==================================================================
+
 
   function publish(): void {
     subscribers.forEach(callback => callback());

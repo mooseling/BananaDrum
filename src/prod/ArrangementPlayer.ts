@@ -18,9 +18,12 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
 
 
 
+
+
   // ==================================================================
   //                          Public Functions
   // ==================================================================
+
 
   function play() {
     audioPlayer.play();
@@ -36,9 +39,13 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
 
 
 
+
+
+
   // ==================================================================
   //                          Private Functions
   // ==================================================================
+
 
   // The interval may be beyond the end of the arrangement
   // If we're looping we'll use TimeConverter to resolve it within loops

@@ -11,9 +11,12 @@ function AudioPlayerBuilder(audioEventSource: AudioEventSource): AudioPlayer {
 
 
 
+
+
   // ==================================================================
   //                          Public Functions
   // ==================================================================
+
 
   function play() {
     if (nextIteration === null) {
@@ -37,9 +40,12 @@ function AudioPlayerBuilder(audioEventSource: AudioEventSource): AudioPlayer {
 
 
 
+
+
   // ==================================================================
   //                          Private Functions
   // ==================================================================
+
 
   function loop() {
     const currentTime = audioContext.currentTime;

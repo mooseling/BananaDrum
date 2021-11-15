@@ -15,6 +15,15 @@ function arrangementBuilder(library:Library, packedArrangement?:PackedArrangemen
   return arrangement;
 
 
+
+
+
+
+  // ==================================================================
+  //                          Public Functions
+  // ==================================================================
+
+
   function getAudioEvents(interval:Interval): AudioEvent[] {
     const audioEvents:AudioEvent[] = [];
     tracks.forEach(track => audioEvents.push(...track.getAudioEvents(interval)));
@@ -43,4 +52,15 @@ function arrangementBuilder(library:Library, packedArrangement?:PackedArrangemen
     }
     return sixteenths;
   }
+
+
+
+
+
+
+  // ==================================================================
+  //                          Private Functions
+  // ==================================================================
+
+
 };
