@@ -26,7 +26,7 @@ function arrangementBuilder(library:Library, packedArrangement?:PackedArrangemen
 
   function getAudioEvents(interval:Interval): AudioEvent[] {
     const audioEvents:AudioEvent[] = [];
-    tracks.forEach(track => audioEvents.push(...track.getAudioEvents(interval)));
+    tracks.forEach(track => audioEvents.push(...(track.getAudioEvents(interval).map(getIdentifiedAudioEvent))));
     return audioEvents;
   }
 
@@ -63,4 +63,11 @@ function arrangementBuilder(library:Library, packedArrangement?:PackedArrangemen
   // ==================================================================
 
 
+  // AudioEvents coming out of tracks are uniquely identified from the track's perspective
+  // We'll extend the identifier so they are uniquely identified within the arrangement
+  function getIdentifiedAudioEvent(audioEvent:AudioEvent): AudioEvent {
+    const {instrumentId} = audioEvent.note.track.instrument;
+    const identifier = `${audioEvent.identifier}--${instrumentId}`;
+    return  {...audioEvent, identifier};
+  }
 };

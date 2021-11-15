@@ -55,11 +55,8 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
       [{...interval, loopNumber:0}];
     loopIntervals.forEach(loopInterval => {
       const {loopNumber} = loopInterval;
-      arrangement.getAudioEvents(loopInterval).forEach(audioEvent => {
-        if (!noteHistory.check(audioEvent, loopNumber)) {
-          audioEvents.push(adjustAudioEvent(audioEvent, loopNumber));
-        }
-      });
+      arrangement.getAudioEvents(loopInterval)
+        .forEach(audioEvent => audioEvents.push(adjustAudioEvent(audioEvent, loopNumber)));
     });
 
     return audioEvents;
@@ -67,21 +64,24 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
 
 
 
-
   function adjustAudioEvent(audioEvent:AudioEvent, loopNumber:number): AudioEvent {
     return {
-      realTime: offsetter.unoffset(timeConverter.getLoopRealTime(audioEvent.realTime, loopNumber)),
-      audioBuffer: audioEvent.audioBuffer,
-      note:audioEvent.note
+      ...getIdentifiedAudioEvent(audioEvent, loopNumber),
+      realTime: offsetter.unoffset(timeConverter.getLoopRealTime(audioEvent.realTime, loopNumber))
     };
+  }
+
+
+  // AudioEvents coming out of arrangements are uniquely identified from the arrangement's perspective
+  // We'll extend the identifier so they are uniquely identified within the arrangement-player
+  function getIdentifiedAudioEvent(audioEvent:AudioEvent, loopNumber:number): AudioEvent {
+    const identifier = `${audioEvent.identifier}--${loopNumber}`;
+    return  {...audioEvent, identifier};
   }
 
 
   function handleTimeParamsChange() {
     timeConverter = TimeConverter(arrangement.timeParams);
     offsetter.update(arrangement.timeParams.tempo, audioPlayer.getTime());
-  }
-
-
   }
 }

@@ -124,10 +124,17 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
   function createAudioEvent(note:Note): AudioEvent {
     return {
-      note,
+      identifier: getIdentifier(note),
       realTime: timeConverter.convertToRealTime(note.timing),
-      audioBuffer: note.noteStyle.audioBuffer
+      audioBuffer: note.noteStyle.audioBuffer,
+      note
     };
+  }
+
+
+  // Need to uniquely identify the event from the Track's perspective
+  function getIdentifier({noteStyle, timing}:Note): string {
+    return `${noteStyle.noteStyleId}_${timing}`;
   }
 
 
