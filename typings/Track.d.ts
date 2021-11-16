@@ -1,6 +1,7 @@
 declare interface Track extends Publisher, AudioEventSource {
   arrangement: Arrangement
   instrument: Instrument
+  notes: Note[]
   edit(command: EditCommand): void
   getNoteAt(timing:Timing): Note
 }

@@ -9,7 +9,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
   const subscribers: ((...args:any[]) => void)[] = [];
   const notes:Note[] = [];
   const audioEvents:AudioEvent[] = [];
-  const track:Track = {arrangement, instrument, edit, subscribe, getNoteAt, getAudioEvents};
+  const track:Track = {arrangement, instrument, notes, edit, subscribe, getNoteAt, getAudioEvents};
   if (packedNotes)
     unpackNotes();
 
