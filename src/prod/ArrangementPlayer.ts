@@ -3,12 +3,12 @@ import {Offsetter} from './Offsetter';
 import {TimeConverter} from './TimeConverter';
 
 export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
-  const audioEventSource:AudioEventSource = {getAudioEvents};
-  const audioPlayer = AudioPlayer(audioEventSource);
   const offsetter = Offsetter(arrangement.timeParams.tempo);
   let timeConverter:TimeConverter = TimeConverter(arrangement.timeParams);
   arrangement.timeParams.subscribe(handleTimeParamsChange);
   let isLooping = false;
+
+  AudioPlayer.connect({getAudioEvents});
 
   return {play, pause, loop};
 
@@ -23,11 +23,11 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
 
 
   function play() {
-    audioPlayer.play();
+    AudioPlayer.play();
   }
 
   function pause() {
-    audioPlayer.pause();
+    AudioPlayer.pause();
   }
 
   function loop(turnLoopingOn:boolean = true) {
@@ -82,6 +82,6 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
 
   function handleTimeParamsChange() {
     timeConverter = TimeConverter(arrangement.timeParams);
-    offsetter.update(arrangement.timeParams.tempo, audioPlayer.getTime());
+    offsetter.update(arrangement.timeParams.tempo, AudioPlayer.getTime());
   }
 }

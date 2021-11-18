@@ -1,3 +1,6 @@
+import {AudioPlayer} from '../prod/AudioPlayer';
+AudioPlayer.initialise();
+
 import './lib/set-global-mocks';
 import './unit/TimeParams';
 import './unit/Offsetter';

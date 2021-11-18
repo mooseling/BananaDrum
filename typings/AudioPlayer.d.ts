@@ -1,8 +1,6 @@
-declare interface AudioPlayerBuilder {
-  (audioEventSource:AudioEventSource): AudioPlayer
-}
-
 declare interface AudioPlayer {
+  initialise(): void
+  connect(audioEventSource:AudioEventSource): void
   play(): void
   pause(): void
   getTime(): RealTime

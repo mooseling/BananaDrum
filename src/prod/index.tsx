@@ -1,3 +1,4 @@
+import {AudioPlayer} from './AudioPlayer';
 import {ArrangementViewer} from './components/ArrangementViewer';
 import ReactDOM from 'react-dom';
 import React from 'react';
@@ -9,6 +10,8 @@ window.React = React;
 
 
 document.getElementById('load-button').addEventListener('click', function() {
+  AudioPlayer.initialise();
+
   const loadingMessage = document.createElement('div');
   loadingMessage.id = 'loading-message';
   loadingMessage.innerText = 'Loading...';

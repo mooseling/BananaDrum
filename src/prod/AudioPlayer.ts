@@ -1,13 +1,13 @@
 const lookahead = 0.25; // (s) Look 250ms ahead for notes
 const loopFrequency = 125 // (ms) - mixed units are confusing, but we can skip some pointless maths
 
-function AudioPlayerBuilder(audioEventSource: AudioEventSource): AudioPlayer {
-  const audioContext = new AudioContext();
-  audioContext.suspend();
-  const audioHistory = AudioHistory();
+export const AudioPlayer:AudioPlayer = (function(){
+  let audioContext:AudioContext|null = null;
+  const audioSources:AudioEventSource[] = [];
   let nextIteration: number|null = null;
+  const audioHistory = AudioHistory();
 
-  return {play, pause, getTime};
+  return {initialise, connect, play, pause, getTime};
 
 
 
@@ -19,7 +19,20 @@ function AudioPlayerBuilder(audioEventSource: AudioEventSource): AudioPlayer {
   // ==================================================================
 
 
+  function initialise() {
+    audioContext = new AudioContext();
+    audioContext.suspend();
+  }
+
+
+  function connect(audioSource:AudioEventSource) {
+    checkInitialised();
+    audioSources.push(audioSource);
+  }
+
+
   function play() {
+    checkInitialised();
     if (nextIteration === null) {
       audioContext.resume();
       loop();
@@ -27,6 +40,7 @@ function AudioPlayerBuilder(audioEventSource: AudioEventSource): AudioPlayer {
   }
 
   function pause() {
+    checkInitialised();
     if (nextIteration !== null) {
       audioContext.suspend();
       clearTimeout(nextIteration);
@@ -35,6 +49,7 @@ function AudioPlayerBuilder(audioEventSource: AudioEventSource): AudioPlayer {
   }
 
   function getTime() {
+    checkInitialised();
     return audioContext.currentTime;
   }
 
@@ -48,16 +63,24 @@ function AudioPlayerBuilder(audioEventSource: AudioEventSource): AudioPlayer {
   // ==================================================================
 
 
+  function checkInitialised() {
+    if (audioContext === null)
+      throw 'The AudioPlayer has not been initialised';
+  }
+
+
   function loop() {
     const currentTime = audioContext.currentTime;
     const interval:Interval = {start:currentTime, end: currentTime + lookahead};
-    const audioEventsToSchedule = audioEventSource.getAudioEvents(interval);
-    audioEventsToSchedule.forEach(audioEvent => {
+    const audioEvents:AudioEvent[] = [];
+    audioSources.forEach(audioSource => audioEvents.push(...audioSource.getAudioEvents(interval)));
+    audioEvents.forEach(audioEvent => {
       if (!audioHistory.contains(audioEvent))
         schedule(audioEvent);
     });
     nextIteration = setTimeout(loop, loopFrequency);
   }
+
 
   function schedule(audioEvent: AudioEvent) {
     const sourceNode = getSourceNode(audioEvent.audioBuffer);
@@ -66,13 +89,11 @@ function AudioPlayerBuilder(audioEventSource: AudioEventSource): AudioPlayer {
     audioHistory.record(audioEvent);
   }
 
+
   function getSourceNode(buffer:AudioBuffer): AudioBufferSourceNode {
     return new AudioBufferSourceNode(audioContext, {buffer: buffer});
   }
-}
-
-
-export const AudioPlayer:AudioPlayerBuilder = AudioPlayerBuilder;
+})();
 
 
 
