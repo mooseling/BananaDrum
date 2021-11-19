@@ -1,12 +1,7 @@
-import {TimeConverter} from './TimeConverter';
-
-
-function buildTrackPlayer(track:Track): AudioEventSource {
-  const {timeParams} = track.arrangement;
-  let timeConverter = TimeConverter(timeParams);
+function buildTrackPlayer(track:Track, timeCoordinator:TimeCoordinator): TrackPlayer {
   const audioEvents:AudioEvent[] = track.notes.map(note => createAudioEvent(note));
   track.subscribe(matchAudioEventsToNotes);
-  timeParams.subscribe(handleTimeParamsChange);
+  timeCoordinator.subscribe(recalcAudioEventTimes);
 
   return {getAudioEvents};
 
@@ -39,7 +34,7 @@ function buildTrackPlayer(track:Track): AudioEventSource {
   function createAudioEvent(note:Note): AudioEvent {
     return {
       identifier: getIdentifier(note),
-      realTime: timeConverter.convertToRealTime(note.timing),
+      realTime: timeCoordinator.convertToRealTime(note.timing),
       audioBuffer: note.noteStyle.audioBuffer,
       note
     };
@@ -54,9 +49,8 @@ function buildTrackPlayer(track:Track): AudioEventSource {
   }
 
 
-  function handleTimeParamsChange() {
-    timeConverter = TimeConverter(timeParams);
-    audioEvents.forEach(event => event.realTime = timeConverter.convertToRealTime(event.note.timing));
+  function recalcAudioEventTimes() {
+    audioEvents.forEach(event => event.realTime = timeCoordinator.convertToRealTime(event.note.timing));
   }
 }
 
