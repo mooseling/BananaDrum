@@ -5,4 +5,4 @@ declare interface ArrangementPlayer extends AudioEventSource {
 }
 
 declare type TrackPlayer = AudioEventSource
-declare type TrackPlayerBuilder = (track:Track) => TrackPlayer
+declare type TrackPlayerBuilder = (track:Track, timeCoordinator) => TrackPlayer
