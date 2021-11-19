@@ -3,6 +3,7 @@ AudioPlayer.initialise();
 
 import './lib/set-global-mocks';
 import './unit/TimeParams';
+import './unit/TimeCoordinator';
 import './unit/test-lib';
 import './unit/mocks';
 import './unit/AudioGetter';
