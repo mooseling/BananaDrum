@@ -58,15 +58,16 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
 
 
 
-  // AudioEvents coming out of arrangements are uniquely identified from the arrangement's perspective
+  // AudioEvents coming out of tracks are uniquely identified from the track's perspective
   // We'll extend the identifier so they are uniquely identified within the arrangement-player
   function getIdentifiedAudioEvent(audioEvent:AudioEvent, loopNumber:number): AudioEvent {
-    const identifier = `${audioEvent.identifier}--${loopNumber}`;
+    const {instrumentId} = audioEvent.note.track.instrument;
+    const identifier = `${audioEvent.identifier}--${loopNumber}_${instrumentId}`;
     return  {...audioEvent, identifier};
   }
 
 
   function createTrackPlayers() {
-    return arrangement.tracks.map(track => TrackPlayer(track));
+    return arrangement.tracks.map(track => TrackPlayer(track, timeCoordinator));
   }
 }
