@@ -11,13 +11,20 @@
 declare type Timing = string
 declare type RealTime = number
 
+declare interface Interval {
+  start: RealTime
+  end: RealTime
+}
 
-// =========== Thoughts on triplets ===========
-// The format begs the question: how do we notate other polyrhythms?
-// (A whole track which is polyrhythmic to the piece is a separate issue)
-// Triplets should be the most common special case of timing
-// And our format sort of matches up with dotted notes in western music
+// Intervals may land beyond the end of a loop, but LoopIntervals must be within the loop
+declare interface LoopInterval extends Interval {
+  loopNumber: number
+}
 
-// One idea is to chance 'T' to (3)
-// So something like 2.1T.1 becomes 2.1(3).1
-// It's natural to extend this to other fractions of beats
+
+declare type TimeCoordinatorBuilder = (timeParams:TimeParams) => TimeCoordinator
+declare interface TimeCoordinator extends Publisher {
+  convertToRealTime(timing:Timing): RealTime
+  convertToLoopIntervals(interval:Interval): LoopInterval[]
+  convertToAudioTime(realTime:RealTime, loopNumber:number): RealTime
+}
