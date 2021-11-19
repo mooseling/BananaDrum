@@ -11,18 +11,29 @@ function buildTrackPlayer(track:Track): AudioEventSource {
   return {getAudioEvents};
 
 
+
+
+
+
+  // ==================================================================
+  //                          Public Functions
+  // ==================================================================
+
+
+
   function getAudioEvents({start, end}:Interval): AudioEvent[] {
     return audioEvents.filter(({realTime}) => realTime >= start && realTime <= end);
   }
 
 
 
-  function matchAudioEventsToNotes() {
-    const unmatchedAudioEvents = audioEvents.filter(audioEvent => !track.notes.includes(audioEvent.note));
-    unmatchedAudioEvents.forEach(audioEvent => audioEvents.splice(audioEvents.indexOf(audioEvent)));
-    const unmatchedNotes = track.notes.filter(note => !audioEvents.some(audioEvent => audioEvent.note === note));
-    audioEvents.push(...unmatchedNotes.map(createAudioEvent));
-  }
+
+
+
+  // ==================================================================
+  //                          Private Functions
+  // ==================================================================
+
 
 
   function createAudioEvent(note:Note): AudioEvent {
@@ -33,11 +44,22 @@ function buildTrackPlayer(track:Track): AudioEventSource {
       note
     };
   }
+
+
+  function matchAudioEventsToNotes() {
+    const unmatchedAudioEvents = audioEvents.filter(audioEvent => !track.notes.includes(audioEvent.note));
+    unmatchedAudioEvents.forEach(audioEvent => audioEvents.splice(audioEvents.indexOf(audioEvent)));
+    const unmatchedNotes = track.notes.filter(note => !audioEvents.some(audioEvent => audioEvent.note === note));
+    audioEvents.push(...unmatchedNotes.map(createAudioEvent));
+  }
+
+
   function handleTimeParamsChange() {
     timeConverter = TimeConverter(timeParams);
     audioEvents.forEach(event => event.realTime = timeConverter.convertToRealTime(event.note.timing));
   }
 }
+
 export const TrackPlayer:TrackPlayerBuilder = buildTrackPlayer;
 
 
