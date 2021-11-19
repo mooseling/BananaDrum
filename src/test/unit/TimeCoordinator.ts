@@ -1,15 +1,15 @@
 import {assert} from 'chai';
-import {TimeConverter} from '../../prod/TimeConverter';
+import {TimeCoordinator} from '../../prod/TimeCoordinator';
 import {TimeParams} from '../../prod/TimeParams';
 
 type TestCase = [Timing, number];
 
-describe('TimeConverter', function() {
+describe('TimeCoordinator', function() {
   describe('4/4 time, 120bpm', function() {
     const timeParams:TimeParams = TimeParams({timeSignature:'4/4', tempo:120, length:1});
-    const basicTimeConverter = TimeConverter(timeParams);
+    const timeCoordinator = TimeCoordinator(timeParams);
 
-    it('returns 0 on the 1', () => assert(basicTimeConverter.convertToRealTime('1.1.1') === 0));
+    it('returns 0 on the 1', () => assert(timeCoordinator.convertToRealTime('1.1.1') === 0));
 
     const testCases:TestCase[] = [
       ['3.3.1', 5],
@@ -23,7 +23,7 @@ describe('TimeConverter', function() {
     ];
     it('passes a bunch of test cases', () => {
       testCases.forEach(([timing, expectedRealTime]) => {
-        const calculatedRealTime = basicTimeConverter.convertToRealTime(timing);
+        const calculatedRealTime = timeCoordinator.convertToRealTime(timing);
         const difference = Math.abs(expectedRealTime - calculatedRealTime);
         if (difference > 0.00000001)
           throw `${timing} converted to ${calculatedRealTime} but expected ${expectedRealTime}`;
@@ -40,7 +40,7 @@ describe('TimeConverter', function() {
     ];
     it('...and a bunch of test cases with triplets', () => {
       tripletTestCases.forEach(([timing, expectedRealTime]) => {
-        const calculatedRealTime = basicTimeConverter.convertToRealTime(timing);
+        const calculatedRealTime = timeCoordinator.convertToRealTime(timing);
         const difference = Math.abs(expectedRealTime - calculatedRealTime);
         if (difference > 0.00000001)
           throw `${timing} converted to ${calculatedRealTime} but expected ${expectedRealTime}`;
@@ -50,9 +50,9 @@ describe('TimeConverter', function() {
 
   describe('6/8 time, 140bpm', function() {
     const timeParams:TimeParams = TimeParams({timeSignature:'6/8', tempo:140, length:1});
-    const basicTimeConverter = TimeConverter(timeParams);
+    const timeCoordinator = TimeCoordinator(timeParams);
 
-    it('returns 0 on the 1', () => assert(basicTimeConverter.convertToRealTime('1.1.1') === 0));
+    it('returns 0 on the 1', () => assert(timeCoordinator.convertToRealTime('1.1.1') === 0));
 
     const testCases:TestCase[] = [
       ['3.3.1', 3],
@@ -64,7 +64,7 @@ describe('TimeConverter', function() {
     ];
     it('Passes a bunch of test cases', () => {
       testCases.forEach(([timing, expectedRealTime]) => {
-        const calculatedRealTime = basicTimeConverter.convertToRealTime(timing);
+        const calculatedRealTime = timeCoordinator.convertToRealTime(timing);
         const difference = Math.abs(expectedRealTime - calculatedRealTime);
         if (difference > 0.00000001)
           throw `${timing} converted to ${calculatedRealTime} but expected ${expectedRealTime}`;
@@ -79,7 +79,7 @@ describe('TimeConverter', function() {
     ];
     it('...and a bunch of test cases with triplets', () => {
       tripletTestCases.forEach(([timing, expectedRealTime]) => {
-        const calculatedRealTime = basicTimeConverter.convertToRealTime(timing);
+        const calculatedRealTime = timeCoordinator.convertToRealTime(timing);
         const difference = Math.abs(expectedRealTime - calculatedRealTime);
         if (difference > 0.00000001)
           throw `${timing} converted to ${calculatedRealTime} but expected ${expectedRealTime}`;
