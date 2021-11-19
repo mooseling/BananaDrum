@@ -8,7 +8,7 @@ export const Arrangement:ArrangementBuilder = arrangementBuilder;
 function arrangementBuilder(library:Library, packedArrangement?:PackedArrangement): Arrangement {
   const timeParams = TimeParams(packedArrangement?.timeParams || defaultTimeParams);
   const tracks:Track[] = [];
-  const arrangement:Arrangement = {library, timeParams, tracks, getAudioEvents, getSixteenths};
+  const arrangement:Arrangement = {library, timeParams, tracks, getSixteenths};
   if (packedArrangement)
     packedArrangement.packedTracks.forEach(packedTrack => tracks.push(Track.unpack(arrangement, packedTrack)));
 
@@ -23,12 +23,6 @@ function arrangementBuilder(library:Library, packedArrangement?:PackedArrangemen
   //                          Public Functions
   // ==================================================================
 
-
-  function getAudioEvents(interval:Interval): AudioEvent[] {
-    const audioEvents:AudioEvent[] = [];
-    tracks.forEach(track => audioEvents.push(...(track.getAudioEvents(interval).map(getIdentifiedAudioEvent))));
-    return audioEvents;
-  }
 
 
   // Returns an array of timings, representing each sixteenth in the arrangement

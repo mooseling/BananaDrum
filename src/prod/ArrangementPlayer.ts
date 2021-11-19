@@ -1,16 +1,17 @@
 import {AudioPlayer} from './AudioPlayer';
 import {Offsetter} from './Offsetter';
 import {TimeConverter} from './TimeConverter';
+import {TrackPlayer} from './TrackPlayer';
+
 
 export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   const offsetter = Offsetter(arrangement.timeParams.tempo);
   let timeConverter:TimeConverter = TimeConverter(arrangement.timeParams);
   arrangement.timeParams.subscribe(handleTimeParamsChange);
   let isLooping = false;
+  const trackPlayers:TrackPlayer[] = createTrackPlayers();
 
-  AudioPlayer.connect({getAudioEvents});
-
-  return {play, pause, loop};
+  return {getAudioEvents, loop};
 
 
 
@@ -21,27 +22,6 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   //                          Public Functions
   // ==================================================================
 
-
-  function play() {
-    AudioPlayer.play();
-  }
-
-  function pause() {
-    AudioPlayer.pause();
-  }
-
-  function loop(turnLoopingOn:boolean = true) {
-    isLooping = turnLoopingOn;
-  }
-
-
-
-
-
-
-  // ==================================================================
-  //                          Private Functions
-  // ==================================================================
 
 
   // The interval may be beyond the end of the arrangement
@@ -55,12 +35,28 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
       [{...interval, loopNumber:0}];
     loopIntervals.forEach(loopInterval => {
       const {loopNumber} = loopInterval;
-      arrangement.getAudioEvents(loopInterval)
-        .forEach(audioEvent => audioEvents.push(adjustAudioEvent(audioEvent, loopNumber)));
+      trackPlayers.forEach(trackPlayer =>
+        trackPlayer.getAudioEvents(loopInterval)
+        .forEach(audioEvent => audioEvents.push(adjustAudioEvent(audioEvent, loopNumber)))
+      );
     });
 
     return audioEvents;
   }
+
+
+  function loop(turnLoopingOn:boolean = true) {
+    isLooping = turnLoopingOn;
+  }
+
+
+
+
+
+
+  // ==================================================================
+  //                          Private Functions
+  // ==================================================================
 
 
 
@@ -83,5 +79,10 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   function handleTimeParamsChange() {
     timeConverter = TimeConverter(arrangement.timeParams);
     offsetter.update(arrangement.timeParams.tempo, AudioPlayer.getTime());
+  }
+
+
+  function createTrackPlayers() {
+    return arrangement.tracks.map(track => TrackPlayer(track));
   }
 }

@@ -17,13 +17,14 @@ document.getElementById('load-button').addEventListener('click', function() {
   loadingMessage.innerText = 'Loading...';
   this.replaceWith(loadingMessage);
   createTestEcosystem().then(({arrangement, arrangementPlayer}) => {
-    ReactDOM.render(<ArrangementViewer arrangement={arrangement}/>, document.getElementById('wrapper'));
+    AudioPlayer.connect(arrangementPlayer);
     arrangementPlayer.loop();
+    ReactDOM.render(<ArrangementViewer arrangement={arrangement}/>, document.getElementById('wrapper'));
     const playButton = document.getElementById('play-button');
     const pauseButton = document.getElementById('pause-button');
 
-    playButton.addEventListener('click', () => arrangementPlayer.play());
-    pauseButton.addEventListener('click', () => arrangementPlayer.pause());
+    playButton.addEventListener('click', () => AudioPlayer.play());
+    pauseButton.addEventListener('click', () => AudioPlayer.pause());
     playButton.style.display = '';
     pauseButton.style.display = '';
 

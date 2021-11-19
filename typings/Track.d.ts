@@ -1,4 +1,4 @@
-declare interface Track extends Publisher, AudioEventSource {
+declare interface Track extends Publisher {
   arrangement: Arrangement
   instrument: Instrument
   notes: Note[]

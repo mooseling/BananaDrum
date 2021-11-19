@@ -2,7 +2,7 @@ declare interface ArrangementBuilder {
   (library:Library, packedArrangement?:PackedArrangement): Arrangement
 }
 
-declare interface Arrangement extends AudioEventSource {
+declare interface Arrangement {
   timeParams: TimeParams
   library: Library
   tracks: Track[]

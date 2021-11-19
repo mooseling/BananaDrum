@@ -9,7 +9,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
   const subscribers: ((...args:any[]) => void)[] = [];
   const notes:Note[] = [];
   const audioEvents:AudioEvent[] = [];
-  const track:Track = {arrangement, instrument, notes, edit, subscribe, getNoteAt, getAudioEvents};
+  const track:Track = {arrangement, instrument, notes, edit, subscribe, getNoteAt};
   if (packedNotes)
     unpackNotes();
 
@@ -55,11 +55,6 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
         return note;
     }
     return {timing, track, noteStyle:null}; // return a rest if no note is found
-  }
-
-
-  function getAudioEvents({start, end}:Interval):AudioEvent[] {
-    return audioEvents.filter(({realTime}) => realTime >= start && realTime <= end);
   }
 
 
