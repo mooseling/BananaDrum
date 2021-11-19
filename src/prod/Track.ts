@@ -1,14 +1,6 @@
-import {TimeConverter} from './TimeConverter';
-
-
 function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNotes:PackedNote[]): Track {
-  // We keep a TimeConverter here but recreate it if timeParams change
-  let timeConverter = TimeConverter(arrangement.timeParams);
-  arrangement.timeParams.subscribe(handleTimeParamsChange);
-
   const subscribers: ((...args:any[]) => void)[] = [];
   const notes:Note[] = [];
-  const audioEvents:AudioEvent[] = [];
   const track:Track = {arrangement, instrument, notes, edit, subscribe, getNoteAt};
   if (packedNotes)
     unpackNotes();
@@ -38,7 +30,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
     // If we're this far, newValue is a noteStyleId
     const newNote:Note = {timing, track, noteStyle:instrument.noteStyles[newValue]};
-    addNote(newNote);
+    notes.push(newNote);
     publish();
   }
 
@@ -74,7 +66,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
   // Only call if packedNotes is defined
   function unpackNotes(): void {
-    packedNotes.forEach(packedNote => addNote(unpackNote(packedNote)));
+    packedNotes.forEach(packedNote => notes.push(unpackNote(packedNote)));
   }
 
   function unpackNote(packedNote:PackedNote): Note {
@@ -87,60 +79,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
   // This assumes there will be 1 at the most
   // Returns true if it removes a note
   function removeNoteAt(timing:Timing) {
-    const note = notes.filter(note => note.timing === timing)[0];
-    if (note) {
-      removeNote(note);
-      return true;
-    }
-  }
-
-
-  function removeNote(note:Note) {
-    notes.splice(notes.indexOf(note), 1);
-    removeAudioEvent(note);
-  }
-
-
-  function removeAudioEvent(note:Note) {
-    return audioEvents.some((audioEvent, index) => {
-      if (audioEvent.note === note) {
-        audioEvents.splice(index, 1);
-        return true;
-      }
-    });
-  }
-
-
-  function addNote(note:Note) {
-    notes.push(note);
-    audioEvents.push(createAudioEvent(note));
-  }
-
-
-  function createAudioEvent(note:Note): AudioEvent {
-    return {
-      identifier: getIdentifier(note),
-      realTime: timeConverter.convertToRealTime(note.timing),
-      audioBuffer: note.noteStyle.audioBuffer,
-      note
-    };
-  }
-
-
-  // Need to uniquely identify the event from the Track's perspective
-  function getIdentifier({noteStyle, timing}:Note): string {
-    return `${noteStyle.noteStyleId}_${timing}`;
-  }
-
-
-  function handleTimeParamsChange() {
-    timeConverter = TimeConverter(arrangement.timeParams);
-
-    // Remove notes which are now at invalid times
-    notes.filter(note => !arrangement.timeParams.isValid(note.timing)).forEach(removeNote);
-
-    // Real-times for notes need to be recalculated on time signature or tempo changes
-    audioEvents.forEach(audioEvent => audioEvent.realTime = timeConverter.convertToRealTime(audioEvent.note.timing));
+    return notes.some((note, index) => (note.timing === timing) && notes.splice(index, 1));
   }
 }
 
