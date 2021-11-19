@@ -2,9 +2,11 @@ import {TimeConverter} from './TimeConverter';
 
 
 function buildTrackPlayer(track:Track): AudioEventSource {
-  let timeConverter = TimeConverter(track.arrangement.timeParams);
+  const {timeParams} = track.arrangement;
+  let timeConverter = TimeConverter(timeParams);
   const audioEvents:AudioEvent[] = track.notes.map(note => createAudioEvent(note));
   track.subscribe(matchAudioEventsToNotes);
+  timeParams.subscribe(handleTimeParamsChange);
 
   return {getAudioEvents};
 
@@ -30,6 +32,10 @@ function buildTrackPlayer(track:Track): AudioEventSource {
       audioBuffer: note.noteStyle.audioBuffer,
       note
     };
+  }
+  function handleTimeParamsChange() {
+    timeConverter = TimeConverter(timeParams);
+    audioEvents.forEach(event => event.realTime = timeConverter.convertToRealTime(event.note.timing));
   }
 }
 export const TrackPlayer:TrackPlayerBuilder = buildTrackPlayer;
