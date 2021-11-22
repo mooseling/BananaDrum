@@ -119,21 +119,23 @@ export function TimeCoordinator(timeParams:TimeParams): TimeCoordinator {
 
 
   function handleTimeParamsChange() {
-    setInternalParams();
     if (timeParams.tempo !== cachedTempo)
       handleTempoChange();
     publish();
   }
 
 
-  // When the tempo changes we recalculate offset
+  // A tempo change shrinks or stretches the whole piece across real time
+  // The audio-time does not change, so we are jumped to a different point in the music
+  // We use offset to move back to the correct point in the music
   function handleTempoChange() {
+    setInternalParams();
     const oldTempo = cachedTempo;
     const newTempo = timeParams.tempo;
     const audioTime = AudioPlayer.getTime();
-    const oldTime = audioTime + offset;
-    const newTime = oldTime * (oldTempo / newTempo);
-    offset = newTime - audioTime;
+    const oldOffsetTime = audioTime + offset;
+    const newOffsetTime = oldOffsetTime * (oldTempo / newTempo);
+    offset = newOffsetTime - audioTime;
     cachedTempo = newTempo;
   }
 }
