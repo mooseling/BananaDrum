@@ -9,8 +9,9 @@ export function TimeCoordinator(timeParams:TimeParams): TimeCoordinator {
   let secondsPerBar:RealTime, secondsPerSixteenth:RealTime, secondsPerBeat:RealTime, realTimeLength:RealTime;
   setInternalParams(); // Sets the variables above
 
-  // Tempo changes incur offset changes, and we have to know what the change actually was
-  let cachedTempo = timeParams.tempo; //
+  // Tempo and length changes incur offset changes
+  let cachedTempo = timeParams.tempo;
+  let cachedLength = timeParams.length;
   let offset = 0;
 
   timeParams.subscribe(handleTimeParamsChange);
@@ -118,9 +119,14 @@ export function TimeCoordinator(timeParams:TimeParams): TimeCoordinator {
   }
 
 
+  // We must only ever have one timeParam change at a time
   function handleTimeParamsChange() {
     if (timeParams.tempo !== cachedTempo)
-      handleTempoChange();
+      handleTempoChange(); // MUST call setInternalParams
+    else if (timeParams.length !== cachedLength)
+      handleLengthChange(); // MUST call setInternalParams
+    else
+      setInternalParams();
     publish();
   }
 
@@ -137,6 +143,28 @@ export function TimeCoordinator(timeParams:TimeParams): TimeCoordinator {
     const newOffsetTime = oldOffsetTime * (oldTempo / newTempo);
     offset = newOffsetTime - audioTime;
     cachedTempo = newTempo;
+  }
+
+
+  // A length change means that audio time no longer lines up with the same loop, or bar within the loop
+  // We use offset to move back to the correct loop and bar within it
+  function handleLengthChange() {
+    const oldRealTimeLength = realTimeLength;
+    setInternalParams();
+
+    const audioTime = AudioPlayer.getTime();
+    const oldOffsetTime = audioTime + offset;
+
+    const oldTimeWithinLoop = oldOffsetTime % oldRealTimeLength;
+    const targetTimeWithinLoop = oldTimeWithinLoop % realTimeLength;
+    let loopsFinished = Math.floor(oldOffsetTime / oldRealTimeLength);
+
+    // Prevent moving earlier into the same loop, which, musically, we've already played
+    if (targetTimeWithinLoop < oldTimeWithinLoop)
+      loopsFinished++;
+
+    const newOffsetTime = (loopsFinished * realTimeLength) + targetTimeWithinLoop;
+    offset = newOffsetTime - audioTime;
   }
 }
 
