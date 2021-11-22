@@ -4,6 +4,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
   const track:Track = {arrangement, instrument, notes, edit, subscribe, getNoteAt};
   if (packedNotes)
     unpackNotes();
+  arrangement.timeParams.subscribe(handleTimeParamsChange);
 
   return track;
 
@@ -80,6 +81,20 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
   // Returns true if it removes a note
   function removeNoteAt(timing:Timing) {
     return notes.some((note, index) => (note.timing === timing) && notes.splice(index, 1));
+  }
+
+
+  // When timeParams changes, we need to remove notes which have become invalid
+  function handleTimeParamsChange() {
+    const initialNoteCount = notes.length;
+    while(notes.some((note, index) => {
+      if (!arrangement.timeParams.isValid(note.timing)) {
+        notes.splice(index);
+        return true;
+      }
+    }));
+    if (notes.length !== initialNoteCount)
+      publish();
   }
 }
 
