@@ -13,15 +13,18 @@ export function ArrangementControls({arrangement}:{arrangement:Arrangement}): JS
 function TimeControls({arrangement}:{arrangement:Arrangement}): JSX.Element {
   const {timeParams} = arrangement;
   const [displayTempo, updateDisplayTempo] = useState(String(timeParams.tempo));
+  const [displayLength, updateDisplayLength] = useState(String(timeParams.length));
   let [state, update] = useState({arrangement});
   useEffect(() => timeParams.subscribe(() => update({arrangement})), []);
 
   return (
     <div className="time-controls">
-      Tempo: <input time-param="tempo" type="number" onChange={inputTempo} value={displayTempo} onBlur={blurTempo} onKeyPress={keyPressTempo}/> bpm
+      Tempo: <input time-param="tempo" type="number" onChange={inputTempo} value={displayTempo} onBlur={blurTempo} onKeyPress={keyPressTempo}/> bpm<br/>
+      Length: <input time-param="length" type="number" onChange={inputLength} value={displayLength} onBlur={blurLength} onKeyPress={keyPressLength}/> bars
     </div>
   );
 
+  // Tempo functions
   function inputTempo(event:React.ChangeEvent<HTMLInputElement>) {
     updateDisplayTempo(event.target.value);
   }
@@ -37,5 +40,23 @@ function TimeControls({arrangement}:{arrangement:Arrangement}): JSX.Element {
 
   function submitTempo(newTempo:string):void {
     timeParams.tempo = Number(newTempo);
+  }
+
+  // Length functions
+  function inputLength(event:React.ChangeEvent<HTMLInputElement>) {
+    updateDisplayLength(event.target.value);
+  }
+
+  function blurLength() {
+    submitLength(displayLength);
+  }
+
+  function keyPressLength(event:React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Enter')
+      submitLength(displayLength);
+  }
+
+  function submitLength(newLength:string):void {
+    timeParams.length = Number(newLength);
   }
 }
