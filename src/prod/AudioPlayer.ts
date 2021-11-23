@@ -20,8 +20,10 @@ export const AudioPlayer:AudioPlayer = (function(){
 
 
   function initialise() {
-    audioContext = new AudioContext();
-    audioContext.suspend();
+    if (audioContext === null) {
+      audioContext = new AudioContext();
+      audioContext.suspend();
+    }
   }
 
 
