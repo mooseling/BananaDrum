@@ -31,6 +31,10 @@
   cursor: pointer;
 }
 
+.note-viewer.start-of-bar {
+  border-left-width: 2px;
+}
+
 .note-viewer.odd-beat {
   background-color: #e0e0e0;
 }
