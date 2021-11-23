@@ -39,7 +39,11 @@ function TimeControls({arrangement}:{arrangement:Arrangement}): JSX.Element {
   }
 
   function submitTempo(newTempo:string):void {
-    timeParams.tempo = Number(newTempo);
+    try {
+      timeParams.tempo = Number(newTempo);
+    } catch (e) {
+      updateDisplayTempo(String(timeParams.tempo));
+    }
   }
 
   // Length functions
@@ -57,6 +61,10 @@ function TimeControls({arrangement}:{arrangement:Arrangement}): JSX.Element {
   }
 
   function submitLength(newLength:string):void {
-    timeParams.length = Number(newLength);
+    try {
+      timeParams.length = Number(newLength);
+    } catch (e) {
+      updateDisplayLength(String(timeParams.length));
+    }
   }
 }
