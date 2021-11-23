@@ -10,13 +10,17 @@ return {
       publish();
     }
   },
+
   get tempo() { return tempo; },
   set tempo(newTempo: number) {
+    if (!validateTempo(newTempo))
+      throw 'Invalid tempo';
     if (newTempo !== tempo) {
       tempo = newTempo;
       publish();
     }
   },
+
   get length() { return length; },
   set length(newLength: number) {
     if (!validateLength(newLength))
@@ -46,6 +50,15 @@ return {
   function publish(): void {
     subscribers.forEach(callback => callback());
   }
+}
+
+
+// The only invalid tempos are negative... unless we want to play backwards!
+// That's an idea for another time
+function validateTempo(tempo:number) {
+  if (tempo < 1)
+    return false;
+  return true;
 }
 
 
