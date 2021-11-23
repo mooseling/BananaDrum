@@ -8,9 +8,8 @@
 }
 
 .track-meta {
-  width: 50pt;
+  width: 80.9pt;
   border: 1px solid black;
-  background-color: #eee;
   height: 50pt;
   padding: 2pt;
   flex-shrink: 0;
@@ -30,6 +29,14 @@
   text-align: center;
   line-height: 50pt;
   cursor: pointer;
+}
+
+.note-viewer.start-of-bar {
+  border-left-width: 2px;
+}
+
+.note-viewer.odd-beat {
+  background-color: #e0e0e0;
 }
 
 .arrangement-controls {

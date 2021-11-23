@@ -1,12 +1,30 @@
 export function NoteViewer({note}:{note:Note}): JSX.Element {
   const {noteStyle} = note;
-  return (<div className="note-viewer" onClick={handleClick}>
-    {noteStyle ? noteStyle.noteStyleId : ''}
-  </div>);
+  const classes = getClasses(note);
+  return (
+    <div className={classes} onClick={handleClick}>
+      {noteStyle ? noteStyle.noteStyleId : ''}
+    </div>
+  );
 
   function handleClick() {
     cycleNoteStyle(note);
   }
+}
+
+
+function getClasses(note:Note) {
+  let classes:string[] = ['note-viewer'];
+  const timingBits = note.timing.split('.')
+
+  const beat = Number(timingBits[1]);
+  const beatIsEven = beat % 2 === 0;
+  classes.push(beatIsEven ? 'even-beat' : 'odd-beat');
+
+  if (beat === 1 && timingBits[2] === '1' && timingBits[2] === '1' && !timingBits[3])
+    classes.push('start-of-bar');
+
+  return classes.join(' ');
 }
 
 
