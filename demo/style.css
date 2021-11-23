@@ -32,6 +32,10 @@
   cursor: pointer;
 }
 
+.note-viewer.odd-beat {
+  background-color: #e0e0e0;
+}
+
 .arrangement-controls {
     padding: 20pt;
 }
