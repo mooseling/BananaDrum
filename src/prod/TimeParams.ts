@@ -19,6 +19,8 @@ return {
   },
   get length() { return length; },
   set length(newLength: number) {
+    if (!validateLength(newLength))
+      throw 'Invalid length';
     if (newLength !== length) {
       length = newLength;
       publish();
@@ -44,4 +46,15 @@ return {
   function publish(): void {
     subscribers.forEach(callback => callback());
   }
+}
+
+
+// Lengths must be natural numbers for now
+// Later we may want half-bar breaks, etc
+function validateLength(length:number) {
+  if (length <= 0)
+    return false;
+  if (length != Math.floor(length))
+    return false;
+  return true;
 }
