@@ -4,8 +4,9 @@ const loopFrequency = 125 // (ms) - mixed units are confusing, but we can skip s
 export const AudioPlayer:AudioPlayer = (function(){
   let audioContext:AudioContext|null = null;
   const audioSources:AudioEventSource[] = [];
+  const callbackSources:CallbackEventSource[] = [];
   let nextIteration: number|null = null;
-  const audioHistory = AudioHistory();
+  const eventHistory = EventHistory();
 
   return {initialise, connect, play, pause, getTime};
 
@@ -27,9 +28,12 @@ export const AudioPlayer:AudioPlayer = (function(){
   }
 
 
-  function connect(audioSource:AudioEventSource) {
+  function connect(eventSource:AudioEventSource|CallbackEventSource) {
     checkInitialised();
-    audioSources.push(audioSource);
+    if ('getAudioEvents' in eventSource)
+      audioSources.push(eventSource as AudioEventSource);
+    if ('getCallbackEvents' in eventSource)
+      callbackSources.push(eventSource as CallbackEventSource);
   }
 
 
@@ -74,21 +78,42 @@ export const AudioPlayer:AudioPlayer = (function(){
   function loop() {
     const currentTime = audioContext.currentTime;
     const interval:Interval = {start:currentTime, end: currentTime + lookahead};
-    const audioEvents:AudioEvent[] = [];
-    audioSources.forEach(audioSource => audioEvents.push(...audioSource.getAudioEvents(interval)));
-    audioEvents.forEach(audioEvent => {
-      if (!audioHistory.contains(audioEvent))
-        schedule(audioEvent);
-    });
+    scheduleAudioEvents(interval);
+    scheduleCallbackEvents(interval);
     nextIteration = setTimeout(loop, loopFrequency);
   }
 
 
-  function schedule(audioEvent: AudioEvent) {
+  function scheduleAudioEvents(interval:Interval) {
+    const audioEvents:AudioEvent[] = [];
+    audioSources.forEach(audioSource => audioEvents.push(...audioSource.getAudioEvents(interval)));
+    audioEvents.forEach(audioEvent => {
+      if (!eventHistory.contains(audioEvent))
+        scheduleAudioEvent(audioEvent);
+    });
+  }
+
+
+  function scheduleAudioEvent(audioEvent: AudioEvent) {
     const sourceNode = getSourceNode(audioEvent.audioBuffer);
     sourceNode.connect(audioContext.destination);
     sourceNode.start(audioEvent.realTime);
-    audioHistory.record(audioEvent);
+    eventHistory.record(audioEvent);
+  }
+
+
+  function scheduleCallbackEvents(interval:Interval) {
+    const callbackEvents:CallbackEvent[] = [];
+    callbackSources.forEach(callbackSource => callbackSource.getCallbackEvents(interval).forEach(callbackEvent => {
+      if (!eventHistory.contains(callbackEvent))
+        scheduleCallbackEvent(callbackEvent);
+    }));
+  }
+
+
+  function scheduleCallbackEvent({realTime, callback}:CallbackEvent) {
+    const msFromNow = (realTime - audioContext.currentTime) * 1000;
+    setTimeout(callback, msFromNow);
   }
 
 
@@ -102,20 +127,20 @@ export const AudioPlayer:AudioPlayer = (function(){
 
 
 // To prevent double-playing notes, we keep track of what we've already played
-interface AudioHistory {
-  record(audioEvent:AudioEvent): void
-  contains(audioEvent:AudioEvent): boolean
+interface EventHistory {
+  record(event:EventDetails): void
+  contains(event:EventDetails): boolean
 }
 
 
-function AudioHistory():AudioHistory {
-  const seenIds:string[] = []; // We track using AudioEvent.id
+function EventHistory():EventHistory {
+  const seenIds:string[] = [];
 
   return {
-    record({identifier}:AudioEvent) {
+    record({identifier}:EventDetails) {
       seenIds.push(identifier);
     },
-    contains({identifier}:AudioEvent) {
+    contains({identifier}:EventDetails) {
       return seenIds.includes(identifier);
     }
   };
