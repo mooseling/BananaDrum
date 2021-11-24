@@ -6,8 +6,15 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   const timeCoordinator = TimeCoordinator(arrangement.timeParams);
   let isLooping = false;
   const trackPlayers:TrackPlayer[] = createTrackPlayers();
+  let subscribers: ((...args:any[]) => void)[] = [];
 
-  return {getAudioEvents, loop};
+  // currentTiming updates as we play, and ArrangementPlayer publishes when it does
+  let currentTiming:Timing = '1.1.1';
+  let callbackEvents:CallbackEvent[]|null;
+  updateCallbackEvents();
+  arrangement.timeParams.subscribe(updateCallbackEvents);
+
+  return {getAudioEvents, getCallbackEvents, loop, getCurrentTiming, subscribe};
 
 
 
@@ -43,8 +50,36 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   }
 
 
+  function getCallbackEvents(interval:Interval): CallbackEvent[] {
+    const eventsInInterval:CallbackEvent[] = [];
+    const loopIntervals:LoopInterval[] = isLooping ?
+      timeCoordinator.convertToLoopIntervals(interval) :
+      timeCoordinator.convertToLoopIntervals(interval).filter(({loopNumber}) => loopNumber === 0);
+
+    loopIntervals.forEach(loopInterval => {
+      const {loopNumber} = loopInterval;
+      callbackEvents.forEach(audioEvent => eventsInInterval.push({
+        ...getIdentifiedCallbackEvent(audioEvent, loopNumber),
+        realTime: timeCoordinator.convertToAudioTime(audioEvent.realTime, loopNumber)
+      }))
+    });
+
+    return eventsInInterval;
+  }
+
+
   function loop(turnLoopingOn:boolean = true) {
     isLooping = turnLoopingOn;
+  }
+
+
+  function getCurrentTiming() {
+    return currentTiming;
+  }
+
+
+  function subscribe(callback: (...args:any[]) => void) {
+    subscribers.push(callback);
   }
 
 
@@ -67,7 +102,32 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   }
 
 
+  // CallbackEvents are already tagged with their timing, they just need loopNumber
+  function getIdentifiedCallbackEvent(callbackEvent:CallbackEvent, loopNumber:number): CallbackEvent {
+    const identifier = `${callbackEvent.identifier}--${loopNumber}`;
+    return  {...callbackEvent, identifier};
+  }
+
+
   function createTrackPlayers() {
     return arrangement.tracks.map(track => TrackPlayer(track, timeCoordinator));
+  }
+
+
+  function updateCallbackEvents() {
+    const sixteenths = arrangement.getSixteenths();
+    callbackEvents = sixteenths.map(timing => ({
+      realTime: timeCoordinator.convertToRealTime(timing),
+      callback: () => {
+        currentTiming = timing;
+        publish();
+      },
+      identifier: timing
+    }));
+  }
+
+
+  function publish(): void {
+    subscribers.forEach(callback => callback());
   }
 }
