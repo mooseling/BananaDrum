@@ -39,6 +39,10 @@
   background-color: #e0e0e0;
 }
 
+.note-viewer.current-timing {
+  background-color: yellow;
+}
+
 .arrangement-controls {
     padding: 20pt;
 }
