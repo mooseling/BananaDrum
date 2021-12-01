@@ -61,12 +61,12 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
       timeCoordinator.convertToLoopIntervals(interval) :
       timeCoordinator.convertToLoopIntervals(interval).filter(({loopNumber}) => loopNumber === 0);
 
-    loopIntervals.forEach(loopInterval => {
-      const {loopNumber} = loopInterval;
-      callbackEvents.forEach(audioEvent => eventsInInterval.push({
-        ...getIdentifiedCallbackEvent(audioEvent, loopNumber),
-        realTime: timeCoordinator.convertToAudioTime(audioEvent.realTime, loopNumber)
-      }))
+    loopIntervals.forEach(({loopNumber, start, end}) => {
+      callbackEvents.filter(({realTime}) => realTime >= start && realTime <= end)
+        .forEach(audioEvent => eventsInInterval.push({
+          ...getIdentifiedCallbackEvent(audioEvent, loopNumber),
+          realTime: timeCoordinator.convertToAudioTime(audioEvent.realTime, loopNumber)
+        }))
     });
 
     return eventsInInterval;
