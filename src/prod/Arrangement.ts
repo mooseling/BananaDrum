@@ -46,22 +46,4 @@ function arrangementBuilder(library:Library, packedArrangement?:PackedArrangemen
     }
     return sixteenths;
   }
-
-
-
-
-
-
-  // ==================================================================
-  //                          Private Functions
-  // ==================================================================
-
-
-  // AudioEvents coming out of tracks are uniquely identified from the track's perspective
-  // We'll extend the identifier so they are uniquely identified within the arrangement
-  function getIdentifiedAudioEvent(audioEvent:AudioEvent): AudioEvent {
-    const {instrumentId} = audioEvent.note.track.instrument;
-    const identifier = `${audioEvent.identifier}--${instrumentId}`;
-    return  {...audioEvent, identifier};
-  }
 };

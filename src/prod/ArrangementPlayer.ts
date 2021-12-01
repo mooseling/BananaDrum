@@ -45,7 +45,7 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
       trackPlayers.forEach(trackPlayer =>
         trackPlayer.getAudioEvents(loopInterval)
         .forEach(audioEvent => audioEvents.push({
-          ...getIdentifiedAudioEvent(audioEvent, loopNumber),
+          ...audioEvent,
           realTime: timeCoordinator.convertToAudioTime(audioEvent.realTime, loopNumber)
         }))
       );
@@ -64,7 +64,7 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
     loopIntervals.forEach(({loopNumber, start, end}) => {
       callbackEvents.filter(({realTime}) => realTime >= start && realTime < end)
         .forEach(audioEvent => eventsInInterval.push({
-          ...getIdentifiedCallbackEvent(audioEvent, loopNumber),
+          ...audioEvent,
           realTime: timeCoordinator.convertToAudioTime(audioEvent.realTime, loopNumber)
         }))
     });
@@ -91,22 +91,6 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   //                          Private Functions
   // ==================================================================
 
-
-
-  // AudioEvents coming out of tracks are uniquely identified from the track's perspective
-  // We'll extend the identifier so they are uniquely identified within the arrangement-player
-  function getIdentifiedAudioEvent(audioEvent:AudioEvent, loopNumber:number): AudioEvent {
-    const {instrumentId} = audioEvent.note.track.instrument;
-    const identifier = `${audioEvent.identifier}--${loopNumber}_${instrumentId}`;
-    return  {...audioEvent, identifier};
-  }
-
-
-  // CallbackEvents are already tagged with their timing, they just need loopNumber
-  function getIdentifiedCallbackEvent(callbackEvent:CallbackEvent, loopNumber:number): CallbackEvent {
-    const identifier = `${callbackEvent.identifier}--${loopNumber}`;
-    return  {...callbackEvent, identifier};
-  }
 
 
   function createTrackPlayers() {

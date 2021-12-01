@@ -33,7 +33,6 @@ function buildTrackPlayer(track:Track, timeCoordinator:TimeCoordinator): TrackPl
 
   function createAudioEvent(note:Note): AudioEvent {
     return {
-      identifier: getIdentifier(note),
       realTime: timeCoordinator.convertToRealTime(note.timing),
       audioBuffer: note.noteStyle.audioBuffer,
       note
@@ -55,9 +54,3 @@ function buildTrackPlayer(track:Track, timeCoordinator:TimeCoordinator): TrackPl
 }
 
 export const TrackPlayer:TrackPlayerBuilder = buildTrackPlayer;
-
-
-// Need to uniquely identify the event from the Track's perspective
-function getIdentifier({noteStyle, timing}:Note): string {
-  return `${noteStyle.noteStyleId}_${timing}`;
-}
