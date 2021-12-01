@@ -103,7 +103,6 @@ export const AudioPlayer:AudioPlayer = (function(){
 
 
   function scheduleCallbackEvents(interval:Interval) {
-    const callbackEvents:CallbackEvent[] = [];
     callbackSources.forEach(callbackSource => callbackSource.getCallbackEvents(interval).forEach(callbackEvent => {
       if (!eventHistory.contains(callbackEvent))
         scheduleCallbackEvent(callbackEvent);
