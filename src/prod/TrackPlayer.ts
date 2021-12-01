@@ -17,7 +17,7 @@ function buildTrackPlayer(track:Track, timeCoordinator:TimeCoordinator): TrackPl
 
 
   function getAudioEvents({start, end}:Interval): AudioEvent[] {
-    return audioEvents.filter(({realTime}) => realTime >= start && realTime <= end);
+    return audioEvents.filter(({realTime}) => realTime >= start && realTime < end);
   }
 
 

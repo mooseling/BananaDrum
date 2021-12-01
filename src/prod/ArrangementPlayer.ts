@@ -62,7 +62,7 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
       timeCoordinator.convertToLoopIntervals(interval).filter(({loopNumber}) => loopNumber === 0);
 
     loopIntervals.forEach(({loopNumber, start, end}) => {
-      callbackEvents.filter(({realTime}) => realTime >= start && realTime <= end)
+      callbackEvents.filter(({realTime}) => realTime >= start && realTime < end)
         .forEach(audioEvent => eventsInInterval.push({
           ...getIdentifiedCallbackEvent(audioEvent, loopNumber),
           realTime: timeCoordinator.convertToAudioTime(audioEvent.realTime, loopNumber)
