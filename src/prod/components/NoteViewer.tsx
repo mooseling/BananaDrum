@@ -1,8 +1,14 @@
+declare module 'react' {
+  interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+    timing?: string;
+  }
+}
+
 export function NoteViewer({note}:{note:Note}): JSX.Element {
   const {noteStyle} = note;
   const classes = getClasses(note);
   return (
-    <div className={classes} onClick={handleClick}>
+    <div className={classes} onClick={handleClick} timing={note.timing}>
       {noteStyle ? noteStyle.noteStyleId : ''}
     </div>
   );
