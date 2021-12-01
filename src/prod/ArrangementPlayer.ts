@@ -14,7 +14,12 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   updateCallbackEvents();
   arrangement.timeParams.subscribe(updateCallbackEvents);
 
-  return {getAudioEvents, getCallbackEvents, loop, getCurrentTiming, subscribe};
+  return {
+    getAudioEvents, getCallbackEvents, loop, subscribe,
+    get currentTiming() {
+      return currentTiming;
+    }
+  };
 
 
 
@@ -70,11 +75,6 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
 
   function loop(turnLoopingOn:boolean = true) {
     isLooping = turnLoopingOn;
-  }
-
-
-  function getCurrentTiming() {
-    return currentTiming;
   }
 
 
