@@ -103,7 +103,6 @@ export const AudioPlayer:AudioPlayer = (function(){
 
 
   function scheduleCallbackEvents(interval:Interval) {
-    const callbackEvents:CallbackEvent[] = [];
     callbackSources.forEach(callbackSource => callbackSource.getCallbackEvents(interval).forEach(callbackEvent => {
       if (!eventHistory.contains(callbackEvent))
         scheduleCallbackEvent(callbackEvent);
@@ -111,9 +110,10 @@ export const AudioPlayer:AudioPlayer = (function(){
   }
 
 
-  function scheduleCallbackEvent({realTime, callback}:CallbackEvent) {
-    const msFromNow = (realTime - audioContext.currentTime) * 1000;
-    setTimeout(callback, msFromNow);
+  function scheduleCallbackEvent(event:CallbackEvent) {
+    const msFromNow = (event.realTime - audioContext.currentTime) * 1000;
+    setTimeout(event.callback, msFromNow);
+    eventHistory.record(event);
   }
 
 
