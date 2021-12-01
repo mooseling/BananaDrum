@@ -19,7 +19,7 @@ document.getElementById('load-button').addEventListener('click', function() {
   createTestEcosystem().then(({arrangement, arrangementPlayer}) => {
     AudioPlayer.connect(arrangementPlayer);
     arrangementPlayer.loop();
-    ReactDOM.render(<ArrangementViewer arrangement={arrangement}/>, document.getElementById('wrapper'));
+    ReactDOM.render(<ArrangementViewer arrangement={arrangement} arrangementPlayer={arrangementPlayer}/>, document.getElementById('wrapper'));
     const playButton = document.getElementById('play-button');
     const pauseButton = document.getElementById('pause-button');
 
