@@ -1,25 +1,22 @@
-import {useState, useContext, useEffect} from 'react';
+import {useState, useContext, useEffect, memo} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
 
+
+const MemoNoteDetailsViewer = memo(NoteDetailsViewer);
+
+
 export function NoteViewer({note}:{note:Note}): JSX.Element {
-  const {noteStyle} = note;
-  const arrangementPlayer = useContext(ArrangementPlayerContext);
-  const [lastKnownTiming, rememberTiming] = useState(arrangementPlayer.getCurrentTiming());
-  useEffect(() => arrangementPlayer.subscribe(() => rememberTiming(arrangementPlayer.getCurrentTiming())), []);
-  const classes = getClasses(note, lastKnownTiming);
   return (
-    <div className={classes} onClick={handleClick}>
-      {noteStyle ? noteStyle.noteStyleId : ''}
+    <div className={getClasses(note)} onClick={() => cycleNoteStyle(note)}>
+      <NoteHighlighter timing={note.timing}>
+        <MemoNoteDetailsViewer noteStyle={note.noteStyle} />
+      </NoteHighlighter>
     </div>
   );
-
-  function handleClick() {
-    cycleNoteStyle(note);
-  }
 }
 
 
-function getClasses(note:Note, lastKnownTiming:Timing) {
+function getClasses(note:Note) {
   let classes:string[] = ['note-viewer'];
   const timingBits = note.timing.split('.')
 
@@ -30,10 +27,24 @@ function getClasses(note:Note, lastKnownTiming:Timing) {
   if (beat === 1 && timingBits[2] === '1' && timingBits[2] === '1' && !timingBits[3])
     classes.push('start-of-bar');
 
-  if (lastKnownTiming === note.timing)
-    classes.push('current-timing');
-
   return classes.join(' ');
+}
+
+
+function NoteHighlighter({timing, children}:{timing:Timing, children:JSX.Element}): JSX.Element {
+  const player:ArrangementPlayer = useContext(ArrangementPlayerContext);
+  const [currentTiming, rememberTiming] = useState(player.currentTiming);
+  useEffect(() => player.subscribe(() => rememberTiming(player.currentTiming)), []);
+  return (
+    <div className={'note-highlighter' + (currentTiming === timing ? ' lit' : '')}>
+      {children}
+    </div>
+  );
+}
+
+
+function NoteDetailsViewer({noteStyle}:{noteStyle:NoteStyle}): JSX.Element {
+  return <div>{noteStyle ? noteStyle.noteStyleId : ''}</div>;
 }
 
 

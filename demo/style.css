@@ -39,7 +39,11 @@
   background-color: #e0e0e0;
 }
 
-.note-viewer.current-timing {
+.note-highlighter {
+  height: 100%;
+}
+
+.note-highlighter.lit {
   background-color: yellow;
 }
 
