@@ -6,7 +6,7 @@ export const AudioPlayer:AudioPlayer = (function(){
   const audioSources:AudioEventSource[] = [];
   const callbackSources:CallbackEventSource[] = [];
   let nextIteration: number|null = null;
-  const eventHistory = EventHistory();
+  let intervalProgress:number = 0;
 
   return {initialise, connect, play, pause, getTime};
 
@@ -77,20 +77,18 @@ export const AudioPlayer:AudioPlayer = (function(){
 
   function loop() {
     const currentTime = audioContext.currentTime;
-    const interval:Interval = {start:currentTime, end: currentTime + lookahead};
+    const interval:Interval = {start:intervalProgress, end: currentTime + lookahead};
     scheduleAudioEvents(interval);
     scheduleCallbackEvents(interval);
     nextIteration = setTimeout(loop, loopFrequency);
+    intervalProgress = currentTime + lookahead;
   }
 
 
   function scheduleAudioEvents(interval:Interval) {
     const audioEvents:AudioEvent[] = [];
     audioSources.forEach(audioSource => audioEvents.push(...audioSource.getAudioEvents(interval)));
-    audioEvents.forEach(audioEvent => {
-      if (!eventHistory.contains(audioEvent))
-        scheduleAudioEvent(audioEvent);
-    });
+    audioEvents.forEach(audioEvent => scheduleAudioEvent(audioEvent));
   }
 
 
@@ -98,22 +96,17 @@ export const AudioPlayer:AudioPlayer = (function(){
     const sourceNode = getSourceNode(audioEvent.audioBuffer);
     sourceNode.connect(audioContext.destination);
     sourceNode.start(audioEvent.realTime);
-    eventHistory.record(audioEvent);
   }
 
 
   function scheduleCallbackEvents(interval:Interval) {
-    callbackSources.forEach(callbackSource => callbackSource.getCallbackEvents(interval).forEach(callbackEvent => {
-      if (!eventHistory.contains(callbackEvent))
-        scheduleCallbackEvent(callbackEvent);
-    }));
+    callbackSources.forEach(callbackSource => callbackSource.getCallbackEvents(interval).forEach(callbackEvent => scheduleCallbackEvent(callbackEvent)));
   }
 
 
   function scheduleCallbackEvent(event:CallbackEvent) {
     const msFromNow = (event.realTime - audioContext.currentTime) * 1000;
     setTimeout(event.callback, msFromNow);
-    eventHistory.record(event);
   }
 
 
@@ -121,27 +114,3 @@ export const AudioPlayer:AudioPlayer = (function(){
     return new AudioBufferSourceNode(audioContext, {buffer: buffer});
   }
 })();
-
-
-
-
-
-// To prevent double-playing notes, we keep track of what we've already played
-interface EventHistory {
-  record(event:EventDetails): void
-  contains(event:EventDetails): boolean
-}
-
-
-function EventHistory():EventHistory {
-  const seenIds:string[] = [];
-
-  return {
-    record({identifier}:EventDetails) {
-      seenIds.push(identifier);
-    },
-    contains({identifier}:EventDetails) {
-      return seenIds.includes(identifier);
-    }
-  };
-}
