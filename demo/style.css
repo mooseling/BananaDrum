@@ -1,6 +1,6 @@
 .track-viewer {
   display: flex;
-  height:54pt;
+  height:50pt;
 }
 
 .track-viewer > * {
@@ -10,7 +10,7 @@
 .track-meta {
   width: 80.9pt;
   border: 1px solid black;
-  height: 50pt;
+  height: 46pt;
   padding: 2pt;
   flex-shrink: 0;
 }
@@ -25,7 +25,6 @@
   border: 1px solid black;
   display: inline-block;
   height: 50pt;
-  padding: 2pt;
   text-align: center;
   line-height: 50pt;
   cursor: pointer;
