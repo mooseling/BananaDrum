@@ -1,12 +1,17 @@
-const lookahead = 0.25; // (s) Look 250ms ahead for notes
-const loopFrequency = 125 // (ms) - mixed units are confusing, but we can skip some pointless maths
+// The core of Banana Drum is AudioPlayer
+// It plays audio - and also cues up other events!
+// Playing audio boils down to the WebAudio API, so we must warp our design around that
+
+
+const lookahead = 0.25; // (s) Look 250ms ahead for events
+const loopFrequency = 125 // (ms) Check for upcoming events every 125ms
 
 export const AudioPlayer:AudioPlayer = (function(){
   let audioContext:AudioContext|null = null;
   const audioSources:AudioEventSource[] = [];
   const callbackSources:CallbackEventSource[] = [];
   let nextIteration: number|null = null;
-  let intervalProgress:number = 0;
+  let timeCovered:number = 0;
 
   return {initialise, connect, play, pause, getTime};
 
@@ -20,6 +25,8 @@ export const AudioPlayer:AudioPlayer = (function(){
   // ==================================================================
 
 
+
+  // Browsers require that an AudioContext is created as a result of user interaction
   function initialise() {
     if (audioContext === null) {
       audioContext = new AudioContext();
@@ -45,6 +52,7 @@ export const AudioPlayer:AudioPlayer = (function(){
     }
   }
 
+
   function pause() {
     checkInitialised();
     if (nextIteration !== null) {
@@ -53,6 +61,7 @@ export const AudioPlayer:AudioPlayer = (function(){
       nextIteration = null;
     }
   }
+
 
   function getTime() {
     checkInitialised();
@@ -69,48 +78,41 @@ export const AudioPlayer:AudioPlayer = (function(){
   // ==================================================================
 
 
+
   function checkInitialised() {
     if (audioContext === null)
       throw 'The AudioPlayer has not been initialised';
   }
 
 
+  // The loop is a setTimeout loop
+  // It gets and schedules events in an upcoming time interval
+  // We make sure never to request any time we've requested before
   function loop() {
     const currentTime = audioContext.currentTime;
-    const interval:Interval = {start:intervalProgress, end: currentTime + lookahead};
+    const interval:Interval = {start:timeCovered, end: currentTime + lookahead};
     scheduleAudioEvents(interval);
     scheduleCallbackEvents(interval);
     nextIteration = setTimeout(loop, loopFrequency);
-    intervalProgress = currentTime + lookahead;
+    timeCovered = currentTime + lookahead;
   }
 
 
   function scheduleAudioEvents(interval:Interval) {
     const audioEvents:AudioEvent[] = [];
     audioSources.forEach(audioSource => audioEvents.push(...audioSource.getAudioEvents(interval)));
-    audioEvents.forEach(audioEvent => scheduleAudioEvent(audioEvent));
-  }
-
-
-  function scheduleAudioEvent(audioEvent: AudioEvent) {
-    const sourceNode = getSourceNode(audioEvent.audioBuffer);
-    sourceNode.connect(audioContext.destination);
-    sourceNode.start(audioEvent.realTime);
+    audioEvents.forEach(({audioBuffer, realTime}) => {
+      const sourceNode = new AudioBufferSourceNode(audioContext, {buffer:audioBuffer});
+      sourceNode.connect(audioContext.destination);
+      sourceNode.start(realTime);
+    });
   }
 
 
   function scheduleCallbackEvents(interval:Interval) {
-    callbackSources.forEach(callbackSource => callbackSource.getCallbackEvents(interval).forEach(callbackEvent => scheduleCallbackEvent(callbackEvent)));
-  }
-
-
-  function scheduleCallbackEvent(event:CallbackEvent) {
-    const msFromNow = (event.realTime - audioContext.currentTime) * 1000;
-    setTimeout(event.callback, msFromNow);
-  }
-
-
-  function getSourceNode(buffer:AudioBuffer): AudioBufferSourceNode {
-    return new AudioBufferSourceNode(audioContext, {buffer: buffer});
+    callbackSources.forEach(callbackSource => callbackSource.getCallbackEvents(interval).forEach(({realTime, callback}) => {
+      const msFromNow = (realTime - audioContext.currentTime) * 1000;
+      setTimeout(callback, msFromNow);
+    }));
   }
 })();
