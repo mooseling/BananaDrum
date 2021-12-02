@@ -1,7 +1,7 @@
 // import path from 'path';
 
 const config = {
-  mode: 'development',
+  mode: 'production',
   entry: {
     prod: './src/prod/index.tsx',
     test: './src/test/index.ts'
