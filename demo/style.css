@@ -28,6 +28,13 @@
   text-align: center;
   line-height: 50pt;
   cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.note-viewer * {
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .note-viewer.start-of-bar {
