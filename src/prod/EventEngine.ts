@@ -1,12 +1,12 @@
-// The core of Banana Drum is AudioPlayer
-// It plays audio - and also cues up other events!
+// The core of Banana Drum is the EventEngine
+// It plays audio and cues up callbacks
 // Playing audio boils down to the WebAudio API, so we must warp our design around that
 
 
 const lookahead = 0.25; // (s) Look 250ms ahead for events
 const loopFrequency = 125 // (ms) Check for upcoming events every 125ms
 
-export const AudioPlayer:AudioPlayer = (function(){
+export const EventEngine:EventEngine = (function(){
   let audioContext:AudioContext|null = null;
   const audioSources:AudioEventSource[] = [];
   const callbackSources:CallbackEventSource[] = [];

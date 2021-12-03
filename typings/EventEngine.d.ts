@@ -1,4 +1,4 @@
-declare interface AudioPlayer {
+declare interface EventEngine {
   initialise(): void
   connect(eventSource:AudioEventSource|CallbackEventSource): void
   play(): void

@@ -1,9 +1,9 @@
-import {AudioPlayer} from './AudioPlayer';
+import {EventEngine} from './EventEngine';
 
 // TimeCoordinator handles all maths that need to be done with TimeParams
-// In the AudioPlayer, time always marches forward (except when paused)
+// In the EventEngine, time always marches forward (except when paused)
 // In music-related objects, times are always between 0 and the length of the section
-// A TimeCoordinator adjust times from the AudioPlayer to make sense to music objects
+// A TimeCoordinator adjust times from the EventEngine to make sense to music objects
 export function TimeCoordinator(timeParams:TimeParams): TimeCoordinator {
   const subscribers: ((...args:any[]) => void)[] = [];
   let secondsPerBar:RealTime, secondsPerSixteenth:RealTime, secondsPerBeat:RealTime, realTimeLength:RealTime;
@@ -138,7 +138,7 @@ export function TimeCoordinator(timeParams:TimeParams): TimeCoordinator {
     setInternalParams();
     const oldTempo = cachedTempo;
     const newTempo = timeParams.tempo;
-    const audioTime = AudioPlayer.getTime();
+    const audioTime = EventEngine.getTime();
     const oldOffsetTime = audioTime + offset;
     const newOffsetTime = oldOffsetTime * (oldTempo / newTempo);
     offset = newOffsetTime - audioTime;
@@ -152,7 +152,7 @@ export function TimeCoordinator(timeParams:TimeParams): TimeCoordinator {
     const oldRealTimeLength = realTimeLength;
     setInternalParams();
 
-    const audioTime = AudioPlayer.getTime();
+    const audioTime = EventEngine.getTime();
     const oldOffsetTime = audioTime + offset;
 
     const oldTimeWithinLoop = oldOffsetTime % oldRealTimeLength;

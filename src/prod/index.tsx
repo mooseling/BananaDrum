@@ -1,4 +1,4 @@
-import {AudioPlayer} from './AudioPlayer';
+import {EventEngine} from './EventEngine';
 import {ArrangementViewer} from './components/ArrangementViewer';
 import ReactDOM from 'react-dom';
 import React from 'react';
@@ -10,21 +10,21 @@ window.React = React;
 
 
 document.getElementById('load-button').addEventListener('click', function() {
-  AudioPlayer.initialise();
+  EventEngine.initialise();
 
   const loadingMessage = document.createElement('div');
   loadingMessage.id = 'loading-message';
   loadingMessage.innerText = 'Loading...';
   this.replaceWith(loadingMessage);
   createTestEcosystem().then(({arrangement, arrangementPlayer}) => {
-    AudioPlayer.connect(arrangementPlayer);
+    EventEngine.connect(arrangementPlayer);
     arrangementPlayer.loop();
     ReactDOM.render(<ArrangementViewer arrangement={arrangement} arrangementPlayer={arrangementPlayer}/>, document.getElementById('wrapper'));
     const playButton = document.getElementById('play-button');
     const pauseButton = document.getElementById('pause-button');
 
-    playButton.addEventListener('click', () => AudioPlayer.play());
-    pauseButton.addEventListener('click', () => AudioPlayer.pause());
+    playButton.addEventListener('click', () => EventEngine.play());
+    pauseButton.addEventListener('click', () => EventEngine.pause());
     playButton.style.display = '';
     pauseButton.style.display = '';
 
