@@ -1,16 +1,13 @@
-import {useState, useContext, useEffect, memo} from 'react';
+import {useState, useContext, useEffect} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
-
-
-const MemoNoteDetailsViewer = memo(NoteDetailsViewer);
 
 
 export function NoteViewer({note}:{note:Note}): JSX.Element {
   return (
     <div className={getClasses(note)} onClick={() => cycleNoteStyle(note)}>
-      <NoteHighlighter timing={note.timing}>
-        <MemoNoteDetailsViewer noteStyle={note.noteStyle} />
-      </NoteHighlighter>
+      <div className="note-viewer-background"></div>
+      <NoteHighlighter timing={note.timing} />
+      <NoteDetailsViewer noteStyle={note.noteStyle} />
     </div>
   );
 }
@@ -31,15 +28,12 @@ function getClasses(note:Note) {
 }
 
 
-function NoteHighlighter({timing, children}:{timing:Timing, children:JSX.Element}): JSX.Element {
+function NoteHighlighter({timing}:{timing:Timing}): JSX.Element {
   const player:ArrangementPlayer = useContext(ArrangementPlayerContext);
   const [currentTiming, rememberTiming] = useState(player.currentTiming);
   useEffect(() => player.subscribe(() => rememberTiming(player.currentTiming)), []);
-  return (
-    <div className={'note-highlighter' + (currentTiming === timing ? ' lit' : '')}>
-      {children}
-    </div>
-  );
+  const litCLass = currentTiming === timing ? ' lit' : ''
+  return <div className={'note-highlighter' + litCLass}></div>;
 }
 
 
