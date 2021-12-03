@@ -59,6 +59,7 @@ export const AudioPlayer:AudioPlayer = (function(){
       audioContext.suspend();
       clearTimeout(nextIteration);
       nextIteration = null;
+      timeCovered = audioContext.currentTime;
     }
   }
 
