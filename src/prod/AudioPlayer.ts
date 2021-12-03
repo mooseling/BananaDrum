@@ -13,6 +13,9 @@ export const AudioPlayer:AudioPlayer = (function(){
   let nextIteration: number|null = null;
   let timeCovered:number = 0;
 
+  const cuedAudio:AudioBufferSourceNode[] = [];
+  const cuedCallbacks:number[] = [];
+
   return {initialise, connect, play, pause, getTime};
 
 
@@ -57,6 +60,7 @@ export const AudioPlayer:AudioPlayer = (function(){
     checkInitialised();
     if (nextIteration !== null) {
       audioContext.suspend();
+      clearCuedEvents();
       clearTimeout(nextIteration);
       nextIteration = null;
       timeCovered = audioContext.currentTime;
@@ -106,6 +110,13 @@ export const AudioPlayer:AudioPlayer = (function(){
       const sourceNode = new AudioBufferSourceNode(audioContext, {buffer:audioBuffer});
       sourceNode.connect(audioContext.destination);
       sourceNode.start(realTime);
+
+      cuedAudio.push(sourceNode);
+      sourceNode.addEventListener('ended', () => {
+        const cueIndex = cuedAudio.indexOf(sourceNode);
+        if (cueIndex !== -1)
+          cuedAudio.splice(cueIndex, 1);
+      });
     });
   }
 
@@ -113,7 +124,21 @@ export const AudioPlayer:AudioPlayer = (function(){
   function scheduleCallbackEvents(interval:Interval) {
     callbackSources.forEach(callbackSource => callbackSource.getCallbackEvents(interval).forEach(({realTime, callback}) => {
       const msFromNow = (realTime - audioContext.currentTime) * 1000;
-      setTimeout(callback, msFromNow);
+      const timeoutId = setTimeout(() => {
+        callback();
+        const cueIndex = cuedCallbacks.indexOf(timeoutId);
+        if (cueIndex !== -1)
+          cuedCallbacks.splice(cueIndex, 1);
+      }, msFromNow);
+      cuedCallbacks.push(timeoutId);
     }));
+  }
+
+
+  function clearCuedEvents(): void {
+    cuedAudio.forEach(sourceNode => sourceNode.stop());
+    cuedAudio.splice(0);
+    cuedCallbacks.forEach(timeoutId => clearTimeout(timeoutId));
+    cuedCallbacks.splice(0);
   }
 })();
