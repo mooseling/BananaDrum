@@ -1,4 +1,4 @@
-export function TimeParams(packedParams:PackedTimeParams): TimeParams {
+export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimeParams {
   let {timeSignature, tempo, length} = packedParams;
   let subscribers: ((...args:any[]) => void)[] = [];
 
@@ -34,7 +34,7 @@ return {
     subscribers.push(callback);
   },
   // Timings
-  isValid(timing:Timing) {
+  isValid(timing:Banana.Timing) {
     const [bar, beat] = timing.split('.').map(bit => Number(bit));
     if (bar > length)
       return false; // timing falls outside the arrangement entirely

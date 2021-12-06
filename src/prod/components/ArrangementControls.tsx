@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 
 
-export function ArrangementControls({arrangement}:{arrangement:Arrangement}): JSX.Element {
+export function ArrangementControls({arrangement}:{arrangement:Banana.Arrangement}): JSX.Element {
   return (
     <div className="arrangement-controls">
       <TimeControls arrangement={arrangement} />
@@ -10,7 +10,7 @@ export function ArrangementControls({arrangement}:{arrangement:Arrangement}): JS
 }
 
 
-function TimeControls({arrangement}:{arrangement:Arrangement}): JSX.Element {
+function TimeControls({arrangement}:{arrangement:Banana.Arrangement}): JSX.Element {
   const {timeParams} = arrangement;
   const [displayTempo, updateDisplayTempo] = useState(String(timeParams.tempo));
   const [displayLength, updateDisplayLength] = useState(String(timeParams.length));

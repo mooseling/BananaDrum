@@ -2,12 +2,12 @@ import {assert} from 'chai';
 import {TimeCoordinator} from '../../prod/TimeCoordinator';
 import {TimeParams} from '../../prod/TimeParams';
 
-type TestCase = [Timing, number];
+type TestCase = [Banana.Timing, number];
 
 describe('TimeCoordinator', function() {
   describe('Time conversion', function() {
     describe('4/4 time, 120bpm', function() {
-      const timeParams:TimeParams = TimeParams({timeSignature:'4/4', tempo:120, length:1});
+      const timeParams:Banana.TimeParams = TimeParams({timeSignature:'4/4', tempo:120, length:1});
       const timeCoordinator = TimeCoordinator(timeParams);
 
       it('returns 0 on the 1', () => assert(timeCoordinator.convertToRealTime('1.1.1') === 0));
@@ -50,7 +50,7 @@ describe('TimeCoordinator', function() {
     });
 
     describe('6/8 time, 140bpm', function() {
-      const timeParams:TimeParams = TimeParams({timeSignature:'6/8', tempo:140, length:1});
+      const timeParams:Banana.TimeParams = TimeParams({timeSignature:'6/8', tempo:140, length:1});
       const timeCoordinator = TimeCoordinator(timeParams);
 
       it('returns 0 on the 1', () => assert(timeCoordinator.convertToRealTime('1.1.1') === 0));

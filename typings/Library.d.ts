@@ -1,28 +1,30 @@
-declare interface Library {
-  load(): Promise<void>
-  instruments: {[instrumentId:string]: Instrument}
-}
+declare namespace Banana {
+  interface Library {
+    load(): Promise<void>
+    instruments: {[instrumentId:string]: Instrument}
+  }
 
-declare type InstrumentCollection = PackedInstrument[]
+  type InstrumentCollection = PackedInstrument[]
 
-declare interface PackedInstrument {
-  instrumentId: string
-  displayName: string
-  packedNoteStyles: PackedNoteStyle[]
-}
+  interface PackedInstrument {
+    instrumentId: string
+    displayName: string
+    packedNoteStyles: PackedNoteStyle[]
+  }
 
-declare interface PackedNoteStyle {
-  noteStyleId: string
-  file: string
-}
+  interface PackedNoteStyle {
+    noteStyleId: string
+    file: string
+  }
 
-declare interface Instrument {
-  instrumentId: string
-  displayName: string
-  noteStyles: {[styleId: string]: NoteStyle}
-}
+  interface Instrument {
+    instrumentId: string
+    displayName: string
+    noteStyles: {[styleId: string]: NoteStyle}
+  }
 
-declare interface NoteStyle {
-  noteStyleId: string
-  audioBuffer: AudioBuffer
+  interface NoteStyle {
+    noteStyleId: string
+    audioBuffer: AudioBuffer
+  }
 }

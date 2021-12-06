@@ -1,4 +1,4 @@
-export const exampleArrangement:PackedArrangement = {
+export const exampleArrangement:Banana.PackedArrangement = {
   timeParams: {
     timeSignature: '4/4',
     tempo: 120,

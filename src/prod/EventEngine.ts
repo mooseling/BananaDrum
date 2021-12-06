@@ -6,7 +6,7 @@
 const lookahead = 0.25; // (s) Look 250ms ahead for events
 const loopFrequency = 125 // (ms) Check for upcoming events every 125ms
 
-export const EventEngine:EventEngine = (function(){
+export const EventEngine:Banana.EventEngine = (function(){
   let audioContext:AudioContext|null = null;
   const eventSources:Banana.EventSource[] = [];
   let nextIteration: number|null = null;
@@ -89,26 +89,26 @@ export const EventEngine:EventEngine = (function(){
   // We make sure never to request any time we've requested before
   function loop() {
     const currentTime = audioContext.currentTime;
-    const interval:Interval = {start:timeCovered, end: currentTime + lookahead};
+    const interval:Banana.Interval = {start:timeCovered, end: currentTime + lookahead};
     scheduleEvents(interval);
     nextIteration = setTimeout(loop, loopFrequency);
     timeCovered = currentTime + lookahead;
   }
 
 
-  function scheduleEvents(interval:Interval) {
+  function scheduleEvents(interval:Banana.Interval) {
     eventSources.forEach(eventSource => {
       eventSource.getEvents(interval).forEach(event => {
         if ('audioBuffer' in event)
-          scheduleAudioEvent(event as AudioEvent);
+          scheduleAudioEvent(event as Banana.AudioEvent);
         if ('callback' in event)
-          scheduleCallbackEvent(event as CallbackEvent);
+          scheduleCallbackEvent(event as Banana.CallbackEvent);
       });
     });
   }
 
 
-  function scheduleAudioEvent({audioBuffer, realTime}:AudioEvent) {
+  function scheduleAudioEvent({audioBuffer, realTime}:Banana.AudioEvent) {
     const sourceNode = new AudioBufferSourceNode(audioContext, {buffer:audioBuffer});
     sourceNode.connect(audioContext.destination);
     sourceNode.start(realTime);
@@ -117,7 +117,7 @@ export const EventEngine:EventEngine = (function(){
   }
 
 
-  function scheduleCallbackEvent({realTime, callback}:CallbackEvent) {
+  function scheduleCallbackEvent({realTime, callback}:Banana.CallbackEvent) {
     const msFromNow = (realTime - audioContext.currentTime) * 1000;
     const timeoutId = setTimeout(() => {
       callback();

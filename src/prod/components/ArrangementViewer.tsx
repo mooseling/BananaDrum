@@ -4,7 +4,7 @@ import {useState, useEffect, createContext} from 'react';
 
 export const ArrangementPlayerContext = createContext(null);
 
-export function ArrangementViewer({arrangement, arrangementPlayer}:{arrangement:Arrangement, arrangementPlayer:ArrangementPlayer}): JSX.Element {
+export function ArrangementViewer({arrangement, arrangementPlayer}:{arrangement:Banana.Arrangement, arrangementPlayer:Banana.ArrangementPlayer}): JSX.Element {
   let [state, update] = useState({arrangement});
   useEffect(() => arrangement.timeParams.subscribe(() => update({arrangement})), []);
   return (

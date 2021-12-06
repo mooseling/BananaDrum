@@ -1,9 +1,10 @@
+declare namespace Banana {
+  type ArrangementPlayerBuilder = (arrangement:Arrangement) => ArrangementPlayer
+  interface ArrangementPlayer extends EventSource, Publisher {
+    loop(turnLoopingOn?:boolean): void
+    get currentTiming(): Timing
+  }
 
-declare type ArrangementPlayerBuilder = (arrangement:Arrangement) => ArrangementPlayer
-declare interface ArrangementPlayer extends Banana.EventSource, Publisher {
-  loop(turnLoopingOn?:boolean): void
-  get currentTiming(): Timing
+  type TrackPlayer = EventSource
+  type TrackPlayerBuilder = (track:Track, timeCoordinator:TimeCoordinator) => TrackPlayer
 }
-
-declare type TrackPlayer = Banana.EventSource
-declare type TrackPlayerBuilder = (track:Track, timeCoordinator:TimeCoordinator) => TrackPlayer

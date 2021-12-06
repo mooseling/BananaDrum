@@ -1,7 +1,7 @@
-function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNotes:PackedNote[]): Track {
+function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrument, packedNotes:Banana.PackedNote[]): Banana.Track {
   const subscribers: ((...args:any[]) => void)[] = [];
-  const notes:Note[] = [];
-  const track:Track = {arrangement, instrument, notes, edit, subscribe, getNoteAt};
+  const notes:Banana.Note[] = [];
+  const track:Banana.Track = {arrangement, instrument, notes, edit, subscribe, getNoteAt};
   if (packedNotes)
     unpackNotes();
   arrangement.timeParams.subscribe(handleTimeParamsChange);
@@ -20,7 +20,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 
   // Add, remove, or change notes
   // Publishes every time it makes a change
-  function edit(command:EditCommand) {
+  function edit(command:Banana.EditCommand) {
     const {timing, newValue} = command;
     if (removeNoteAt(timing))
       publish();
@@ -30,7 +30,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
       return;
 
     // If we're this far, newValue is a noteStyleId
-    const newNote:Note = {timing, track, noteStyle:instrument.noteStyles[newValue]};
+    const newNote:Banana.Note = {timing, track, noteStyle:instrument.noteStyles[newValue]};
     notes.push(newNote);
     publish();
   }
@@ -42,7 +42,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
   }
 
 
-  function getNoteAt(timing:Timing): Note {
+  function getNoteAt(timing:Banana.Timing): Banana.Note {
     for (const note of notes) {
       if (note.timing === timing)
         return note;
@@ -70,7 +70,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
     packedNotes.forEach(packedNote => notes.push(unpackNote(packedNote)));
   }
 
-  function unpackNote(packedNote:PackedNote): Note {
+  function unpackNote(packedNote:Banana.PackedNote): Banana.Note {
     const {timing, noteStyleId} = packedNote;
     return {timing, track, noteStyle:instrument.noteStyles[noteStyleId]};
   }
@@ -79,7 +79,7 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
   // Remove existing note if one is found
   // This assumes there will be 1 at the most
   // Returns true if it removes a note
-  function removeNoteAt(timing:Timing) {
+  function removeNoteAt(timing:Banana.Timing) {
     return notes.some((note, index) => (note.timing === timing) && notes.splice(index, 1));
   }
 
@@ -99,9 +99,9 @@ function trackBuilder(arrangement:Arrangement, instrument:Instrument, packedNote
 }
 
 
-trackBuilder.unpack = function(arrangement:Arrangement, packedTrack:PackedTrack): Track {
+trackBuilder.unpack = function(arrangement:Banana.Arrangement, packedTrack:Banana.PackedTrack): Banana.Track {
   const instrument = arrangement.library.instruments[packedTrack.instrumentId];
   return Track(arrangement, instrument, packedTrack.packedNotes);
 }
 
-export const Track:TrackBuilder = trackBuilder;
+export const Track:Banana.TrackBuilder = trackBuilder;

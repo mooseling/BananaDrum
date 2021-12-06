@@ -1,15 +1,17 @@
-declare interface ArrangementBuilder {
-  (library:Library, packedArrangement?:PackedArrangement): Arrangement
-}
+declare namespace Banana {
+  interface ArrangementBuilder {
+    (library:Library, packedArrangement?:PackedArrangement): Arrangement
+  }
 
-declare interface Arrangement {
-  timeParams: TimeParams
-  library: Library
-  tracks: Track[]
-  getSixteenths(): Timing[]
-}
+  interface Arrangement {
+    timeParams: TimeParams
+    library: Library
+    tracks: Track[]
+    getSixteenths(): Timing[]
+  }
 
-declare interface PackedArrangement {
-  timeParams: PackedTimeParams
-  packedTracks: PackedTrack[]
+  interface PackedArrangement {
+    timeParams: PackedTimeParams
+    packedTracks: PackedTrack[]
+  }
 }

@@ -4,7 +4,7 @@ import {Arrangement} from '../../prod/Arrangement';
 
 
 describe('Arrangement', function() {
-  let library: Library|undefined;
+  let library: Banana.Library|undefined;
 
   before('Load library', () => createTestEcosystem().then(eco => library = eco.library));
 
@@ -21,7 +21,7 @@ describe('Arrangement', function() {
   });
 });
 
-function checkSixteenths(sixteenths:Timing[]): boolean {
+function checkSixteenths(sixteenths:Banana.Timing[]): boolean {
   const expected = [
     '1.1.1', '1.1.2', '1.1.3', '1.1.4',
     '1.2.1', '1.2.2', '1.2.3', '1.2.4',

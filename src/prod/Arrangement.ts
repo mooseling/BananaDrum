@@ -3,12 +3,12 @@ import {TimeParams} from './TimeParams';
 
 const defaultTimeParams = {timeSignature:'4/4', tempo:120, length:1};
 
-export const Arrangement:ArrangementBuilder = arrangementBuilder;
+export const Arrangement:Banana.ArrangementBuilder = arrangementBuilder;
 
-function arrangementBuilder(library:Library, packedArrangement?:PackedArrangement): Arrangement {
+function arrangementBuilder(library:Banana.Library, packedArrangement?:Banana.PackedArrangement): Banana.Arrangement {
   const timeParams = TimeParams(packedArrangement?.timeParams || defaultTimeParams);
-  const tracks:Track[] = [];
-  const arrangement:Arrangement = {library, timeParams, tracks, getSixteenths};
+  const tracks:Banana.Track[] = [];
+  const arrangement:Banana.Arrangement = {library, timeParams, tracks, getSixteenths};
   if (packedArrangement)
     packedArrangement.packedTracks.forEach(packedTrack => tracks.push(Track.unpack(arrangement, packedTrack)));
 
@@ -27,11 +27,11 @@ function arrangementBuilder(library:Library, packedArrangement?:PackedArrangemen
 
   // Returns an array of timings, representing each sixteenth in the arrangement
   // The UI uses it to generate all the note-viewers
-  function getSixteenths(): Timing[] {
-    const [beatUnit, beatsPerBar] = timeParams.timeSignature.split('/').map(value => Number(value));
+  function getSixteenths(): Banana.Timing[] {
+    const [beatUnit, beatsPerBar] = timeParams.timeSignature.split('/').map((value: string) => Number(value));
     const bars: number = timeParams.length;
     const sixteenthsPerBeat = 16 / beatUnit;
-    const sixteenths: Timing[] = [];
+    const sixteenths: Banana.Timing[] = [];
 
     // A possible optimisation is to initialise sixteenths as new Array(sixteenthCount)
     // (sixteenthCount = sixteenthsPerBar * bars)

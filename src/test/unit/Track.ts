@@ -8,8 +8,8 @@ import {getUniqueTiming} from '../lib/getUniqueTiming';
 
 
 describe('Track', function() {
-  let instrument: undefined|Instrument;
-  let track: undefined|Track;
+  let instrument: undefined|Banana.Instrument;
+  let track: undefined|Banana.Track;
   let updateCount = 0;
   const logUpdate = () => updateCount++;
 

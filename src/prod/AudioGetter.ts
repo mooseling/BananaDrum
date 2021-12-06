@@ -3,7 +3,7 @@
 const path = 'sounds';
 let ctx: null|AudioContext = null;
 
-export const AudioGetter:AudioGetter = {
+export const AudioGetter:Banana.AudioGetter = {
   async get(filename: string): Promise<AudioBuffer> {
     const filepath = `${path}/${filename}`;
     const response = await fetch(filepath);

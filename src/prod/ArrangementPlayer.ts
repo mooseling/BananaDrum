@@ -2,15 +2,15 @@ import {TimeCoordinator} from './TimeCoordinator';
 import {TrackPlayer} from './TrackPlayer';
 
 
-export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
+export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.ArrangementPlayer {
   const timeCoordinator = TimeCoordinator(arrangement.timeParams);
   let isLooping = false;
-  const trackPlayers:TrackPlayer[] = createTrackPlayers();
+  const trackPlayers:Banana.TrackPlayer[] = createTrackPlayers();
   let subscribers: ((...args:any[]) => void)[] = [];
 
   // currentTiming updates as we play, and ArrangementPlayer publishes when it does
-  let currentTiming:Timing = '1.1.1';
-  let callbackEvents:CallbackEvent[]|null;
+  let currentTiming:Banana.Timing = '1.1.1';
+  let callbackEvents:Banana.CallbackEvent[]|null;
   updateCallbackEvents();
   arrangement.timeParams.subscribe(updateCallbackEvents);
 
@@ -34,9 +34,9 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
 
   // The interval may be beyond the end of the arrangement
   // If we're looping we'll use TimeConverter to resolve it within loops
-  function getEvents(interval:Interval): Banana.Event[] {
+  function getEvents(interval:Banana.Interval): Banana.Event[] {
     const events:Banana.Event[] = [];
-    const loopIntervals:LoopInterval[] = isLooping ?
+    const loopIntervals:Banana.LoopInterval[] = isLooping ?
       timeCoordinator.convertToLoopIntervals(interval) :
       timeCoordinator.convertToLoopIntervals(interval).filter(({loopNumber}) => loopNumber === 0);
 
@@ -57,9 +57,9 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   }
 
 
-  function getCallbackEvents(interval:Interval): CallbackEvent[] {
-    const eventsInInterval:CallbackEvent[] = [];
-    const loopIntervals:LoopInterval[] = isLooping ?
+  function getCallbackEvents(interval:Banana.Interval): Banana.CallbackEvent[] {
+    const eventsInInterval:Banana.CallbackEvent[] = [];
+    const loopIntervals:Banana.LoopInterval[] = isLooping ?
       timeCoordinator.convertToLoopIntervals(interval) :
       timeCoordinator.convertToLoopIntervals(interval).filter(({loopNumber}) => loopNumber === 0);
 

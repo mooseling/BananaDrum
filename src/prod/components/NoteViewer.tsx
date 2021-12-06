@@ -2,7 +2,7 @@ import {useState, useContext, useEffect} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
 
 
-export function NoteViewer({note}:{note:Note}): JSX.Element {
+export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
   return (
     <div className={getClasses(note)} onClick={() => cycleNoteStyle(note)}>
       <div className="note-viewer-background"></div>
@@ -13,7 +13,7 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
 }
 
 
-function getClasses(note:Note) {
+function getClasses(note:Banana.Note) {
   let classes:string[] = ['note-viewer'];
   const timingBits = note.timing.split('.')
 
@@ -28,8 +28,8 @@ function getClasses(note:Note) {
 }
 
 
-function NoteHighlighter({timing}:{timing:Timing}): JSX.Element {
-  const player:ArrangementPlayer = useContext(ArrangementPlayerContext);
+function NoteHighlighter({timing}:{timing:Banana.Timing}): JSX.Element {
+  const player:Banana.ArrangementPlayer = useContext(ArrangementPlayerContext);
   const [currentTiming, rememberTiming] = useState(player.currentTiming);
   useEffect(() => player.subscribe(() => rememberTiming(player.currentTiming)), []);
   const litCLass = currentTiming === timing ? ' lit' : ''
@@ -37,19 +37,19 @@ function NoteHighlighter({timing}:{timing:Timing}): JSX.Element {
 }
 
 
-function NoteDetailsViewer({noteStyle}:{noteStyle:NoteStyle}): JSX.Element {
+function NoteDetailsViewer({noteStyle}:{noteStyle:Banana.NoteStyle}): JSX.Element {
   return <div>{noteStyle ? noteStyle.noteStyleId : ''}</div>;
 }
 
 
-function cycleNoteStyle(note:Note) {
+function cycleNoteStyle(note:Banana.Note) {
   const nextNoteStyleId: string|undefined = getNextNoteStyleId(note);
-  const editCommand: EditCommand = {timing: note.timing, newValue: nextNoteStyleId || null};
+  const editCommand: Banana.EditCommand = {timing: note.timing, newValue: nextNoteStyleId || null};
   note.track.edit(editCommand);
 }
 
 
-function getNextNoteStyleId(note:Note): string|undefined {
+function getNextNoteStyleId(note:Banana.Note): string|undefined {
   const noteStyles = note.track.instrument.noteStyles;
   const noteStyleIds = Object.keys(noteStyles);
   if (!note.noteStyle)

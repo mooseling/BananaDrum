@@ -5,9 +5,9 @@ import {Arrangement} from '../../prod/Arrangement';
 import {ArrangementPlayer} from '../../prod/ArrangementPlayer';
 
 type Ecosystem = {
-  library: Library,
-  arrangement: Arrangement,
-  arrangementPlayer: ArrangementPlayer
+  library: Banana.Library,
+  arrangement: Banana.Arrangement,
+  arrangementPlayer: Banana.ArrangementPlayer
 };
 
 export async function createTestEcosystem(): Promise<Ecosystem> {

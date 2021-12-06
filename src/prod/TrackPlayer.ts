@@ -1,5 +1,5 @@
-function buildTrackPlayer(track:Track, timeCoordinator:TimeCoordinator): TrackPlayer {
-  const audioEvents:AudioEvent[] = track.notes.map(note => createAudioEvent(note));
+function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordinator): Banana.TrackPlayer {
+  const audioEvents:Banana.AudioEvent[] = track.notes.map(note => createAudioEvent(note));
   track.subscribe(matchAudioEventsToNotes);
   timeCoordinator.subscribe(recalcAudioEventTimes);
 
@@ -16,7 +16,7 @@ function buildTrackPlayer(track:Track, timeCoordinator:TimeCoordinator): TrackPl
 
 
 
-  function getEvents({start, end}:Interval): AudioEvent[] {
+  function getEvents({start, end}:Banana.Interval): Banana.AudioEvent[] {
     return audioEvents.filter(({realTime}) => realTime >= start && realTime < end);
   }
 
@@ -31,7 +31,7 @@ function buildTrackPlayer(track:Track, timeCoordinator:TimeCoordinator): TrackPl
 
 
 
-  function createAudioEvent(note:Note): AudioEvent {
+  function createAudioEvent(note:Banana.Note): Banana.AudioEvent {
     return {
       realTime: timeCoordinator.convertToRealTime(note.timing),
       audioBuffer: note.noteStyle.audioBuffer,
@@ -53,4 +53,4 @@ function buildTrackPlayer(track:Track, timeCoordinator:TimeCoordinator): TrackPl
   }
 }
 
-export const TrackPlayer:TrackPlayerBuilder = buildTrackPlayer;
+export const TrackPlayer:Banana.TrackPlayerBuilder = buildTrackPlayer;

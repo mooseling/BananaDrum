@@ -1,9 +1,9 @@
 import {AudioGetter} from './AudioGetter';
 
 
-export function Library(instrumentCollection:InstrumentCollection):Library {
+export function Library(instrumentCollection:Banana.InstrumentCollection): Banana.Library {
   let loaded = false;
-  const instruments: {[instrumentId:string]:Instrument} = {};
+  const instruments: {[instrumentId:string]:Banana.Instrument} = {};
   let loadPromiseResolver: Function|undefined;
   const loadPromise: Promise<void> = new Promise(resolve => loadPromiseResolver = resolve);
 
@@ -62,15 +62,15 @@ export function Library(instrumentCollection:InstrumentCollection):Library {
 }
 
 
-async function Instrument(packedInstrument:PackedInstrument): Promise<Instrument> {
+async function Instrument(packedInstrument:Banana.PackedInstrument): Promise<Banana.Instrument> {
   const {instrumentId, packedNoteStyles, displayName} = packedInstrument;
   const noteStyles = await unpackNoteStyles(packedNoteStyles);
   return {instrumentId, noteStyles, displayName};
 }
 
 
-async function unpackNoteStyles(packedNoteStyles:PackedNoteStyle[]): Promise<{[id:string]: NoteStyle}> {
-  const noteStyles:{[id:string]: NoteStyle|null} = {};
+async function unpackNoteStyles(packedNoteStyles:Banana.PackedNoteStyle[]): Promise<{[id:string]: Banana.NoteStyle}> {
+  const noteStyles:{[id:string]: Banana.NoteStyle|null} = {};
   const unpackPromises:Promise<any>[] = [];
   packedNoteStyles.forEach(({noteStyleId, file}) => {
     noteStyles[noteStyleId] = null; // Set this so that they appear in the original order

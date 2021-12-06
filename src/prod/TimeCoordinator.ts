@@ -4,9 +4,9 @@ import {EventEngine} from './EventEngine';
 // In the EventEngine, time always marches forward (except when paused)
 // In music-related objects, times are always between 0 and the length of the section
 // A TimeCoordinator adjust times from the EventEngine to make sense to music objects
-export function TimeCoordinator(timeParams:TimeParams): TimeCoordinator {
+export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordinator {
   const subscribers: ((...args:any[]) => void)[] = [];
-  let secondsPerBar:RealTime, secondsPerSixteenth:RealTime, secondsPerBeat:RealTime, realTimeLength:RealTime;
+  let secondsPerBar:Banana.RealTime, secondsPerSixteenth:Banana.RealTime, secondsPerBeat:Banana.RealTime, realTimeLength:Banana.RealTime;
   setInternalParams(); // Sets the variables above
 
   // Tempo and length changes incur offset changes
@@ -52,7 +52,7 @@ export function TimeCoordinator(timeParams:TimeParams): TimeCoordinator {
   // Takes an interval whose times may be beyond the end of the loop
   // And returns up to two intervals with times within the loop
   // The two new intervals will cover the same total amount of time
-  function convertToLoopIntervals({start, end}:Interval):LoopInterval[] {
+  function convertToLoopIntervals({start, end}:Banana.Interval):Banana.LoopInterval[] {
     const offsetStart = start + offset;
     const offsetEnd = end + offset;
     const startLoopNumber = Math.floor(offsetStart / realTimeLength);
@@ -170,7 +170,7 @@ export function TimeCoordinator(timeParams:TimeParams): TimeCoordinator {
 
 
 // Assumption: tempo is quarter-notes per minute, no matter the time signature
-function calcNoteTimes({timeSignature, tempo}:PackedTimeParams) {
+function calcNoteTimes({timeSignature, tempo}:Banana.PackedTimeParams) {
   const [beatsPerBar, beatUnit] = timeSignature.split('/').map(stringValue => Number(stringValue));
 
   // Lay some ground work...

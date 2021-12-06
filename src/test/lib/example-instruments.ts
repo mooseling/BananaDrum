@@ -1,4 +1,4 @@
-export const instrumentCollection:InstrumentCollection = [
+export const instrumentCollection:Banana.InstrumentCollection = [
   {
     instrumentId: 'ride',
     displayName: 'Ride',
