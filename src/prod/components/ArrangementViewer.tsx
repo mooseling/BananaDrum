@@ -12,7 +12,7 @@ export function ArrangementViewer({arrangement, arrangementPlayer}:{arrangement:
     <ArrangementPlayerContext.Provider value={arrangementPlayer}>
       <div className="arrangement-viewer">
         <div className="arrangement-viewer-head">
-          <ArrangementControls arrangement={arrangement}/>
+          <ArrangementControls/>
         </div>
         <div className="arrangement-viewer-body">
           {getTrackViewers(arrangement)}
@@ -28,6 +28,6 @@ function getTrackViewers(arrangement:Banana.Arrangement) {
     <TrackViewer
       track={track}
       key={track.instrument.instrumentId}
-      arrangement={arrangement}/>
+    />
   ));
 }

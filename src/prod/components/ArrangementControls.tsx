@@ -1,7 +1,9 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
+import {ArrangementPlayerContext} from './ArrangementViewer';
 
 
-export function ArrangementControls({arrangement}:{arrangement:Banana.Arrangement}): JSX.Element {
+export function ArrangementControls(): JSX.Element {
+  const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
   return (
     <div className="arrangement-controls">
       <TimeControls arrangement={arrangement} />

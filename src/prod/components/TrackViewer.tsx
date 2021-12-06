@@ -1,14 +1,18 @@
 import {NoteViewer} from './NoteViewer';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
+import {ArrangementPlayerContext} from './ArrangementViewer';
 
 
-export function TrackViewer({track, arrangement}:{track:Banana.Track, arrangement:Banana.Arrangement}): JSX.Element {
+export function TrackViewer({track}:{track:Banana.Track}): JSX.Element {
+  const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
+
   let [state, update] = useState({track, arrangement});
   useEffect(() => track.subscribe(() => update({track, arrangement})), []);
+
   return (
     <div className="track-viewer">
       <TrackMeta track={track}/>
-      <NoteLine track={track} arrangement={arrangement}/>
+      <NoteLine track={track}/>
     </div>
   );
 }
@@ -24,7 +28,8 @@ function TrackMeta({track}:{track:Banana.Track}): JSX.Element {
 }
 
 
-function NoteLine({track, arrangement}:{track:Banana.Track, arrangement:Banana.Arrangement}): JSX.Element {
+function NoteLine({track}:{track:Banana.Track}): JSX.Element {
+  const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
   const sixteenths:Banana.Timing[] = arrangement.getSixteenths();
   return (<div className="note-line">
     {sixteenths.map(timing => track.getNoteAt(timing))
