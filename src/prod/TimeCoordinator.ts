@@ -5,7 +5,7 @@ import {EventEngine} from './EventEngine';
 // In music-related objects, times are always between 0 and the length of the section
 // A TimeCoordinator adjust times from the EventEngine to make sense to music objects
 export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordinator {
-  const subscribers: ((...args:any[]) => void)[] = [];
+  const subscriptions: Banana.Subscription[] = [];
   let secondsPerBar:Banana.RealTime, secondsPerSixteenth:Banana.RealTime, secondsPerBeat:Banana.RealTime, realTimeLength:Banana.RealTime;
   setInternalParams(); // Sets the variables above
 
@@ -94,8 +94,8 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
   }
 
 
-  function subscribe(callback:(...args:any[]) => void): void {
-    subscribers.push(callback);
+  function subscribe(callback:Banana.Subscription): void {
+    subscriptions.push(callback);
   }
 
 
@@ -109,7 +109,7 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
 
 
   function publish() {
-    subscribers.forEach(callback => callback());
+    subscriptions.forEach(callback => callback());
   }
 
 

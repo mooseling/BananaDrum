@@ -1,5 +1,5 @@
 function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrument, packedNotes:Banana.PackedNote[]): Banana.Track {
-  const subscribers: ((...args:any[]) => void)[] = [];
+  const subscriptions: Banana.Subscription[] = [];
   const notes:Banana.Note[] = [];
   const track:Banana.Track = {arrangement, instrument, notes, edit, subscribe, getNoteAt};
   if (packedNotes)
@@ -37,8 +37,8 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
 
 
   // You can subscribe to changes in this Track
-  function subscribe(callback:(...args:any[]) => void): void {
-    subscribers.push(callback);
+  function subscribe(callback:Banana.Subscription): void {
+    subscriptions.push(callback);
   }
 
 
@@ -61,7 +61,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
 
 
   function publish(): void {
-    subscribers.forEach(callback => callback());
+    subscriptions.forEach(callback => callback());
   }
 
 

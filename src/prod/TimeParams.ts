@@ -1,6 +1,6 @@
 export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimeParams {
   let {timeSignature, tempo, length} = packedParams;
-  let subscribers: ((...args:any[]) => void)[] = [];
+  let subscriptions: Banana.Subscription[] = [];
 
 return {
   get timeSignature() { return timeSignature; },
@@ -30,8 +30,8 @@ return {
       publish();
     }
   },
-  subscribe(callback: (...args:any[]) => void) {
-    subscribers.push(callback);
+  subscribe(callback: Banana.Subscription) {
+    subscriptions.push(callback);
   },
   // Timings
   isValid(timing:Banana.Timing) {
@@ -48,7 +48,7 @@ return {
 
 
   function publish(): void {
-    subscribers.forEach(callback => callback());
+    subscriptions.forEach(callback => callback());
   }
 }
 

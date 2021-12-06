@@ -6,7 +6,7 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
   const timeCoordinator = TimeCoordinator(arrangement.timeParams);
   let isLooping = false;
   const trackPlayers:Banana.TrackPlayer[] = createTrackPlayers();
-  let subscribers: ((...args:any[]) => void)[] = [];
+  let subscription: Banana.Subscription[] = [];
 
   // currentTiming updates as we play, and ArrangementPlayer publishes when it does
   let currentTiming:Banana.Timing = '1.1.1';
@@ -80,8 +80,8 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
   }
 
 
-  function subscribe(callback: (...args:any[]) => void) {
-    subscribers.push(callback);
+  function subscribe(callback: Banana.Subscription) {
+    subscription.push(callback);
   }
 
 
@@ -114,6 +114,6 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
 
 
   function publish(): void {
-    subscribers.forEach(callback => callback());
+    subscription.forEach(callback => callback());
   }
 }
