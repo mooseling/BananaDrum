@@ -1,5 +1,5 @@
 // The core of Banana Drum is the EventEngine
-// It plays audio and cues up callbacks
+// It plays audio and fires callbacks at the right time
 // Playing audio boils down to the WebAudio API, so we must warp our design around that
 
 
@@ -12,8 +12,8 @@ export const EventEngine:Banana.EventEngine = (function(){
   let nextIteration: number|null = null;
   let timeCovered:number = 0;
 
-  type CuedEvent = AudioBufferSourceNode|number;
-  const cuedEvents:CuedEvent[] = [];
+  type ScheduledEvent = AudioBufferSourceNode|number;
+  const scheduledEvents:ScheduledEvent[] = [];
 
   return {initialise, connect, play, pause, getTime};
 
@@ -54,7 +54,7 @@ export const EventEngine:Banana.EventEngine = (function(){
   function pause() {
     if (nextIteration !== null) {
       audioContext.suspend();
-      clearCuedEvents();
+      clearScheduledEvents();
       clearTimeout(nextIteration);
       nextIteration = null;
       timeCovered = audioContext.currentTime;
@@ -112,8 +112,8 @@ export const EventEngine:Banana.EventEngine = (function(){
     const sourceNode = new AudioBufferSourceNode(audioContext, {buffer:audioBuffer});
     sourceNode.connect(audioContext.destination);
     sourceNode.start(realTime);
-    cuedEvents.push(sourceNode);
-    sourceNode.addEventListener('ended', () => unCue(sourceNode));
+    scheduledEvents.push(sourceNode);
+    sourceNode.addEventListener('ended', () => unSchedule(sourceNode));
   }
 
 
@@ -121,26 +121,26 @@ export const EventEngine:Banana.EventEngine = (function(){
     const msFromNow = (realTime - audioContext.currentTime) * 1000;
     const timeoutId = setTimeout(() => {
       callback();
-      unCue(timeoutId);
+      unSchedule(timeoutId);
     }, msFromNow);
-    cuedEvents.push(timeoutId);
+    scheduledEvents.push(timeoutId);
   }
 
 
-  function unCue(cuedEvent:CuedEvent) {
-    const cueIndex = cuedEvents.indexOf(cuedEvent);
-    if (cueIndex !== -1)
-      cuedEvents.splice(cueIndex, 1);
+  function unSchedule(scheduledEvent:ScheduledEvent) {
+    const scheduleIndex = scheduledEvents.indexOf(scheduledEvent);
+    if (scheduleIndex !== -1)
+      scheduledEvents.splice(scheduleIndex, 1);
   }
 
 
-  function clearCuedEvents(): void {
-    cuedEvents.forEach((cuedEvent:CuedEvent) => {
-      if (cuedEvent instanceof AudioBufferSourceNode)
-        cuedEvent.stop();
+  function clearScheduledEvents(): void {
+    scheduledEvents.forEach((scheduledEvent:ScheduledEvent) => {
+      if (scheduledEvent instanceof AudioBufferSourceNode)
+        scheduledEvent.stop();
       else
-        clearTimeout(cuedEvent);
+        clearTimeout(scheduledEvent);
     });
-    cuedEvents.splice(0);
+    scheduledEvents.splice(0);
   }
 })();
