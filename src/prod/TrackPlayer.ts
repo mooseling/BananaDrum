@@ -3,7 +3,7 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
   track.subscribe(matchAudioEventsToNotes);
   timeCoordinator.subscribe(recalcAudioEventTimes);
 
-  return {getEvents};
+  return {track, getEvents};
 
 
 

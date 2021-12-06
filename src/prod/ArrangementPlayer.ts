@@ -15,7 +15,7 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
   arrangement.timeParams.subscribe(updateCallbackEvents);
 
   return {
-    getEvents, loop, subscribe,
+    arrangement, getEvents, loop, subscribe,
     get currentTiming() {
       return currentTiming;
     }
