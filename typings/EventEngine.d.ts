@@ -1,6 +1,6 @@
 declare interface EventEngine {
   initialise(): void
-  connect(eventSource:AudioEventSource|CallbackEventSource): void
+  connect(eventSource:Banana.EventSource): void
   play(): void
   pause(): void
   getTime(): RealTime
@@ -19,10 +19,10 @@ declare interface CallbackEvent extends EventDetails {
   callback(): void
 }
 
-declare interface AudioEventSource {
-  getAudioEvents(interval:Interval): AudioEvent[]
-}
+declare namespace Banana {
+  type Event = CallbackEvent|AudioEvent
 
-declare interface CallbackEventSource {
-  getCallbackEvents(interval:Interval): CallbackEvent[]
+  interface EventSource {
+    getEvents(interval:Interval): (Event)[]
+  }
 }

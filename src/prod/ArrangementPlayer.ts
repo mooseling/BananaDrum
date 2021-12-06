@@ -15,7 +15,7 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
   arrangement.timeParams.subscribe(updateCallbackEvents);
 
   return {
-    getAudioEvents, getCallbackEvents, loop, subscribe,
+    getEvents, loop, subscribe,
     get currentTiming() {
       return currentTiming;
     }
@@ -34,8 +34,8 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
 
   // The interval may be beyond the end of the arrangement
   // If we're looping we'll use TimeConverter to resolve it within loops
-  function getAudioEvents(interval:Interval): AudioEvent[] {
-    const audioEvents:AudioEvent[] = [];
+  function getEvents(interval:Interval): Banana.Event[] {
+    const events:Banana.Event[] = [];
     const loopIntervals:LoopInterval[] = isLooping ?
       timeCoordinator.convertToLoopIntervals(interval) :
       timeCoordinator.convertToLoopIntervals(interval).filter(({loopNumber}) => loopNumber === 0);
@@ -43,15 +43,17 @@ export function ArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
     loopIntervals.forEach(loopInterval => {
       const {loopNumber} = loopInterval;
       trackPlayers.forEach(trackPlayer =>
-        trackPlayer.getAudioEvents(loopInterval)
-        .forEach(audioEvent => audioEvents.push({
-          ...audioEvent,
-          realTime: timeCoordinator.convertToAudioTime(audioEvent.realTime, loopNumber)
+        trackPlayer.getEvents(loopInterval)
+        .forEach(event => events.push({
+          ...event,
+          realTime: timeCoordinator.convertToAudioTime(event.realTime, loopNumber)
         }))
       );
     });
 
-    return audioEvents;
+    events.push(...getCallbackEvents(interval));
+
+    return events;
   }
 
 

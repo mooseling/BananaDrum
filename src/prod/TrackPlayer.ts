@@ -3,7 +3,7 @@ function buildTrackPlayer(track:Track, timeCoordinator:TimeCoordinator): TrackPl
   track.subscribe(matchAudioEventsToNotes);
   timeCoordinator.subscribe(recalcAudioEventTimes);
 
-  return {getAudioEvents};
+  return {getEvents};
 
 
 
@@ -16,7 +16,7 @@ function buildTrackPlayer(track:Track, timeCoordinator:TimeCoordinator): TrackPl
 
 
 
-  function getAudioEvents({start, end}:Interval): AudioEvent[] {
+  function getEvents({start, end}:Interval): AudioEvent[] {
     return audioEvents.filter(({realTime}) => realTime >= start && realTime < end);
   }
 

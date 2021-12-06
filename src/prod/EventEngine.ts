@@ -8,13 +8,12 @@ const loopFrequency = 125 // (ms) Check for upcoming events every 125ms
 
 export const EventEngine:EventEngine = (function(){
   let audioContext:AudioContext|null = null;
-  const audioSources:AudioEventSource[] = [];
-  const callbackSources:CallbackEventSource[] = [];
+  const eventSources:Banana.EventSource[] = [];
   let nextIteration: number|null = null;
   let timeCovered:number = 0;
 
-  const cuedAudio:AudioBufferSourceNode[] = [];
-  const cuedCallbacks:number[] = [];
+  type CuedEvent = AudioBufferSourceNode|number;
+  const cuedEvents:CuedEvent[] = [];
 
   return {initialise, connect, play, pause, getTime};
 
@@ -38,12 +37,8 @@ export const EventEngine:EventEngine = (function(){
   }
 
 
-  function connect(eventSource:AudioEventSource|CallbackEventSource) {
-    checkInitialised();
-    if ('getAudioEvents' in eventSource)
-      audioSources.push(eventSource as AudioEventSource);
-    if ('getCallbackEvents' in eventSource)
-      callbackSources.push(eventSource as CallbackEventSource);
+  function connect(eventSource:Banana.EventSource) {
+    eventSources.push(eventSource);
   }
 
 
@@ -57,7 +52,6 @@ export const EventEngine:EventEngine = (function(){
 
 
   function pause() {
-    checkInitialised();
     if (nextIteration !== null) {
       audioContext.suspend();
       clearCuedEvents();
@@ -96,49 +90,57 @@ export const EventEngine:EventEngine = (function(){
   function loop() {
     const currentTime = audioContext.currentTime;
     const interval:Interval = {start:timeCovered, end: currentTime + lookahead};
-    scheduleAudioEvents(interval);
-    scheduleCallbackEvents(interval);
+    scheduleEvents(interval);
     nextIteration = setTimeout(loop, loopFrequency);
     timeCovered = currentTime + lookahead;
   }
 
 
-  function scheduleAudioEvents(interval:Interval) {
-    const audioEvents:AudioEvent[] = [];
-    audioSources.forEach(audioSource => audioEvents.push(...audioSource.getAudioEvents(interval)));
-    audioEvents.forEach(({audioBuffer, realTime}) => {
-      const sourceNode = new AudioBufferSourceNode(audioContext, {buffer:audioBuffer});
-      sourceNode.connect(audioContext.destination);
-      sourceNode.start(realTime);
-
-      cuedAudio.push(sourceNode);
-      sourceNode.addEventListener('ended', () => {
-        const cueIndex = cuedAudio.indexOf(sourceNode);
-        if (cueIndex !== -1)
-          cuedAudio.splice(cueIndex, 1);
+  function scheduleEvents(interval:Interval) {
+    eventSources.forEach(eventSource => {
+      eventSource.getEvents(interval).forEach(event => {
+        if ('audioBuffer' in event)
+          scheduleAudioEvent(event as AudioEvent);
+        if ('callback' in event)
+          scheduleCallbackEvent(event as CallbackEvent);
       });
     });
   }
 
 
-  function scheduleCallbackEvents(interval:Interval) {
-    callbackSources.forEach(callbackSource => callbackSource.getCallbackEvents(interval).forEach(({realTime, callback}) => {
-      const msFromNow = (realTime - audioContext.currentTime) * 1000;
-      const timeoutId = setTimeout(() => {
-        callback();
-        const cueIndex = cuedCallbacks.indexOf(timeoutId);
-        if (cueIndex !== -1)
-          cuedCallbacks.splice(cueIndex, 1);
-      }, msFromNow);
-      cuedCallbacks.push(timeoutId);
-    }));
+  function scheduleAudioEvent({audioBuffer, realTime}:AudioEvent) {
+    const sourceNode = new AudioBufferSourceNode(audioContext, {buffer:audioBuffer});
+    sourceNode.connect(audioContext.destination);
+    sourceNode.start(realTime);
+    cuedEvents.push(sourceNode);
+    sourceNode.addEventListener('ended', () => unCue(sourceNode));
+  }
+
+
+  function scheduleCallbackEvent({realTime, callback}:CallbackEvent) {
+    const msFromNow = (realTime - audioContext.currentTime) * 1000;
+    const timeoutId = setTimeout(() => {
+      callback();
+      unCue(timeoutId);
+    }, msFromNow);
+    cuedEvents.push(timeoutId);
+  }
+
+
+  function unCue(cuedEvent:CuedEvent) {
+    const cueIndex = cuedEvents.indexOf(cuedEvent);
+    if (cueIndex !== -1)
+      cuedEvents.splice(cueIndex, 1);
   }
 
 
   function clearCuedEvents(): void {
-    cuedAudio.forEach(sourceNode => sourceNode.stop());
-    cuedAudio.splice(0);
-    cuedCallbacks.forEach(timeoutId => clearTimeout(timeoutId));
-    cuedCallbacks.splice(0);
+    cuedEvents.forEach((cuedEvent:CuedEvent) => {
+      if (cuedEvent instanceof AudioBufferSourceNode)
+        cuedEvent.stop();
+      else
+        clearTimeout(cuedEvent);
+    });
+    cuedEvents.splice(0);
   }
 })();
