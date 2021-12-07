@@ -30,7 +30,8 @@ function TrackMeta({track}:{track:Banana.Track}): JSX.Element {
 
 function NoteLine({track}:{track:Banana.Track}): JSX.Element {
   const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
-  const sixteenths:Banana.Timing[] = arrangement.getSixteenths();
+  const [sixteenths, setSixteenths] = useState(arrangement.getSixteenths());
+  useEffect(() => arrangement.timeParams.subscribe(() => setSixteenths(arrangement.getSixteenths())), []);
   return (<div className="note-line">
     {sixteenths.map(timing => track.getNoteAt(timing))
       .map(note => <NoteViewer note={note} key={note.timing}/>)}
