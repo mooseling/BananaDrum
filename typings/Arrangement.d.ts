@@ -6,7 +6,7 @@ declare namespace Banana {
   interface Arrangement {
     timeParams: TimeParams
     library: Library
-    tracks: Track[]
+    tracks: {[trackId:string]: Track}
     getSixteenths(): Timing[]
   }
 

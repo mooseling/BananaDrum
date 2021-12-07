@@ -24,10 +24,10 @@ export function ArrangementViewer({arrangement, arrangementPlayer}:{arrangement:
 
 
 function getTrackViewers(arrangement:Banana.Arrangement) {
-  return arrangement.tracks.map(track => (
+  return Object.keys(arrangement.tracks).map(trackId => (
     <TrackViewer
-      track={track}
-      key={track.instrument.instrumentId}
+      track={arrangement.tracks[trackId]}
+      key={trackId}
     />
   ));
 }

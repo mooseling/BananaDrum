@@ -3,14 +3,17 @@ import {TimeParams} from './TimeParams';
 
 const defaultTimeParams = {timeSignature:'4/4', tempo:120, length:1};
 
+// Track-ids need to be unique, so we simply bung a globally increasing counter on them
+let trackCounter = 0;
+
 export const Arrangement:Banana.ArrangementBuilder = arrangementBuilder;
 
 function arrangementBuilder(library:Banana.Library, packedArrangement?:Banana.PackedArrangement): Banana.Arrangement {
   const timeParams = TimeParams(packedArrangement?.timeParams || defaultTimeParams);
-  const tracks:Banana.Track[] = [];
+  const tracks:{[trackId:string]:Banana.Track} = {};
   const arrangement:Banana.Arrangement = {library, timeParams, tracks, getSixteenths};
   if (packedArrangement)
-    packedArrangement.packedTracks.forEach(packedTrack => tracks.push(Track.unpack(arrangement, packedTrack)));
+    unpack(packedArrangement);
 
   return arrangement;
 
@@ -45,5 +48,32 @@ function arrangementBuilder(library:Banana.Library, packedArrangement?:Banana.Pa
       }
     }
     return sixteenths;
+  }
+
+
+
+
+
+
+    // ==================================================================
+    //                          Private Functions
+    // ==================================================================
+
+
+  function unpack(packedArrangement:Banana.PackedArrangement): void {
+    packedArrangement.packedTracks.forEach(packedTrack => {
+      const track = Track.unpack(arrangement, packedTrack);
+      const trackId = getTrackId(track);
+      tracks[trackId] = track;
+    });
+  }
+
+
+  // We need unique identifiers for tracks, even if their instrument is the same
+  // This needs to work even if instruments have been deleted
+  function getTrackId(track:Banana.Track): string {
+    const thisInstrumentId = track.instrument.instrumentId;
+    trackCounter++;
+    return `${thisInstrumentId}--${trackCounter}`;
   }
 };

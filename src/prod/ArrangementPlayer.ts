@@ -5,8 +5,9 @@ import {TrackPlayer} from './TrackPlayer';
 export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.ArrangementPlayer {
   const timeCoordinator = TimeCoordinator(arrangement.timeParams);
   let isLooping = false;
-  const trackPlayers:Banana.TrackPlayer[] = createTrackPlayers();
   let subscription: Banana.Subscription[] = [];
+  const trackPlayers:{[trackId:string]:Banana.TrackPlayer} = {};
+  createTrackPlayers();
 
   // currentTiming updates as we play, and ArrangementPlayer publishes when it does
   let currentTiming:Banana.Timing = '1.1.1';
@@ -42,13 +43,13 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
 
     loopIntervals.forEach(loopInterval => {
       const {loopNumber} = loopInterval;
-      trackPlayers.forEach(trackPlayer =>
-        trackPlayer.getEvents(loopInterval)
-        .forEach(event => events.push({
-          ...event,
-          realTime: timeCoordinator.convertToAudioTime(event.realTime, loopNumber)
-        }))
-      );
+      for (const trackId in trackPlayers) {
+        trackPlayers[trackId].getEvents(loopInterval)
+          .forEach(event => events.push({
+            ...event,
+            realTime: timeCoordinator.convertToAudioTime(event.realTime, loopNumber)
+          }));
+      }
     });
 
     events.push(...getCallbackEvents(interval));
@@ -95,8 +96,9 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
 
 
 
-  function createTrackPlayers() {
-    return arrangement.tracks.map(track => TrackPlayer(track, timeCoordinator));
+  function createTrackPlayers(): void {
+    for (const trackId in arrangement.tracks)
+      trackPlayers[trackId] = TrackPlayer(arrangement.tracks[trackId], timeCoordinator);
   }
 
 
