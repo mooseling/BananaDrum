@@ -67,13 +67,14 @@ function arrangementBuilder(library:Banana.Library, packedArrangement?:Banana.Pa
       tracks[trackId] = track;
     });
   }
-
-
-  // We need unique identifiers for tracks, even if their instrument is the same
-  // This needs to work even if instruments have been deleted
-  function getTrackId(track:Banana.Track): string {
-    const thisInstrumentId = track.instrument.instrumentId;
-    trackCounter++;
-    return `${thisInstrumentId}--${trackCounter}`;
-  }
 };
+
+
+
+// We need unique identifiers for tracks, even if their instrument is the same
+// This needs to work even if instruments have been deleted
+function getTrackId(track:Banana.Track): string {
+  const thisInstrumentId = track.instrument.instrumentId;
+  trackCounter++;
+  return `${thisInstrumentId}--${trackCounter}`;
+}
