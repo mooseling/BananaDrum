@@ -3,7 +3,7 @@ declare namespace Banana {
     (library:Library, packedArrangement?:PackedArrangement): Arrangement
   }
 
-  interface Arrangement {
+  interface Arrangement extends Publisher {
     timeParams: TimeParams
     library: Library
     tracks: {[trackId:string]: Track}

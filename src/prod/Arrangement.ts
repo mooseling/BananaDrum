@@ -9,9 +9,10 @@ let trackCounter = 0;
 export const Arrangement:Banana.ArrangementBuilder = arrangementBuilder;
 
 function arrangementBuilder(library:Banana.Library, packedArrangement?:Banana.PackedArrangement): Banana.Arrangement {
+  const subscriptions: Banana.Subscription[] = [];
   const timeParams = TimeParams(packedArrangement?.timeParams || defaultTimeParams);
   const tracks:{[trackId:string]:Banana.Track} = {};
-  const arrangement:Banana.Arrangement = {library, timeParams, tracks, addTrack, getSixteenths};
+  const arrangement:Banana.Arrangement = {library, timeParams, tracks, addTrack, getSixteenths, subscribe};
   if (packedArrangement)
     unpack(packedArrangement);
 
@@ -57,6 +58,14 @@ function arrangementBuilder(library:Banana.Library, packedArrangement?:Banana.Pa
   }
 
 
+  function subscribe(callback: Banana.Subscription) {
+    subscriptions.push(callback);
+  }
+
+
+
+
+
 
 
 
@@ -72,6 +81,11 @@ function arrangementBuilder(library:Banana.Library, packedArrangement?:Banana.Pa
       const trackId = getTrackId(track);
       tracks[trackId] = track;
     });
+  }
+
+
+  function publish(): void {
+    subscriptions.forEach(callback => callback());
   }
 };
 
