@@ -6,6 +6,9 @@ export const ArrangementPlayerContext = createContext(null);
 
 export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.ArrangementPlayer}): JSX.Element {
   const {arrangement} = arrangementPlayer;
+  const [tracks, setTracks] = useState({...arrangement.tracks});
+  useEffect(() => arrangement.subscribe(() => setTracks({...arrangement.tracks})), []);
+
   return (
     <ArrangementPlayerContext.Provider value={arrangementPlayer}>
       <div className="arrangement-viewer">
@@ -13,7 +16,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
           <ArrangementControls/>
         </div>
         <div className="arrangement-viewer-body">
-          {getTrackViewers(arrangement)}
+          {getTrackViewers(tracks)}
         </div>
       </div>
     </ArrangementPlayerContext.Provider>
@@ -21,10 +24,10 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
 }
 
 
-function getTrackViewers(arrangement:Banana.Arrangement) {
-  return Object.keys(arrangement.tracks).map(trackId => (
+function getTrackViewers(tracks:{[trackId:string]: Banana.Track}) {
+  return Object.keys(tracks).map(trackId => (
     <TrackViewer
-      track={arrangement.tracks[trackId]}
+      track={tracks[trackId]}
       key={trackId}
     />
   ));
