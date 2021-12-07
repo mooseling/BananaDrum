@@ -4,7 +4,8 @@ import {useState, useEffect, createContext} from 'react';
 
 export const ArrangementPlayerContext = createContext(null);
 
-export function ArrangementViewer({arrangement, arrangementPlayer}:{arrangement:Banana.Arrangement, arrangementPlayer:Banana.ArrangementPlayer}): JSX.Element {
+export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.ArrangementPlayer}): JSX.Element {
+  const {arrangement} = arrangementPlayer;
   return (
     <ArrangementPlayerContext.Provider value={arrangementPlayer}>
       <div className="arrangement-viewer">
