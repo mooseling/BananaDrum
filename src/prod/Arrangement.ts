@@ -55,6 +55,7 @@ function arrangementBuilder(library:Banana.Library, packedArrangement?:Banana.Pa
   function addTrack(track:Banana.Track) {
     const trackId = getTrackId(track);
     tracks[trackId] = track;
+    publish();
   }
 
 
