@@ -11,7 +11,7 @@ export const Arrangement:Banana.ArrangementBuilder = arrangementBuilder;
 function arrangementBuilder(library:Banana.Library, packedArrangement?:Banana.PackedArrangement): Banana.Arrangement {
   const timeParams = TimeParams(packedArrangement?.timeParams || defaultTimeParams);
   const tracks:{[trackId:string]:Banana.Track} = {};
-  const arrangement:Banana.Arrangement = {library, timeParams, tracks, getSixteenths};
+  const arrangement:Banana.Arrangement = {library, timeParams, tracks, addTrack, getSixteenths};
   if (packedArrangement)
     unpack(packedArrangement);
 
@@ -48,6 +48,12 @@ function arrangementBuilder(library:Banana.Library, packedArrangement?:Banana.Pa
       }
     }
     return sixteenths;
+  }
+
+
+  function addTrack(track:Banana.Track) {
+    const trackId = getTrackId(track);
+    tracks[trackId] = track;
   }
 
 

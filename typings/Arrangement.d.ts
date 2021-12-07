@@ -7,6 +7,7 @@ declare namespace Banana {
     timeParams: TimeParams
     library: Library
     tracks: {[trackId:string]: Track}
+    addTrack(track:Track): void
     getSixteenths(): Timing[]
   }
 
