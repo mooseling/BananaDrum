@@ -1,4 +1,5 @@
 import {EventEngine} from './EventEngine';
+import {Library} from './Library';
 import {ArrangementViewer} from './components/ArrangementViewer';
 import ReactDOM from 'react-dom';
 import React from 'react';
@@ -32,6 +33,8 @@ document.getElementById('load-button').addEventListener('click', function() {
 
     // @ts-ignore
     window.arrangement = arrangement;
+    // @ts-ignore
+    window.Library = Library;
 
     loadingMessage.remove();
   });
