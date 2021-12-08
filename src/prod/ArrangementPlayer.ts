@@ -6,8 +6,11 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
   const timeCoordinator = TimeCoordinator(arrangement.timeParams);
   let isLooping = false;
   let subscription: Banana.Subscription[] = [];
+
+  // We need a TrackPlayer for each Track, and add/remove them when needed
   const trackPlayers:{[trackId:string]:Banana.TrackPlayer} = {};
   createTrackPlayers();
+  arrangement.subscribe(createTrackPlayers);
 
   // currentTiming updates as we play, and ArrangementPlayer publishes when it does
   let currentTiming:Banana.Timing = '1.1.1';
