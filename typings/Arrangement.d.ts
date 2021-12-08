@@ -1,12 +1,14 @@
 declare namespace Banana {
   interface ArrangementBuilder {
-    (packedArrangement?:PackedArrangement): Promise<Arrangement>
+    (timeParams:TimeParams): Arrangement
+    unpack(packedArrangement:PackedArrangement): Promise<Arrangement>
   }
 
   interface Arrangement extends Publisher {
     timeParams: TimeParams
     tracks: {[trackId:string]: Track}
-    addTrack(track:Track): void
+    createTrack(instrument:Instrument): void
+    unpackTracks(packedTracks:PackedTrack[]): Promise<void>
     getSixteenths(): Timing[]
   }
 

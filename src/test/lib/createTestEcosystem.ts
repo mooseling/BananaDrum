@@ -11,7 +11,7 @@ type Ecosystem = {
 
 export async function createTestEcosystem(): Promise<Ecosystem> {
   Library.load(instrumentCollection);
-  const arrangement = await Arrangement(exampleArrangement);
+  const arrangement = await Arrangement.unpack(exampleArrangement);
   const arrangementPlayer = ArrangementPlayer(arrangement);
   return {arrangement, arrangementPlayer};
 }

@@ -8,13 +8,13 @@ let trackCounter = 0;
 
 export const Arrangement:Banana.ArrangementBuilder = arrangementBuilder;
 
-async function arrangementBuilder(packedArrangement?:Banana.PackedArrangement): Promise<Banana.Arrangement> {
+function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
+  if (!timeParams)
+    timeParams = TimeParams(defaultTimeParams);
+
   const subscriptions: Banana.Subscription[] = [];
-  const timeParams = TimeParams(packedArrangement?.timeParams || defaultTimeParams);
   const tracks:{[trackId:string]:Banana.Track} = {};
-  const arrangement:Banana.Arrangement = {timeParams, tracks, addTrack, getSixteenths, subscribe};
-  if (packedArrangement)
-    await unpack(packedArrangement);
+  const arrangement:Banana.Arrangement = {timeParams, tracks, createTrack, unpackTracks, getSixteenths, subscribe};
 
   return arrangement;
 
@@ -52,9 +52,31 @@ async function arrangementBuilder(packedArrangement?:Banana.PackedArrangement): 
   }
 
 
-  function addTrack(track:Banana.Track) {
+  function createTrack(instrument:Banana.Instrument) {
+    const track = Track(arrangement, instrument)
     const trackId = getTrackId(track);
     tracks[trackId] = track;
+    publish();
+  }
+
+
+  async function unpackTracks(packedTracks:Banana.PackedTrack[]) {
+    const trackMap:Map<Banana.PackedTrack, Banana.Track> = new Map();
+
+    // Unpacking tracks is async, but we want them to end up in the right order
+    // So we unpack them all randomly...
+    await Promise.all(packedTracks.map(async packedTrack => {
+      const track = await Track.unpack(arrangement, packedTrack);
+      trackMap.set(packedTrack, track);
+    }));
+
+    // And then add them in the right order
+    packedTracks.forEach(packedTrack => {
+      const track = trackMap.get(packedTrack);
+      const trackId = getTrackId(track);
+      tracks[trackId] = track;
+    });
+
     publish();
   }
 
@@ -76,29 +98,38 @@ async function arrangementBuilder(packedArrangement?:Banana.PackedArrangement): 
     // ==================================================================
 
 
-  async function unpack(packedArrangement:Banana.PackedArrangement): Promise<void> {
-    const trackMap:Map<Banana.PackedTrack, Banana.Track> = new Map();
-
-    // Unpacking tracks is async, but we want them to end up in the right order
-    // So we unpack them all randomly...
-    await Promise.all(packedArrangement.packedTracks.map(async packedTrack => {
-      const track = await Track.unpack(arrangement, packedTrack);
-      trackMap.set(packedTrack, track);
-    }));
-
-    // And then add them in the right order
-    packedArrangement.packedTracks.forEach(packedTrack => {
-      const track = trackMap.get(packedTrack);
-      const trackId = getTrackId(track);
-      tracks[trackId] = track;
-    });
-  }
-
 
   function publish(): void {
     subscriptions.forEach(callback => callback());
   }
 };
+
+
+
+
+
+
+// ==================================================================
+//                       Public Static Functions
+// ==================================================================
+
+
+
+arrangementBuilder.unpack = async function(packedArrangement:Banana.PackedArrangement): Promise<Banana.Arrangement> {
+  const timeParams = TimeParams(packedArrangement.timeParams);
+  const arrangement = Arrangement(timeParams);
+  await arrangement.unpackTracks(packedArrangement.packedTracks);
+  return arrangement;
+}
+
+
+
+
+
+
+// ==================================================================
+//                       Private Static Functions
+// ==================================================================
 
 
 
