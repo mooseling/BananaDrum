@@ -1,65 +1,29 @@
 import {AudioGetter} from './AudioGetter';
 
+const packedInstruments:{[instrumentId:string]: Banana.PackedInstrument} = {};
+const instruments: {[instrumentId:string]:Banana.Instrument} = {};
 
-export function Library(instrumentCollection:Banana.InstrumentCollection): Banana.Library {
-  let loaded = false;
-  const instruments: {[instrumentId:string]:Banana.Instrument} = {};
-  let loadPromiseResolver: Function|undefined;
-  const loadPromise: Promise<void> = new Promise(resolve => loadPromiseResolver = resolve);
-
-  return {
-    load,
-    get instruments() {return getInstruments()}
-  };
-
-
-
-
-
-
-  // ==================================================================
-  //                          Public Functions
-  // ==================================================================
-
-
-  function load() {
-    if (!loaded) {
-      loadInstruments().then(() => {
-        loaded = true;
-        loadPromiseResolver();
-      });
-    }
-    return loadPromise;
-  }
-
-
-  function getInstruments() {
-    if (!loaded)
-      throw 'Trying to get instruments before library is loaded';
-    return instruments;
-  }
-
-
-
-
-
-
-  // ==================================================================
-  //                          Private Functions
-  // ==================================================================
-
-
-  function loadInstruments(): Promise<any> {
-    const instrumentPromises:Promise<any>[] = [];
+export const Library:Banana.Library = {
+  instrumentMetas: [],
+  load(instrumentCollection:Banana.InstrumentCollection): void {
     instrumentCollection.forEach(packedInstrument => {
-      const {instrumentId} = packedInstrument;
-      const instrumentPromise = Instrument(packedInstrument);
-      instrumentPromises.push(instrumentPromise);
-      instrumentPromise.then(instrument => instruments[instrumentId] = instrument);
+      packedInstruments[packedInstrument.instrumentId] = packedInstrument;
+      Library.instrumentMetas.push({
+        instrumentId: packedInstrument.instrumentId,
+        displayName: packedInstrument.displayName
+      });
     });
-    return Promise.all(instrumentPromises);
+  },
+  async getInstrument(instrumentId:string): Promise<Banana.Instrument> {
+    if (!instruments[instrumentId]) {
+      if (!packedInstruments[instrumentId])
+        throw 'Unknown instrument requested from Library';
+      instruments[instrumentId] = await Instrument(packedInstruments[instrumentId]);
+    }
+    return instruments[instrumentId];
   }
 }
+
 
 
 async function Instrument(packedInstrument:Banana.PackedInstrument): Promise<Banana.Instrument> {

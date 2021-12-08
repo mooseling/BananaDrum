@@ -1,5 +1,6 @@
 import {assert} from 'chai';
 import {Track} from '../../prod/Track';
+import {Library} from '../../prod/Library';
 import {createTestEcosystem} from '../lib/createTestEcosystem';
 
 // We want to makes sure the timings we use in these tests are never used again
@@ -13,8 +14,8 @@ describe('Track', function() {
   let updateCount = 0;
   const logUpdate = () => updateCount++;
 
-  before('Load arrangement', () => createTestEcosystem().then(({arrangement}) => {
-    instrument = arrangement.library.instruments.snare;
+  before('Load arrangement', () => createTestEcosystem().then(async ({arrangement}) => {
+    instrument = await Library.getInstrument('snare');
     track = Track(arrangement, instrument); // Initialise a track with no notes yet
     track.subscribe(logUpdate);
   }));

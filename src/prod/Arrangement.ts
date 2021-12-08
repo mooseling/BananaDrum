@@ -8,13 +8,13 @@ let trackCounter = 0;
 
 export const Arrangement:Banana.ArrangementBuilder = arrangementBuilder;
 
-function arrangementBuilder(library:Banana.Library, packedArrangement?:Banana.PackedArrangement): Banana.Arrangement {
+async function arrangementBuilder(packedArrangement?:Banana.PackedArrangement): Promise<Banana.Arrangement> {
   const subscriptions: Banana.Subscription[] = [];
   const timeParams = TimeParams(packedArrangement?.timeParams || defaultTimeParams);
   const tracks:{[trackId:string]:Banana.Track} = {};
-  const arrangement:Banana.Arrangement = {library, timeParams, tracks, addTrack, getSixteenths, subscribe};
+  const arrangement:Banana.Arrangement = {timeParams, tracks, addTrack, getSixteenths, subscribe};
   if (packedArrangement)
-    unpack(packedArrangement);
+    await unpack(packedArrangement);
 
   return arrangement;
 
@@ -76,9 +76,19 @@ function arrangementBuilder(library:Banana.Library, packedArrangement?:Banana.Pa
     // ==================================================================
 
 
-  function unpack(packedArrangement:Banana.PackedArrangement): void {
+  async function unpack(packedArrangement:Banana.PackedArrangement): Promise<void> {
+    const trackMap:Map<Banana.PackedTrack, Banana.Track> = new Map();
+
+    // Unpacking tracks is async, but we want them to end up in the right order
+    // So we unpack them all randomly...
+    await Promise.all(packedArrangement.packedTracks.map(async packedTrack => {
+      const track = await Track.unpack(arrangement, packedTrack);
+      trackMap.set(packedTrack, track);
+    }));
+
+    // And then add them in the right order
     packedArrangement.packedTracks.forEach(packedTrack => {
-      const track = Track.unpack(arrangement, packedTrack);
+      const track = trackMap.get(packedTrack);
       const trackId = getTrackId(track);
       tracks[trackId] = track;
     });

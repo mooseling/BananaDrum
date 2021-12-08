@@ -1,14 +1,18 @@
 declare namespace Banana {
   interface Library {
-    load(): Promise<void>
-    instruments: {[instrumentId:string]: Instrument}
+    load(instrumentCollection:InstrumentCollection): void
+    instrumentMetas: InstrumentMeta[]
+    getInstrument(instrumentId:string): Promise<Instrument>
   }
 
   type InstrumentCollection = PackedInstrument[]
 
-  interface PackedInstrument {
+  interface InstrumentMeta {
     instrumentId: string
     displayName: string
+  }
+
+  interface PackedInstrument extends InstrumentMeta {
     packedNoteStyles: PackedNoteStyle[]
   }
 
@@ -17,9 +21,7 @@ declare namespace Banana {
     file: string
   }
 
-  interface Instrument {
-    instrumentId: string
-    displayName: string
+  interface Instrument extends InstrumentMeta {
     noteStyles: {[styleId: string]: NoteStyle}
   }
 

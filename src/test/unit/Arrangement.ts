@@ -1,16 +1,13 @@
 import {assert} from 'chai';
 import {createTestEcosystem} from '../lib/createTestEcosystem';
-import {Arrangement} from '../../prod/Arrangement';
 
 
 describe('Arrangement', function() {
-  let library: Banana.Library|undefined;
+  let arrangement:Banana.Arrangement;
 
-  before('Load library', () => createTestEcosystem().then(eco => library = eco.library));
+  before('Load arrangement', () => createTestEcosystem().then(eco => arrangement = eco.arrangement));
 
   describe('Default arrangement', function() {
-    const arrangement = Arrangement(library);
-
     it('is 4/4, 120bpm, 1 bar', () => {
       assert(arrangement.timeParams.timeSignature === '4/4');
       assert(arrangement.timeParams.tempo === 120);

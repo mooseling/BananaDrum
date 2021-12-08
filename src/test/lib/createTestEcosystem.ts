@@ -5,15 +5,13 @@ import {Arrangement} from '../../prod/Arrangement';
 import {ArrangementPlayer} from '../../prod/ArrangementPlayer';
 
 type Ecosystem = {
-  library: Banana.Library,
   arrangement: Banana.Arrangement,
   arrangementPlayer: Banana.ArrangementPlayer
 };
 
 export async function createTestEcosystem(): Promise<Ecosystem> {
-  const library = Library(instrumentCollection);
-  await library.load();
-  const arrangement = Arrangement(library, exampleArrangement);
+  Library.load(instrumentCollection);
+  const arrangement = await Arrangement(exampleArrangement);
   const arrangementPlayer = ArrangementPlayer(arrangement);
-  return {library, arrangement, arrangementPlayer};
+  return {arrangement, arrangementPlayer};
 }

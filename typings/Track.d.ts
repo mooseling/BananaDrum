@@ -9,7 +9,7 @@ declare namespace Banana {
 
   interface TrackBuilder {
     (arrangement:Arrangement, instrument:Instrument, packedNotes?:PackedNote[]): Track
-    unpack(arrangement:Arrangement, packedTrack:PackedTrack): Track
+    unpack(arrangement:Arrangement, packedTrack:PackedTrack): Promise<Track>
   }
 
   interface PackedTrack {

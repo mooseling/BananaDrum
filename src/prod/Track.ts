@@ -1,3 +1,5 @@
+import {Library} from './Library';
+
 function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrument, packedNotes:Banana.PackedNote[]): Banana.Track {
   const subscriptions: Banana.Subscription[] = [];
   const notes:Banana.Note[] = [];
@@ -99,8 +101,8 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
 }
 
 
-trackBuilder.unpack = function(arrangement:Banana.Arrangement, packedTrack:Banana.PackedTrack): Banana.Track {
-  const instrument = arrangement.library.instruments[packedTrack.instrumentId];
+trackBuilder.unpack = async function(arrangement:Banana.Arrangement, packedTrack:Banana.PackedTrack): Promise<Banana.Track> {
+  const instrument = await Library.getInstrument(packedTrack.instrumentId);
   return Track(arrangement, instrument, packedTrack.packedNotes);
 }
 
