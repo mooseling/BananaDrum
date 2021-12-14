@@ -2,20 +2,20 @@ import {useContext} from 'react';
 import {Library} from '../Library';
 import {ArrangementPlayerContext} from './ArrangementViewer';
 
-export function InstrumentBrowser(): JSX.Element {
+export function InstrumentBrowser({close}:{close:() => void}): JSX.Element {
   return (
     <div>
-      {Library.instrumentMetas.map(meta => <InstrumentChooser instrumentMeta={meta} />)}
+      {Library.instrumentMetas.map(meta => <InstrumentChooser instrumentMeta={meta} close={close}/>)}
     </div>
   );
 }
 
 
-function InstrumentChooser({instrumentMeta}:{instrumentMeta:Banana.InstrumentMeta}): JSX.Element {
+function InstrumentChooser({instrumentMeta, close}:{instrumentMeta:Banana.InstrumentMeta, close:() => void}): JSX.Element {
   const {instrumentId, displayName} = instrumentMeta;
   const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
   return (
-    <button onClick={() => choose(instrumentId, arrangement)}>
+    <button onClick={() => choose(instrumentId, arrangement) && close()}>
       {displayName}
     </button>
   );
