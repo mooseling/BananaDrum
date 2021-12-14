@@ -15,7 +15,7 @@ function InstrumentChooser({instrumentMeta, close}:{instrumentMeta:Banana.Instru
   const {instrumentId, displayName} = instrumentMeta;
   const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
   return (
-    <button onClick={() => choose(instrumentId, arrangement) && close()}>
+    <button className="instrument-chooser" onClick={() => choose(instrumentId, arrangement) && close()}>
       {displayName}
     </button>
   );

@@ -21,7 +21,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
         <div className="arrangement-viewer-body overlay-wrapper">
           <div>
             {getTrackViewers(tracks)}
-            <button onClick={() => toggleBrowser(true)}>Add</button>
+            <button id="show-instrument-browser" onClick={() => toggleBrowser(true)}>Add Instrument</button>
           </div>
           <Overlay visible={instrumentBrowserVisible}>
             <InstrumentBrowser close={() => toggleBrowser(false)}/>

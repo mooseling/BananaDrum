@@ -72,6 +72,18 @@
     width: 40pt;
 }
 
+#show-instrument-browser {
+  width: 86pt;
+  height: 50pt;
+  margin-top: 10pt;
+}
+
+.instrument-chooser {
+  height: 50pt;
+  width: 70pt;
+  margin: 5pt;
+}
+
 
 /* Overlays */
 .overlay-wrapper {
