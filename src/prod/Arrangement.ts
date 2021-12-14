@@ -14,7 +14,7 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
 
   const subscriptions: Banana.Subscription[] = [];
   const tracks:{[trackId:string]:Banana.Track} = {};
-  const arrangement:Banana.Arrangement = {timeParams, tracks, createTrack, unpackTracks, getSixteenths, subscribe};
+  const arrangement:Banana.Arrangement = {timeParams, tracks, createTrack, unpackTracks, removeTrack, getSixteenths, subscribe};
 
   return arrangement;
 
@@ -77,6 +77,12 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
       tracks[trackId] = track;
     });
 
+    publish();
+  }
+
+
+  function removeTrack(trackId:string) {
+    delete tracks[trackId];
     publish();
   }
 
