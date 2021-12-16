@@ -21,21 +21,14 @@ document.getElementById('load-button').addEventListener('click', function() {
     EventEngine.connect(arrangementPlayer);
     arrangementPlayer.loop();
     ReactDOM.render(<ArrangementViewer arrangementPlayer={arrangementPlayer}/>, document.getElementById('wrapper'));
-    const playButton = document.getElementById('play-button');
-    const pauseButton = document.getElementById('pause-button');
 
-    playButton.addEventListener('click', () => EventEngine.play());
-    pauseButton.addEventListener('click', () => EventEngine.pause());
-    playButton.style.display = '';
-    pauseButton.style.display = '';
+    document.getElementById('explanation').remove();
+    loadingMessage.remove();
 
-    document.getElementById('explanation').innerHTML = 'To edit the song, click the boxes.'
-
+    // Expose some things for testing:
     // @ts-ignore
     window.arrangement = arrangement;
     // @ts-ignore
     window.Library = Library;
-
-    loadingMessage.remove();
   });
 });

@@ -1,11 +1,14 @@
 import {useState, useEffect, useContext} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
+import {EventEngine} from '../EventEngine';
 
 
 export function ArrangementControls(): JSX.Element {
   const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
   return (
     <div className="arrangement-controls">
+      <button className="playback-control" onClick={() => EventEngine.play()}>Play</button>
+      <button className="playback-control" onClick={() => EventEngine.pause()}>Pause</button>
       <TimeControls arrangement={arrangement} />
     </div>
   );

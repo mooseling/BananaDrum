@@ -1,3 +1,11 @@
+.arrangement-controls {
+  display: flex;
+}
+
+.arrangement-controls > * {
+  margin-right: 8pt;
+}
+
 .track-viewer {
   display: flex;
   height:50pt;
