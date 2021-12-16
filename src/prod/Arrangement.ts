@@ -81,9 +81,14 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
   }
 
 
-  function removeTrack(trackId:string) {
-    delete tracks[trackId];
-    publish();
+  function removeTrack(trackToRemove:Banana.Track) {
+    Object.keys(tracks).some(trackId => {
+      if (tracks[trackId] === trackToRemove) {
+        delete tracks[trackId];
+        publish();
+        return true;
+      }
+    });
   }
 
 

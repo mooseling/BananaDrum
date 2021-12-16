@@ -9,7 +9,7 @@ declare namespace Banana {
     tracks: {[trackId:string]: Track}
     createTrack(instrument:Instrument): void
     unpackTracks(packedTracks:PackedTrack[]): Promise<void>
-    removeTrack(trackId:string): void
+    removeTrack(track:Track): void
     getSixteenths(): Timing[]
   }
 
