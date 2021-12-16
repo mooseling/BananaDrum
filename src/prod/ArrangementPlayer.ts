@@ -9,8 +9,8 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
 
   // We need a TrackPlayer for each Track, and add/remove them when needed
   const trackPlayers:{[trackId:string]:Banana.TrackPlayer} = {};
-  createTrackPlayers();
-  arrangement.subscribe(createTrackPlayers);
+  updateTrackPlayers();
+  arrangement.subscribe(updateTrackPlayers);
 
   // currentTiming updates as we play, and ArrangementPlayer publishes when it does
   let currentTiming:Banana.Timing = '1.1.1';
@@ -99,9 +99,18 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
 
 
 
-  function createTrackPlayers(): void {
-    for (const trackId in arrangement.tracks)
-      trackPlayers[trackId] = TrackPlayer(arrangement.tracks[trackId], timeCoordinator);
+  function updateTrackPlayers(): void {
+    // First remove trackPlayers for removed tracks
+    for (const trackId in trackPlayers) {
+      if (!arrangement.tracks[trackId])
+        delete trackPlayers[trackId];
+    }
+
+    // Then add trackPlayers for new tracks
+    for (const trackId in arrangement.tracks) {
+      if (!trackPlayers[trackId])
+        trackPlayers[trackId] = TrackPlayer(arrangement.tracks[trackId], timeCoordinator);
+    }
   }
 
 
