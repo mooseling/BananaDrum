@@ -3,7 +3,7 @@ import {Library} from './Library';
 function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrument, packedNotes:Banana.PackedNote[]): Banana.Track {
   const subscriptions: Banana.Subscription[] = [];
   const notes:Banana.Note[] = [];
-  const track:Banana.Track = {arrangement, instrument, notes, edit, subscribe, getNoteAt};
+  const track:Banana.Track = {arrangement, instrument, notes, edit, subscribe, unsubscribe, getNoteAt};
   if (packedNotes)
     unpackNotes();
   arrangement.timeParams.subscribe(handleTimeParamsChange);
@@ -38,9 +38,18 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
   }
 
 
-  // You can subscribe to changes in this Track
   function subscribe(callback:Banana.Subscription): void {
     subscriptions.push(callback);
+  }
+
+
+  function unsubscribe(callbackToRemove: Banana.Subscription) {
+    subscriptions.some((subscription, index) => {
+      if (callbackToRemove === subscription) {
+        subscriptions.splice(index, 1);
+        return true;
+      }
+    });
   }
 
 

@@ -30,10 +30,19 @@ return {
       publish();
     }
   },
+
   subscribe(callback: Banana.Subscription) {
     subscriptions.push(callback);
   },
-  // Timings
+  unsubscribe(callbackToRemove: Banana.Subscription) {
+    subscriptions.some((subscription, index) => {
+      if (callbackToRemove === subscription) {
+        subscriptions.splice(index, 1);
+        return true;
+      }
+    });
+  },
+
   isValid(timing:Banana.Timing) {
     const [bar, beat] = timing.split('.').map(bit => Number(bit));
     if (bar > length)

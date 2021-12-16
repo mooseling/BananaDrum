@@ -3,5 +3,6 @@ declare namespace Banana {
 
   interface Publisher {
     subscribe(callback:Subscription): void
+    unsubscribe(callback:Subscription): void
   }
 }

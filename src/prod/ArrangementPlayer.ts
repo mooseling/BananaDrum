@@ -19,7 +19,7 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
   arrangement.timeParams.subscribe(updateCallbackEvents);
 
   return {
-    arrangement, getEvents, loop, subscribe,
+    arrangement, getEvents, loop, subscribe, unsubscribe,
     get currentTiming() {
       return currentTiming;
     }
@@ -86,6 +86,16 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
 
   function subscribe(callback: Banana.Subscription) {
     subscriptions.push(callback);
+  }
+
+
+  function unsubscribe(callbackToRemove: Banana.Subscription) {
+    subscriptions.some((subscription, index) => {
+      if (callbackToRemove === subscription) {
+        subscriptions.splice(index, 1);
+        return true;
+      }
+    });
   }
 
 

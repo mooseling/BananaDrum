@@ -16,7 +16,7 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
 
   timeParams.subscribe(handleTimeParamsChange);
 
-  return {convertToRealTime, convertToLoopIntervals, convertToAudioTime, subscribe};
+  return {convertToRealTime, convertToLoopIntervals, convertToAudioTime, subscribe, unsubscribe};
 
 
 
@@ -96,6 +96,16 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
 
   function subscribe(callback:Banana.Subscription): void {
     subscriptions.push(callback);
+  }
+
+
+  function unsubscribe(callbackToRemove: Banana.Subscription) {
+    subscriptions.some((subscription, index) => {
+      if (callbackToRemove === subscription) {
+        subscriptions.splice(index, 1);
+        return true;
+      }
+    });
   }
 
 

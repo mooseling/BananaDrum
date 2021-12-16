@@ -14,7 +14,7 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
 
   const subscriptions: Banana.Subscription[] = [];
   const tracks:{[trackId:string]:Banana.Track} = {};
-  const arrangement:Banana.Arrangement = {timeParams, tracks, createTrack, unpackTracks, removeTrack, getSixteenths, subscribe};
+  const arrangement:Banana.Arrangement = {timeParams, tracks, createTrack, unpackTracks, removeTrack, getSixteenths, subscribe, unsubscribe};
 
   return arrangement;
 
@@ -94,6 +94,16 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
 
   function subscribe(callback: Banana.Subscription) {
     subscriptions.push(callback);
+  }
+
+
+  function unsubscribe(callbackToRemove: Banana.Subscription) {
+    subscriptions.some((subscription, index) => {
+      if (callbackToRemove === subscription) {
+        subscriptions.splice(index, 1);
+        return true;
+      }
+    });
   }
 
 
