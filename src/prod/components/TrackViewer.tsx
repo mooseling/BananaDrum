@@ -8,7 +8,11 @@ export function TrackViewer({track}:{track:Banana.Track}): JSX.Element {
   const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
 
   let [state, update] = useState({track, arrangement});
-  useEffect(() => track.subscribe(() => update({track, arrangement})), []);
+  const subscription = () => update({track, arrangement});
+  useEffect(() => {
+    track.subscribe(subscription);
+    return () => track.unsubscribe(subscription);
+  }, []);
 
   const [controlsVisible, toggleControls] = useState(false);
 
@@ -40,7 +44,13 @@ function TrackMeta({track, toggleControls}:{track:Banana.Track, toggleControls:(
 function NoteLine({track}:{track:Banana.Track}): JSX.Element {
   const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
   const [sixteenths, setSixteenths] = useState(arrangement.getSixteenths());
-  useEffect(() => arrangement.timeParams.subscribe(() => setSixteenths(arrangement.getSixteenths())), []);
+
+  const subscription = () => setSixteenths(arrangement.getSixteenths());
+  useEffect(() => {
+    arrangement.timeParams.subscribe(subscription);
+    return () => arrangement.timeParams.unsubscribe(subscription);
+  }, []);
+
   return (<div className="note-line">
     {sixteenths.map(timing => track.getNoteAt(timing))
       .map(note => <NoteViewer note={note} key={note.timing}/>)}

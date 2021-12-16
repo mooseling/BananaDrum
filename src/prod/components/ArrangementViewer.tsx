@@ -10,7 +10,12 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   const {arrangement} = arrangementPlayer;
   const [tracks, setTracks] = useState({...arrangement.tracks});
   const [instrumentBrowserVisible, toggleBrowser] = useState(false);
-  useEffect(() => arrangement.subscribe(() => setTracks({...arrangement.tracks})), []);
+
+  const subscription = () => setTracks({...arrangement.tracks});
+  useEffect(() => {
+    arrangement.subscribe(subscription);
+    return () => arrangement.unsubscribe(subscription);
+  }, []);
 
   return (
     <ArrangementPlayerContext.Provider value={arrangementPlayer}>

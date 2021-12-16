@@ -28,10 +28,19 @@ function getClasses(note:Banana.Note) {
 }
 
 
+// As Banana Drum plays, we highlight the current notes
+// This is done by subscribing to the ArrangementPlayer, which publishes when timings change
 function NoteHighlighter({timing}:{timing:Banana.Timing}): JSX.Element {
   const player:Banana.ArrangementPlayer = useContext(ArrangementPlayerContext);
   const [currentTiming, rememberTiming] = useState(player.currentTiming);
-  useEffect(() => player.subscribe(() => rememberTiming(player.currentTiming)), []);
+
+  const subscription:Banana.Subscription = () => rememberTiming(player.currentTiming);
+  useEffect(() => {
+    player.subscribe(subscription);
+    return () => player.unsubscribe(subscription); // Unsubscribe when this element leaves the UI
+  }, []);
+
+
   const litCLass = currentTiming === timing ? ' lit' : ''
   return <div className={'note-highlighter' + litCLass}></div>;
 }

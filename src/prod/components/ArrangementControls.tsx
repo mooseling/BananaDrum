@@ -17,7 +17,12 @@ function TimeControls({arrangement}:{arrangement:Banana.Arrangement}): JSX.Eleme
   const [displayTempo, updateDisplayTempo] = useState(String(timeParams.tempo));
   const [displayLength, updateDisplayLength] = useState(String(timeParams.length));
   let [state, update] = useState({arrangement});
-  useEffect(() => timeParams.subscribe(() => update({arrangement})), []);
+
+  const subscription = () => update({arrangement});
+  useEffect(() => {
+    timeParams.subscribe(subscription);
+    return () => timeParams.unsubscribe(subscription);
+  }, []);
 
   return (
     <div className="time-controls">
