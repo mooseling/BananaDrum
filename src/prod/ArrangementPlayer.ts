@@ -5,7 +5,7 @@ import {TrackPlayer} from './TrackPlayer';
 export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.ArrangementPlayer {
   const timeCoordinator = TimeCoordinator(arrangement.timeParams);
   let isLooping = false;
-  let subscription: Banana.Subscription[] = [];
+  let subscriptions: Banana.Subscription[] = [];
 
   // We need a TrackPlayer for each Track, and add/remove them when needed
   const trackPlayers:{[trackId:string]:Banana.TrackPlayer} = {};
@@ -85,7 +85,7 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
 
 
   function subscribe(callback: Banana.Subscription) {
-    subscription.push(callback);
+    subscriptions.push(callback);
   }
 
 
@@ -128,6 +128,6 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
 
 
   function publish(): void {
-    subscription.forEach(callback => callback());
+    subscriptions.forEach(callback => callback());
   }
 }
