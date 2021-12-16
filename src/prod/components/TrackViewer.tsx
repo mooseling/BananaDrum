@@ -1,4 +1,5 @@
 import {NoteViewer} from './NoteViewer';
+import {Overlay} from './Overlay';
 import {useState, useEffect, useContext} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
 
@@ -9,20 +10,28 @@ export function TrackViewer({track}:{track:Banana.Track}): JSX.Element {
   let [state, update] = useState({track, arrangement});
   useEffect(() => track.subscribe(() => update({track, arrangement})), []);
 
+  const [controlsVisible, toggleControls] = useState(false);
+
   return (
     <div className="track-viewer">
-      <TrackMeta track={track}/>
-      <NoteLine track={track}/>
+      <TrackMeta track={track} toggleControls={() => toggleControls(!controlsVisible)}/>
+      <div className="overlay-wrapper">
+        <NoteLine track={track}/>
+        <Overlay visible={controlsVisible}>
+          <TrackControls track={track}/>
+        </Overlay>
+      </div>
     </div>
   );
 }
 
 
-function TrackMeta({track}:{track:Banana.Track}): JSX.Element {
+function TrackMeta({track, toggleControls}:{track:Banana.Track, toggleControls:() => void}): JSX.Element {
   const instrumentName = track.instrument.displayName;
   return (
     <div className="track-meta">
-      {instrumentName}
+      {instrumentName}<br/>
+      <button onClick={toggleControls}>options</button>
     </div>
   );
 }
@@ -36,4 +45,11 @@ function NoteLine({track}:{track:Banana.Track}): JSX.Element {
     {sixteenths.map(timing => track.getNoteAt(timing))
       .map(note => <NoteViewer note={note} key={note.timing}/>)}
   </div>);
+}
+
+
+function TrackControls({track}:{track:Banana.Track}): JSX.Element {
+  return (
+    <button onClick={() => track.arrangement.removeTrack(track)}>Remove track</button>
+  );
 }
