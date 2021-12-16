@@ -19,7 +19,7 @@ export function TrackViewer({track}:{track:Banana.Track}): JSX.Element {
   return (
     <div className="track-viewer">
       <TrackMeta track={track} toggleControls={() => toggleControls(!controlsVisible)}/>
-      <div className="overlay-wrapper">
+      <div className="note-line-wrapper overlay-wrapper">
         <NoteLine track={track}/>
         <Overlay visible={controlsVisible}>
           <TrackControls track={track}/>

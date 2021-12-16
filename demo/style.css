@@ -23,15 +23,20 @@
   flex-shrink: 0;
 }
 
+.note-line-wrapper {
+  flex-grow: 1;
+}
+
 .note-line {
   display: flex;
   height:100%;
 }
 
 .note-viewer {
-  width:50pt;
+  flex-basis:50pt;
+  flex-grow: 1;
+  flex-shrink: 0;
   border: 1px solid black;
-  display: inline-block;
   height: 50pt;
   text-align: center;
   line-height: 50pt;
