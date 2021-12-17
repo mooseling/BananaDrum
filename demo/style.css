@@ -6,6 +6,10 @@
   margin-right: 8pt;
 }
 
+.track-viewers-wrapper {
+  overflow-x: scroll;
+}
+
 .track-viewer {
   display: flex;
   height:50pt;
@@ -21,10 +25,14 @@
   height: 46pt;
   padding: 2pt;
   flex-shrink: 0;
+  position: absolute;
+  background-color: white;
+  z-index: 1;
 }
 
 .note-line-wrapper {
   flex-grow: 1;
+  margin-left: 85.5pt;
 }
 
 .note-line {

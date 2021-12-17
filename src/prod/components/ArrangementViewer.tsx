@@ -24,10 +24,10 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
           <ArrangementControls />
         </div>
         <div className="arrangement-viewer-body overlay-wrapper">
-          <div>
+          <div className="track-viewers-wrapper">
             {getTrackViewers(tracks)}
-            <button id="show-instrument-browser" onClick={() => toggleBrowser(true)}>Add Instrument</button>
           </div>
+          <button id="show-instrument-browser" onClick={() => toggleBrowser(true)}>Add Instrument</button>
           <Overlay visible={instrumentBrowserVisible}>
             <InstrumentBrowser close={() => toggleBrowser(false)}/>
           </Overlay>
