@@ -7,12 +7,11 @@
 }
 
 .track-viewers-wrapper {
-  overflow-x: scroll;
+  overflow-x: auto; /* scroll if overflowing */
 }
 
 .track-viewer {
   display: flex;
-  height:50pt;
 }
 
 .track-viewer > * {
