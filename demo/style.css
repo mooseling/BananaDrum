@@ -1,3 +1,7 @@
+body {
+  margin: 0;
+}
+
 .arrangement-controls {
   display: flex;
 }
@@ -10,8 +14,13 @@
   overflow-x: auto; /* scroll if overflowing */
 }
 
+.track-viewer:first-child {
+  border-top: 1.5pt solid black
+}
+
 .track-viewer {
   display: flex;
+  border-bottom: 1.5pt solid black
 }
 
 .track-viewer > * {
@@ -20,7 +29,7 @@
 
 .track-meta {
   width: 80.9pt;
-  border: 1px solid black;
+  border-right: 1px solid black;
   height: 46pt;
   padding: 2pt;
   flex-shrink: 0;
@@ -42,7 +51,7 @@
   flex-basis:50pt;
   flex-grow: 1;
   flex-shrink: 0;
-  border: 1px solid black;
+  border-right: 1px solid black;
   height: 50pt;
   text-align: center;
   line-height: 50pt;
