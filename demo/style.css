@@ -4,6 +4,7 @@ body {
 
 .arrangement-controls {
   display: flex;
+  border-bottom: 1.5pt solid black;
 }
 
 .arrangement-controls > * {
@@ -14,13 +15,9 @@ body {
   overflow-x: auto; /* scroll if overflowing */
 }
 
-.track-viewer:first-child {
-  border-top: 1.5pt solid black
-}
-
 .track-viewer {
+  min-width: 100%;
   display: flex;
-  border-bottom: 1.5pt solid black
 }
 
 .track-viewer > * {
@@ -34,23 +31,24 @@ body {
   padding: 2pt;
   flex-shrink: 0;
   position: absolute;
+  left: 0;
   background-color: white;
+  border-bottom: 1.5pt solid black;
 }
 
 .note-line-wrapper {
   flex-grow: 1;
   margin-left: 85.5pt;
+  border-bottom: 1.5pt solid black;
 }
 
 .note-line {
   display: flex;
-  height:100%;
 }
 
 .note-viewer {
   flex-basis:50pt;
   flex-grow: 1;
-  flex-shrink: 0;
   border-right: 1px solid black;
   height: 50pt;
   text-align: center;

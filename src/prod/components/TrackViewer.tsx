@@ -3,6 +3,8 @@ import {Overlay} from './Overlay';
 import {useState, useEffect, useContext} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
 
+const widthPerNote = 50; // pt
+
 
 export function TrackViewer({track}:{track:Banana.Track}): JSX.Element {
   const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
@@ -51,7 +53,9 @@ function NoteLine({track}:{track:Banana.Track}): JSX.Element {
     return () => arrangement.timeParams.unsubscribe(subscription);
   }, []);
 
-  return (<div className="note-line">
+  const width:string = sixteenths.length * widthPerNote + 'pt';
+
+  return (<div className="note-line" style={{minWidth:width}}>
     {sixteenths.map(timing => track.getNoteAt(timing))
       .map(note => <NoteViewer note={note} key={note.timing}/>)}
   </div>);
