@@ -71,8 +71,13 @@ body {
   border-bottom: var(--thick-border);
 }
 
-.note-line-wrapper .overlay {
-  padding: 3pt;
+.track-controls {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding-left: 10pt;
+  box-sizing: border-box;
 }
 
 .note-line {
@@ -146,6 +151,7 @@ body {
   width: 70pt;
   margin-right: 5pt;
   margin-bottom: 5pt;
+  vertical-align: middle;
 }
 
 
@@ -161,4 +167,56 @@ body {
   top: 0px;
   background: white;
   box-sizing: border-box; /* For when it has added padding */
+}
+
+
+
+/* =============================================================== */
+/*                             Buttons                             */
+/* =============================================================== */
+
+
+
+
+button {
+  box-sizing: border-box;
+  display: inline-block;
+  border: none;
+  box-shadow: inset 0 0 2px 0 rgba(0, 0, 0, .2), inset 0 -3px 0 0 rgba(0, 0, 0, .32);
+  padding: 9.75pt 12pt;
+  border-radius: 11pt;
+  transition: all .2s;
+  cursor: pointer;
+  background-color: var(--blue);
+  color: white;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+  font-weight: bold;
+  position: relative;
+  outline: none;
+  text-transform: lowercase;
+}
+
+button.small {
+  font-size: 8pt;
+  padding: 2pt 6pt;
+  font-weight: 400;
+  border-radius: 5pt;
+  line-height: 11pt;
+}
+
+button.green {
+  background-color: var(--green);
+}
+
+button.yellow {
+  background-color: var(--yellow);
+}
+
+button:active {
+  top: 2px;
+  box-shadow: inset 0px 2px 1px 0px rgba(0, 0, 0, .1);
+}
+
+button:disabled {
+  cursor: auto;
 }

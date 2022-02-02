@@ -37,7 +37,7 @@ function TrackMeta({track, toggleControls}:{track:Banana.Track, toggleControls:(
   return (
     <div className="track-meta">
       {instrumentName}<br/>
-      <button onClick={toggleControls}>options</button>
+      <button className="small green" onClick={toggleControls}>options</button>
     </div>
   );
 }
@@ -64,6 +64,8 @@ function NoteLine({track}:{track:Banana.Track}): JSX.Element {
 
 function TrackControls({track}:{track:Banana.Track}): JSX.Element {
   return (
-    <button onClick={() => track.arrangement.removeTrack(track)}>Remove track</button>
+    <div className="track-controls">
+      <button className="green" onClick={() => track.arrangement.removeTrack(track)}>Remove track</button>
+    </div>
   );
 }
