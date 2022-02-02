@@ -1,3 +1,25 @@
+:root {
+  --yellow:  #FFDE00;
+  --light-yellow: #FFE739;
+  --lighter-yellow: #FFEB64;
+  --green: #006666;
+  --dark-green: #005151;
+  --darker-green: #003737;
+  --light-green: #0A7B7B;
+  --lighter-green: #238B8B;
+  --blue: #006699;
+  --light-blue: #008ED3;
+  --lighter-blue: #07ABFB;
+  --dark-blue: #00537B;
+  --darker-blue: #003F5D;
+  --gray:	#606060;
+  --dark-gray:	#303030;
+  --darker-gray: #202020;
+  --light-gray: #787878;
+  --lighter-gray: #A0A0A0;
+  --lightest-gray: #D0D0D0;
+}
+
 body {
   margin: 0;
   font-family: sans-serif;
