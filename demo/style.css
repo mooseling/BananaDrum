@@ -30,6 +30,16 @@ body {
   font-family: sans-serif;
 }
 
+#welcome {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    width: 100%;
+    padding: 20pt 0;
+    background-color: var(--lighter-yellow);
+}
+
 .arrangement-controls {
   display: flex;
   border-bottom: var(--thick-border);

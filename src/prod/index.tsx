@@ -22,8 +22,7 @@ document.getElementById('load-button').addEventListener('click', function() {
     arrangementPlayer.loop();
     ReactDOM.render(<ArrangementViewer arrangementPlayer={arrangementPlayer}/>, document.getElementById('wrapper'));
 
-    document.getElementById('explanation').remove();
-    loadingMessage.remove();
+    document.getElementById('welcome').remove();
 
     // Expose some things for testing:
     // @ts-ignore
