@@ -19,6 +19,10 @@
   --light-gray: #A0A0A0;
   --lighter-gray: #D0D0D0;
   --lightest-gray: #E8E8E8;
+  --thick-border: 1.5pt solid var(--dark-gray);
+  --thin-border: 1px solid var(--dark-gray);
+  --note-height: 54pt;
+  --track-meta-width: 84.9pt;
 }
 
 body {
@@ -28,7 +32,7 @@ body {
 
 .arrangement-controls {
   display: flex;
-  border-bottom: 1.5pt solid black;
+  border-bottom: var(--thick-border);
 }
 
 .arrangement-controls > * {
@@ -49,21 +53,22 @@ body {
 }
 
 .track-meta {
-  width: 80.9pt;
-  border-right: 1px solid black;
-  height: 46pt;
-  padding: 2pt;
+  --padding: 2pt;
+  width: calc(var(--track-meta-width) - 2 * var(--padding));
+  border-right: var(--thin-border);
+  height: calc(var(--note-height) - 2 * var(--padding));
+  padding: var(--padding);
   flex-shrink: 0;
   position: absolute;
   left: 0;
   background-color: white;
-  border-bottom: 1.5pt solid black;
+  border-bottom: var(--thick-border);
 }
 
 .note-line-wrapper {
   flex-grow: 1;
-  margin-left: 85.5pt;
-  border-bottom: 1.5pt solid black;
+  margin-left: var(--track-meta-width);
+  border-bottom: var(--thick-border);
 }
 
 .note-line-wrapper .overlay {
@@ -75,12 +80,12 @@ body {
 }
 
 .note-viewer {
-  flex-basis:50pt;
+  flex-basis:var(--note-height);
   flex-grow: 1;
-  border-right: 1px solid black;
-  height: 50pt;
+  border-right: var(--thin-border);
+  height: var(--note-height);
   text-align: center;
-  line-height: 50pt;
+  line-height: var(--note-height);
   cursor: pointer;
   -webkit-user-select: none;
   user-select: none;
