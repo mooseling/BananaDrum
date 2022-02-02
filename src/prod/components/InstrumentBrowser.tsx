@@ -6,6 +6,9 @@ export function InstrumentBrowser({close}:{close:() => void}): JSX.Element {
   return (
     <div>
       {Library.instrumentMetas.map(meta => <InstrumentChooser key={meta.instrumentId} instrumentMeta={meta} close={close}/>)}
+      <br />
+      <br />
+      <button onClick={close}>Back</button>
     </div>
   );
 }

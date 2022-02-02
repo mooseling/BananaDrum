@@ -43,6 +43,10 @@ body {
   border-bottom: 1.5pt solid black;
 }
 
+.note-line-wrapper .overlay {
+  padding: 3pt;
+}
+
 .note-line {
   display: flex;
 }
@@ -105,10 +109,15 @@ body {
   margin-top: 10pt;
 }
 
+.arrangement-viewer-body > .overlay {
+  padding: 5pt;
+}
+
 .instrument-chooser {
   height: 50pt;
   width: 70pt;
-  margin: 5pt;
+  margin-right: 5pt;
+  margin-bottom: 5pt;
 }
 
 
@@ -123,4 +132,5 @@ body {
   position: absolute;
   top: 0px;
   background: white;
+  box-sizing: border-box; /* For when it has added padding */
 }
