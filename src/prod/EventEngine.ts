@@ -11,11 +11,18 @@ export const EventEngine:Banana.EventEngine = (function(){
   const eventSources:Banana.EventSource[] = [];
   let nextIteration: number|null = null;
   let timeCovered:number = 0;
+  let state:string = 'stopped';
+  let subscriptions: Banana.Subscription[] = [];
 
   type ScheduledEvent = AudioBufferSourceNode|number;
   const scheduledEvents:ScheduledEvent[] = [];
 
-  return {initialise, connect, play, pause, getTime};
+  return {
+    initialise, connect, play, pause, getTime, subscribe, unsubscribe,
+    get state(): string {
+      return state;
+    }
+  };
 
 
 
@@ -47,6 +54,8 @@ export const EventEngine:Banana.EventEngine = (function(){
     if (nextIteration === null) {
       audioContext.resume();
       loop();
+      state = 'playing';
+      publish();
     }
   }
 
@@ -58,6 +67,8 @@ export const EventEngine:Banana.EventEngine = (function(){
       clearTimeout(nextIteration);
       nextIteration = null;
       timeCovered = audioContext.currentTime;
+      state = 'paused';
+      publish();
     }
   }
 
@@ -65,6 +76,21 @@ export const EventEngine:Banana.EventEngine = (function(){
   function getTime() {
     checkInitialised();
     return audioContext.currentTime;
+  }
+
+
+  function subscribe(callback: Banana.Subscription) {
+    subscriptions.push(callback);
+  }
+
+
+  function unsubscribe(callbackToRemove: Banana.Subscription) {
+    subscriptions.some((subscription, index) => {
+      if (callbackToRemove === subscription) {
+        subscriptions.splice(index, 1);
+        return true;
+      }
+    });
   }
 
 
@@ -142,5 +168,10 @@ export const EventEngine:Banana.EventEngine = (function(){
         clearTimeout(scheduledEvent);
     });
     scheduledEvents.splice(0);
+  }
+
+
+  function publish(): void {
+    subscriptions.forEach(callback => callback());
   }
 })();

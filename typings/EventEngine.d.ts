@@ -1,10 +1,11 @@
 declare namespace Banana {
-  interface EventEngine {
+  interface EventEngine extends Publisher {
     initialise(): void
     connect(eventSource:EventSource): void
     play(): void
     pause(): void
     getTime(): RealTime
+    state: string // 'stopped'|'playing'|'paused'
   }
 
   interface EventDetails {
