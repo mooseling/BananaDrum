@@ -35,7 +35,10 @@ export function TrackViewer({track}:{track:Banana.Track}): JSX.Element {
 function TrackMeta({track, toggleControls}:{track:Banana.Track, toggleControls:() => void}): JSX.Element {
   const instrumentName = track.instrument.displayName;
   return (
-    <div className="track-meta">
+    <div
+      className="track-meta"
+      style={{backgroundColor:track.colour}}
+      >
       {instrumentName}<br/>
       <button className="small green" onClick={toggleControls}>options</button>
     </div>
