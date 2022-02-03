@@ -136,7 +136,7 @@ body {
 }
 
 .note-highlighter.lit {
-  background-color: yellow;
+  background-color: var(--light-yellow);
 }
 
 .arrangement-viewer[event-engine-state="stopped"] .note-highlighter {
