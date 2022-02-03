@@ -117,7 +117,7 @@ body {
 }
 
 .note-viewer.odd-beat .note-viewer-background {
-  background-color: #e0e0e0;
+  background-color: var(--lightest-gray);
 }
 
 .note-viewer-background {
