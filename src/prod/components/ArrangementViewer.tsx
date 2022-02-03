@@ -2,6 +2,7 @@ import {TrackViewer} from './TrackViewer';
 import {ArrangementControls} from './ArrangementControls';
 import {InstrumentBrowser} from './InstrumentBrowser';
 import {Overlay} from './Overlay';
+import {EventEngine} from '../EventEngine';
 import {useState, useEffect, createContext} from 'react';
 
 export const ArrangementPlayerContext = createContext(null);
@@ -10,16 +11,23 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   const {arrangement} = arrangementPlayer;
   const [tracks, setTracks] = useState({...arrangement.tracks});
   const [instrumentBrowserVisible, toggleBrowser] = useState(false);
+  const [eventEngineState, updateEventEngineState] = useState(EventEngine.state);
 
-  const subscription = () => setTracks({...arrangement.tracks});
+  const tracksSubscription = () => setTracks({...arrangement.tracks});
   useEffect(() => {
-    arrangement.subscribe(subscription);
-    return () => arrangement.unsubscribe(subscription);
+    arrangement.subscribe(tracksSubscription);
+    return () => arrangement.unsubscribe(tracksSubscription);
+  }, []);
+
+  const eventEngineSubscription = () => updateEventEngineState(EventEngine.state);
+  useEffect(() => {
+    EventEngine.subscribe(eventEngineSubscription);
+    return () => EventEngine.unsubscribe(eventEngineSubscription);
   }, []);
 
   return (
     <ArrangementPlayerContext.Provider value={arrangementPlayer}>
-      <div className="arrangement-viewer">
+      <div className="arrangement-viewer" event-engine-state={eventEngineState}>
         <div className="arrangement-viewer-head">
           <ArrangementControls />
         </div>
