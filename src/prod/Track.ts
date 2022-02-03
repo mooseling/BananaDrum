@@ -1,9 +1,11 @@
 import {Library} from './Library';
+import {getColour} from './colours';
 
 function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrument, packedNotes:Banana.PackedNote[]): Banana.Track {
   const subscriptions: Banana.Subscription[] = [];
   const notes:Banana.Note[] = [];
-  const track:Banana.Track = {arrangement, instrument, notes, edit, subscribe, unsubscribe, getNoteAt};
+  const colour = getColour(instrument.colourGroup);
+  const track:Banana.Track = {arrangement, instrument, notes, edit, subscribe, unsubscribe, getNoteAt, colour};
   if (packedNotes)
     unpackNotes();
   arrangement.timeParams.subscribe(handleTimeParamsChange);

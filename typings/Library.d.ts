@@ -10,6 +10,7 @@ declare namespace Banana {
   interface InstrumentMeta {
     instrumentId: string
     displayName: string
+    colourGroup: string // blue, purple, green, orange, or yellow
   }
 
   interface PackedInstrument extends InstrumentMeta {

@@ -15,7 +15,8 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         noteStyleId: 'bell',
         file: 'ride_bell.mp3'
       }
-    ]
+    ],
+    colourGroup: 'yellow'
   },
   {
     instrumentId: 'crash',
@@ -33,7 +34,8 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         noteStyleId: 'bell',
         file: 'crash_bell.mp3'
       }
-    ]
+    ],
+    colourGroup: 'yellow'
   },
   {
     instrumentId: 'hihat',
@@ -55,7 +57,8 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         noteStyleId: 'trash',
         file: 'hihat_trash.mp3'
       }
-    ]
+    ],
+    colourGroup: 'yellow'
   },
   {
     instrumentId: 'snare',
@@ -77,7 +80,8 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         noteStyleId: 'sidestick',
         file: 'snare_sidestick.mp3'
       }
-    ]
+    ],
+    colourGroup: 'green'
   },
   {
     instrumentId: 'kick',
@@ -92,7 +96,8 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         file: 'kick_ghost.mp3'
         // displayName, symbol
       }
-    ]
+    ],
+    colourGroup: 'blue'
   },
   {
     instrumentId: 'hightom',
@@ -106,7 +111,8 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         noteStyleId: 'ghost',
         file: 'hightom_ghost.mp3'
       }
-    ]
+    ],
+    colourGroup: 'purple'
   },
   {
     instrumentId: 'midtom',
@@ -120,7 +126,8 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         noteStyleId: 'ghost',
         file: 'midtom_ghost.mp3'
       }
-    ]
+    ],
+    colourGroup: 'purple'
   },
   {
     instrumentId: 'floortom',
@@ -134,6 +141,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         noteStyleId: 'ghost',
         file: 'floortom_ghost.mp3'
       }
-    ]
+    ],
+    colourGroup: 'purple'
   }
 ];

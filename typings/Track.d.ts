@@ -5,6 +5,7 @@ declare namespace Banana {
     notes: Note[]
     edit(command: EditCommand): void
     getNoteAt(timing:Timing): Note
+    colour: string // A specific hsl() string
   }
 
   interface TrackBuilder {

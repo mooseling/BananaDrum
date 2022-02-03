@@ -10,7 +10,8 @@ export const Library:Banana.Library = {
       packedInstruments[packedInstrument.instrumentId] = packedInstrument;
       Library.instrumentMetas.push({
         instrumentId: packedInstrument.instrumentId,
-        displayName: packedInstrument.displayName
+        displayName: packedInstrument.displayName,
+        colourGroup: packedInstrument.colourGroup
       });
     });
   },
@@ -27,9 +28,9 @@ export const Library:Banana.Library = {
 
 
 async function Instrument(packedInstrument:Banana.PackedInstrument): Promise<Banana.Instrument> {
-  const {instrumentId, packedNoteStyles, displayName} = packedInstrument;
+  const {instrumentId, packedNoteStyles, displayName, colourGroup} = packedInstrument;
   const noteStyles = await unpackNoteStyles(packedNoteStyles);
-  return {instrumentId, noteStyles, displayName};
+  return {instrumentId, noteStyles, displayName, colourGroup};
 }
 
 
