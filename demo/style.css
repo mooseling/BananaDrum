@@ -138,6 +138,10 @@ body {
   background-color: yellow;
 }
 
+.arrangement-viewer[event-engine-state="stopped"] .note-highlighter {
+  display: none;
+}
+
 .arrangement-controls {
     padding: 20pt;
 }
