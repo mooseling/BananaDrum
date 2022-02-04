@@ -40,7 +40,7 @@ function TrackMeta({track, toggleControls}:{track:Banana.Track, toggleControls:(
       style={{backgroundColor:track.colour}}
       >
       <button className="options-button small gray" onClick={toggleControls}>
-        <img src="wrench.svg" alt="options"/>
+        <img src="images/icons/wrench.svg" alt="options"/>
       </button>
       {instrumentName}
     </div>

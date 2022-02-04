@@ -6,17 +6,17 @@ export const instrumentCollection:Banana.InstrumentCollection = [
       {
         noteStyleId: 'tap',
         file: 'ride_tap.mp3',
-        symbol:{src:'icons/x_lower.svg'}
+        symbol:{src:'images/icons/o_closed_lower.svg'}
       },
       {
         noteStyleId: 'crash',
         file: 'ride_crash.mp3',
-        symbol:{src:'icons/X.svg'}
+        symbol:{src:'images/icons/X.svg'}
       },
       {
         noteStyleId: 'bell',
         file: 'ride_bell.mp3',
-        symbol:{src:'icons/hollow_diamond.svg'}
+        symbol:{src:'images/icons/hollow_diamond.svg'}
       }
     ],
     colourGroup: 'yellow'
@@ -28,17 +28,17 @@ export const instrumentCollection:Banana.InstrumentCollection = [
       {
         noteStyleId: 'crash',
         file: 'crash_crash.mp3',
-        symbol:{src:'icons/X.svg'}
+        symbol:{src:'images/icons/X.svg'}
       },
       {
         noteStyleId: 'tap',
         file: 'crash_tap.mp3',
-        symbol:{src:'icons/x.svg'}
+        symbol:{src:'images/icons/o_closed_lower.svg'}
       },
       {
         noteStyleId: 'bell',
         file: 'crash_bell.mp3',
-        symbol:{src:'icons/hollow_diamond.svg'}
+        symbol:{src:'images/icons/hollow_diamond.svg'}
       }
     ],
     colourGroup: 'yellow'
@@ -50,22 +50,22 @@ export const instrumentCollection:Banana.InstrumentCollection = [
       {
         noteStyleId: 'closed',
         file: 'hihat_closed.mp3',
-        symbol:{src:'icons/x_lower.svg'}
+        symbol:{src:'images/icons/x_lower.svg'}
       },
       {
         noteStyleId: 'open',
         file: 'hihat_open.mp3',
-        symbol:{src:'icons/o_lower.svg'}
+        symbol:{src:'images/icons/o_lower.svg'}
       },
       {
         noteStyleId: 'foot',
         file: 'hihat_foot.mp3',
-        symbol:{src:'icons/O.svg'}
+        symbol:{src:'images/icons/O.svg'}
       },
       {
         noteStyleId: 'trash',
         file: 'hihat_trash.mp3',
-        symbol:{src:'icons/X.svg'}
+        symbol:{src:'images/icons/X.svg'}
       }
     ],
     colourGroup: 'yellow'
@@ -77,22 +77,22 @@ export const instrumentCollection:Banana.InstrumentCollection = [
       {
         noteStyleId: 'accent',
         file: 'snare_accent.mp3',
-        symbol:{src:'icons/X.svg'}
+        symbol:{src:'images/icons/X.svg'}
       },
       {
         noteStyleId: 'ghost',
         file: 'snare_ghost.mp3',
-        symbol:{src:'icons/x_lower.svg'}
+        symbol:{src:'images/icons/x_lower.svg'}
       },
       {
         noteStyleId: 'rimshot',
         file: 'snare_rimshot.mp3',
-        symbol:{src:'icons/sun_rise_rays.svg'}
+        symbol:{src:'images/icons/sun_rise_rays.svg'}
       },
       {
         noteStyleId: 'sidestick',
         file: 'snare_sidestick.mp3',
-        symbol:{src:'icons/sidestick.svg'}
+        symbol:{src:'images/icons/sidestick.svg'}
       }
     ],
     colourGroup: 'green'
@@ -104,12 +104,12 @@ export const instrumentCollection:Banana.InstrumentCollection = [
       {
         noteStyleId: 'accent',
         file: 'kick_accent.mp3',
-        symbol:{src:'icons/O_closed.svg'}
+        symbol:{src:'images/icons/O_closed.svg'}
       },
       {
         noteStyleId: 'ghost',
         file: 'kick_ghost.mp3',
-        symbol:{src:'icons/o_closed_lower.svg'}
+        symbol:{src:'images/icons/o_closed_lower.svg'}
         // displayName, symbol
       }
     ],
@@ -122,12 +122,12 @@ export const instrumentCollection:Banana.InstrumentCollection = [
       {
         noteStyleId: 'accent',
         file: 'hightom_accent.mp3',
-        symbol:{src:'icons/O_closed.svg'}
+        symbol:{src:'images/icons/O_closed.svg'}
       },
       {
         noteStyleId: 'ghost',
         file: 'hightom_ghost.mp3',
-        symbol:{src:'icons/O_closed_lower.svg'}
+        symbol:{src:'images/icons/o_closed_lower.svg'}
       }
     ],
     colourGroup: 'purple'
@@ -139,12 +139,12 @@ export const instrumentCollection:Banana.InstrumentCollection = [
       {
         noteStyleId: 'accent',
         file: 'midtom_accent.mp3',
-        symbol:{src:'icons/O_closed.svg'}
+        symbol:{src:'images/icons/O_closed.svg'}
       },
       {
         noteStyleId: 'ghost',
         file: 'midtom_ghost.mp3',
-        symbol:{src:'icons/O_closed_lower.svg'}
+        symbol:{src:'images/icons/o_closed_lower.svg'}
       }
     ],
     colourGroup: 'purple'
@@ -156,12 +156,12 @@ export const instrumentCollection:Banana.InstrumentCollection = [
       {
         noteStyleId: 'accent',
         file: 'floortom_accent.mp3',
-        symbol:{src:'icons/O_closed.svg'}
+        symbol:{src:'images/icons/O_closed.svg'}
       },
       {
         noteStyleId: 'ghost',
         file: 'floortom_ghost.mp3',
-        symbol:{src:'icons/O_closed_lower.svg'}
+        symbol:{src:'images/icons/o_closed_lower.svg'}
       }
     ],
     colourGroup: 'purple'
