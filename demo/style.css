@@ -67,14 +67,17 @@ body {
 .track-meta {
   --padding: 2pt;
   width: calc(var(--track-meta-width) - 2 * var(--padding));
-  border-right: var(--thin-border);
   height: calc(var(--note-height) - 2 * var(--padding));
+  border: var(--thick-border);
+  /* Apply some negative margins to collapse borders */
+  margin-top: calc(-1 * var(--thick-border-width));
+  margin-bottom: calc(-1 * var(--thick-border-width));
+  margin-left: calc(-1 * var(--thick-border-width));
   padding: var(--padding);
   flex-shrink: 0;
   position: absolute;
   left: 0;
   background-color: white;
-  border-bottom: var(--thick-border);
 }
 
 .track-meta .options-button {
@@ -109,7 +112,11 @@ body {
   flex-basis:var(--note-height);
   flex-grow: 1;
   flex-shrink: 0;
-  border-right: var(--thin-border);
+  border: var(--thick-border);
+  /* Now collapse borders using margin */
+  margin-top: calc(-1 * var(--thick-border-width));
+  margin-bottom: calc(-1 * var(--thick-border-width));
+  margin-left: calc(-1 * var(--thick-border-width));
   height: var(--note-height);
   text-align: center;
   line-height: var(--note-height);
