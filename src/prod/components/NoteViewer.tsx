@@ -2,10 +2,13 @@ import {useState, useContext, useEffect} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
 
 
+// NoteViewers don't currently subscribe to note changes
+// Instead, editing happens through the Track, and the whole NoteLine is refreshed
 export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
   return (
     <div className={getClasses(note)} onClick={() => cycleNoteStyle(note)}>
-      <div className="note-viewer-background"></div>
+      <div className="note-viewer-background"
+      style={{backgroundColor: note.noteStyle ? note.track.colour : ''}}></div>
       <NoteHighlighter timing={note.timing} />
       <NoteDetailsViewer note={note} />
     </div>
@@ -47,13 +50,9 @@ function NoteHighlighter({timing}:{timing:Banana.Timing}): JSX.Element {
 
 
 function NoteDetailsViewer({note}:{note:Banana.Note}): JSX.Element {
-  const noteStyle = note.noteStyle;
   return (
-    <div
-      className="note-details-viewer"
-      style={{backgroundColor: noteStyle ? note.track.colour : ''}}
-      >
-      <NoteStyleSymbolViewer noteStyle={noteStyle}/>
+    <div className="note-details-viewer" >
+      <NoteStyleSymbolViewer noteStyle={note.noteStyle}/>
     </div>
   );
 }
