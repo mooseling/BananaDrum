@@ -1,15 +1,39 @@
 import {useState, useContext, useEffect} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
+import {EventEngine} from '../EventEngine';
 
 
 // NoteViewers don't currently subscribe to note changes
 // Instead, editing happens through the Track, and the whole NoteLine is refreshed
 export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
+  const player:Banana.ArrangementPlayer = useContext(ArrangementPlayerContext);
+  const [isCurrent, setIsCurrent] = useState(player.currentTiming === note.timing);
+  const [playing, setPlaying] = useState(EventEngine.state === 'playing')
+
+  const engineSubscription:Banana.Subscription = () => setPlaying(EventEngine.state === 'playing');
+  useEffect(() => {
+    EventEngine.subscribe(engineSubscription);
+    return () => EventEngine.unsubscribe(engineSubscription); // Unsubscribe when this element leaves the UI
+  }, []);
+
+  const timingSubscription:Banana.Subscription = () => setIsCurrent(player.currentTiming === note.timing);
+  useEffect(() => {
+    player.subscribe(timingSubscription);
+    return () => player.unsubscribe(timingSubscription); // Unsubscribe when this element leaves the UI
+  }, []);
+
+  const backgroundColor = (playing && isCurrent) ? 'var(--light-yellow)' // Light up notes as the music plays
+    : note.noteStyle ? note.track.colour                    // Otherwise, give active notes the track colour
+    : '';                                                   // Inactive notes have no inline background colour
+
   return (
-    <div className={getClasses(note)} onClick={() => cycleNoteStyle(note)}>
+    <div
+    className={getClasses(note)}
+    onClick={() => cycleNoteStyle(note)}
+    style={{backgroundColor}}
+    >
       <div className="note-viewer-background"
-      style={{backgroundColor: note.noteStyle ? note.track.colour : ''}}></div>
-      <NoteHighlighter timing={note.timing} />
+      ></div>
       <NoteDetailsViewer note={note} />
     </div>
   );
@@ -28,24 +52,6 @@ function getClasses(note:Banana.Note) {
     classes.push('start-of-bar');
 
   return classes.join(' ');
-}
-
-
-// As Banana Drum plays, we highlight the current notes
-// This is done by subscribing to the ArrangementPlayer, which publishes when timings change
-function NoteHighlighter({timing}:{timing:Banana.Timing}): JSX.Element {
-  const player:Banana.ArrangementPlayer = useContext(ArrangementPlayerContext);
-  const [currentTiming, rememberTiming] = useState(player.currentTiming);
-
-  const subscription:Banana.Subscription = () => rememberTiming(player.currentTiming);
-  useEffect(() => {
-    player.subscribe(subscription);
-    return () => player.unsubscribe(subscription); // Unsubscribe when this element leaves the UI
-  }, []);
-
-
-  const litCLass = currentTiming === timing ? ' lit' : ''
-  return <div className={'note-highlighter' + litCLass}></div>;
 }
 
 
