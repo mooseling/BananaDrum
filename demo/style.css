@@ -230,7 +230,7 @@ button {
 
 button.small {
   font-size: 8pt;
-  padding: 2pt 4pt 4pt;
+  padding: 2pt 4pt 3pt;
   font-weight: 400;
   border-radius: 5pt;
   line-height: 11pt;
