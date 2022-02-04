@@ -108,6 +108,8 @@ body {
   display: flex;
 }
 
+/* Effective note-widths must be hard-coded in JS as well */
+/* Update in TrackViewer.tsx if you change note dimensions */
 .note-viewer {
   flex-basis:var(--note-height);
   flex-grow: 1;

@@ -3,7 +3,7 @@ import {Overlay} from './Overlay';
 import {useState, useEffect, useContext} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
 
-const widthPerNote = 50; // pt
+const widthPerNote = 55.5; // 50pt for width, 2 * 2pt for padding, and 1.5pt for border 
 
 
 export function TrackViewer({track}:{track:Banana.Track}): JSX.Element {
