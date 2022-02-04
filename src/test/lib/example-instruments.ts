@@ -50,7 +50,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
       {
         noteStyleId: 'closed',
         file: 'hihat_closed.mp3',
-        symbol:{src:'icons/+.svg'}
+        symbol:{src:'icons/x_lower.svg'}
       },
       {
         noteStyleId: 'open',
