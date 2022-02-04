@@ -39,8 +39,10 @@ function TrackMeta({track, toggleControls}:{track:Banana.Track, toggleControls:(
       className="track-meta"
       style={{backgroundColor:track.colour}}
       >
-      {instrumentName}<br/>
-      <button className="small green" onClick={toggleControls}>options</button>
+      <button className="options-button small gray" onClick={toggleControls}>
+        <img src="wrench.svg" alt="options"/>
+      </button>
+      {instrumentName}
     </div>
   );
 }
@@ -68,7 +70,7 @@ function NoteLine({track}:{track:Banana.Track}): JSX.Element {
 function TrackControls({track}:{track:Banana.Track}): JSX.Element {
   return (
     <div className="track-controls">
-      <button className="green" onClick={() => track.arrangement.removeTrack(track)}>Remove track</button>
+      <button className="gray" onClick={() => track.arrangement.removeTrack(track)}>Remove track</button>
     </div>
   );
 }

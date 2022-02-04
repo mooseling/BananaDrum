@@ -75,6 +75,15 @@ body {
   border-bottom: var(--thick-border);
 }
 
+.track-meta .options-button {
+  float: right;
+  margin-left: 5pt;
+}
+
+.track-meta .options-button img {
+  width: 10pt;
+}
+
 .note-line-wrapper {
   flex-grow: 1;
   margin-left: var(--track-meta-width);
@@ -209,11 +218,13 @@ button {
   position: relative;
   outline: none;
   text-transform: lowercase;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 button.small {
   font-size: 8pt;
-  padding: 2pt 6pt;
+  padding: 2pt 4pt 4pt;
   font-weight: 400;
   border-radius: 5pt;
   line-height: 11pt;
@@ -221,6 +232,10 @@ button.small {
 
 button.green {
   background-color: var(--green);
+}
+
+button.gray {
+  background-color: var(--light-gray);
 }
 
 button.yellow {
