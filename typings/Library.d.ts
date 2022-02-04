@@ -20,6 +20,7 @@ declare namespace Banana {
   interface PackedNoteStyle {
     noteStyleId: string
     file: string
+    symbol?: NoteStyleSymbol
   }
 
   interface Instrument extends InstrumentMeta {
@@ -29,5 +30,11 @@ declare namespace Banana {
   interface NoteStyle {
     noteStyleId: string
     audioBuffer: AudioBuffer
+    symbol?: NoteStyleSymbol
+  }
+
+  interface NoteStyleSymbol {
+    src?: string // path to use an img src
+    string?: string // string to display for this note-style
   }
 }

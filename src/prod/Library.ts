@@ -37,11 +37,11 @@ async function Instrument(packedInstrument:Banana.PackedInstrument): Promise<Ban
 async function unpackNoteStyles(packedNoteStyles:Banana.PackedNoteStyle[]): Promise<{[id:string]: Banana.NoteStyle}> {
   const noteStyles:{[id:string]: Banana.NoteStyle|null} = {};
   const unpackPromises:Promise<any>[] = [];
-  packedNoteStyles.forEach(({noteStyleId, file}) => {
+  packedNoteStyles.forEach(({noteStyleId, file, symbol}) => {
     noteStyles[noteStyleId] = null; // Set this so that they appear in the original order
     unpackPromises.push(
       AudioGetter.get(file)
-        .then(audioBuffer => noteStyles[noteStyleId] = {noteStyleId, audioBuffer})
+        .then(audioBuffer => noteStyles[noteStyleId] = {noteStyleId, audioBuffer, symbol})
     );
   });
   await Promise.all(unpackPromises);

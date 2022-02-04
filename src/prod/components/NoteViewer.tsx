@@ -53,9 +53,22 @@ function NoteDetailsViewer({note}:{note:Banana.Note}): JSX.Element {
       className="note-details-viewer"
       style={{backgroundColor: noteStyle ? note.track.colour : ''}}
       >
-      {noteStyle ? noteStyle.noteStyleId : ''}
+      <NoteStyleSymbolViewer noteStyle={noteStyle}/>
     </div>
   );
+}
+
+
+function NoteStyleSymbolViewer({noteStyle}:{noteStyle:Banana.NoteStyle}): JSX.Element {
+  if (!noteStyle)
+    return null;
+  if (noteStyle.symbol) {
+    if (noteStyle.symbol.src)
+      return <img className="note-style-symbol" src={noteStyle.symbol.src} alt={noteStyle.noteStyleId}/>;
+    if (noteStyle.symbol.string)
+      return <span className="note-style-symbol">noteStyle.symbol.string</span>;
+  }
+  return <span className="note-style-symbol">noteStyle.noteStyleId</span>;
 }
 
 
