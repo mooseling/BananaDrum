@@ -7,7 +7,7 @@ export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
     <div className={getClasses(note)} onClick={() => cycleNoteStyle(note)}>
       <div className="note-viewer-background"></div>
       <NoteHighlighter timing={note.timing} />
-      <NoteDetailsViewer noteStyle={note.noteStyle} />
+      <NoteDetailsViewer note={note} />
     </div>
   );
 }
@@ -46,8 +46,16 @@ function NoteHighlighter({timing}:{timing:Banana.Timing}): JSX.Element {
 }
 
 
-function NoteDetailsViewer({noteStyle}:{noteStyle:Banana.NoteStyle}): JSX.Element {
-  return <div>{noteStyle ? noteStyle.noteStyleId : ''}</div>;
+function NoteDetailsViewer({note}:{note:Banana.Note}): JSX.Element {
+  const noteStyle = note.noteStyle;
+  return (
+    <div
+      className="note-details-viewer"
+      style={{backgroundColor: noteStyle ? note.track.colour : ''}}
+      >
+      {noteStyle ? noteStyle.noteStyleId : ''}
+    </div>
+  );
 }
 
 
