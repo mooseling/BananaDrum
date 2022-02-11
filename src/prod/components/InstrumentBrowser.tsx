@@ -8,7 +8,7 @@ export function InstrumentBrowser({close}:{close:() => void}): JSX.Element {
       {Library.instrumentMetas.map(meta => <InstrumentChooser key={meta.instrumentId} instrumentMeta={meta} close={close}/>)}
       <br />
       <br />
-      <button onClick={close}>Back</button>
+      <button className="push-button" onClick={close}>Back</button>
     </div>
   );
 }
@@ -18,7 +18,7 @@ function InstrumentChooser({instrumentMeta, close}:{instrumentMeta:Banana.Instru
   const {instrumentId, displayName} = instrumentMeta;
   const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
   return (
-    <button className="instrument-chooser" onClick={() => choose(instrumentId, arrangement) && close()}>
+    <button className="instrument-chooser push-button" onClick={() => choose(instrumentId, arrangement) && close()}>
       {displayName}
     </button>
   );

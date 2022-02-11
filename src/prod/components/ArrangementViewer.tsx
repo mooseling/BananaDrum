@@ -37,7 +37,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
           <div className="track-viewers-wrapper">
             {getTrackViewers(tracks)}
           </div>
-          <button id="show-instrument-browser" onClick={() => !overlayState.visible && overlayState.toggle()}>Add Instrument</button>
+          <button id="show-instrument-browser" className="push-button" onClick={() => !overlayState.visible && overlayState.toggle()}>Add Instrument</button>
           <Overlay state={overlayState}>
             <InstrumentBrowser close={() => overlayState.visible && overlayState.toggle()}/>
           </Overlay>

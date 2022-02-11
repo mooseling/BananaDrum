@@ -221,7 +221,7 @@ body {
 
 
 
-button {
+button.push-button {
   box-sizing: border-box;
   display: inline-block;
   border: none;
@@ -241,7 +241,7 @@ button {
   user-select: none;
 }
 
-button.small {
+button.push-button.small {
   font-size: 8pt;
   padding: 2pt 4pt 3pt;
   font-weight: 400;
@@ -249,23 +249,23 @@ button.small {
   line-height: 11pt;
 }
 
-button.green {
+button.push-button.green {
   background-color: var(--green);
 }
 
-button.gray {
+button.push-button.gray {
   background-color: var(--light-gray);
 }
 
-button.yellow {
+button.push-button.yellow {
   background-color: var(--yellow);
 }
 
-button:active {
+button.push-button:active {
   top: 2px;
   box-shadow: inset 0px 2px 1px 0px rgba(0, 0, 0, .1);
 }
 
-button:disabled {
+button.push-button:disabled {
   cursor: auto;
 }

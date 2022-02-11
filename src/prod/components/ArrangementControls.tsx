@@ -7,8 +7,8 @@ export function ArrangementControls(): JSX.Element {
   const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
   return (
     <div className="arrangement-controls">
-      <button className="playback-control" onClick={() => EventEngine.play()}>Play</button>
-      <button className="playback-control" onClick={() => EventEngine.pause()}>Pause</button>
+      <button className="playback-control push-button" onClick={() => EventEngine.play()}>Play</button>
+      <button className="playback-control push-button" onClick={() => EventEngine.pause()}>Pause</button>
       <TimeControls arrangement={arrangement} />
     </div>
   );
