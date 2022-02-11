@@ -1,5 +1,5 @@
 import {NoteViewer} from './NoteViewer';
-import {Overlay} from './Overlay';
+import {Overlay, OverlayState} from './Overlay';
 import {useState, useEffect, useContext} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
 
@@ -16,17 +16,17 @@ export function TrackViewer({track}:{track:Banana.Track}): JSX.Element {
     return () => track.unsubscribe(subscription);
   }, []);
 
-  const [controlsVisible, toggleControls] = useState(false);
+  const [overlayState] = useState(OverlayState(false));
 
   return (
     <div className="track-viewer">
       <div className="note-line-wrapper overlay-wrapper">
         <NoteLine track={track}/>
-        <Overlay visible={controlsVisible}>
+        <Overlay state={overlayState}>
           <TrackControls track={track}/>
         </Overlay>
       </div>
-      <TrackMeta track={track} toggleControls={() => toggleControls(!controlsVisible)}/>
+      <TrackMeta track={track} toggleControls={() => overlayState.toggle()}/>
     </div>
   );
 }

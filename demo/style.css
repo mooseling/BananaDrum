@@ -197,6 +197,19 @@ body {
   top: 0px;
   background: white;
   box-sizing: border-box; /* For when it has added padding */
+  transition: opacity 0.2s;
+}
+
+.overlay.visible {
+  opacity: 1;
+}
+
+.overlay.invisible {
+  opacity: 0;
+}
+
+.overlay.hidden {
+  display: none;
 }
 
 

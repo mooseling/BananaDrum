@@ -1,7 +1,7 @@
 import {TrackViewer} from './TrackViewer';
 import {ArrangementControls} from './ArrangementControls';
 import {InstrumentBrowser} from './InstrumentBrowser';
-import {Overlay} from './Overlay';
+import {Overlay, OverlayState} from './Overlay';
 import {EventEngine} from '../EventEngine';
 import {useState, useEffect, createContext} from 'react';
 
@@ -10,8 +10,10 @@ export const ArrangementPlayerContext = createContext(null);
 export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.ArrangementPlayer}): JSX.Element {
   const {arrangement} = arrangementPlayer;
   const [tracks, setTracks] = useState({...arrangement.tracks});
-  const [instrumentBrowserVisible, toggleBrowser] = useState(false);
   const [eventEngineState, updateEventEngineState] = useState(EventEngine.state);
+
+  // Create Overlay-publisher on initial component creation
+  const [overlayState] = useState(OverlayState(false));
 
   const tracksSubscription = () => setTracks({...arrangement.tracks});
   useEffect(() => {
@@ -35,9 +37,9 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
           <div className="track-viewers-wrapper">
             {getTrackViewers(tracks)}
           </div>
-          <button id="show-instrument-browser" onClick={() => toggleBrowser(true)}>Add Instrument</button>
-          <Overlay visible={instrumentBrowserVisible}>
-            <InstrumentBrowser close={() => toggleBrowser(false)}/>
+          <button id="show-instrument-browser" onClick={() => !overlayState.visible && overlayState.toggle()}>Add Instrument</button>
+          <Overlay state={overlayState}>
+            <InstrumentBrowser close={() => overlayState.visible && overlayState.toggle()}/>
           </Overlay>
         </div>
       </div>
