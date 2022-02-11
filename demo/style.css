@@ -25,6 +25,27 @@
   --thin-border: var(--thin-border-width) solid var(--dark-gray);
   --note-height: 54pt;
   --track-meta-width: 84.9pt;
+  --a-color: var(--darker-blue);
+  --a-color-hover: var(--light-blue);
+  --a-color-active: var(--lighter-blue);
+}
+
+a {
+  text-decoration: none;
+  color: var(--a-color);
+}
+
+a:active {
+  color: var(--a-color-active);
+}
+
+a:hover {
+  text-decoration: underline;
+  color: var(--a-color-hover);
+}
+
+a:visited {
+  color: var(--a-color)
 }
 
 body {
@@ -305,4 +326,14 @@ button.push-button:disabled {
 button.anchor-button {
   all: unset;
   cursor: pointer;
+  color: var(--a-color);
+}
+
+button.anchor-button:active {
+  color: var(--a-color-active);
+}
+
+button.anchor-button:hover {
+  text-decoration: underline;
+  color: var(--a-color-hover);
 }
