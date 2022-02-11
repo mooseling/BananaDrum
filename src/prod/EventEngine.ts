@@ -2,6 +2,7 @@
 // It plays audio and fires callbacks at the right time
 // Playing audio boils down to the WebAudio API, so we must warp our design around that
 
+import {Publisher} from './Publisher';
 
 const lookahead = 0.25; // (s) Look 250ms ahead for events
 const loopFrequency = 125 // (ms) Check for upcoming events every 125ms
@@ -12,13 +13,13 @@ export const EventEngine:Banana.EventEngine = (function(){
   let nextIteration: number|null = null;
   let timeCovered:number = 0;
   let state:string = 'stopped';
-  let subscriptions: Banana.Subscription[] = [];
+  const publisher:Banana.Publisher = Publisher();
 
   type ScheduledEvent = AudioBufferSourceNode|number;
   const scheduledEvents:ScheduledEvent[] = [];
 
   return {
-    initialise, connect, play, pause, getTime, subscribe, unsubscribe,
+    initialise, connect, play, pause, getTime, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
     get state(): string {
       return state;
     }
@@ -55,7 +56,7 @@ export const EventEngine:Banana.EventEngine = (function(){
       audioContext.resume();
       loop();
       state = 'playing';
-      publish();
+      publisher.publish();
     }
   }
 
@@ -68,7 +69,7 @@ export const EventEngine:Banana.EventEngine = (function(){
       nextIteration = null;
       timeCovered = audioContext.currentTime;
       state = 'paused';
-      publish();
+      publisher.publish();
     }
   }
 
@@ -76,21 +77,6 @@ export const EventEngine:Banana.EventEngine = (function(){
   function getTime() {
     checkInitialised();
     return audioContext.currentTime;
-  }
-
-
-  function subscribe(callback: Banana.Subscription) {
-    subscriptions.push(callback);
-  }
-
-
-  function unsubscribe(callbackToRemove: Banana.Subscription) {
-    subscriptions.some((subscription, index) => {
-      if (callbackToRemove === subscription) {
-        subscriptions.splice(index, 1);
-        return true;
-      }
-    });
   }
 
 
@@ -168,10 +154,5 @@ export const EventEngine:Banana.EventEngine = (function(){
         clearTimeout(scheduledEvent);
     });
     scheduledEvents.splice(0);
-  }
-
-
-  function publish(): void {
-    subscriptions.forEach(callback => callback());
   }
 })();

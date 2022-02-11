@@ -1,5 +1,5 @@
 declare namespace Banana {
-  interface Track extends Publisher {
+  interface Track extends Subscribable {
     arrangement: Arrangement
     instrument: Instrument
     notes: Note[]

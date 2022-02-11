@@ -4,7 +4,7 @@ declare namespace Banana {
     unpack(packedArrangement:PackedArrangement): Promise<Arrangement>
   }
 
-  interface Arrangement extends Publisher {
+  interface Arrangement extends Subscribable {
     timeParams: TimeParams
     tracks: {[trackId:string]: Track}
     createTrack(instrument:Instrument): void

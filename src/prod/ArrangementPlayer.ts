@@ -1,11 +1,12 @@
 import {TimeCoordinator} from './TimeCoordinator';
 import {TrackPlayer} from './TrackPlayer';
+import {Publisher} from './Publisher';
 
 
 export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.ArrangementPlayer {
   const timeCoordinator = TimeCoordinator(arrangement.timeParams);
   let isLooping = false;
-  let subscriptions: Banana.Subscription[] = [];
+  const publisher:Banana.Publisher = Publisher();
 
   // We need a TrackPlayer for each Track, and add/remove them when needed
   const trackPlayers:{[trackId:string]:Banana.TrackPlayer} = {};
@@ -19,7 +20,7 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
   arrangement.timeParams.subscribe(updateCallbackEvents);
 
   return {
-    arrangement, getEvents, loop, subscribe, unsubscribe,
+    arrangement, getEvents, loop, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
     get currentTiming() {
       return currentTiming;
     }
@@ -84,21 +85,6 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
   }
 
 
-  function subscribe(callback: Banana.Subscription) {
-    subscriptions.push(callback);
-  }
-
-
-  function unsubscribe(callbackToRemove: Banana.Subscription) {
-    subscriptions.some((subscription, index) => {
-      if (callbackToRemove === subscription) {
-        subscriptions.splice(index, 1);
-        return true;
-      }
-    });
-  }
-
-
 
 
 
@@ -130,14 +116,9 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
       realTime: timeCoordinator.convertToRealTime(timing),
       callback: () => {
         currentTiming = timing;
-        publish();
+        publisher.publish();
       },
       identifier: timing
     }));
-  }
-
-
-  function publish(): void {
-    subscriptions.forEach(callback => callback());
   }
 }

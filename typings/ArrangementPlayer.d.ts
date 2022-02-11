@@ -1,6 +1,6 @@
 declare namespace Banana {
   type ArrangementPlayerBuilder = (arrangement:Arrangement) => ArrangementPlayer
-  interface ArrangementPlayer extends EventSource, Publisher {
+  interface ArrangementPlayer extends EventSource, Subscribable {
     arrangement: Arrangement
     loop(turnLoopingOn?:boolean): void
     get currentTiming(): Timing

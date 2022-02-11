@@ -1,5 +1,5 @@
 declare namespace Banana {
-  interface EventEngine extends Publisher {
+  interface EventEngine extends Subscribable {
     initialise(): void
     connect(eventSource:EventSource): void
     play(): void

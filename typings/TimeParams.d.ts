@@ -5,7 +5,7 @@ declare namespace Banana {
     length: number
   }
 
-  interface TimeParams extends PackedTimeParams, Publisher {
+  interface TimeParams extends PackedTimeParams, Subscribable {
     isValid(timing:Timing): boolean
   }
 }

@@ -1,5 +1,6 @@
 import {Track} from './Track';
 import {TimeParams} from './TimeParams';
+import {Publisher} from './Publisher';
 
 const defaultTimeParams = {timeSignature:'4/4', tempo:120, length:1};
 
@@ -12,9 +13,9 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
   if (!timeParams)
     timeParams = TimeParams(defaultTimeParams);
 
-  const subscriptions: Banana.Subscription[] = [];
+  const publisher:Banana.Publisher = Publisher();
   const tracks:{[trackId:string]:Banana.Track} = {};
-  const arrangement:Banana.Arrangement = {timeParams, tracks, createTrack, unpackTracks, removeTrack, getSixteenths, subscribe, unsubscribe};
+  const arrangement:Banana.Arrangement = {timeParams, tracks, createTrack, unpackTracks, removeTrack, getSixteenths, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
   return arrangement;
 
@@ -56,7 +57,7 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
     const track = Track(arrangement, instrument)
     const trackId = getTrackId(track);
     tracks[trackId] = track;
-    publish();
+    publisher.publish();
   }
 
 
@@ -77,7 +78,7 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
       tracks[trackId] = track;
     });
 
-    publish();
+    publisher.publish();
   }
 
 
@@ -85,43 +86,10 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
     Object.keys(tracks).some(trackId => {
       if (tracks[trackId] === trackToRemove) {
         delete tracks[trackId];
-        publish();
+        publisher.publish();
         return true;
       }
     });
-  }
-
-
-  function subscribe(callback: Banana.Subscription) {
-    subscriptions.push(callback);
-  }
-
-
-  function unsubscribe(callbackToRemove: Banana.Subscription) {
-    subscriptions.some((subscription, index) => {
-      if (callbackToRemove === subscription) {
-        subscriptions.splice(index, 1);
-        return true;
-      }
-    });
-  }
-
-
-
-
-
-
-
-
-
-    // ==================================================================
-    //                          Private Functions
-    // ==================================================================
-
-
-
-  function publish(): void {
-    subscriptions.forEach(callback => callback());
   }
 };
 

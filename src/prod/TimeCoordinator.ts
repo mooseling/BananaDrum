@@ -1,11 +1,12 @@
 import {EventEngine} from './EventEngine';
+import {Publisher} from './Publisher';
 
 // TimeCoordinator handles all maths that need to be done with TimeParams
 // In the EventEngine, time always marches forward (except when paused)
 // In music-related objects, times are always between 0 and the length of the section
 // A TimeCoordinator adjust times from the EventEngine to make sense to music objects
 export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordinator {
-  const subscriptions: Banana.Subscription[] = [];
+  const publisher: Banana.Publisher = Publisher();
   let secondsPerBar:Banana.RealTime, secondsPerSixteenth:Banana.RealTime, secondsPerBeat:Banana.RealTime, realTimeLength:Banana.RealTime;
   setInternalParams(); // Sets the variables above
 
@@ -16,7 +17,7 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
 
   timeParams.subscribe(handleTimeParamsChange);
 
-  return {convertToRealTime, convertToLoopIntervals, convertToAudioTime, subscribe, unsubscribe};
+  return {convertToRealTime, convertToLoopIntervals, convertToAudioTime, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
 
 
@@ -94,21 +95,6 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
   }
 
 
-  function subscribe(callback:Banana.Subscription): void {
-    subscriptions.push(callback);
-  }
-
-
-  function unsubscribe(callbackToRemove: Banana.Subscription) {
-    subscriptions.some((subscription, index) => {
-      if (callbackToRemove === subscription) {
-        subscriptions.splice(index, 1);
-        return true;
-      }
-    });
-  }
-
-
 
 
 
@@ -116,11 +102,6 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
   // ==================================================================
   //                          Private Functions
   // ==================================================================
-
-
-  function publish() {
-    subscriptions.forEach(callback => callback());
-  }
 
 
   function setInternalParams() {
@@ -137,7 +118,7 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
       handleLengthChange(); // MUST call setInternalParams
     else
       setInternalParams();
-    publish();
+    publisher.publish();
   }
 
 

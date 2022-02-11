@@ -1,11 +1,12 @@
 import {Library} from './Library';
+import {Publisher} from './Publisher';
 import {getColour} from './colours';
 
 function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrument, packedNotes:Banana.PackedNote[]): Banana.Track {
-  const subscriptions: Banana.Subscription[] = [];
+  const publisher:Banana.Publisher = Publisher();
   const notes:Banana.Note[] = [];
   const colour = getColour(instrument.colourGroup);
-  const track:Banana.Track = {arrangement, instrument, notes, edit, subscribe, unsubscribe, getNoteAt, colour};
+  const track:Banana.Track = {arrangement, instrument, notes, edit, getNoteAt, colour, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
   if (packedNotes)
     unpackNotes();
   arrangement.timeParams.subscribe(handleTimeParamsChange);
@@ -27,7 +28,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
   function edit(command:Banana.EditCommand) {
     const {timing, newValue} = command;
     if (removeNoteAt(timing))
-      publish();
+      publisher.publish();
 
     // Passing in null is the way to delete a note
     if (newValue === null)
@@ -36,22 +37,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
     // If we're this far, newValue is a noteStyleId
     const newNote:Banana.Note = {timing, track, noteStyle:instrument.noteStyles[newValue]};
     notes.push(newNote);
-    publish();
-  }
-
-
-  function subscribe(callback:Banana.Subscription): void {
-    subscriptions.push(callback);
-  }
-
-
-  function unsubscribe(callbackToRemove: Banana.Subscription) {
-    subscriptions.some((subscription, index) => {
-      if (callbackToRemove === subscription) {
-        subscriptions.splice(index, 1);
-        return true;
-      }
-    });
+    publisher.publish();
   }
 
 
@@ -71,11 +57,6 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
   // ==================================================================
   //                          Private Functions
   // ==================================================================
-
-
-  function publish(): void {
-    subscriptions.forEach(callback => callback());
-  }
 
 
   // Only call if packedNotes is defined
@@ -107,7 +88,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
       }
     }));
     if (notes.length !== initialNoteCount)
-      publish();
+      publisher.publish();
   }
 }
 

@@ -24,7 +24,7 @@ declare namespace Banana {
 
 
   type TimeCoordinatorBuilder = (timeParams:TimeParams) => TimeCoordinator
-  interface TimeCoordinator extends Publisher {
+  interface TimeCoordinator extends Subscribable {
     convertToRealTime(timing:Timing): RealTime
     convertToLoopIntervals(interval:Interval): LoopInterval[]
     convertToAudioTime(realTime:RealTime, loopNumber:number): RealTime

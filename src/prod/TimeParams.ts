@@ -1,13 +1,15 @@
+import {Publisher} from './Publisher';
+
 export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimeParams {
   let {timeSignature, tempo, length} = packedParams;
-  let subscriptions: Banana.Subscription[] = [];
+  const publisher:Banana.Publisher = Publisher();
 
 return {
   get timeSignature() { return timeSignature; },
   set timeSignature(newTimeSignature: string) {
     if (newTimeSignature !== timeSignature) {
       timeSignature = newTimeSignature;
-      publish();
+      publisher.publish();
     }
   },
 
@@ -17,7 +19,7 @@ return {
       throw 'Invalid tempo';
     if (newTempo !== tempo) {
       tempo = newTempo;
-      publish();
+      publisher.publish();
     }
   },
 
@@ -27,21 +29,12 @@ return {
       throw 'Invalid length';
     if (newLength !== length) {
       length = newLength;
-      publish();
+      publisher.publish();
     }
   },
 
-  subscribe(callback: Banana.Subscription) {
-    subscriptions.push(callback);
-  },
-  unsubscribe(callbackToRemove: Banana.Subscription) {
-    subscriptions.some((subscription, index) => {
-      if (callbackToRemove === subscription) {
-        subscriptions.splice(index, 1);
-        return true;
-      }
-    });
-  },
+  subscribe: publisher.subscribe,
+  unsubscribe: publisher.unsubscribe,
 
   isValid(timing:Banana.Timing) {
     const [bar, beat] = timing.split('.').map(bit => Number(bit));
@@ -54,11 +47,6 @@ return {
     return true;
   }
 }
-
-
-  function publish(): void {
-    subscriptions.forEach(callback => callback());
-  }
 }
 
 
