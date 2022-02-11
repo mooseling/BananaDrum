@@ -34,7 +34,7 @@ body {
   height: 100vh;
 }
 
-#welcome {
+.welcome {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
@@ -42,6 +42,37 @@ body {
     width: 100%;
     padding: 20pt 0;
     background-color: var(--lighter-yellow);
+}
+
+#wrapper {
+  height: 100%;
+}
+
+#banana-drum {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#banana-drum > * {
+  flex-grow: 1;
+}
+
+#about p {
+  max-width: 500pt;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#footer {
+  --footer-height: 20pt;
+  flex-basis: var(--footer-height);
+  flex-grow: 0;
+  flex-shrink: 0;
+  text-align: center;
+  background-color: var(--lightest-gray);
+  line-height: var(--footer-height)
 }
 
 .arrangement-controls {
@@ -268,4 +299,10 @@ button.push-button:active {
 
 button.push-button:disabled {
   cursor: auto;
+}
+
+/* anchor buttons are just meant to look like anchors */
+button.anchor-button {
+  all: unset;
+  cursor: pointer;
 }

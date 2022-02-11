@@ -1,6 +1,6 @@
 import {EventEngine} from './EventEngine';
 import {Library} from './Library';
-import {ArrangementViewer} from './components/ArrangementViewer';
+import {BananaDrum} from './components/BananaDrum';
 import ReactDOM from 'react-dom';
 import React from 'react';
 import {createTestEcosystem} from '../test/lib/createTestEcosystem';
@@ -20,9 +20,9 @@ document.getElementById('load-button').addEventListener('click', function() {
   createTestEcosystem().then(({arrangement, arrangementPlayer}) => {
     EventEngine.connect(arrangementPlayer);
     arrangementPlayer.loop();
-    ReactDOM.render(<ArrangementViewer arrangementPlayer={arrangementPlayer}/>, document.getElementById('wrapper'));
-
     document.getElementById('welcome').remove();
+    ReactDOM.render(<BananaDrum arrangementPlayer={arrangementPlayer}/>, document.getElementById('wrapper'));
+
 
     // Expose some things for testing:
     // @ts-ignore
