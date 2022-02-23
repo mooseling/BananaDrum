@@ -7,7 +7,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
   const publisher:Banana.Publisher = Publisher();
   const notes:Banana.Note[] = [];
   const colour = getColour(instrument.colourGroup);
-  const track:Banana.Track = {arrangement, instrument, notes, getNoteAt, colour};
+  const track:Banana.Track = {arrangement, instrument, notes, getNoteAt, colour, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
   if (packedNotes)
     unpackNotes();
@@ -62,15 +62,19 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
   }
 
 
-  // When timeParams changes, we need to remove notes which have become invalid
   function handleTimeParamsChange() {
     const initialNoteCount = notes.length;
+
+    // Remove invalid notes, e.g. arrangement has shortened
     while(notes.some((note, index) => {
       if (!arrangement.timeParams.isValid(note.timing)) {
         notes.splice(index);
         return true;
       }
     }));
+
+    // Fill in new notes, e.g. arrangement has lengthened
+    fillInRests();
     if (notes.length !== initialNoteCount)
       publisher.publish();
   }
