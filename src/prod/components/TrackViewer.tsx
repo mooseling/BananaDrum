@@ -7,15 +7,6 @@ const widthPerNote = 55.5; // 50pt for width, 2 * 2pt for padding, and 1.5pt for
 
 
 export function TrackViewer({track}:{track:Banana.Track}): JSX.Element {
-  const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
-
-  let [state, update] = useState({track, arrangement});
-  const subscription = () => update({track, arrangement});
-  useEffect(() => {
-    track.subscribe(subscription);
-    return () => track.unsubscribe(subscription);
-  }, []);
-
   const [overlayState] = useState(OverlayState(false));
 
   return (
@@ -50,18 +41,19 @@ function TrackMeta({track, toggleControls}:{track:Banana.Track, toggleControls:(
 
 function NoteLine({track}:{track:Banana.Track}): JSX.Element {
   const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
-  const [sixteenths, setSixteenths] = useState(arrangement.getSixteenths());
+  const [noteCount, setNoteCount] = useState(track.notes.length);
 
-  const subscription = () => setSixteenths(arrangement.getSixteenths());
+  const subscription = () => setNoteCount(track.notes.length);
   useEffect(() => {
-    arrangement.timeParams.subscribe(subscription);
-    return () => arrangement.timeParams.unsubscribe(subscription);
+    track.subscribe(subscription);
+    return () => track.unsubscribe(subscription);
   }, []);
 
-  const width:string = sixteenths.length * widthPerNote + 'pt';
+  const width:string = noteCount * widthPerNote + 'pt';
 
+  // Track.notes are not ordered (yet), so we have to use getSixteenths to order the elements correctly
   return (<div className="note-line" style={{minWidth:width}}>
-    {sixteenths.map(timing => track.getNoteAt(timing))
+    {arrangement.getSixteenths().map(timing => track.getNoteAt(timing))
       .map(note => <NoteViewer note={note} key={note.timing}/>)}
   </div>);
 }
