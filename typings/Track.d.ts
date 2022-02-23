@@ -1,9 +1,8 @@
 declare namespace Banana {
-  interface Track extends Subscribable {
+  interface Track {
     arrangement: Arrangement
     instrument: Instrument
     notes: Note[]
-    edit(command: EditCommand): void
     getNoteAt(timing:Timing): Note
     colour: string // A specific hsl() string
   }
@@ -21,10 +20,5 @@ declare namespace Banana {
   interface PackedNote {
     noteStyleId: string
     timing: Timing
-  }
-
-  interface EditCommand {
-    timing: Timing
-    newValue: string|null // will be a noteStyleId or null for delete
   }
 }
