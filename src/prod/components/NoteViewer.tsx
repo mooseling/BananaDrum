@@ -26,6 +26,13 @@ export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
     : note.noteStyle ? note.track.colour                    // Otherwise, give active notes the track colour
     : '';                                                   // Inactive notes have no inline background colour
 
+  const [noteStyle, setNoteStyle] = useState(note.noteStyle)
+  const noteSubscription:Banana.Subscription = () => setNoteStyle(note.noteStyle);
+  useEffect(() => {
+    note.subscribe(noteSubscription);
+    return () => note.unsubscribe(noteSubscription);
+  }, []);
+
   return (
     <div
     className={getClasses(note)}
@@ -34,7 +41,7 @@ export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
     >
       <div className="note-viewer-background"
       ></div>
-      <NoteDetailsViewer note={note} />
+      <NoteDetailsViewer noteStyle={noteStyle} />
     </div>
   );
 }
@@ -55,10 +62,10 @@ function getClasses(note:Banana.Note) {
 }
 
 
-function NoteDetailsViewer({note}:{note:Banana.Note}): JSX.Element {
+function NoteDetailsViewer({noteStyle}:{noteStyle:Banana.NoteStyle}): JSX.Element {
   return (
     <div className="note-details-viewer" >
-      <NoteStyleSymbolViewer noteStyle={note.noteStyle}/>
+      <NoteStyleSymbolViewer noteStyle={noteStyle}/>
     </div>
   );
 }
@@ -78,18 +85,20 @@ function NoteStyleSymbolViewer({noteStyle}:{noteStyle:Banana.NoteStyle}): JSX.El
 
 
 function cycleNoteStyle(note:Banana.Note) {
-  const nextNoteStyleId: string|undefined = getNextNoteStyleId(note);
-  const editCommand: Banana.EditCommand = {timing: note.timing, newValue: nextNoteStyleId || null};
-  note.track.edit(editCommand);
+  const noteStyle:Banana.NoteStyle|null = getNextNoteStyle(note);
+  note.noteStyle = noteStyle;
 }
 
 
-function getNextNoteStyleId(note:Banana.Note): string|undefined {
+function getNextNoteStyle(note:Banana.Note): Banana.NoteStyle {
   const noteStyles = note.track.instrument.noteStyles;
   const noteStyleIds = Object.keys(noteStyles);
-  if (!note.noteStyle)
-    return noteStyleIds[0];
-  const noteStyleId = note.noteStyle.noteStyleId;
-  const index = noteStyleIds.indexOf(noteStyleId);
-  return noteStyleIds[index + 1]; // Out of bounds is ok, we'll handle undefined above
+  if (!note.noteStyle) // This happens when the note-style is null, meaning a rest
+    return noteStyles[noteStyleIds[0]];
+  const currentNoteStyleId = note.noteStyle.noteStyleId;
+  const index = noteStyleIds.indexOf(currentNoteStyleId);
+  const nextNoteStyleId = noteStyleIds[index + 1];
+  if (nextNoteStyleId)
+    return noteStyles[nextNoteStyleId];
+  return null; // Cycle back to rest after all note-styles
 }
