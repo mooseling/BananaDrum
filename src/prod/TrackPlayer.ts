@@ -1,7 +1,7 @@
 type NoteWithTime = {realTime:Banana.RealTime, note:Banana.Note};
 
 function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordinator): Banana.TrackPlayer {
-  const notesWithTime:NoteWithTime[] = [];
+  let notesWithTime:NoteWithTime[] = [];
   fillInRealTimeNotes();
   let lastNoteCount = track.notes.length;
   track.subscribe(handleNoteCountChange);
@@ -53,8 +53,7 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
 
 
   function removeExtraRealTimeNotes() {
-    notesWithTime.filter(({note}) => !track.notes.includes(note))
-      .forEach(noteWithTime => notesWithTime.splice(notesWithTime.indexOf(noteWithTime)));
+    notesWithTime = notesWithTime.filter(({note}) => track.notes.includes(note))
   }
 
 
