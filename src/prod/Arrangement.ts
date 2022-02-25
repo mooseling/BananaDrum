@@ -124,6 +124,8 @@ arrangementBuilder.unpack = async function(packedArrangement:Banana.PackedArrang
 
 // We need unique identifiers for tracks, even if their instrument is the same
 // This needs to work even if instruments have been deleted
+// Using trackCounter as the ID is enough
+// We currently add the instrument name as well, it makes debugging easier
 function getTrackId(track:Banana.Track): string {
   const thisInstrumentId = track.instrument.instrumentId;
   trackCounter++;
