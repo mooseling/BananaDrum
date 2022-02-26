@@ -44,8 +44,10 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
 
     for (let bar = 1; bar <= bars; bar++) {
       for (let beat = 1; beat <= beatsPerBar; beat++) {
+        const outerSixteenths = (beat - 1) * sixteenthsPerBeat;
         for (let sixteenth = 1; sixteenth <= sixteenthsPerBeat; sixteenth++) {
-          sixteenths.push(`${bar}.${beat}.${sixteenth}`);
+          const step = outerSixteenths + sixteenth;
+          sixteenths.push({bar, step});
         }
       }
     }

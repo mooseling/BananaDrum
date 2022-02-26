@@ -2,6 +2,7 @@ import {Library} from './Library';
 import {Note} from './Note';
 import {Publisher} from './Publisher';
 import {getColour} from './colours';
+import {isSameTiming} from './utils';
 
 function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrument, packedNotes:Banana.PackedNote[]): Banana.Track {
   const publisher:Banana.Publisher = Publisher();
@@ -56,8 +57,8 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
 
 
   function fillInRests() {
-    const allSixteenths = arrangement.getSixteenths();
-    const sixteenthsWithNoNotes = allSixteenths.filter(timing => !notes.some(note => note.timing === timing));
+    const sixteenthsWithNoNotes = arrangement.getSixteenths()
+      .filter(timing => !notes.some(note => isSameTiming(note.timing, timing)));
     sixteenthsWithNoNotes.forEach(timing => notes.push(Note(track, timing, null)));
   }
 
