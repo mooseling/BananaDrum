@@ -36,14 +36,15 @@ return {
   subscribe: publisher.subscribe,
   unsubscribe: publisher.unsubscribe,
 
-  isValid(timing:Banana.Timing) {
-    const [bar, beat] = timing.split('.').map(bit => Number(bit));
+  isValid({bar, step}:Banana.Timing) {
     if (bar > length)
       return false; // timing falls outside the arrangement entirely
 
-    const beatsPerBar = Number(timeSignature.split('/')[0]);
-    if (beat > beatsPerBar)
+    const [beatsPerBar, beatUnit] = timeSignature.split('/').map(value => Number(value));
+    const sixteenthsPerBar = (16 / beatUnit) * beatsPerBar;
+    if (step > sixteenthsPerBar)
       return false;
+
     return true;
   }
 }
