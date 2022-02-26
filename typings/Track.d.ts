@@ -19,6 +19,9 @@ declare namespace Banana {
 
   interface PackedNote {
     noteStyleId: string
-    timing: Timing
+    timing: PackedTiming
   }
+
+  type PackedTiming = `${number}:${number}` // bar:step
+  // We don't use "." because numbers might contain it
 }

@@ -1,15 +1,8 @@
 declare namespace Banana {
-  // Timings are in the format #.#.#(.#)
-  // Which is bars.beats.sixteenths(.sixtyfourths)
-  // I refer to a each # as a bit, or timing-bit
-  // Bits are integers
-  // Bits can be modified by appending 'T' or 'TT' to indicate triplets
-
-  // I tried to enforce the above using unions of primitive types
-  // The error messages then enumerated all possbible string formats
-  // And this was way too annoying and noisy
-
-  type Timing = string
+  // steps are currently always sixteenths
+  // When we bring in polyrhythms that will change
+  // It may also change for other time signatures but I'm not sure yet
+  type Timing = {readonly bar:number, readonly step:number}
   type RealTime = number
 
   interface Interval {
