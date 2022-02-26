@@ -14,7 +14,7 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
   arrangement.subscribe(updateTrackPlayers);
 
   // currentTiming updates as we play, and ArrangementPlayer publishes when it does
-  let currentTiming:Banana.Timing = '1.1.1';
+  let currentTiming:Banana.Timing = {bar:1, step:1};
   let callbackEvents:Banana.CallbackEvent[]|null;
   updateCallbackEvents();
   arrangement.timeParams.subscribe(updateCallbackEvents);

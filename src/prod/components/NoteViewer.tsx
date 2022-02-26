@@ -1,13 +1,14 @@
 import {useState, useContext, useEffect} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
 import {EventEngine} from '../EventEngine';
+import {isSameTiming} from '../utils';
 
 
 // NoteViewers don't currently subscribe to note changes
 // Instead, editing happens through the Track, and the whole NoteLine is refreshed
 export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
   const player:Banana.ArrangementPlayer = useContext(ArrangementPlayerContext);
-  const [isCurrent, setIsCurrent] = useState(player.currentTiming === note.timing);
+  const [isCurrent, setIsCurrent] = useState(isSameTiming(player.currentTiming, note.timing));
   const [playing, setPlaying] = useState(EventEngine.state === 'playing')
 
   const engineSubscription:Banana.Subscription = () => setPlaying(EventEngine.state === 'playing');
@@ -16,7 +17,7 @@ export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
     return () => EventEngine.unsubscribe(engineSubscription); // Unsubscribe when this element leaves the UI
   }, []);
 
-  const timingSubscription:Banana.Subscription = () => setIsCurrent(player.currentTiming === note.timing);
+  const timingSubscription:Banana.Subscription = () => setIsCurrent(isSameTiming(player.currentTiming, note.timing));
   useEffect(() => {
     player.subscribe(timingSubscription);
     return () => player.unsubscribe(timingSubscription); // Unsubscribe when this element leaves the UI
