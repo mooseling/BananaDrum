@@ -54,7 +54,7 @@ function NoteLine({track}:{track:Banana.Track}): JSX.Element {
   // Track.notes are not ordered (yet), so we have to use getSixteenths to order the elements correctly
   return (<div className="note-line" style={{minWidth:width}}>
     {arrangement.getSixteenths().map(timing => track.getNoteAt(timing))
-      .map(note => <NoteViewer note={note} key={note.timing}/>)}
+      .map(note => <NoteViewer note={note} key={getTimingString(note)}/>)}
   </div>);
 }
 
@@ -65,4 +65,9 @@ function TrackControls({track}:{track:Banana.Track}): JSX.Element {
       <button className="push-button gray" onClick={() => track.arrangement.removeTrack(track)}>Remove track</button>
     </div>
   );
+}
+
+
+function getTimingString(note:Banana.Note): Banana.PackedTiming {
+  return `${note.timing.bar}:${note.timing.step}`;
 }
