@@ -49,13 +49,13 @@ export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
 
 function getClasses(note:Banana.Note) {
   let classes:string[] = ['note-viewer'];
-  const timingBits = note.timing.split('.')
+  const {step} = note.timing;
+  const beat = Math.floor((step - 1) / 4) + 1;
 
-  const beat = Number(timingBits[1]);
   const beatIsEven = beat % 2 === 0;
   classes.push(beatIsEven ? 'even-beat' : 'odd-beat');
 
-  if (beat === 1 && timingBits[2] === '1' && timingBits[2] === '1' && !timingBits[3])
+  if (step === 1)
     classes.push('start-of-bar');
 
   return classes.join(' ');
