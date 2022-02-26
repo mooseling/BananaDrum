@@ -40,8 +40,7 @@ export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
     onClick={() => cycleNoteStyle(note)}
     style={{backgroundColor}}
     >
-      <div className="note-viewer-background"
-      ></div>
+      <div className="note-viewer-background" />
       <NoteDetailsViewer noteStyle={noteStyle} />
     </div>
   );
