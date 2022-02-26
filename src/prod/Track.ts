@@ -29,7 +29,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
 
   function getNoteAt(timing:Banana.Timing): Banana.Note {
     for (const note of notes) {
-      if (note.timing === timing)
+      if (isSameTiming(note.timing, timing))
         return note;
     }
   }
@@ -51,7 +51,8 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
 
 
   function unpackNote(packedNote:Banana.PackedNote): Banana.Note {
-    const {timing, noteStyleId} = packedNote;
+    const {timing:packedTiming, noteStyleId} = packedNote;
+    const timing:Banana.Timing = unpackTiming(packedTiming);
     return Note(track, timing, instrument.noteStyles[noteStyleId]);
   }
 
@@ -88,3 +89,10 @@ trackBuilder.unpack = async function(arrangement:Banana.Arrangement, packedTrack
 }
 
 export const Track:Banana.TrackBuilder = trackBuilder;
+
+
+
+function unpackTiming(packedTiming:Banana.PackedTiming): Banana.Timing {
+  const [bar, step] = packedTiming.split(':').map(value => Number(value));
+  return {bar, step};
+}
