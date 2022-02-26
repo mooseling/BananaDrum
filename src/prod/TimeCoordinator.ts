@@ -7,7 +7,7 @@ import {Publisher} from './Publisher';
 // A TimeCoordinator adjust times from the EventEngine to make sense to music objects
 export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordinator {
   const publisher: Banana.Publisher = Publisher();
-  let secondsPerBar:Banana.RealTime, secondsPerSixteenth:Banana.RealTime, secondsPerBeat:Banana.RealTime, realTimeLength:Banana.RealTime;
+  let secondsPerBar:Banana.RealTime, secondsPerStep:Banana.RealTime, realTimeLength:Banana.RealTime;
   setInternalParams(); // Sets the variables above
 
   // Tempo and length changes incur offset changes
@@ -29,25 +29,9 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
   // ==================================================================
 
 
-  function convertToRealTime(timing:string): number {
-    let seconds = 0;
-    const multipliers = timing.split('.').map(convertToMultiplier);
-
-    const barMultiplier = multipliers[0];
-    seconds += barMultiplier * secondsPerBar;
-
-    const beatMultiplier = multipliers[1]; // Usually quarter-beats
-    seconds += beatMultiplier * secondsPerBeat;
-
-    const sixteenthMultiplier = multipliers[2];
-    seconds += sixteenthMultiplier * secondsPerSixteenth;
-
-    // Now for the optional 4th bit
-    const sixtyfourthMultiplier = multipliers[3];
-    if (sixtyfourthMultiplier)
-      seconds += sixteenthMultiplier * secondsPerSixteenth / 4;
-
-    return seconds;
+  // Converting is currently extremely easy, but will become more complicated with polyrhythms
+  function convertToRealTime(timing:Banana.Timing): Banana.RealTime {
+    return (secondsPerBar * (timing.bar - 1)) + (secondsPerStep * (timing.step - 1));
   }
 
   // Takes an interval whose times may be beyond the end of the loop
@@ -105,8 +89,8 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
 
 
   function setInternalParams() {
-    ({secondsPerBar, secondsPerSixteenth, secondsPerBeat} = calcNoteTimes(timeParams));
-    realTimeLength = convertToRealTime(`${timeParams.length + 1}.1.1`);
+    ({secondsPerBar, secondsPerStep} = calcNoteTimes(timeParams));
+    realTimeLength = convertToRealTime({bar:timeParams.length + 1, step:1});
   }
 
 
@@ -169,23 +153,11 @@ function calcNoteTimes({timeSignature, tempo}:Banana.PackedTimeParams) {
   const sixteenthsPerBar = sixteenthsPerBeat * beatsPerBar;
 
   // And produce our actually useful values
+  // Why 15 is a useful constant: 4ths/second = tempo/60 => 16ths/second = tempo/15
   const secondsPerBar = (sixteenthsPerBar / tempo) * 15;
   const secondsPerSixteenth = 15 / tempo;
-  const secondsPerBeat = secondsPerSixteenth * sixteenthsPerBeat;
 
-  return {secondsPerBar, secondsPerSixteenth, secondsPerBeat};
-}
-
-// timingBit looks like '2', '3T', or '1TT'
-// The T's indicate adding some triplet spice to this note, so adding thirds
-// The base value is 1 at time=0, so we have to subtract 1
-function convertToMultiplier(timingBit: string): number {
-  const split = timingBit.split('T');
-  const baseMultiplier = Number(split[0]) - 1; // Because we start on the 1
-  if (split.length === 1)
-    return baseMultiplier;
-  if (split.length === 2)
-    return baseMultiplier + 0.333333333333333333333;
-  if (split.length === 3)
-    return baseMultiplier + 0.666666666666666666666;
+  // Output in terms of steps, which are secretly sixteenths
+  // We may want to eventually add a resolution parameter which controls this
+  return {secondsPerBar, secondsPerStep:secondsPerSixteenth};
 }
