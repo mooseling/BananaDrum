@@ -13,6 +13,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
   if (packedNotes)
     unpackNotes();
   fillInRests();
+  notes.sort((a, b) => (a.timing.bar - b.timing.bar) || (a.timing.step - b.timing.step))
   arrangement.timeParams.subscribe(handleTimeParamsChange);
 
   return track;
@@ -77,6 +78,8 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
 
     // Fill in new notes, e.g. arrangement has lengthened
     fillInRests();
+    // We may have added notes between other notes, e.g. time signature has changed
+    notes.sort((a, b) => (a.timing.bar - b.timing.bar) || (a.timing.step - b.timing.step))
     if (notes.length !== initialNoteCount)
       publisher.publish();
   }

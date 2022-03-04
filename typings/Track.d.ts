@@ -2,7 +2,7 @@ declare namespace Banana {
   interface Track extends Subscribable {
     arrangement: Arrangement
     instrument: Instrument
-    notes: Note[]
+    notes: Note[] // Must be kept in order - this is Track's job
     getNoteAt(timing:Timing): Note
     colour: string // A specific hsl() string
   }
