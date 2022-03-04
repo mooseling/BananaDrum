@@ -4,50 +4,50 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
   let {timeSignature, tempo, length} = packedParams;
   const publisher:Banana.Publisher = Publisher();
 
-return {
-  get timeSignature() { return timeSignature; },
-  set timeSignature(newTimeSignature: string) {
-    if (newTimeSignature !== timeSignature) {
-      timeSignature = newTimeSignature;
-      publisher.publish();
+  return {
+    get timeSignature() { return timeSignature; },
+    set timeSignature(newTimeSignature: string) {
+      if (newTimeSignature !== timeSignature) {
+        timeSignature = newTimeSignature;
+        publisher.publish();
+      }
+    },
+
+    get tempo() { return tempo; },
+    set tempo(newTempo: number) {
+      if (!validateTempo(newTempo))
+        throw 'Invalid tempo';
+      if (newTempo !== tempo) {
+        tempo = newTempo;
+        publisher.publish();
+      }
+    },
+
+    get length() { return length; },
+    set length(newLength: number) {
+      if (!validateLength(newLength))
+        throw 'Invalid length';
+      if (newLength !== length) {
+        length = newLength;
+        publisher.publish();
+      }
+    },
+
+    subscribe: publisher.subscribe,
+    unsubscribe: publisher.unsubscribe,
+
+    isValid({bar, step}:Banana.Timing) {
+      if (bar > length)
+        return false; // timing falls outside the arrangement entirely
+
+      const [beatsPerBar, beatUnit] = timeSignature.split('/').map(value => Number(value));
+      const sixteenthsPerBar = (16 / beatUnit) * beatsPerBar;
+      if (step > sixteenthsPerBar)
+        return false;
+
+      return true;
     }
-  },
-
-  get tempo() { return tempo; },
-  set tempo(newTempo: number) {
-    if (!validateTempo(newTempo))
-      throw 'Invalid tempo';
-    if (newTempo !== tempo) {
-      tempo = newTempo;
-      publisher.publish();
-    }
-  },
-
-  get length() { return length; },
-  set length(newLength: number) {
-    if (!validateLength(newLength))
-      throw 'Invalid length';
-    if (newLength !== length) {
-      length = newLength;
-      publisher.publish();
-    }
-  },
-
-  subscribe: publisher.subscribe,
-  unsubscribe: publisher.unsubscribe,
-
-  isValid({bar, step}:Banana.Timing) {
-    if (bar > length)
-      return false; // timing falls outside the arrangement entirely
-
-    const [beatsPerBar, beatUnit] = timeSignature.split('/').map(value => Number(value));
-    const sixteenthsPerBar = (16 / beatUnit) * beatsPerBar;
-    if (step > sixteenthsPerBar)
-      return false;
-
-    return true;
   }
-}
 }
 
 
