@@ -7,5 +7,6 @@ declare namespace Banana {
 
   interface TimeParams extends PackedTimeParams, Subscribable {
     isValid(timing:Timing): boolean
+    readonly timings: Timing[]
   }
 }
