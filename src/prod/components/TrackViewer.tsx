@@ -1,7 +1,6 @@
 import {NoteViewer} from './NoteViewer';
 import {Overlay, OverlayState} from './Overlay';
-import {useState, useEffect, useContext} from 'react';
-import {ArrangementPlayerContext} from './ArrangementViewer';
+import {useState, useEffect} from 'react';
 
 const widthPerNote = 55.5; // 50pt for width, 2 * 2pt for padding, and 1.5pt for border
 
@@ -40,7 +39,6 @@ function TrackMeta({track, toggleControls}:{track:Banana.Track, toggleControls:(
 
 
 function NoteLine({track}:{track:Banana.Track}): JSX.Element {
-  const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
   const [noteCount, setNoteCount] = useState(track.notes.length);
 
   const subscription = () => setNoteCount(track.notes.length);
@@ -53,8 +51,7 @@ function NoteLine({track}:{track:Banana.Track}): JSX.Element {
 
   // Track.notes are not ordered (yet), so we have to use getSixteenths to order the elements correctly
   return (<div className="note-line" style={{minWidth:width}}>
-    {arrangement.getSixteenths().map(timing => track.getNoteAt(timing))
-      .map(note => <NoteViewer note={note} key={getTimingString(note)}/>)}
+    {track.notes.map(note => <NoteViewer note={note} key={getTimingString(note)}/>)}
   </div>);
 }
 
