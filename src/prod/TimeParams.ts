@@ -4,6 +4,7 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
   let {timeSignature, tempo, length} = packedParams;
   const publisher:Banana.Publisher = Publisher();
   const timings:Banana.Timing[] = [];
+  regenerateTimings();
 
   return {
     get timeSignature() { return timeSignature; },
