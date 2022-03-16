@@ -59,7 +59,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
 
 
   function fillInRests() {
-    const sixteenthsWithNoNotes = arrangement.getSixteenths()
+    const sixteenthsWithNoNotes = arrangement.timeParams.timings
       .filter(timing => !notes.some(note => isSameTiming(note.timing, timing)));
     sixteenthsWithNoNotes.forEach(timing => notes.push(Note(track, timing, null)));
   }

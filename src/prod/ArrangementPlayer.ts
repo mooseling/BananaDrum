@@ -111,8 +111,7 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
 
 
   function updateCallbackEvents() {
-    const sixteenths = arrangement.getSixteenths();
-    callbackEvents = sixteenths.map(timing => ({
+    callbackEvents = arrangement.timeParams.timings.map(timing => ({
       realTime: timeCoordinator.convertToRealTime(timing),
       callback: () => {
         currentTiming = timing;
