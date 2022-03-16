@@ -15,7 +15,7 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
 
   const publisher:Banana.Publisher = Publisher();
   const tracks:{[trackId:string]:Banana.Track} = {};
-  const arrangement:Banana.Arrangement = {timeParams, tracks, createTrack, unpackTracks, removeTrack, getSixteenths, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
+  const arrangement:Banana.Arrangement = {timeParams, tracks, createTrack, unpackTracks, removeTrack, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
   return arrangement;
 
@@ -27,32 +27,6 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
   // ==================================================================
   //                          Public Functions
   // ==================================================================
-
-
-
-  // Returns an array of timings, representing each sixteenth in the arrangement
-  // The UI uses it to generate all the note-viewers
-  function getSixteenths(): Banana.Timing[] {
-    const [beatUnit, beatsPerBar] = timeParams.timeSignature.split('/').map((value: string) => Number(value));
-    const bars: number = timeParams.length;
-    const sixteenthsPerBeat = 16 / beatUnit;
-    const sixteenths: Banana.Timing[] = [];
-
-    // A possible optimisation is to initialise sixteenths as new Array(sixteenthCount)
-    // (sixteenthCount = sixteenthsPerBar * bars)
-    // This removes all calls to push, but you'll have to track sixteenths in a variable
-
-    for (let bar = 1; bar <= bars; bar++) {
-      for (let beat = 1; beat <= beatsPerBar; beat++) {
-        const outerSixteenths = (beat - 1) * sixteenthsPerBeat;
-        for (let sixteenth = 1; sixteenth <= sixteenthsPerBeat; sixteenth++) {
-          const step = outerSixteenths + sixteenth;
-          sixteenths.push({bar, step});
-        }
-      }
-    }
-    return sixteenths;
-  }
 
 
   function createTrack(instrument:Banana.Instrument) {

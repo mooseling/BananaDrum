@@ -10,7 +10,6 @@ declare namespace Banana {
     createTrack(instrument:Instrument): void
     unpackTracks(packedTracks:PackedTrack[]): Promise<void>
     removeTrack(track:Track): void
-    getSixteenths(): Timing[]
   }
 
   interface PackedArrangement {
