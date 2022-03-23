@@ -55,12 +55,12 @@ export const instrumentCollection:Banana.InstrumentCollection = [
       {
         noteStyleId: 'open',
         file: 'hihat_open.mp3',
-        symbol:{src:'images/icons/o_lower.svg'}
+        symbol:{src:'images/icons/O.svg'}
       },
       {
         noteStyleId: 'foot',
         file: 'hihat_foot.mp3',
-        symbol:{src:'images/icons/O.svg'}
+        symbol:{src:'images/icons/o_lower.svg'}
       },
       {
         noteStyleId: 'trash',
