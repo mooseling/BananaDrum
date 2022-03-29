@@ -105,46 +105,6 @@ body {
   margin-right: 8pt;
 }
 
-/*
-Scrollshadows: An Enormous Faff
-Very difficult to get these things to match the height of the right element
-*/
-
-.scrollshadow-wrapper {
-  display: flex;
-  align-items: stretch;
-  overflow-x: hidden;
-}
-
-.scrollshadow {
-  width: 0;
-  overflow: visible;
-}
-
-.scrollshadow::before {
-  display: none;
-  content: '??';
-  color: rgba(0,0,0,0);
-  width: 12pt;
-  pointer-events: none;
-  z-index: 1;
-  height: var(--note-height);
-  position: absolute;
-}
-
-.scrollshadow.left-scrollshadow::before {
-  /* Radial gradients because the shadows do not span the full height */
-  background: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0) 70%);
-  display: block;
-  left: var(--track-meta-width);
-}
-
-.scrollshadow.right-scrollshadow::before {
-  background: linear-gradient(to left, rgba(0,0,0,0.5), rgba(0,0,0,0) 70%);
-  display: block;
-  right: 0;
-}
-
 .track-viewers-wrapper {
   overflow-x: auto; /* scroll if overflowing */
 }
@@ -156,6 +116,33 @@ Very difficult to get these things to match the height of the right element
 
 .track-viewer > * {
   display: inline-block;
+}
+
+/*
+Scrollshadows: An Enormous Faff
+Very difficult to get them to the right height, right position, and not overlapping a scrollbar
+So we're putting them in each track-viewer, where we can position them with no problems
+*/
+
+.scrollshadow {
+  display: none;
+  width: 12pt;
+  pointer-events: none;
+  z-index: 1;
+  height: var(--note-height);
+  position: absolute;
+}
+
+.scrollshadow.left-scrollshadow {
+  background: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0) 70%);
+  display: block;
+  left: var(--track-meta-width);
+}
+
+.scrollshadow.right-scrollshadow {
+  background: linear-gradient(to left, rgba(0,0,0,0.5), rgba(0,0,0,0) 70%);
+  display: block;
+  right: 0;
 }
 
 .track-meta {
