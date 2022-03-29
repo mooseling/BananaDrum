@@ -16,6 +16,8 @@ export function TrackViewer({track}:{track:Banana.Track}): JSX.Element {
           <TrackControls track={track}/>
         </Overlay>
       </div>
+      <div className="scrollshadow left-scrollshadow" />
+      <div className="scrollshadow right-scrollshadow" />
       <TrackMeta track={track} toggleControls={() => overlayState.toggle()}/>
     </div>
   );
