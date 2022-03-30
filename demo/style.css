@@ -126,21 +126,23 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 .scrollshadow {
   display: none;
-  width: 12pt;
+  width: 20pt;
   pointer-events: none;
   z-index: 1;
-  height: var(--note-height);
   position: absolute;
+  /* Vertically offset shadows slightly to cover borders */
+  margin-top: calc(-0.5 * var(--thick-border-width));
+  height: calc(var(--thick-border-width) + var(--note-height))
 }
 
 .track-viewers-wrapper.overflowing-left .scrollshadow.left-scrollshadow {
-  background: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0) 70%);
+  background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0) 70%);
   display: block;
   left: var(--track-meta-width);
 }
 
 .track-viewers-wrapper.overflowing-right .scrollshadow.right-scrollshadow {
-  background: linear-gradient(to left, rgba(0,0,0,0.5), rgba(0,0,0,0) 70%);
+  background: linear-gradient(to left, rgba(0,0,0,0.6), rgba(0,0,0,0) 70%);
   display: block;
   right: 0;
 }
