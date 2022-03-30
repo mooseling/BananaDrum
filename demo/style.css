@@ -133,13 +133,13 @@ So we're putting them in each track-viewer, where we can position them with no p
   position: absolute;
 }
 
-.scrollshadow.left-scrollshadow {
+.track-viewers-wrapper.overflowing-left .scrollshadow.left-scrollshadow {
   background: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0) 70%);
   display: block;
   left: var(--track-meta-width);
 }
 
-.scrollshadow.right-scrollshadow {
+.track-viewers-wrapper.overflowing-right .scrollshadow.right-scrollshadow {
   background: linear-gradient(to left, rgba(0,0,0,0.5), rgba(0,0,0,0) 70%);
   display: block;
   right: 0;
