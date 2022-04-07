@@ -7,6 +7,7 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
   track.subscribe(handleNoteCountChange);
   let lastTempo = track.arrangement.timeParams.tempo;
   timeCoordinator.subscribe(handleTimeChange);
+  track.arrangement.subscribe(destroySelfIfNeeded);
 
   return {track, getEvents};
 
@@ -75,6 +76,18 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
       notesWithTime.forEach(noteWithTime => noteWithTime.realTime = timeCoordinator.convertToRealTime(noteWithTime.note.timing));
       lastTempo = newTempo;
     }
+  }
+
+
+  function destroySelfIfNeeded() {
+    // Check track still exists
+    for (const trackId in track.arrangement.tracks) {
+      if (track.arrangement.tracks[trackId] === track)
+        return;
+    }
+    // ... otherwise unsubscribe from everything
+    timeCoordinator.unsubscribe(handleTimeChange);
+    track.arrangement.unsubscribe(destroySelfIfNeeded);
   }
 }
 
