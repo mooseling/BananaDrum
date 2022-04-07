@@ -15,6 +15,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
   fillInRests();
   notes.sort((a, b) => (a.timing.bar - b.timing.bar) || (a.timing.step - b.timing.step))
   arrangement.timeParams.subscribe(handleTimeParamsChange);
+  arrangement.subscribe(destroySelfIfNeeded);
 
   return track;
 
@@ -82,6 +83,18 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
     notes.sort((a, b) => (a.timing.bar - b.timing.bar) || (a.timing.step - b.timing.step))
     if (notes.length !== initialNoteCount)
       publisher.publish();
+  }
+
+
+  function destroySelfIfNeeded() {
+    // Check track still exists
+    for (const trackId in arrangement.tracks) {
+      if (arrangement.tracks[trackId] === track)
+        return;
+    }
+    // ... otherwise unsubscribe from everything
+    arrangement.timeParams.unsubscribe(handleTimeParamsChange);
+    arrangement.unsubscribe(destroySelfIfNeeded);
   }
 }
 
