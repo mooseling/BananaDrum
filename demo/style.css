@@ -161,6 +161,7 @@ So we're putting them in each track-viewer, where we can position them with no p
   position: absolute;
   left: 0;
   background-color: white;
+  z-index: 100; /* Currently only for covering track-controls overlay */
 }
 
 .track-meta .options-button {
@@ -176,6 +177,10 @@ So we're putting them in each track-viewer, where we can position them with no p
   flex-grow: 1;
   margin-left: var(--track-meta-width);
   border-bottom: var(--thick-border);
+}
+
+.note-line-wrapper .overlay {
+  z-index: 50;
 }
 
 .track-controls {
