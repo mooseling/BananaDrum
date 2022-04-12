@@ -18,14 +18,13 @@ function InstrumentChooser({instrumentMeta, close}:{instrumentMeta:Banana.Instru
   const {instrumentId, displayName} = instrumentMeta;
   const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
   return (
-    <button className="instrument-chooser push-button" onClick={() => choose(instrumentId, arrangement) && close()}>
+    <button className="instrument-chooser push-button" onClick={() => {choose(instrumentId, arrangement); close();}}>
       {displayName}
     </button>
   );
 }
 
 
-async function choose(instrumentId:string, arrangement:Banana.Arrangement) {
-  const instrument = await Library.getInstrument(instrumentId);
-  arrangement.createTrack(instrument);
+function choose(instrumentId:string, arrangement:Banana.Arrangement) {
+  arrangement.createTrack(Library.getInstrument(instrumentId));
 }
