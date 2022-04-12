@@ -29,10 +29,19 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
   // ==================================================================
 
 
-  function createTrack(instrument:Banana.Instrument) {
-    const track = Track(arrangement, instrument)
-    const trackId = getTrackId(track);
-    tracks[trackId] = track;
+  function createTrack(instrument:Banana.Instrument|Promise<Banana.Instrument>) {
+    const trackId = getTrackId();
+    if (instrument instanceof Promise) {
+      // If we're waiting on an instrument, we put a pending-track into tracks
+      tracks[trackId] = instrument.then(instrument => {
+        const track = Track(arrangement, instrument);
+        tracks[trackId] = track;
+        publisher.publish();
+        return track;
+      });
+    } else {
+      tracks[trackId] = Track(arrangement, instrument);
+    }
     publisher.publish();
   }
 
@@ -50,7 +59,7 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
     // And then add them in the right order
     packedTracks.forEach(packedTrack => {
       const track = trackMap.get(packedTrack);
-      const trackId = getTrackId(track);
+      const trackId = getTrackId();
       tracks[trackId] = track;
     });
 
@@ -100,10 +109,7 @@ arrangementBuilder.unpack = async function(packedArrangement:Banana.PackedArrang
 
 // We need unique identifiers for tracks, even if their instrument is the same
 // This needs to work even if instruments have been deleted
-// Using trackCounter as the ID is enough
-// We currently add the instrument name as well, it makes debugging easier
-function getTrackId(track:Banana.Track): string {
-  const thisInstrumentId = track.instrument.instrumentId;
+function getTrackId(): string {
   trackCounter++;
-  return `${thisInstrumentId}--${trackCounter}`;
+  return `${trackCounter}`;
 }
