@@ -114,6 +114,10 @@ body {
   display: flex;
 }
 
+.track-viewer.pending-track {
+  height: var(--note-height)
+}
+
 .track-viewer > * {
   display: inline-block;
 }

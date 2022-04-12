@@ -5,7 +5,10 @@ import {useState, useEffect} from 'react';
 const widthPerNote = 55.5; // 50pt for width, 2 * 2pt for padding, and 1.5pt for border
 
 
-export function TrackViewer({track}:{track:Banana.Track}): JSX.Element {
+export function TrackViewer({track}:{track:Banana.PotentialTrack}): JSX.Element {
+  if (track instanceof Promise)
+    return PendingTrackViewer();
+
   const [overlayState] = useState(OverlayState(false));
 
   return (
@@ -69,4 +72,13 @@ function TrackControls({track}:{track:Banana.Track}): JSX.Element {
 
 function getTimingString(note:Banana.Note): Banana.PackedTiming {
   return `${note.timing.bar}:${note.timing.step}`;
+}
+
+
+function PendingTrackViewer(): JSX.Element {
+  return (
+    <div className="track-viewer pending-track">
+      Loading...
+    </div>
+  );
 }

@@ -6,7 +6,7 @@ declare namespace Banana {
 
   interface Arrangement extends Subscribable {
     timeParams: TimeParams
-    tracks: {[trackId:string]: Track}
+    tracks: {[trackId:string]: PotentialTrack}
     createTrack(instrument:Instrument): void
     unpackTracks(packedTracks:PackedTrack[]): Promise<void>
     removeTrack(track:Track): void

@@ -104,8 +104,11 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
 
     // Then add trackPlayers for new tracks
     for (const trackId in arrangement.tracks) {
+      const track:Banana.PotentialTrack = arrangement.tracks[trackId];
+      if (track instanceof Promise)
+        continue; // Skip pending tracks
       if (!trackPlayers[trackId])
-        trackPlayers[trackId] = TrackPlayer(arrangement.tracks[trackId], timeCoordinator);
+        trackPlayers[trackId] = TrackPlayer(track, timeCoordinator);
     }
   }
 

@@ -14,7 +14,7 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
     timeParams = TimeParams(defaultTimeParams);
 
   const publisher:Banana.Publisher = Publisher();
-  const tracks:{[trackId:string]:Banana.Track} = {};
+  const tracks:{[trackId:string]:Banana.PotentialTrack} = {};
   const arrangement:Banana.Arrangement = {timeParams, tracks, createTrack, unpackTracks, removeTrack, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
   return arrangement;

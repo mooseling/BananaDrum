@@ -24,4 +24,7 @@ declare namespace Banana {
 
   type PackedTiming = `${number}:${number}` // bar:step
   // We don't use "." because numbers might contain it
+
+  type PendingTrack = Promise<Track>
+  type PotentialTrack = Track|PendingTrack
 }
