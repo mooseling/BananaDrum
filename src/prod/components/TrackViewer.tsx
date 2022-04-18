@@ -78,7 +78,8 @@ function getTimingString(note:Banana.Note): Banana.PackedTiming {
 function PendingTrackViewer(): JSX.Element {
   return (
     <div className="track-viewer pending-track">
-      Loading...
+      <div className="track-meta">Loading...</div>
+      <div className="pending-note-line" />
     </div>
   );
 }

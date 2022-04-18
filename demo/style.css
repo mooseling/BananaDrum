@@ -114,8 +114,30 @@ body {
   display: flex;
 }
 
+@keyframes loadingPulse {
+  0% {background-color: white;}
+  100% {background-color: var(--lighter-yellow);}
+}
+
 .track-viewer.pending-track {
-  height: var(--note-height)
+  height: var(--note-height);
+}
+
+.track-viewer.pending-track .track-meta {
+  animation: loadingPulse 1.5s infinite alternate;
+}
+
+.pending-note-line {
+  width: 100%;
+  height: var(--note-height);
+  animation: loadingPulse 1.5s infinite alternate;
+  border: var(--thick-border);
+  position: absolute;
+  left: 0;
+  z-index: -1;
+  margin-top: calc(-1 * var(--thick-border-width));
+  margin-bottom: calc(-1 * var(--thick-border-width));
+  margin-left: calc(-1 * var(--thick-border-width));
 }
 
 .track-viewer > * {
