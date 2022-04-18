@@ -38,7 +38,10 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
         tracks[trackId] = track;
         publisher.publish();
         return track;
-      });
+      }).catch(() => {
+        delete tracks[trackId];
+        publisher.publish();
+      })
     } else {
       tracks[trackId] = Track(arrangement, instrument);
     }
