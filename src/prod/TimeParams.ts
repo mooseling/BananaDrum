@@ -9,6 +9,8 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
   return {
     get timeSignature() { return timeSignature; },
     set timeSignature(newTimeSignature: string) {
+      if (!validateTimeSignature(newTimeSignature))
+        throw 'Invalid time signature';
       if (newTimeSignature !== timeSignature) {
         timeSignature = newTimeSignature;
         regenerateTimings();
@@ -89,6 +91,16 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
         timings.push({bar, step});
     }
   }
+}
+
+
+function validateTimeSignature(timeSignature:string): boolean {
+  const [beatsPerBar, beatUnit] = timeSignature.split('/').map((value: string) => Number(value));
+  if (!validateNaturalNumber(beatsPerBar))
+    return false;
+  if (!validateNoteValue(beatUnit))
+    return false;
+  return true;
 }
 
 
