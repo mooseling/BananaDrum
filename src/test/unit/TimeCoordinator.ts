@@ -7,7 +7,7 @@ type TestCase = [Banana.Timing, number];
 describe('TimeCoordinator', function() {
   describe('Time conversion', function() {
     describe('4/4 time, 120bpm', function() {
-      const timeParams:Banana.TimeParams = TimeParams({timeSignature:'4/4', tempo:120, length:1});
+      const timeParams:Banana.TimeParams = TimeParams({timeSignature:'4/4', tempo:120, length:1, pulse:'1/4', stepResolution:16});
       const timeCoordinator = TimeCoordinator(timeParams);
 
       it('returns 0 on the 1', () => assert(timeCoordinator.convertToRealTime({bar:1,step:1}) === 0));

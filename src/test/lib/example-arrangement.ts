@@ -3,6 +3,8 @@ export const exampleArrangement:Banana.PackedArrangement = {
     timeSignature: '4/4',
     tempo: 120,
     length: 2, // bars
+    pulse: '1/4',
+    stepResolution: 16
   },
   packedTracks: [
     {

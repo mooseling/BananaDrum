@@ -3,7 +3,7 @@ import {TimeParams} from './TimeParams';
 import {Publisher} from './Publisher';
 
 const defaultTimeParams:Banana.PackedTimeParams = {
-  timeSignature:'4/4', tempo:120, length:1, pulse:'1/8', stepResolution:16
+  timeSignature:'4/4', tempo:120, length:1, pulse:'1/4', stepResolution:16
 };
 
 // Track-ids need to be unique, so we simply bung a globally increasing counter on them

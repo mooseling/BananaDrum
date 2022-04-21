@@ -8,7 +8,9 @@ describe('TimeParams', function() {
   const timeParams = TimeParams({
     timeSignature:initialTimeSignature,
     tempo:initialTempo,
-    length:initialLength
+    length:initialLength,
+    pulse:'1/4',
+    stepResolution:8
   });
   let updateCount = 0;
   timeParams.subscribe(() => updateCount++)
