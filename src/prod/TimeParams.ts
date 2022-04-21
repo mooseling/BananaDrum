@@ -1,7 +1,7 @@
 import {Publisher} from './Publisher';
 
 export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimeParams {
-  let {timeSignature, tempo, length} = packedParams;
+  let {timeSignature, tempo, length, pulse, stepResolution} = packedParams;
   const publisher:Banana.Publisher = Publisher();
   const timings:Banana.Timing[] = [];
   regenerateTimings();
@@ -33,6 +33,28 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
         throw 'Invalid length';
       if (newLength !== length) {
         length = newLength;
+        regenerateTimings();
+        publisher.publish();
+      }
+    },
+
+    get pulse() { return pulse; },
+    set pulse(newPulse:string) {
+      if (!validatePulse(newPulse))
+        throw 'Invalid pulse';
+      if (newPulse !== pulse) {
+        pulse = newPulse;
+        regenerateTimings();
+        publisher.publish();
+      }
+    },
+
+    get stepResolution() { return stepResolution; },
+    set stepResolution(newStepResolution:number) {
+      if (!validateNoteValue(newStepResolution))
+        throw 'Invalid pulse';
+      if (newStepResolution !== stepResolution) {
+        stepResolution = newStepResolution;
         regenerateTimings();
         publisher.publish();
       }
@@ -89,6 +111,18 @@ function validateLength(length:number) {
   if (length <= 0)
     return false;
   if (length != Math.floor(length))
+    return false;
+  return true;
+}
+
+
+// Pulses are natural numbers of kinds of notes (often 8ths)
+// For example, 4/4 is usually beat = 8ths, 6/8 is beat = 3/8ths
+function validatePulse(pulse:string): boolean {
+  const [noteCount, noteResolution] = pulse.split('/').map(str => Number(str));
+  if (!validateNoteValue(noteResolution))
+    return false;
+  if (!validateNaturalNumber(noteCount))
     return false;
   return true;
 }
