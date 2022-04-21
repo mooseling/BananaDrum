@@ -78,19 +78,15 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
   }
 
 
+  // Whenever any params change, we generate the list of timings from scratch again
   function regenerateTimings() {
-    timings.splice(0); // Clear old timings
-    const [beatUnit, beatsPerBar] = timeSignature.split('/').map((value: string) => Number(value));
-    const bars:number = length;
-    const sixteenthsPerBeat = 16 / beatUnit;
-    for (let bar = 1; bar <= bars; bar++) {
-      for (let beat = 1; beat <= beatsPerBar; beat++) {
-        const outerSixteenths = (beat - 1) * sixteenthsPerBeat;
-        for (let sixteenth = 1; sixteenth <= sixteenthsPerBeat; sixteenth++) {
-          const step = outerSixteenths + sixteenth;
-          timings.push({bar, step});
-        }
-      }
+    timings.length = 0;
+    const [beatsPerBar, beatNoteValue] = timeSignature.split('/').map((value: string) => Number(value));
+    const stepsPerBeat = stepResolution / beatNoteValue;
+    const stepsPerBar = stepsPerBeat * beatsPerBar;
+    for (let bar = 1; bar <= length; bar++) {
+      for (let step = 1; step <= stepsPerBar; step++)
+        timings.push({bar, step});
     }
   }
 }
