@@ -92,3 +92,24 @@ function validateLength(length:number) {
     return false;
   return true;
 }
+
+
+function validateNaturalNumber(number:number): boolean {
+  if (isNaN(number))
+    return false;
+  if (Math.floor(number) !== number)
+    return false;
+  if (number < 1)
+    return false;
+  return true;
+}
+
+
+// Note values are always powers of 2, meaning crotchets, quavers, minums... all that jazz
+function validateNoteValue(noteValue:number): boolean {
+  if (!validateNaturalNumber(noteValue))
+    return false;
+  if (noteValue % 2 !== 0)
+    return false;
+  return true;
+}
