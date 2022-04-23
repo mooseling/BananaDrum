@@ -5,7 +5,7 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
   fillInRealTimeNotes();
   let lastNoteCount = track.notes.length;
   track.subscribe(handleNoteCountChange);
-  let lastTempo = track.arrangement.timeParams.tempo;
+  let lastLength = track.arrangement.timeParams.length;
   timeCoordinator.subscribe(handleTimeChange);
   track.arrangement.subscribe(destroySelfIfNeeded);
 
@@ -69,13 +69,13 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
 
 
   function handleTimeChange() {
-    // We only recalc note times when the tempo changes
-    // Length changes do not incur this, and timeSignature currently cannot change
-    const newTempo = track.arrangement.timeParams.tempo;
-    if (newTempo !== lastTempo) {
-      notesWithTime.forEach(noteWithTime => noteWithTime.realTime = timeCoordinator.convertToRealTime(noteWithTime.note.timing));
-      lastTempo = newTempo;
+    // Unnecessary to recalc note times when the length changes
+    if (track.arrangement.timeParams.length !== lastLength) {
+      lastLength = track.arrangement.timeParams.length;
+      return;
     }
+
+    notesWithTime.forEach(noteWithTime => noteWithTime.realTime = timeCoordinator.convertToRealTime(noteWithTime.note.timing));
   }
 
 
