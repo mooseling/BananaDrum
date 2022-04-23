@@ -144,20 +144,20 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
 }
 
 
-// Assumption: tempo is quarter-notes per minute, no matter the time signature
-function calcNoteTimes({timeSignature, tempo}:Banana.PackedTimeParams) {
-  const [beatsPerBar, beatUnit] = timeSignature.split('/').map(stringValue => Number(stringValue));
+
+function calcNoteTimes({timeSignature, tempo, pulse, stepResolution}:Banana.PackedTimeParams) {
+  const [beatsPerBar, beatUnit] = timeSignature.split('/').map(str => Number(str));
+  const [pulseFrequency, pulseResolution] = pulse.split('/').map(str => Number(str));
 
   // Lay some ground work...
-  const sixteenthsPerBeat = 16 / beatUnit;
-  const sixteenthsPerBar = sixteenthsPerBeat * beatsPerBar;
+  const stepsPerBeat = stepResolution / beatUnit;
+  const stepsPerBar = stepsPerBeat * beatsPerBar;
+  const stepsPerPulse = stepResolution * pulseFrequency / pulseResolution;
+  const secondsPerPulse = 60 / tempo;
 
   // And produce our actually useful values
-  // Why 15 is a useful constant: 4ths/second = tempo/60 => 16ths/second = tempo/15
-  const secondsPerBar = (sixteenthsPerBar / tempo) * 15;
-  const secondsPerSixteenth = 15 / tempo;
+  const secondsPerStep = secondsPerPulse / stepsPerPulse;
+  const secondsPerBar = secondsPerStep * stepsPerBar;
 
-  // Output in terms of steps, which are secretly sixteenths
-  // We may want to eventually add a resolution parameter which controls this
-  return {secondsPerBar, secondsPerStep:secondsPerSixteenth};
+  return {secondsPerBar, secondsPerStep};
 }
