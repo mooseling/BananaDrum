@@ -70,8 +70,9 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
         return false; // timing falls outside the arrangement entirely
 
       const [beatsPerBar, beatUnit] = timeSignature.split('/').map(value => Number(value));
-      const sixteenthsPerBar = (16 / beatUnit) * beatsPerBar;
-      if (step > sixteenthsPerBar)
+      const stepsPerBeat = stepResolution / beatUnit;
+      const stepsPerBar = stepsPerBeat * beatsPerBar;
+      if (step > stepsPerBar)
         return false;
 
       return true;
