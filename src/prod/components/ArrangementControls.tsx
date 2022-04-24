@@ -27,15 +27,43 @@ function TimeControls({arrangement}:{arrangement:Banana.Arrangement}): JSX.Eleme
   }, []);
 
   return (
-    <div className="time-controls">
-      Tempo: <NumberInput
-        getValue={() => String(timeParams.tempo)}
-        setValue={(newValue:string) => timeParams.tempo = Number(newValue)}
-      /> bpm<br/>
-      Length: <NumberInput
-        getValue={() => String(timeParams.length)}
-        setValue={(newValue:string) => timeParams.length = Number(newValue)}
-      /> bars
+    <div>
+      <div className="time-controls">
+        Tempo: <NumberInput
+          getValue={() => String(timeParams.tempo)}
+          setValue={(newValue:string) => timeParams.tempo = Number(newValue)}
+        /> bpm<br/>
+        Length: <NumberInput
+          getValue={() => String(timeParams.length)}
+          setValue={(newValue:string) => timeParams.length = Number(newValue)}
+        /> bars
+      </div>
+      <div className="time-controls">
+        Time Signature: <select onChange={changeTimeSignature}>
+          <option>4/4</option>
+          <option>6/8</option>
+          <option>5/4</option>
+        </select>
+      </div>
     </div>
   );
+
+
+  function changeTimeSignature(event:React.ChangeEvent<HTMLSelectElement>) {
+    timeParams.timeSignature = event.target.value;
+    switch (event.target.value) {
+      case '4/4':
+        timeParams.stepResolution = 16;
+        timeParams.pulse = '1/4';
+        break;
+      case '6/8':
+        timeParams.stepResolution = 8;
+        timeParams.pulse = '3/8';
+        break;
+      case '5/4':
+        timeParams.stepResolution = 8;
+        timeParams.pulse = '1/4';
+        break;
+    }
+  }
 }
