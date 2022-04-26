@@ -4,8 +4,6 @@ import {EventEngine} from '../EventEngine';
 import {isSameTiming} from '../utils';
 
 
-// NoteViewers don't currently subscribe to note changes
-// Instead, editing happens through the Track, and the whole NoteLine is refreshed
 export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
   const player:Banana.ArrangementPlayer = useContext(ArrangementPlayerContext);
   const [isCurrent, setIsCurrent] = useState(isSameTiming(player.currentTiming, note.timing));
@@ -14,18 +12,19 @@ export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
   const engineSubscription:Banana.Subscription = () => setPlaying(EventEngine.state === 'playing');
   useEffect(() => {
     EventEngine.subscribe(engineSubscription);
-    return () => EventEngine.unsubscribe(engineSubscription); // Unsubscribe when this element leaves the UI
+    return () => EventEngine.unsubscribe(engineSubscription);
   }, []);
 
   const timingSubscription:Banana.Subscription = () => setIsCurrent(isSameTiming(player.currentTiming, note.timing));
   useEffect(() => {
     player.subscribe(timingSubscription);
-    return () => player.unsubscribe(timingSubscription); // Unsubscribe when this element leaves the UI
+    return () => player.unsubscribe(timingSubscription);
   }, []);
 
-  const backgroundColor = (playing && isCurrent) ? 'var(--light-yellow)' // Light up notes as the music plays
-    : note.noteStyle ? note.track.colour                    // Otherwise, give active notes the track colour
-    : '';                                                   // Inactive notes have no inline background colour
+  const backgroundColor = (playing && isCurrent) ?
+    'var(--light-yellow)'                 // Light up notes as the music plays
+    : note.noteStyle ? note.track.colour  // Otherwise, give active notes the track colour
+    : '';                                 // Inactive notes have no inline background colour
 
   const [noteStyle, setNoteStyle] = useState(note.noteStyle)
   const noteSubscription:Banana.Subscription = () => setNoteStyle(note.noteStyle);
