@@ -47,18 +47,53 @@ export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
 }
 
 
-function getClasses(note:Banana.Note) {
+function getClasses(note:Banana.Note): string {
   let classes:string[] = ['note-viewer'];
   const {step} = note.timing;
-  const beat = Math.floor((step - 1) / 4) + 1;
 
-  const beatIsEven = beat % 2 === 0;
-  classes.push(beatIsEven ? 'even-beat' : 'odd-beat');
+  classes.push(getParityClass(note));
 
   if (step === 1)
     classes.push('start-of-bar');
 
   return classes.join(' ');
+}
+
+
+function getParityClass(note:Banana.Note): string|null {
+  const {timeSignature, stepResolution} = note.track.arrangement.timeParams;
+  const {bar, step} = note.timing;
+
+    if (timeSignature === '4/4' && stepResolution === 16) {
+      const beat = Math.floor((step - 1) / 4) + 1;
+      const beatIsEven = beat % 2 === 0;
+      return beatIsEven ? 'even-beat' : 'odd-beat';
+    }
+    if (timeSignature === '6/8' && stepResolution === 8) {
+      const beat = Math.floor((step - 1) / 3) + 1;
+      const beatIsEven = beat % 2 === 0;
+      return beatIsEven ? 'even-beat' : 'odd-beat';
+    }
+    if (timeSignature === '5/4' && stepResolution === 8) {
+      const beat = Math.floor((step - 1) / 2) + 1;
+      let beatIsEven = beat % 2 === 0;
+      if (bar % 2 === 0)
+        beatIsEven = !beatIsEven; // 5 groups in each bar, so swap every bar
+      return beatIsEven ? 'even-beat' : 'odd-beat';
+    }
+    const [beatsPerBar, beatUnit] = timeSignature.split('/').map(str => Number(str));
+    const stepsPerBeat = stepResolution / beatUnit;
+    if (stepsPerBeat > 1) {
+      const beat = Math.floor((step - 1) / stepsPerBeat) + 1;
+      let beatIsEven = beat % 2 === 0;
+      if (beatsPerBar % 2 === 1 && bar % 2 === 0)
+        beatIsEven = !beatIsEven; // odd number of groups in each bar, so swap every bar
+      return beatIsEven ? 'even-beat' : 'odd-beat';
+    }
+    // If all else fails, we just alternate each note
+    const stepsPerBar = stepsPerBeat * beatsPerBar;
+    const stepIsEven = ((bar - 1) * stepsPerBar + step - 1) % 2 === 0;
+    return stepIsEven ? 'even-beat' : 'odd-beat';
 }
 
 
