@@ -44,15 +44,15 @@ function TrackMeta({track, toggleControls}:{track:Banana.Track, toggleControls:(
 
 
 function NoteLine({track}:{track:Banana.Track}): JSX.Element {
-  const [noteCount, setNoteCount] = useState(track.notes.length);
+  const [notes, setNotes] = useState([...track.notes]);
 
-  const subscription = () => setNoteCount(track.notes.length);
+  const subscription = () => setNotes([...track.notes]);
   useEffect(() => {
     track.subscribe(subscription);
     return () => track.unsubscribe(subscription);
   }, []);
 
-  const width:string = noteCount * widthPerNote + 'pt';
+  const width:string = track.notes.length * widthPerNote + 'pt';
 
   return (
     <div className="note-line" style={{minWidth:width}}>
