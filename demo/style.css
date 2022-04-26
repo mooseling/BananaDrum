@@ -247,12 +247,8 @@ So we're putting them in each track-viewer, where we can position them with no p
   user-select: none;
 }
 
-.note-viewer.start-of-bar {
-  border-left-width: 2px;
-}
-
 .note-viewer.odd-beat {
-  background-color: var(--lightest-gray);
+  background-color: var(--lighter-gray);
 }
 
 .note-details-viewer {
