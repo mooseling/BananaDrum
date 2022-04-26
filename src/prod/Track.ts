@@ -59,29 +59,38 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
   }
 
 
-  function fillInRests() {
+  // Return value indicates whether anything changed
+  function fillInRests(): boolean {
     const timingsWithNoNotes = arrangement.timeParams.timings
       .filter(timing => !notes.some(note => isSameTiming(note.timing, timing)));
-    timingsWithNoNotes.forEach(timing => notes.push(Note(track, timing, null)));
+    if (timingsWithNoNotes.length) {
+      timingsWithNoNotes.forEach(timing => notes.push(Note(track, timing, null)));
+      notes.sort((a, b) => (a.timing.bar - b.timing.bar) || (a.timing.step - b.timing.step));
+      return true;
+    }
+    return false;
   }
 
 
   function handleTimeParamsChange() {
-    const initialNoteCount = notes.length;
+    let somethingChanged = false;
 
     // Remove invalid notes, e.g. arrangement has shortened
-    while(notes.some((note, index) => {
-      if (!arrangement.timeParams.isValid(note.timing)) {
-        notes.splice(index);
-        return true;
+    let index = 0;
+    while (index < notes.length) {
+      if (!arrangement.timeParams.isValid(notes[index].timing)) {
+        notes.splice(index, 1);
+        somethingChanged = true;
+      } else {
+        index++;
       }
-    }));
+    }
 
     // Fill in new notes, e.g. arrangement has lengthened
-    fillInRests();
-    // We may have added notes between other notes, e.g. time signature has changed
-    notes.sort((a, b) => (a.timing.bar - b.timing.bar) || (a.timing.step - b.timing.step))
-    if (notes.length !== initialNoteCount)
+    if(fillInRests())
+      somethingChanged = true;
+
+    if (somethingChanged)
       publisher.publish();
   }
 
