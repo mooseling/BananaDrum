@@ -98,11 +98,44 @@ body {
 
 .arrangement-controls {
   display: flex;
+  padding: 20pt;
   border-bottom: var(--thick-border);
 }
 
 .arrangement-controls > * {
   margin-right: 8pt;
+}
+
+.playback-control {
+  max-height: 57pt;
+}
+
+.time-controls-wrapper {
+  display: flex;
+}
+
+.time-control {
+  padding: 9.75pt 12pt;
+}
+
+.time-control input, select {
+  width: 40pt;
+  height: 25pt;
+  box-sizing: border-box;
+}
+
+@media only screen and (max-width: 600px) {
+  .time-controls-wrapper {
+    flex-direction: column;
+  }
+
+  .time-control {
+    padding: 0;
+  }
+
+  .time-control input, select {
+    height: unset;
+  }
 }
 
 .track-viewers-wrapper {
@@ -264,14 +297,6 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 .note-details-viewer img.note-style-symbol {
   height: 70%;
-}
-
-.arrangement-controls {
-    padding: 20pt;
-}
-
-.time-controls input {
-    width: 40pt;
 }
 
 #show-instrument-browser {

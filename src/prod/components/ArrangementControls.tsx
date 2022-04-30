@@ -26,24 +26,28 @@ function TimeControls({arrangement}:{arrangement:Banana.Arrangement}): JSX.Eleme
     return () => timeParams.unsubscribe(subscription);
   }, []);
 
+  const pluralBars = timeParams.length > 1;
+
   return (
-    <div>
-      <div className="time-controls">
-        Tempo: <NumberInput
-          getValue={() => String(timeParams.tempo)}
-          setValue={(newValue:string) => timeParams.tempo = Number(newValue)}
-        /> bpm<br/>
-        Length: <NumberInput
-          getValue={() => String(timeParams.length)}
-          setValue={(newValue:string) => timeParams.length = Number(newValue)}
-        /> bars
-      </div>
-      <div className="time-controls">
-        Time Signature: <select onChange={changeTimeSignature}>
+    <div className="time-controls-wrapper">
+      <div className="time-control">
+        <select onChange={changeTimeSignature}>
           <option>4/4</option>
           <option>6/8</option>
           <option>5/4</option>
-        </select>
+        </select> time
+      </div>
+      <div className="time-control">
+        <NumberInput
+          getValue={() => String(timeParams.tempo)}
+          setValue={(newValue:string) => timeParams.tempo = Number(newValue)}
+        /> bpm
+      </div>
+      <div className="time-control">
+        <NumberInput
+          getValue={() => String(timeParams.length)}
+          setValue={(newValue:string) => timeParams.length = Number(newValue)}
+        /> {pluralBars ? 'bars' : 'bar'}
       </div>
     </div>
   );
