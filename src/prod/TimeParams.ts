@@ -4,8 +4,15 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
   let {timeSignature, tempo, length, pulse, stepResolution} = packedParams;
   const publisher:Banana.Publisher = Publisher();
   const timings:Banana.Timing[] = [];
+
+  // Unpacked values
   let [beatsPerBar, beatUnit] = timeSignature.split('/').map(str => Number(str));
   let [pulseFrequency, pulseResolution] = pulse.split('/').map(str => Number(str));
+
+  // Calculated values
+  let wholeNotesPerBar:number, stepsPerBar:number, wholeNotesPerPulse:number, pulsesPerBar:number;
+  calculateInternalValues();
+
   regenerateTimings();
 
   return {
@@ -67,24 +74,16 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
     },
 
     convertToPulses({bar, step}:Banana.Timing): number {
-      const stepsPerWholeNote = stepResolution;
-      const wholeNotesPerBar = beatsPerBar / beatUnit;
-      const stepsPerBar = wholeNotesPerBar * stepsPerWholeNote;
       const barsFinished = (bar - 1) + ((step - 1) / stepsPerBar);
-      const wholeNotesPerPulse = pulseFrequency / pulseResolution;
-      const pulsesPerBar = wholeNotesPerBar / wholeNotesPerPulse;
       return barsFinished * pulsesPerBar;
     },
 
     convertToApproxTiming(pulses:number): Banana.ApproxTiming {
-      const wholeNotesPerPulse = pulseFrequency / pulseResolution;
-      const wholeNotesPerBar = beatsPerBar / beatUnit;
       const wholeNotesPassed = pulses * wholeNotesPerPulse;
       const bar = Math.floor(wholeNotesPassed / wholeNotesPerBar) + 1;
 
-      const stepsPerWholeNote = stepResolution;
       const leftOverWholeNotes = wholeNotesPassed % wholeNotesPerBar;
-      const stepsPassed = leftOverWholeNotes * stepsPerWholeNote;
+      const stepsPassed = leftOverWholeNotes * stepResolution; // stepResolution = stepsPerWholeNote
       const step = Math.round(stepsPassed) + 1;
 
       // Score is 0 when half-way between steps, 1 when bang on a step
@@ -100,15 +99,20 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
       if (bar > length)
         return false; // timing falls outside the arrangement entirely
 
-      const [beatsPerBar, beatUnit] = timeSignature.split('/').map(value => Number(value));
-      const stepsPerBeat = stepResolution / beatUnit;
-      const stepsPerBar = stepsPerBeat * beatsPerBar;
       if (step > stepsPerBar)
         return false;
 
       return true;
     },
     timings
+  }
+
+
+  function calculateInternalValues() {
+    wholeNotesPerBar = beatsPerBar / beatUnit;
+    wholeNotesPerPulse = pulseFrequency / pulseResolution;
+    stepsPerBar = wholeNotesPerBar * stepResolution; //  stepResolution is like stepsPerWholeNote
+    pulsesPerBar = wholeNotesPerBar / wholeNotesPerPulse;
   }
 
 
