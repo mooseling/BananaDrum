@@ -4,6 +4,8 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
   let {timeSignature, tempo, length, pulse, stepResolution} = packedParams;
   const publisher:Banana.Publisher = Publisher();
   const timings:Banana.Timing[] = [];
+  let [beatsPerBar, beatUnit] = timeSignature.split('/').map(str => Number(str));
+  let [pulseFrequency, pulseResolution] = pulse.split('/').map(str => Number(str));
   regenerateTimings();
 
   return {
@@ -13,6 +15,7 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
         throw 'Invalid time signature';
       if (newTimeSignature !== timeSignature) {
         timeSignature = newTimeSignature;
+        [beatsPerBar, beatUnit] = timeSignature.split('/').map(str => Number(str));
         regenerateTimings();
         publisher.publish();
       }
@@ -46,6 +49,7 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
         throw 'Invalid pulse';
       if (newPulse !== pulse) {
         pulse = newPulse;
+        [pulseFrequency, pulseResolution] = pulse.split('/').map(str => Number(str));
         regenerateTimings();
         publisher.publish();
       }
@@ -60,6 +64,33 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
         regenerateTimings();
         publisher.publish();
       }
+    },
+
+    convertToPulses({bar, step}:Banana.Timing): number {
+      const stepsPerWholeNote = stepResolution;
+      const wholeNotesPerBar = beatsPerBar / beatUnit;
+      const stepsPerBar = wholeNotesPerBar * stepsPerWholeNote;
+      const barsFinished = (bar - 1) + ((step - 1) / stepsPerBar);
+      const wholeNotesPerPulse = pulseFrequency / pulseResolution;
+      const pulsesPerBar = wholeNotesPerBar / wholeNotesPerPulse;
+      return barsFinished * pulsesPerBar;
+    },
+
+    convertToApproxTiming(pulses:number): Banana.ApproxTiming {
+      const wholeNotesPerPulse = pulseFrequency / pulseResolution;
+      const wholeNotesPerBar = beatsPerBar / beatUnit;
+      const wholeNotesPassed = pulses * wholeNotesPerPulse;
+      const bar = Math.floor(wholeNotesPassed / wholeNotesPerBar) + 1;
+
+      const stepsPerWholeNote = stepResolution;
+      const leftOverWholeNotes = wholeNotesPassed % wholeNotesPerBar;
+      const stepsPassed = leftOverWholeNotes * stepsPerWholeNote;
+      const step = Math.round(stepsPassed) + 1;
+
+      // Score is 0 when half-way between steps, 1 when bang on a step
+      const score = Math.abs((stepsPassed % 1) - 0.5) / 0.5;
+
+      return {bar, step, score};
     },
 
     subscribe: publisher.subscribe,
@@ -84,8 +115,7 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
   // Whenever any params change, we generate the list of timings from scratch again
   function regenerateTimings() {
     timings.length = 0;
-    const [beatsPerBar, beatNoteValue] = timeSignature.split('/').map((value: string) => Number(value));
-    const stepsPerBeat = stepResolution / beatNoteValue;
+    const stepsPerBeat = stepResolution / beatUnit;
     const stepsPerBar = stepsPerBeat * beatsPerBar;
     for (let bar = 1; bar <= length; bar++) {
       for (let step = 1; step <= stepsPerBar; step++)

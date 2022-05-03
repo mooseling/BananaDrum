@@ -22,7 +22,5 @@ declare namespace Banana {
     convertToRealTime(timing:Timing): RealTime
     convertToLoopIntervals(interval:Interval): LoopInterval[]
     convertToAudioTime(realTime:RealTime, loopNumber:number): RealTime
-    convertToPulses(timing:Timing): number
-    convertToApproxTiming(pulses:number): ApproxTiming
   }
 }
