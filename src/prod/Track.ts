@@ -12,8 +12,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
 
   if (packedNotes)
     unpackNotes();
-  fillInRests();
-  notes.sort(chronologically)
+  fillInRestsAndSort();
   arrangement.timeParams.subscribe(handleTimeParamsChange);
   arrangement.subscribe(destroySelfIfNeeded);
 
@@ -60,7 +59,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
 
 
   // Return value indicates whether anything changed
-  function fillInRests(): boolean {
+  function fillInRestsAndSort(): boolean {
     const timingsWithNoNotes = arrangement.timeParams.timings
       .filter(timing => !notes.some(note => isSameTiming(note.timing, timing)));
     if (timingsWithNoNotes.length) {
@@ -87,7 +86,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
     }
 
     // Fill in new notes, e.g. arrangement has lengthened
-    if(fillInRests())
+    if(fillInRestsAndSort())
       somethingChanged = true;
 
     if (somethingChanged)
