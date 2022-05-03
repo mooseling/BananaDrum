@@ -13,7 +13,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
   if (packedNotes)
     unpackNotes();
   fillInRests();
-  notes.sort((a, b) => (a.timing.bar - b.timing.bar) || (a.timing.step - b.timing.step))
+  notes.sort(chronologically)
   arrangement.timeParams.subscribe(handleTimeParamsChange);
   arrangement.subscribe(destroySelfIfNeeded);
 
@@ -65,7 +65,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
       .filter(timing => !notes.some(note => isSameTiming(note.timing, timing)));
     if (timingsWithNoNotes.length) {
       timingsWithNoNotes.forEach(timing => notes.push(Note(track, timing, null)));
-      notes.sort((a, b) => (a.timing.bar - b.timing.bar) || (a.timing.step - b.timing.step));
+      notes.sort(chronologically);
       return true;
     }
     return false;
@@ -120,4 +120,9 @@ export const Track:Banana.TrackBuilder = trackBuilder;
 function unpackTiming(packedTiming:Banana.PackedTiming): Banana.Timing {
   const [bar, step] = packedTiming.split(':').map(value => Number(value));
   return {bar, step};
+}
+
+
+function chronologically(note1:Banana.Note, note2:Banana.Note): number {
+  return (note1.timing.bar - note2.timing.bar) || (note1.timing.step - note2.timing.step)
 }
