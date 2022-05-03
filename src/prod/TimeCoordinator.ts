@@ -7,7 +7,10 @@ import {Publisher} from './Publisher';
 // A TimeCoordinator adjust times from the EventEngine to make sense to music objects
 export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordinator {
   const publisher: Banana.Publisher = Publisher();
-  let secondsPerBar:Banana.RealTime, secondsPerStep:Banana.RealTime, realTimeLength:Banana.RealTime;
+  let secondsPerBar:Banana.RealTime, secondsPerStep:Banana.RealTime, realTimeLength:Banana.RealTime,
+    stepsPerBeat:number, stepsPerBar:number, stepsPerPulse:number, secondsPerPulse:Banana.RealTime;
+  let beatsPerBar:number, beatUnit:number; // Unpacked time signature
+  let pulseFrequency:number, pulseResolution:number; // Unpacked pulse
   setInternalParams(); // Sets the variables above
 
   // Tempo and length changes incur offset changes
@@ -89,7 +92,19 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
 
 
   function setInternalParams() {
-    ({secondsPerBar, secondsPerStep} = calcNoteTimes(timeParams));
+    const {timeSignature, tempo, pulse, stepResolution} = timeParams;
+
+    // Unpack time signature and pulse
+    [beatsPerBar, beatUnit] = timeSignature.split('/').map(str => Number(str));
+    [pulseFrequency, pulseResolution] = pulse.split('/').map(str => Number(str));
+
+    // Calculate useful values
+    stepsPerBeat = stepResolution / beatUnit;
+    stepsPerBar = stepsPerBeat * beatsPerBar;
+    stepsPerPulse = stepResolution * pulseFrequency / pulseResolution;
+    secondsPerPulse = 60 / tempo;
+    secondsPerStep = secondsPerPulse / stepsPerPulse;
+    secondsPerBar = secondsPerStep * stepsPerBar;
     realTimeLength = convertToRealTime({bar:timeParams.length + 1, step:1});
   }
 
@@ -141,23 +156,4 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
     const newOffsetTime = (loopsFinished * realTimeLength) + targetTimeWithinLoop;
     offset = newOffsetTime - audioTime;
   }
-}
-
-
-
-function calcNoteTimes({timeSignature, tempo, pulse, stepResolution}:Banana.PackedTimeParams) {
-  const [beatsPerBar, beatUnit] = timeSignature.split('/').map(str => Number(str));
-  const [pulseFrequency, pulseResolution] = pulse.split('/').map(str => Number(str));
-
-  // Lay some ground work...
-  const stepsPerBeat = stepResolution / beatUnit;
-  const stepsPerBar = stepsPerBeat * beatsPerBar;
-  const stepsPerPulse = stepResolution * pulseFrequency / pulseResolution;
-  const secondsPerPulse = 60 / tempo;
-
-  // And produce our actually useful values
-  const secondsPerStep = secondsPerPulse / stepsPerPulse;
-  const secondsPerBar = secondsPerStep * stepsPerBar;
-
-  return {secondsPerBar, secondsPerStep};
 }
