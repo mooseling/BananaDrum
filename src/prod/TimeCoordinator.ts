@@ -20,7 +20,8 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
 
   timeParams.subscribe(handleTimeParamsChange);
 
-  return {convertToRealTime, convertToLoopIntervals, convertToAudioTime, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
+  return {convertToRealTime, convertToLoopIntervals, convertToAudioTime,
+    getPulses, getApproxTiming, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
 
 
@@ -79,6 +80,27 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
   // And return a time relative to time zero
   function convertToAudioTime(realTime:number, loopNumber:number) {
     return realTime + (loopNumber * realTimeLength) - offset;
+  }
+
+
+
+  function getPulses(timing:Banana.Timing): number {
+    const realTime = convertToRealTime(timing);
+    return realTime / secondsPerPulse;
+  }
+
+
+
+  function getApproxTiming(pulses:number): Banana.ApproxTiming {
+    const realTime = pulses * secondsPerPulse;
+    const bar = Math.floor(realTime / secondsPerBar) + 1;
+    const timeWithinBar = realTime % secondsPerBar;
+    const step = Math.round(timeWithinBar / secondsPerStep) + 1;
+
+    // Score is 0 when half-way between steps, 1 when bang on a step
+    const score = Math.abs(2 * (timeWithinBar % secondsPerStep) - secondsPerStep) / secondsPerStep;
+
+    return {bar, step, score};
   }
 
 
