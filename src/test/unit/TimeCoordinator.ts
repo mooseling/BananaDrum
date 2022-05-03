@@ -3,6 +3,7 @@ import {TimeCoordinator} from '../../prod/TimeCoordinator';
 import {TimeParams} from '../../prod/TimeParams';
 
 type TestCase = [Banana.Timing, number];
+type ApproxTestCase = [number, Banana.ApproxTiming];
 type PTP = Banana.PackedTimeParams;
 
 const packedTimeParams44:PTP = {timeSignature:'4/4', tempo:120, length:1, pulse:'1/4', stepResolution:16};
@@ -255,12 +256,78 @@ describe('TimeCoordinator', function() {
       });
     });
   });
+
+
+
+  // ==================================================================
+  //                          Timing Approximation
+  // ==================================================================
+
+  describe('Timing Approximation', function() {
+    describe('4/4 time, 120bpm', function() {
+      const timeCoordinator = TimeCoordinator(TimeParams(packedTimeParams44));
+
+      const testCases:ApproxTestCase[] = [
+        [0, {bar:1, step:1, score:1}],
+        [0.125, {bar:1, step:2, score:0}],
+        [0.0625, {bar:1, step:1, score:0.5}],
+        [0.25, {bar:1, step:2, score:1}],
+        [0.5, {bar:1, step:3, score:1}]
+      ];
+      it('Passes a bunch of test cases', () => {
+        testCases.forEach(([pulses, expectedApproxTiming]) => {
+          const approximatedTiming = timeCoordinator.convertToApproxTiming(pulses);
+          assert(isSameApproxTiming(approximatedTiming, expectedApproxTiming),
+            `${pulses} pulses converted to ${toString(approximatedTiming)} pulses but expected ${toString(expectedApproxTiming)}`);
+        });
+      });
+    });
+
+    describe('6/8 time, 120bpm', function() {
+      const timeCoordinator = TimeCoordinator(TimeParams(packedTimeParams68));
+
+      const testCases:ApproxTestCase[] = [
+        [0, {bar:1, step:1, score:1}],
+        [0.25, {bar:1, step:2, score:0.5}],
+        [0.33333333333333333, {bar:1, step:2, score:1}],
+        [0.5, {bar:1, step:3, score:0}]
+      ];
+      it('Passes a bunch of test cases', () => {
+        testCases.forEach(([pulses, expectedApproxTiming]) => {
+          const approximatedTiming = timeCoordinator.convertToApproxTiming(pulses);
+          assert(isSameApproxTiming(approximatedTiming, expectedApproxTiming),
+            `${pulses} pulses converted to ${toString(approximatedTiming)} pulses but expected ${toString(expectedApproxTiming)}`);
+        });
+      });
+    });
+
+    describe('5/4 time, 90bpm', function() {
+      const timeCoordinator = TimeCoordinator(TimeParams(packedTimeParams54));
+
+      const testCases:ApproxTestCase[] = [
+        [0, {bar:1, step:1, score:1}],
+        [1.25, {bar:1, step:6, score:1}],
+        [2.5, {bar:2, step:1, score:1}],
+      ];
+      it('Passes a bunch of test cases', () => {
+        testCases.forEach(([pulses, expectedApproxTiming]) => {
+          const approximatedTiming = timeCoordinator.convertToApproxTiming(pulses);
+          assert(isSameApproxTiming(approximatedTiming, expectedApproxTiming),
+            `${pulses} pulses converted to ${toString(approximatedTiming)} pulses but expected ${toString(expectedApproxTiming)}`);
+        });
+      });
+    });
+  });
 });
 
 
 
 function closeEnough(value1:number, value2:number, threshold = 0.00000001): boolean {
   return Math.abs(value1 - value2) < threshold;
+}
+
+function isSameApproxTiming(t1:Banana.ApproxTiming, t2:Banana.ApproxTiming): boolean {
+  return (t1.bar === t2.bar) && (t1.step === t2.step) && closeEnough(t1.score, t2.score);
 }
 
 type TimingLike = {bar:number, step:number, score?:number}
