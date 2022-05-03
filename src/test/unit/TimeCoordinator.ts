@@ -22,9 +22,8 @@ describe('TimeCoordinator', function() {
       it('passes a bunch of test cases', () => {
         testCases.forEach(([timing, expectedRealTime]) => {
           const calculatedRealTime = timeCoordinator.convertToRealTime(timing);
-          const difference = Math.abs(expectedRealTime - calculatedRealTime);
-          if (difference > 0.00000001)
-            throw `${timing.bar}.${timing.step} converted to ${calculatedRealTime} but expected ${expectedRealTime}`;
+          assert(closeEnough(calculatedRealTime, expectedRealTime),
+            `${timing.bar}.${timing.step} converted to ${calculatedRealTime} but expected ${expectedRealTime}`);
         });
       });
     });
@@ -48,9 +47,8 @@ describe('TimeCoordinator', function() {
       it('Passes a bunch of test cases', () => {
         testCases.forEach(([timing, expectedRealTime]) => {
           const calculatedRealTime = timeCoordinator.convertToRealTime(timing);
-          const difference = Math.abs(expectedRealTime - calculatedRealTime);
-          if (difference > 0.00000001)
-            throw `${timing.bar}.${timing.step} converted to ${calculatedRealTime} but expected ${expectedRealTime}`;
+          assert(closeEnough(calculatedRealTime, expectedRealTime),
+            `${timing.bar}.${timing.step} converted to ${calculatedRealTime} but expected ${expectedRealTime}`);
         });
       });
     });
@@ -74,9 +72,8 @@ describe('TimeCoordinator', function() {
       it('Passes a bunch of test cases', () => {
         testCases.forEach(([timing, expectedRealTime]) => {
           const calculatedRealTime = timeCoordinator.convertToRealTime(timing);
-          const difference = Math.abs(expectedRealTime - calculatedRealTime);
-          if (difference > 0.00000001)
-            throw `${timing.bar}.${timing.step} converted to ${calculatedRealTime} but expected ${expectedRealTime}`;
+          assert(closeEnough(calculatedRealTime, expectedRealTime),
+            `${timing.bar}.${timing.step} converted to ${calculatedRealTime} but expected ${expectedRealTime}`);
         });
       });
     });
@@ -104,14 +101,19 @@ describe('TimeCoordinator', function() {
       it('Passes a bunch of test cases', () => {
         testCases.forEach(([timing, expectedRealTime]) => {
           const calculatedRealTime = timeCoordinator.convertToRealTime(timing);
-          const difference = Math.abs(expectedRealTime - calculatedRealTime);
-          if (difference > 0.00000001)
-            throw `${timing.bar}.${timing.step} converted to ${calculatedRealTime} but expected ${expectedRealTime}`;
+          assert(closeEnough(calculatedRealTime, expectedRealTime),
+            `${timing.bar}.${timing.step} converted to ${calculatedRealTime} but expected ${expectedRealTime}`);
         });
       });
     });
   });
 });
+
+
+
+function closeEnough(value1:number, value2:number, threshold = 0.00000001): boolean {
+  return Math.abs(value1 - value2) < threshold;
+}
 
 // Removed test cases for tempo changes
 // Relied on old TimeCoordinator.update function to change time
