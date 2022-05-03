@@ -3,6 +3,7 @@ declare namespace Banana {
   // When we bring in polyrhythms that will change
   // It may also change for other time signatures but I'm not sure yet
   type Timing = {readonly bar:number, readonly step:number}
+  type ApproxTiming = Timing & {readonly score:number}
   type RealTime = number
 
   interface Interval {
@@ -21,5 +22,7 @@ declare namespace Banana {
     convertToRealTime(timing:Timing): RealTime
     convertToLoopIntervals(interval:Interval): LoopInterval[]
     convertToAudioTime(realTime:RealTime, loopNumber:number): RealTime
+    getPulses(timing:Timing): number
+    getApproxTiming(pulses:number): ApproxTiming
   }
 }
