@@ -50,7 +50,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
     packedNotes.forEach(packedNote => {
       const {timing:packedTiming, noteStyleId} = packedNote;
       const timing:Banana.Timing = unpackTiming(packedTiming);
-      notes.push(Note(track, timing, instrument.noteStyles[noteStyleId]));
+      addNewNote(timing, instrument.noteStyles[noteStyleId]);
     });
   }
 
@@ -60,11 +60,17 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
     const timingsWithNoNotes = arrangement.timeParams.timings
       .filter(timing => !notes.some(note => isSameTiming(note.timing, timing)));
     if (timingsWithNoNotes.length) {
-      timingsWithNoNotes.forEach(timing => notes.push(Note(track, timing, null)));
+      timingsWithNoNotes.forEach(timing => addNewNote(timing, null));
       notes.sort(chronologically);
       return true;
     }
     return false;
+  }
+
+
+  function addNewNote(timing:Banana.Timing, noteStyle:Banana.NoteStyle): void {
+    const note = Note(track, timing, noteStyle);
+    notes.push(note);
   }
 
 
