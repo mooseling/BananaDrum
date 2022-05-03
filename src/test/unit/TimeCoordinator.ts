@@ -3,12 +3,17 @@ import {TimeCoordinator} from '../../prod/TimeCoordinator';
 import {TimeParams} from '../../prod/TimeParams';
 
 type TestCase = [Banana.Timing, number];
+type PTP = Banana.PackedTimeParams;
+
+const packedTimeParams44:PTP = {timeSignature:'4/4', tempo:120, length:1, pulse:'1/4', stepResolution:16};
+const packedTimeParams68:PTP = {timeSignature:'6/8', tempo:120, length:1, pulse:'3/8', stepResolution:8};
+const packedTimeParams68_140:PTP = {timeSignature:'6/8', tempo:140, length:1, pulse:'3/8', stepResolution:8}
+const packedTimeParams54:PTP = {timeSignature:'5/4', tempo:90, length:1, pulse:'1/2', stepResolution:8};
 
 describe('TimeCoordinator', function() {
   describe('Time conversion', function() {
     describe('4/4 time, 120bpm', function() {
-      const timeParams:Banana.TimeParams = TimeParams({timeSignature:'4/4', tempo:120, length:1, pulse:'1/4', stepResolution:16});
-      const timeCoordinator = TimeCoordinator(timeParams);
+      const timeCoordinator = TimeCoordinator(TimeParams(packedTimeParams44));
 
       it('returns 0 on the 1', () => assert(timeCoordinator.convertToRealTime({bar:1,step:1}) === 0));
 
@@ -30,8 +35,7 @@ describe('TimeCoordinator', function() {
 
 
     describe('6/8 time, 120bpm', function() {
-      const timeParams:Banana.TimeParams = TimeParams({timeSignature:'6/8', tempo:120, length:1, pulse:'3/8', stepResolution:8});
-      const timeCoordinator = TimeCoordinator(timeParams);
+      const timeCoordinator = TimeCoordinator(TimeParams(packedTimeParams68));
 
       it('returns 0 on the 1', () => assert(timeCoordinator.convertToRealTime({bar:1,step:1}) === 0));
 
@@ -55,8 +59,7 @@ describe('TimeCoordinator', function() {
 
 
     describe('6/8 time, 140bpm', function() {
-      const timeParams:Banana.TimeParams = TimeParams({timeSignature:'6/8', tempo:140, length:1, pulse:'3/8', stepResolution:8});
-      const timeCoordinator = TimeCoordinator(timeParams);
+      const timeCoordinator = TimeCoordinator(TimeParams(packedTimeParams68_140));
 
       it('returns 0 on the 1', () => assert(timeCoordinator.convertToRealTime({bar:1,step:1}) === 0));
 
@@ -80,8 +83,7 @@ describe('TimeCoordinator', function() {
 
 
     describe('5/4 time, 90bpm', function() {
-      const timeParams:Banana.TimeParams = TimeParams({timeSignature:'5/4', tempo:90, length:1, pulse:'1/2', stepResolution:8});
-      const timeCoordinator = TimeCoordinator(timeParams);
+      const timeCoordinator = TimeCoordinator(TimeParams(packedTimeParams54));
 
       it('returns 0 on the 1', () => assert(timeCoordinator.convertToRealTime({bar:1,step:1}) === 0));
 
@@ -110,8 +112,7 @@ describe('TimeCoordinator', function() {
 
   describe('Pulse conversion', function() {
     describe('4/4 time, 120bpm', function() {
-      const timeParams:Banana.TimeParams = TimeParams({timeSignature:'4/4', tempo:120, length:1, pulse:'1/4', stepResolution:16});
-      const timeCoordinator = TimeCoordinator(timeParams);
+      const timeCoordinator = TimeCoordinator(TimeParams(packedTimeParams44));
 
       it('Returns 0 on the 1', () => assert(timeCoordinator.convertToPulses({bar:1, step:1}) === 0));
 
@@ -145,8 +146,7 @@ describe('TimeCoordinator', function() {
   });
 
   describe('6/8 time, 120bpm', function() {
-    const timeParams:Banana.TimeParams = TimeParams({timeSignature:'6/8', tempo:120, length:1, pulse:'3/8', stepResolution:8});
-    const timeCoordinator = TimeCoordinator(timeParams);
+    const timeCoordinator = TimeCoordinator(TimeParams(packedTimeParams68));
 
     it('Returns 0 on the 1', () => assert(timeCoordinator.convertToPulses({bar:1, step:1}) === 0));
 
@@ -176,8 +176,7 @@ describe('TimeCoordinator', function() {
 
   // Should all come out the same as 6/8 at 120
   describe('6/8 time, 140bpm', function() {
-    const timeParams:Banana.TimeParams = TimeParams({timeSignature:'6/8', tempo:140, length:1, pulse:'3/8', stepResolution:8});
-    const timeCoordinator = TimeCoordinator(timeParams);
+    const timeCoordinator = TimeCoordinator(TimeParams(packedTimeParams68_140));
 
     it('Returns 0 on the 1', () => assert(timeCoordinator.convertToPulses({bar:1, step:1}) === 0));
 
@@ -206,8 +205,7 @@ describe('TimeCoordinator', function() {
   });
 
   describe('5/4 time, 90bpm', function() {
-    const timeParams:Banana.TimeParams = TimeParams({timeSignature:'5/4', tempo:90, length:1, pulse:'1/2', stepResolution:8});
-    const timeCoordinator = TimeCoordinator(timeParams);
+    const timeCoordinator = TimeCoordinator(TimeParams(packedTimeParams54));
 
     it('Returns 0 on the 1', () => assert(timeCoordinator.convertToPulses({bar:1, step:1}) === 0));
 
