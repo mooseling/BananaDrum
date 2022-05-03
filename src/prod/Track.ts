@@ -47,14 +47,11 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
 
   // Only call if packedNotes is defined
   function unpackNotes(): void {
-    packedNotes.forEach(packedNote => notes.push(unpackNote(packedNote)));
-  }
-
-
-  function unpackNote(packedNote:Banana.PackedNote): Banana.Note {
-    const {timing:packedTiming, noteStyleId} = packedNote;
-    const timing:Banana.Timing = unpackTiming(packedTiming);
-    return Note(track, timing, instrument.noteStyles[noteStyleId]);
+    packedNotes.forEach(packedNote => {
+      const {timing:packedTiming, noteStyleId} = packedNote;
+      const timing:Banana.Timing = unpackTiming(packedTiming);
+      notes.push(Note(track, timing, instrument.noteStyles[noteStyleId]));
+    });
   }
 
 
