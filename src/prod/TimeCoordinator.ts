@@ -21,7 +21,7 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
   timeParams.subscribe(handleTimeParamsChange);
 
   return {convertToRealTime, convertToLoopIntervals, convertToAudioTime,
-    getPulses, getApproxTiming, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
+    convertToPulses, convertToApproxTiming, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
 
 
@@ -84,14 +84,14 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
 
 
 
-  function getPulses(timing:Banana.Timing): number {
+  function convertToPulses(timing:Banana.Timing): number {
     const realTime = convertToRealTime(timing);
     return realTime / secondsPerPulse;
   }
 
 
 
-  function getApproxTiming(pulses:number): Banana.ApproxTiming {
+  function convertToApproxTiming(pulses:number): Banana.ApproxTiming {
     const realTime = pulses * secondsPerPulse;
     const bar = Math.floor(realTime / secondsPerBar) + 1;
     const timeWithinBar = realTime % secondsPerBar;
