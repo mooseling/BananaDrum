@@ -1,6 +1,7 @@
 import {assert} from 'chai';
 import {TimeCoordinator} from '../../prod/TimeCoordinator';
 import {TimeParams} from '../../prod/TimeParams';
+import {closeEnough, timingToString} from '../lib/utils';
 
 type TestCase = [Banana.Timing, number];
 type ApproxTestCase = [number, Banana.ApproxTiming];
@@ -37,7 +38,7 @@ describe('TimeCoordinator', function() {
         testCases.forEach(([timing, expectedRealTime]) => {
           const calculatedRealTime = timeCoordinator.convertToRealTime(timing);
           assert(closeEnough(calculatedRealTime, expectedRealTime),
-            `${toString(timing)} converted to ${calculatedRealTime} but expected ${expectedRealTime}`);
+            `${timingToString(timing)} converted to ${calculatedRealTime} but expected ${expectedRealTime}`);
         });
       });
     });
@@ -61,7 +62,7 @@ describe('TimeCoordinator', function() {
         testCases.forEach(([timing, expectedRealTime]) => {
           const calculatedRealTime = timeCoordinator.convertToRealTime(timing);
           assert(closeEnough(calculatedRealTime, expectedRealTime),
-            `${toString(timing)} converted to ${calculatedRealTime} but expected ${expectedRealTime}`);
+            `${timingToString(timing)} converted to ${calculatedRealTime} but expected ${expectedRealTime}`);
         });
       });
     });
@@ -85,7 +86,7 @@ describe('TimeCoordinator', function() {
         testCases.forEach(([timing, expectedRealTime]) => {
           const calculatedRealTime = timeCoordinator.convertToRealTime(timing);
           assert(closeEnough(calculatedRealTime, expectedRealTime),
-            `${toString(timing)} converted to ${calculatedRealTime} but expected ${expectedRealTime}`);
+            `${timingToString(timing)} converted to ${calculatedRealTime} but expected ${expectedRealTime}`);
         });
       });
     });
@@ -319,23 +320,6 @@ describe('TimeCoordinator', function() {
     });
   });
 });
-
-
-
-function closeEnough(value1:number, value2:number, threshold = 0.00000001): boolean {
-  return Math.abs(value1 - value2) < threshold;
-}
-
-function isSameApproxTiming(t1:Banana.ApproxTiming, t2:Banana.ApproxTiming): boolean {
-  return (t1.bar === t2.bar) && (t1.step === t2.step) && closeEnough(t1.score, t2.score);
-}
-
-type TimingLike = {bar:number, step:number, score?:number}
-function toString(timing:TimingLike): string {
-  if (timing.score !== undefined)
-    return `${timing.bar}.${timing.step}@${timing.score}`;
-  return `${timing.bar}.${timing.step}`;
-}
 
 // Removed test cases for tempo changes
 // Relied on old TimeCoordinator.update function to change time
