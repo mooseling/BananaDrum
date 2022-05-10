@@ -23,6 +23,7 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
       if (newTimeSignature !== timeSignature) {
         timeSignature = newTimeSignature;
         [beatsPerBar, beatUnit] = timeSignature.split('/').map(str => Number(str));
+        calculateInternalValues();
         regenerateTimings();
         publisher.publish();
       }
@@ -57,6 +58,7 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
       if (newPulse !== pulse) {
         pulse = newPulse;
         [pulseFrequency, pulseResolution] = pulse.split('/').map(str => Number(str));
+        calculateInternalValues();
         regenerateTimings();
         publisher.publish();
       }
@@ -68,6 +70,7 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
         throw 'Invalid pulse';
       if (newStepResolution !== stepResolution) {
         stepResolution = newStepResolution;
+        calculateInternalValues();
         regenerateTimings();
         publisher.publish();
       }
@@ -111,7 +114,7 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
   function calculateInternalValues() {
     wholeNotesPerBar = beatsPerBar / beatUnit;
     wholeNotesPerPulse = pulseFrequency / pulseResolution;
-    stepsPerBar = wholeNotesPerBar * stepResolution; //  stepResolution is like stepsPerWholeNote
+    stepsPerBar = wholeNotesPerBar * stepResolution; // stepResolution is like stepsPerWholeNote
     pulsesPerBar = wholeNotesPerBar / wholeNotesPerPulse;
   }
 

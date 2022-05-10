@@ -16,6 +16,7 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
   // Tempo and length changes incur offset changes
   let cachedTempo = timeParams.tempo;
   let cachedLength = timeParams.length;
+  // let cachedTimeSignature = timeParams.timeSignature;
   let offset = 0;
 
   timeParams.subscribe(handleTimeParamsChange);
@@ -116,6 +117,8 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
       handleTempoChange(); // MUST call setInternalParams
     else if (timeParams.length !== cachedLength)
       handleLengthChange(); // MUST call setInternalParams
+    // else if (timeParams.timeSignature !== cachedTimeSignature)
+    //   handleTimeSignatureChange(); // MUST call setInternalParams
     else
       setInternalParams();
     publisher.publish();
@@ -157,4 +160,14 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
     const newOffsetTime = (loopsFinished * realTimeLength) + targetTimeWithinLoop;
     offset = newOffsetTime - audioTime;
   }
+
+
+  // On time signature changes we keep playback in the same place relative to the pulse
+  // function handleTimeSignatureChange() {
+  //   const audioTime = EventEngine.getTime();
+  //   const pulsePoint = (audioTime + offset) / secondsPerPulse;
+  //   setInternalParams();
+  //   const newOffsetTime = pulsePoint * secondsPerPulse;
+  //   offset = newOffsetTime - audioTime;
+  // }
 }
