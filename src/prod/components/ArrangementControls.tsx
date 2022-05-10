@@ -35,6 +35,7 @@ function TimeControls({arrangement}:{arrangement:Banana.Arrangement}): JSX.Eleme
           <option>4/4</option>
           <option>6/8</option>
           <option>5/4</option>
+          <option>7/8</option>
         </select> time
       </div>
       <div className="time-control">
@@ -65,6 +66,10 @@ function TimeControls({arrangement}:{arrangement:Banana.Arrangement}): JSX.Eleme
         timeParams.pulse = '3/8';
         break;
       case '5/4':
+        timeParams.stepResolution = 8;
+        timeParams.pulse = '1/2';
+        break;
+      case '7/8':
         timeParams.stepResolution = 8;
         timeParams.pulse = '1/2';
         break;

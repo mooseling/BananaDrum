@@ -81,6 +81,9 @@ function getParityClass(note:Banana.Note): string|null {
         beatIsEven = !beatIsEven; // 5 groups in each bar, so swap every bar
       return beatIsEven ? 'even-beat' : 'odd-beat';
     }
+    if (timeSignature === '7/8' && stepResolution === 8) {
+      return (bar % 2) ? 'even-beat' : 'odd-beat';
+    }
     const [beatsPerBar, beatUnit] = timeSignature.split('/').map(str => Number(str));
     const stepsPerBeat = stepResolution / beatUnit;
     if (stepsPerBeat > 1) {
