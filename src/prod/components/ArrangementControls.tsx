@@ -66,7 +66,7 @@ function TimeControls({arrangement}:{arrangement:Banana.Arrangement}): JSX.Eleme
         break;
       case '5/4':
         timeParams.stepResolution = 8;
-        timeParams.pulse = '1/4';
+        timeParams.pulse = '1/2';
         break;
     }
   }
