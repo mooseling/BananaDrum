@@ -1,5 +1,3 @@
-// import path from 'path';
-
 const config = {
   mode: 'development',
   entry: {
