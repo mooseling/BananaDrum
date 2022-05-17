@@ -13,22 +13,10 @@ export const ArrangementPlayerContext = createContext(null);
 export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.ArrangementPlayer}): JSX.Element {
   const {arrangement} = arrangementPlayer;
   const [tracks, setTracks] = useState({...arrangement.tracks});
-  const [eventEngineState, updateEventEngineState] = useState(EventEngine.state);
-
-  // Create Overlay-publisher on initial component creation
-  const [overlayState] = useState(OverlayState(false));
-
   const tracksSubscription = () => setTracks({...arrangement.tracks});
-  useEffect(() => {
-    arrangement.subscribe(tracksSubscription);
-    return () => arrangement.unsubscribe(tracksSubscription);
-  }, []);
-
+  const [eventEngineState, updateEventEngineState] = useState(EventEngine.state);
   const eventEngineSubscription = () => updateEventEngineState(EventEngine.state);
-  useEffect(() => {
-    EventEngine.subscribe(eventEngineSubscription);
-    return () => EventEngine.unsubscribe(eventEngineSubscription);
-  }, []);
+  const [overlayState] = useState(OverlayState(false));
 
   // Scroll-shadows over the track-viewers
   // We need to recalculate these classes when:
@@ -39,13 +27,20 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   const ref = useRef();
   const [scrollShadowClasses, setScrollShadowClasses] = useState('');
   const updateScrollShadows = () => setScrollShadowClasses(getScrollShadowClasses(ref.current));
-  const timeParamsSubscription = () => setTimeout(updateScrollShadows, 0); // time-out so DOM has updated first
+  const timeParamsSubscription = () => setTimeout(updateScrollShadows, 0); // timeout so DOM updates first
+
   useEffect(() => {
+    arrangement.subscribe(tracksSubscription);
+    EventEngine.subscribe(eventEngineSubscription);
+
+    // Scroll-shadows
     updateScrollShadows(); // Update on first render
     const resizeObserver = new ResizeObserver(updateScrollShadows);
     resizeObserver.observe(ref.current); // Watch for track-viewers-wrapper resize
     arrangement.timeParams.subscribe(timeParamsSubscription); // Watch for length changes
     return () => {
+      arrangement.unsubscribe(tracksSubscription);
+      EventEngine.unsubscribe(eventEngineSubscription);
       resizeObserver.unobserve(ref.current);
       arrangement.timeParams.unsubscribe(timeParamsSubscription);
     }
