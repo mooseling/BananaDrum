@@ -27,17 +27,16 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   const ref = useRef();
   const [scrollShadowClasses, setScrollShadowClasses] = useState('');
   const updateScrollShadows = () => setScrollShadowClasses(getScrollShadowClasses(ref.current));
+  const resizeObserver = new ResizeObserver(updateScrollShadows);
   const timeParamsSubscription = () => setTimeout(updateScrollShadows, 0); // timeout so DOM updates first
 
   useEffect(() => {
+    updateScrollShadows();
     arrangement.subscribe(tracksSubscription);
     EventEngine.subscribe(eventEngineSubscription);
-
-    // Scroll-shadows
-    updateScrollShadows(); // Update on first render
-    const resizeObserver = new ResizeObserver(updateScrollShadows);
+    arrangement.timeParams.subscribe(timeParamsSubscription)
     resizeObserver.observe(ref.current); // Watch for track-viewers-wrapper resize
-    arrangement.timeParams.subscribe(timeParamsSubscription); // Watch for length changes
+
     return () => {
       arrangement.unsubscribe(tracksSubscription);
       EventEngine.unsubscribe(eventEngineSubscription);
