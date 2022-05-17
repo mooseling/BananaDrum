@@ -1,5 +1,6 @@
 import {TrackViewer} from './TrackViewer';
 import {ArrangementControls} from './ArrangementControls';
+import {Scrollbar} from './Scrollbar';
 import {InstrumentBrowser} from './InstrumentBrowser';
 import {Overlay, OverlayState} from './Overlay';
 import {EventEngine} from '../EventEngine';
@@ -60,6 +61,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
           <div className={`track-viewers-wrapper ${scrollShadowClasses}`} ref={ref} onScroll={updateScrollShadows}>
             {getTrackViewers(tracks)}
           </div>
+          <Scrollbar />
           <button id="show-instrument-browser" className="push-button" onClick={() => !overlayState.visible && overlayState.toggle()}>Add Instrument</button>
           <Overlay state={overlayState}>
             <InstrumentBrowser close={() => overlayState.visible && overlayState.toggle()}/>

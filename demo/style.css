@@ -354,6 +354,30 @@ So we're putting them in each track-viewer, where we can position them with no p
   display: none;
 }
 
+/* =============================================================== */
+/*                         Custom Scrollbars                       */
+/* =============================================================== */
+
+.custom-scrollbar {
+  position: relative;
+  height: 20pt;
+}
+
+.custom-scrollbar > .track {
+    left: 0;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: green;
+}
+
+.custom-scrollbar > .thumb {
+    left: 0;
+    position: absolute;
+    height: 100%;
+    background-color: blue;
+}
 
 
 /* =============================================================== */
