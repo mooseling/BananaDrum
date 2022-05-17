@@ -139,7 +139,15 @@ body {
 }
 
 .track-viewers-wrapper {
-  overflow-x: auto; /* scroll if overflowing */
+  overflow-x: auto;
+
+  /* Hide scrollbars on a couple browsers */
+  -ms-overflow-style: none;  /* IE */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.track-viewers-wrapper::-webkit-scrollbar {
+  display: none; /* Chrome, Edge, Safari */
 }
 
 .track-viewer {
