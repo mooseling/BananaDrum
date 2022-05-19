@@ -359,8 +359,12 @@ So we're putting them in each track-viewer, where we can position them with no p
 /* =============================================================== */
 
 .custom-scrollbar {
-  position: relative;
-  height: 20pt;
+  --scrollbar-height: 20pt;
+  position: absolute;
+  height: var(--scrollbar-height);
+  left: 0;
+  width: 100%;
+  bottom: calc(-1 * var(--scrollbar-height));
 }
 
 .custom-scrollbar > .track {
