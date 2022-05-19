@@ -1,6 +1,6 @@
 import {TrackViewer} from './TrackViewer';
 import {ArrangementControls} from './ArrangementControls';
-import {Scrollbar} from './Scrollbar';
+import {Scrollbar, calculateThumbWidth} from './Scrollbar';
 import {InstrumentBrowser} from './InstrumentBrowser';
 import {Overlay, OverlayState} from './Overlay';
 import {EventEngine} from '../EventEngine';
@@ -17,6 +17,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   const [eventEngineState, updateEventEngineState] = useState(EventEngine.state);
   const eventEngineSubscription = () => updateEventEngineState(EventEngine.state);
   const [overlayState] = useState(OverlayState(false));
+  const [thumbWidth, setThumbWidth] = useState(0);
 
   // Scroll-shadows over the track-viewers
   // We need to recalculate these classes when:
@@ -27,15 +28,24 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   const ref = useRef();
   const [scrollShadowClasses, setScrollShadowClasses] = useState('');
   const updateScrollShadows = () => setScrollShadowClasses(getScrollShadowClasses(ref.current));
-  const resizeObserver = new ResizeObserver(updateScrollShadows);
-  const timeParamsSubscription = () => setTimeout(updateScrollShadows, 0); // timeout so DOM updates first
+  const updateThumbWidth = () => setThumbWidth(calculateThumbWidth(ref.current));
+
+  const widthBasedCalcs = () => {
+    updateScrollShadows();
+    updateThumbWidth();
+  }
+
+
+  const resizeObserver = new ResizeObserver(widthBasedCalcs);
+  const timeParamsSubscription = () => setTimeout(widthBasedCalcs, 0); // timeout so DOM updates first
 
   useEffect(() => {
-    updateScrollShadows();
+    setTimeout(widthBasedCalcs, 0);
+
     arrangement.subscribe(tracksSubscription);
     EventEngine.subscribe(eventEngineSubscription);
-    arrangement.timeParams.subscribe(timeParamsSubscription)
-    resizeObserver.observe(ref.current); // Watch for track-viewers-wrapper resize
+    arrangement.timeParams.subscribe(timeParamsSubscription);
+    resizeObserver.observe(ref.current);
 
     return () => {
       arrangement.unsubscribe(tracksSubscription);
@@ -52,14 +62,20 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
           <ArrangementControls />
         </div>
         <div className="arrangement-viewer-body overlay-wrapper">
-          <div className={`track-viewers-wrapper ${scrollShadowClasses}`} ref={ref} onScroll={updateScrollShadows}>
-            {getTrackViewers(tracks)}
+          <div>
+            <div
+              className={`track-viewers-wrapper ${scrollShadowClasses}`}
+              ref={ref}
+              onScroll={updateScrollShadows}
+            >
+              {getTrackViewers(tracks)}
+              <Scrollbar thumbWidth={thumbWidth}/>
+            </div>
+            <button id="show-instrument-browser" className="push-button" onClick={() => !overlayState.visible && overlayState.toggle()}>Add Instrument</button>
+            <Overlay state={overlayState}>
+              <InstrumentBrowser close={() => overlayState.visible && overlayState.toggle()}/>
+            </Overlay>
           </div>
-          <Scrollbar />
-          <button id="show-instrument-browser" className="push-button" onClick={() => !overlayState.visible && overlayState.toggle()}>Add Instrument</button>
-          <Overlay state={overlayState}>
-            <InstrumentBrowser close={() => overlayState.visible && overlayState.toggle()}/>
-          </Overlay>
         </div>
       </div>
     </ArrangementPlayerContext.Provider>
