@@ -1,6 +1,6 @@
 import {TrackViewer} from './TrackViewer';
 import {ArrangementControls} from './ArrangementControls';
-import {Scrollbar, calculateThumbWidth} from './Scrollbar';
+import {Scrollbar, calculateThumbWidth, calculateThumbLeft} from './Scrollbar';
 import {InstrumentBrowser} from './InstrumentBrowser';
 import {Overlay, OverlayState} from './Overlay';
 import {EventEngine} from '../EventEngine';
@@ -18,6 +18,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   const eventEngineSubscription = () => updateEventEngineState(EventEngine.state);
   const [overlayState] = useState(OverlayState(false));
   const [thumbWidth, setThumbWidth] = useState(0);
+  const [thumbLeft, setThumbLeft] = useState(0);
 
   // Scroll-shadows over the track-viewers
   // We need to recalculate these classes when:
@@ -25,14 +26,20 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   // -- The track-viewer-wrapper scrolls
   // -- The track-viewer-wrapper resizes
   // -- Notes are added or removed
-  const ref = useRef();
+  const ref:React.LegacyRef<HTMLDivElement> = useRef();
   const [scrollShadowClasses, setScrollShadowClasses] = useState('');
   const updateScrollShadows = () => setScrollShadowClasses(getScrollShadowClasses(ref.current));
   const updateThumbWidth = () => setThumbWidth(calculateThumbWidth(ref.current));
+  const updateThumbLeft = () => setThumbLeft(calculateThumbLeft(ref.current));
 
   const widthBasedCalcs = () => {
     updateScrollShadows();
     updateThumbWidth();
+  }
+
+  const scrollBasedUpdates = () => {
+    updateScrollShadows();
+    updateThumbLeft();
   }
 
 
@@ -66,10 +73,10 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
             <div
               className={`track-viewers-wrapper ${scrollShadowClasses}`}
               ref={ref}
-              onScroll={updateScrollShadows}
+              onScroll={scrollBasedUpdates}
             >
               {getTrackViewers(tracks)}
-              <Scrollbar thumbWidth={thumbWidth}/>
+              <Scrollbar thumbWidth={thumbWidth} thumbLeft={thumbLeft}/>
             </div>
             <button id="show-instrument-browser" className="push-button" onClick={() => !overlayState.visible && overlayState.toggle()}>Add Instrument</button>
             <Overlay state={overlayState}>
