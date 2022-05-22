@@ -104,12 +104,12 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
               {getTrackViewers(tracks)}
               <Scrollbar thumbWidth={thumbWidth} thumbLeft={thumbLeft} thumbMoveCallback={thumbMoveCallback} trackMousedownCallback={trackMousedownCallback}/>
             </div>
-            <button id="show-instrument-browser" className="push-button" onClick={() => !overlayState.visible && overlayState.toggle()}>Add Instrument</button>
             <Overlay state={overlayState}>
               <InstrumentBrowser close={() => overlayState.visible && overlayState.toggle()}/>
             </Overlay>
           </div>
         </div>
+        <button id="show-instrument-browser" className="push-button" onClick={() => !overlayState.visible && overlayState.toggle()}>Add Instrument</button>
       </div>
     </ArrangementPlayerContext.Provider>
   );

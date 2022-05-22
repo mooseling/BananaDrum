@@ -139,7 +139,9 @@ body {
 }
 
 .track-viewers-wrapper {
+  --scrollbar-height: 20pt;
   overflow-x: auto;
+  padding-bottom: var(--scrollbar-height);
 
   /* Hide scrollbars on a couple browsers */
   -ms-overflow-style: none;  /* IE */
@@ -148,6 +150,12 @@ body {
 
 .track-viewers-wrapper::-webkit-scrollbar {
   display: none; /* Chrome, Edge, Safari */
+}
+
+.track-viewers-wrapper .custom-scrollbar {
+  height: var(--scrollbar-height);
+  left: 0;
+  bottom: 0;
 }
 
 .track-viewer {
@@ -359,12 +367,8 @@ So we're putting them in each track-viewer, where we can position them with no p
 /* =============================================================== */
 
 .custom-scrollbar {
-  --scrollbar-height: 20pt;
   position: absolute;
-  height: var(--scrollbar-height);
-  left: 0;
   width: 100%;
-  bottom: calc(-1 * var(--scrollbar-height));
 }
 
 .custom-scrollbar > .track {
