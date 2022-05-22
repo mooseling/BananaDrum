@@ -1,8 +1,13 @@
-export function Scrollbar({thumbWidth, thumbLeft, thumbMoveCallback}:
-  {thumbWidth:number, thumbLeft:number, thumbMoveCallback:(distance:number) => void}): JSX.Element {
+export function Scrollbar({thumbWidth, thumbLeft, thumbMoveCallback, trackMousedownCallback}:
+  {thumbWidth:number, thumbLeft:number,
+    thumbMoveCallback:(distance:number) => void,
+    trackMousedownCallback:(x:number) => void,
+  }): JSX.Element {
   return (
     <div className="custom-scrollbar">
-      <div className="track" />
+      <div className="track"
+        onMouseDown={event => handleTrackMousedown(event, trackMousedownCallback)}
+      />
       <div className="thumb"
         style={{width:thumbWidth + 'px', left: thumbLeft + 'px'}}
         onMouseDown={event => handleThumbMouseDown(event, thumbMoveCallback)}
@@ -44,4 +49,10 @@ function handleThumbMouseDown(event: React.MouseEvent, moveCallback:(distance:nu
   window.addEventListener('mouseup', () => {
     window.removeEventListener('mousemove',mouseMove)
   })
+}
+
+
+function handleTrackMousedown(event: React.MouseEvent, mousedownCallback:(x:number) => void) {
+  const x = event.nativeEvent.offsetX;
+  mousedownCallback(x);
 }
