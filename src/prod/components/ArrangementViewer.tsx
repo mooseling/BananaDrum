@@ -48,10 +48,13 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   const thumbMoveCallback = (distance:number) => {
     const scrollbar = ref.current?.getElementsByClassName('custom-scrollbar')[0];
     if (scrollbar) {
-      const moveRatio = distance / (scrollbar.clientWidth - thumbWidth);
-      const scrollableWidth = ref.current.clientWidth;
-      ref.current.scrollLeft += moveRatio * scrollableWidth;
-      updateThumbLeft();
+      const noteLine = ref.current.getElementsByClassName('note-line')[0];
+      if (noteLine) {
+        const moveRatio = distance / (scrollbar.clientWidth - thumbWidth);
+        const scrollableWidth = noteLine.clientWidth + 113;
+        ref.current.scrollLeft += moveRatio * scrollableWidth;
+        updateThumbLeft();
+      }
     }
   }
 
