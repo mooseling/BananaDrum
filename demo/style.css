@@ -377,14 +377,15 @@ So we're putting them in each track-viewer, where we can position them with no p
     top: 0;
     height: 100%;
     width: 100%;
-    background-color: green;
+    background-color: var(--lightest-gray);
 }
 
 .custom-scrollbar > .thumb {
     left: 0;
     position: absolute;
     height: 100%;
-    background-color: blue;
+    background-color: var(--blue);
+    border-radius: 4pt;
 }
 
 
