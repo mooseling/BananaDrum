@@ -42,9 +42,18 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
     updateThumbLeft();
   }
 
-
   const resizeObserver = new ResizeObserver(widthBasedCalcs);
   const timeParamsSubscription = () => setTimeout(widthBasedCalcs, 0); // timeout so DOM updates first
+
+  const thumbMoveCallback = (distance:number) => {
+    const scrollbar = ref.current?.getElementsByClassName('custom-scrollbar')[0];
+    if (scrollbar) {
+      const moveRatio = distance / (scrollbar.clientWidth - thumbWidth);
+      const scrollableWidth = ref.current.clientWidth;
+      ref.current.scrollLeft += moveRatio * scrollableWidth;
+      updateThumbLeft();
+    }
+  }
 
   useEffect(() => {
     setTimeout(widthBasedCalcs, 0);
@@ -76,7 +85,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
               onScroll={scrollBasedUpdates}
             >
               {getTrackViewers(tracks)}
-              <Scrollbar thumbWidth={thumbWidth} thumbLeft={thumbLeft}/>
+              <Scrollbar thumbWidth={thumbWidth} thumbLeft={thumbLeft} thumbMoveCallback={thumbMoveCallback}/>
             </div>
             <button id="show-instrument-browser" className="push-button" onClick={() => !overlayState.visible && overlayState.toggle()}>Add Instrument</button>
             <Overlay state={overlayState}>
