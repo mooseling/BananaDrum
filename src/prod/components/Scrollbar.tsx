@@ -1,61 +1,35 @@
 import {useState, useEffect} from 'react';
 
-export function Scrollbar({wrapperRef, widthPublisher, scrollPublisher}:
-  {wrapperRef:React.MutableRefObject<HTMLDivElement>,
-    widthPublisher:Banana.Publisher,
-    scrollPublisher:Banana.Publisher,
-  }): JSX.Element {
+export function Scrollbar({wrapperRef, widthPublisherRef, scrollPublisherRef}:
+  {
+    wrapperRef:React.MutableRefObject<HTMLDivElement>,
+    widthPublisherRef:React.MutableRefObject<Banana.Publisher>,
+    scrollPublisherRef:React.MutableRefObject<Banana.Publisher>
+  }
+): JSX.Element {
   const [thumbWidth, setThumbWidth] = useState(0);
   const [thumbLeft, setThumbLeft] = useState(0);
   const updateThumbWidth = () => setThumbWidth(calculateThumbWidth(wrapperRef.current));
   const updateThumbLeft = () => setThumbLeft(calculateThumbLeft(wrapperRef.current));
 
   useEffect(() => {
-    widthPublisher.subscribe(updateThumbWidth);
-    return () => widthPublisher.unsubscribe(updateThumbWidth);
+    widthPublisherRef.current.subscribe(updateThumbWidth);
+    return () => widthPublisherRef.current.unsubscribe(updateThumbWidth);
   }, []);
 
   useEffect(() => {
-    scrollPublisher.subscribe(updateThumbLeft);
-    return () => scrollPublisher.unsubscribe(updateThumbLeft);
+    scrollPublisherRef.current.subscribe(updateThumbLeft);
+    return () => scrollPublisherRef.current.unsubscribe(updateThumbLeft);
   }, []);
-
-  const thumbMoveCallback = (distance:number) => {
-    const scrollbar = wrapperRef.current?.getElementsByClassName('custom-scrollbar')[0];
-    if (scrollbar) {
-      const noteLine = wrapperRef.current.getElementsByClassName('note-line')[0];
-      if (noteLine) {
-        const moveRatio = distance / (scrollbar.clientWidth - thumbWidth);
-        const scrollableWidth = noteLine.clientWidth + 113;
-        const scrollableDistance = scrollableWidth - wrapperRef.current.clientWidth;
-        wrapperRef.current.scrollLeft += moveRatio * scrollableDistance;
-        updateThumbLeft();
-      }
-    }
-  }
-
-  const trackMousedownCallback = (x:number) => {
-    const scrollbar = wrapperRef.current?.getElementsByClassName('custom-scrollbar')[0];
-    if (scrollbar) {
-      const noteLine = wrapperRef.current.getElementsByClassName('note-line')[0];
-      if (noteLine) {
-        const scrollableWidth = noteLine.clientWidth + 113;
-        const tapRatio = x / scrollbar.clientWidth;
-        const wrapperWidth = wrapperRef.current.clientWidth;
-        wrapperRef.current.scrollLeft = (scrollableWidth * tapRatio) - (wrapperWidth / 2);
-        updateThumbLeft();
-      }
-    }
-  }
 
   return (
     <div className="custom-scrollbar">
       <div className="track"
-        onMouseDown={event => handleTrackMousedown(event, trackMousedownCallback)}
+        onMouseDown={event => handleTrackMousedown(event, wrapperRef.current, updateThumbLeft)}
       />
       <div className="thumb"
         style={{width:thumbWidth + 'px', left: thumbLeft + 'px'}}
-        onMouseDown={event => handleThumbMouseDown(event, thumbMoveCallback)}
+        onMouseDown={event => handleThumbMouseDown(event, wrapperRef.current, thumbWidth, updateThumbLeft)}
       />
     </div>
   );
@@ -82,22 +56,49 @@ function calculateThumbLeft(wrapper:HTMLElement): number {
 }
 
 
-function handleThumbMouseDown(event: React.MouseEvent, moveCallback:(distance:number) => void) {
-  let lastX = event.clientX;
-  function mouseMove(moveEvent: MouseEvent) {
-    const newX = moveEvent.clientX;
-    moveCallback(newX - lastX);
-    lastX = newX;
-  }
+function handleThumbMouseDown(event: React.MouseEvent, wrapper:HTMLElement, thumbWidth:number, callback:()=>void) {
+  const scrollbarWidth = wrapper?.getElementsByClassName('custom-scrollbar')[0]?.clientWidth;
+  if (scrollbarWidth) {
+    const noteLineWidth = wrapper.getElementsByClassName('note-line')[0]?.clientWidth;
+    if (noteLineWidth) {
+      const scrollableWidth = noteLineWidth + 113;
+      const scrollableDistance = scrollableWidth - wrapper.clientWidth;
+      const scrollbarScrollableDistance = scrollbarWidth - thumbWidth;
+      let lastX = event.clientX;
 
-  window.addEventListener('mousemove', mouseMove);
-  window.addEventListener('mouseup', () => {
-    window.removeEventListener('mousemove',mouseMove)
-  })
+      function mouseMove(moveEvent: MouseEvent) {
+        const newX = moveEvent.clientX;
+        const moveRatio = (newX - lastX) / scrollbarScrollableDistance;
+        wrapper.scrollLeft += moveRatio * scrollableDistance;
+        callback();
+        lastX = newX;
+      }
+
+      const removeListeners = () => {
+        window.removeEventListener('mousemove', mouseMove);
+        window.removeEventListener('mouseup', removeListeners);
+        window.removeEventListener('blur', removeListeners);
+      }
+
+      window.addEventListener('mousemove', mouseMove);
+      window.addEventListener('mouseup', removeListeners);
+      window.addEventListener('blur', removeListeners);
+    }
+  }
 }
 
 
-function handleTrackMousedown(event: React.MouseEvent, mousedownCallback:(x:number) => void) {
+function handleTrackMousedown(event:React.MouseEvent, wrapper:HTMLElement, callback:()=>void) {
   const x = event.nativeEvent.offsetX;
-  mousedownCallback(x);
+  const scrollbar = wrapper?.getElementsByClassName('custom-scrollbar')[0];
+  if (scrollbar) {
+    const noteLine = wrapper.getElementsByClassName('note-line')[0];
+    if (noteLine) {
+      const scrollableWidth = noteLine.clientWidth + 113;
+      const tapRatio = x / scrollbar.clientWidth;
+      const wrapperWidth = wrapper.clientWidth;
+      wrapper.scrollLeft = (scrollableWidth * tapRatio) - (wrapperWidth / 2);
+      callback();
+    }
+  }
 }

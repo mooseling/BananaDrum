@@ -29,17 +29,18 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   const [scrollShadowClasses, setScrollShadowClasses] = useState('');
   const updateScrollShadows = () => setScrollShadowClasses(getScrollShadowClasses(ref.current));
 
-  const widthPublisher = Publisher();
-  const scrollPublisher = Publisher();
+  const widthPublisherRef = useRef(Publisher());
+  const scrollPublisherRef = useRef(Publisher());
 
   const widthBasedCalcs = () => {
     updateScrollShadows();
-    widthPublisher.publish();
+    widthPublisherRef.current.publish();
+    scrollPublisherRef.current.publish();
   }
 
   const scrollBasedUpdates = () => {
     updateScrollShadows();
-    scrollPublisher.publish();
+    scrollPublisherRef.current.publish();
   }
 
   const resizeObserver = new ResizeObserver(widthBasedCalcs);
@@ -75,7 +76,10 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
               onScroll={scrollBasedUpdates}
             >
               {getTrackViewers(tracks)}
-              <Scrollbar wrapperRef={ref} widthPublisher={widthPublisher} scrollPublisher={scrollPublisher}/>
+              <Scrollbar wrapperRef={ref}
+                widthPublisherRef={widthPublisherRef}
+                scrollPublisherRef={scrollPublisherRef}
+              />
             </div>
             <Overlay state={overlayState}>
               <InstrumentBrowser close={() => overlayState.visible && overlayState.toggle()}/>
