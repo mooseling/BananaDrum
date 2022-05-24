@@ -12,6 +12,7 @@ export function Scrollbar({wrapperRef, widthPublisherRef, scrollPublisherRef}:
   const updateThumbWidth = () => setThumbWidth(calculateThumbWidth(wrapperRef.current));
   const updateThumbLeft = () => setThumbLeft(calculateThumbLeft(wrapperRef.current));
 
+
   useEffect(() => {
     widthPublisherRef.current.subscribe(updateThumbWidth);
     return () => widthPublisherRef.current.unsubscribe(updateThumbWidth);
@@ -33,6 +34,7 @@ export function Scrollbar({wrapperRef, widthPublisherRef, scrollPublisherRef}:
       <div className="thumb"
         style={{width:thumbWidth + 'px', left: thumbLeft + 'px'}}
         onMouseDown={event => handleThumbMouseDown(event, wrapperRef.current, thumbWidth, updateThumbLeft)}
+        onTouchStart={event => handleThumbTouchStart(event, wrapperRef.current, thumbWidth, updateThumbLeft)}
       />
     </div>
   );
@@ -58,8 +60,43 @@ function calculateThumbLeft(wrapper:HTMLElement): number {
   return (scrollLeft * scrollbarWidth) / scrollableWidth;
 }
 
+function handleThumbTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thumbWidth:number, callback:()=>void) {
+  event.stopPropagation();
+  if (event.touches.length > 1)
+    return;
 
-function handleThumbMouseDown(event: React.MouseEvent, wrapper:HTMLElement, thumbWidth:number, callback:()=>void) {
+  const scrollbarWidth = wrapper?.getElementsByClassName('custom-scrollbar')[0]?.clientWidth;
+  if (scrollbarWidth) {
+    const noteLineWidth = wrapper.getElementsByClassName('note-line')[0]?.clientWidth;
+    if (noteLineWidth) {
+      const scrollableWidth = noteLineWidth + 113;
+      const scrollableDistance = scrollableWidth - wrapper.clientWidth;
+      const scrollbarScrollableDistance = scrollbarWidth - thumbWidth;
+      let lastX = event.touches[0].clientX;
+
+      function touchmove(moveEvent:TouchEvent) {
+        const newX = moveEvent.touches[0].clientX;
+        const moveRatio = (newX - lastX) / scrollbarScrollableDistance;
+        wrapper.scrollLeft += moveRatio * scrollableDistance;
+        callback();
+        lastX = newX;
+      }
+
+      const removeListeners = () => {
+        window.removeEventListener('touchmove', touchmove);
+        window.removeEventListener('touchend', removeListeners);
+        window.removeEventListener('blur', removeListeners);
+      }
+
+      window.addEventListener('touchmove', touchmove);
+      window.addEventListener('touchend', removeListeners);
+      window.addEventListener('blur', removeListeners);
+    }
+  }
+}
+
+
+function handleThumbMouseDown(event:React.MouseEvent, wrapper:HTMLElement, thumbWidth:number, callback:()=>void) {
   const scrollbarWidth = wrapper?.getElementsByClassName('custom-scrollbar')[0]?.clientWidth;
   if (scrollbarWidth) {
     const noteLineWidth = wrapper.getElementsByClassName('note-line')[0]?.clientWidth;
