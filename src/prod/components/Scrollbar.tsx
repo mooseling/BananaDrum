@@ -25,7 +25,10 @@ export function Scrollbar({wrapperRef, widthPublisherRef, scrollPublisherRef}:
   return (
     <div className="custom-scrollbar">
       <div className="track"
-        onMouseDown={event => handleTrackMousedown(event, wrapperRef.current, updateThumbLeft)}
+        onMouseDown={event => {
+          handleTrackMousedown(event, wrapperRef.current, updateThumbLeft);
+          handleThumbMouseDown(event, wrapperRef.current, thumbWidth, updateThumbLeft);
+        }}
       />
       <div className="thumb"
         style={{width:thumbWidth + 'px', left: thumbLeft + 'px'}}
