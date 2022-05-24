@@ -1,9 +1,10 @@
 import {TrackViewer} from './TrackViewer';
 import {ArrangementControls} from './ArrangementControls';
-import {Scrollbar, calculateThumbWidth, calculateThumbLeft} from './Scrollbar';
+import {Scrollbar} from './Scrollbar';
 import {InstrumentBrowser} from './InstrumentBrowser';
 import {Overlay, OverlayState} from './Overlay';
 import {EventEngine} from '../EventEngine';
+import {Publisher} from '../Publisher';
 import {useState, useEffect, createContext, useRef} from 'react';
 
 
@@ -17,8 +18,6 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   const [eventEngineState, updateEventEngineState] = useState(EventEngine.state);
   const eventEngineSubscription = () => updateEventEngineState(EventEngine.state);
   const [overlayState] = useState(OverlayState(false));
-  const [thumbWidth, setThumbWidth] = useState(0);
-  const [thumbLeft, setThumbLeft] = useState(0);
 
   // Scroll-shadows over the track-viewers
   // We need to recalculate these classes when:
@@ -26,52 +25,25 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   // -- The track-viewer-wrapper scrolls
   // -- The track-viewer-wrapper resizes
   // -- Notes are added or removed
-  const ref:React.LegacyRef<HTMLDivElement> = useRef();
+  const ref:React.MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>();
   const [scrollShadowClasses, setScrollShadowClasses] = useState('');
   const updateScrollShadows = () => setScrollShadowClasses(getScrollShadowClasses(ref.current));
-  const updateThumbWidth = () => setThumbWidth(calculateThumbWidth(ref.current));
-  const updateThumbLeft = () => setThumbLeft(calculateThumbLeft(ref.current));
+
+  const widthPublisher = Publisher();
+  const scrollPublisher = Publisher();
 
   const widthBasedCalcs = () => {
     updateScrollShadows();
-    updateThumbWidth();
+    widthPublisher.publish();
   }
 
   const scrollBasedUpdates = () => {
     updateScrollShadows();
-    updateThumbLeft();
+    scrollPublisher.publish();
   }
 
   const resizeObserver = new ResizeObserver(widthBasedCalcs);
   const timeParamsSubscription = () => setTimeout(widthBasedCalcs, 0); // timeout so DOM updates first
-
-  const thumbMoveCallback = (distance:number) => {
-    const scrollbar = ref.current?.getElementsByClassName('custom-scrollbar')[0];
-    if (scrollbar) {
-      const noteLine = ref.current.getElementsByClassName('note-line')[0];
-      if (noteLine) {
-        const moveRatio = distance / (scrollbar.clientWidth - thumbWidth);
-        const scrollableWidth = noteLine.clientWidth + 113;
-        const scrollableDistance = scrollableWidth - ref.current.clientWidth;
-        ref.current.scrollLeft += moveRatio * scrollableDistance;
-        updateThumbLeft();
-      }
-    }
-  }
-
-  const trackMousedownCallback = (x:number) => {
-    const scrollbar = ref.current?.getElementsByClassName('custom-scrollbar')[0];
-    if (scrollbar) {
-      const noteLine = ref.current.getElementsByClassName('note-line')[0];
-      if (noteLine) {
-        const scrollableWidth = noteLine.clientWidth + 113;
-        const tapRatio = x / scrollbar.clientWidth;
-        const wrapperWidth = ref.current.clientWidth;
-        ref.current.scrollLeft = (scrollableWidth * tapRatio) - (wrapperWidth / 2);
-        updateThumbLeft();
-      }
-    }
-  }
 
   useEffect(() => {
     setTimeout(widthBasedCalcs, 0);
@@ -103,7 +75,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
               onScroll={scrollBasedUpdates}
             >
               {getTrackViewers(tracks)}
-              <Scrollbar thumbWidth={thumbWidth} thumbLeft={thumbLeft} thumbMoveCallback={thumbMoveCallback} trackMousedownCallback={trackMousedownCallback}/>
+              <Scrollbar wrapperRef={ref} widthPublisher={widthPublisher} scrollPublisher={scrollPublisher}/>
             </div>
             <Overlay state={overlayState}>
               <InstrumentBrowser close={() => overlayState.visible && overlayState.toggle()}/>

@@ -1,8 +1,53 @@
-export function Scrollbar({thumbWidth, thumbLeft, thumbMoveCallback, trackMousedownCallback}:
-  {thumbWidth:number, thumbLeft:number,
-    thumbMoveCallback:(distance:number) => void,
-    trackMousedownCallback:(x:number) => void,
+import {useState, useEffect} from 'react';
+
+export function Scrollbar({wrapperRef, widthPublisher, scrollPublisher}:
+  {wrapperRef:React.MutableRefObject<HTMLDivElement>,
+    widthPublisher:Banana.Publisher,
+    scrollPublisher:Banana.Publisher,
   }): JSX.Element {
+  const [thumbWidth, setThumbWidth] = useState(0);
+  const [thumbLeft, setThumbLeft] = useState(0);
+  const updateThumbWidth = () => setThumbWidth(calculateThumbWidth(wrapperRef.current));
+  const updateThumbLeft = () => setThumbLeft(calculateThumbLeft(wrapperRef.current));
+
+  useEffect(() => {
+    widthPublisher.subscribe(updateThumbWidth);
+    return () => widthPublisher.unsubscribe(updateThumbWidth);
+  }, []);
+
+  useEffect(() => {
+    scrollPublisher.subscribe(updateThumbLeft);
+    return () => scrollPublisher.unsubscribe(updateThumbLeft);
+  }, []);
+
+  const thumbMoveCallback = (distance:number) => {
+    const scrollbar = wrapperRef.current?.getElementsByClassName('custom-scrollbar')[0];
+    if (scrollbar) {
+      const noteLine = wrapperRef.current.getElementsByClassName('note-line')[0];
+      if (noteLine) {
+        const moveRatio = distance / (scrollbar.clientWidth - thumbWidth);
+        const scrollableWidth = noteLine.clientWidth + 113;
+        const scrollableDistance = scrollableWidth - wrapperRef.current.clientWidth;
+        wrapperRef.current.scrollLeft += moveRatio * scrollableDistance;
+        updateThumbLeft();
+      }
+    }
+  }
+
+  const trackMousedownCallback = (x:number) => {
+    const scrollbar = wrapperRef.current?.getElementsByClassName('custom-scrollbar')[0];
+    if (scrollbar) {
+      const noteLine = wrapperRef.current.getElementsByClassName('note-line')[0];
+      if (noteLine) {
+        const scrollableWidth = noteLine.clientWidth + 113;
+        const tapRatio = x / scrollbar.clientWidth;
+        const wrapperWidth = wrapperRef.current.clientWidth;
+        wrapperRef.current.scrollLeft = (scrollableWidth * tapRatio) - (wrapperWidth / 2);
+        updateThumbLeft();
+      }
+    }
+  }
+
   return (
     <div className="custom-scrollbar">
       <div className="track"
@@ -17,7 +62,7 @@ export function Scrollbar({thumbWidth, thumbLeft, thumbMoveCallback, trackMoused
 }
 
 
-export function calculateThumbWidth(wrapper:HTMLElement): number {
+function calculateThumbWidth(wrapper:HTMLElement): number {
   const scrollableWidth =
     wrapper.getElementsByClassName('note-line-wrapper')[0].clientWidth
     + 113; // hard-coded note-meta width for performance
@@ -27,7 +72,7 @@ export function calculateThumbWidth(wrapper:HTMLElement): number {
 }
 
 
-export function calculateThumbLeft(wrapper:HTMLElement): number {
+function calculateThumbLeft(wrapper:HTMLElement): number {
   const scrollLeft = wrapper.scrollLeft;
   const scrollbarWidth = wrapper.getElementsByClassName('custom-scrollbar')[0].clientWidth;
   const scrollableWidth =
