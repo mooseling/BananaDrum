@@ -52,7 +52,8 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
       if (noteLine) {
         const moveRatio = distance / (scrollbar.clientWidth - thumbWidth);
         const scrollableWidth = noteLine.clientWidth + 113;
-        ref.current.scrollLeft += moveRatio * scrollableWidth;
+        const scrollableDistance = scrollableWidth - ref.current.clientWidth;
+        ref.current.scrollLeft += moveRatio * scrollableDistance;
         updateThumbLeft();
       }
     }
