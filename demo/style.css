@@ -158,6 +158,10 @@ body {
   bottom: 0;
 }
 
+.track-viewers-wrapper:not(.overflowing-left):not(.overflowing-right) .custom-scrollbar {
+  display: none;
+}
+
 .track-viewer {
   min-width: 100%;
   display: flex;
