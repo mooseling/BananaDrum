@@ -26,10 +26,8 @@ export function Scrollbar({wrapperRef, widthPublisherRef, scrollPublisherRef}:
   return (
     <div className="custom-scrollbar">
       <div className="track"
-        onMouseDown={event => {
-          handleTrackMousedown(event, wrapperRef.current, updateThumbLeft);
-          handleThumbMouseDown(event, wrapperRef.current, thumbWidth, updateThumbLeft);
-        }}
+        onMouseDown={event => handleTrackMousedown(event, wrapperRef.current, thumbWidth, updateThumbLeft)}
+        onTouchStart={event => handleTrackTouchStart(event, wrapperRef.current, thumbWidth, updateThumbLeft)}
       />
       <div className="thumb"
         style={{width:thumbWidth + 'px', left: thumbLeft + 'px'}}
@@ -64,72 +62,35 @@ function handleThumbTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thum
   event.stopPropagation();
   if (event.touches.length > 1)
     return;
-
-  const scrollbarWidth = wrapper?.getElementsByClassName('custom-scrollbar')[0]?.clientWidth;
-  if (scrollbarWidth) {
-    const noteLineWidth = wrapper.getElementsByClassName('note-line')[0]?.clientWidth;
-    if (noteLineWidth) {
-      const scrollableWidth = noteLineWidth + 113;
-      const scrollableDistance = scrollableWidth - wrapper.clientWidth;
-      const scrollbarScrollableDistance = scrollbarWidth - thumbWidth;
-      let lastX = event.touches[0].clientX;
-
-      function touchmove(moveEvent:TouchEvent) {
-        const newX = moveEvent.touches[0].clientX;
-        const moveRatio = (newX - lastX) / scrollbarScrollableDistance;
-        wrapper.scrollLeft += moveRatio * scrollableDistance;
-        callback();
-        lastX = newX;
-      }
-
-      const removeListeners = () => {
-        window.removeEventListener('touchmove', touchmove);
-        window.removeEventListener('touchend', removeListeners);
-        window.removeEventListener('blur', removeListeners);
-      }
-
-      window.addEventListener('touchmove', touchmove);
-      window.addEventListener('touchend', removeListeners);
-      window.addEventListener('blur', removeListeners);
-    }
-  }
+  startThumbDrag(event.touches[0].clientX, wrapper, thumbWidth, callback, true);
 }
 
 
 function handleThumbMouseDown(event:React.MouseEvent, wrapper:HTMLElement, thumbWidth:number, callback:()=>void) {
-  const scrollbarWidth = wrapper?.getElementsByClassName('custom-scrollbar')[0]?.clientWidth;
-  if (scrollbarWidth) {
-    const noteLineWidth = wrapper.getElementsByClassName('note-line')[0]?.clientWidth;
-    if (noteLineWidth) {
-      const scrollableWidth = noteLineWidth + 113;
-      const scrollableDistance = scrollableWidth - wrapper.clientWidth;
-      const scrollbarScrollableDistance = scrollbarWidth - thumbWidth;
-      let lastX = event.clientX;
-
-      function mouseMove(moveEvent: MouseEvent) {
-        const newX = moveEvent.clientX;
-        const moveRatio = (newX - lastX) / scrollbarScrollableDistance;
-        wrapper.scrollLeft += moveRatio * scrollableDistance;
-        callback();
-        lastX = newX;
-      }
-
-      const removeListeners = () => {
-        window.removeEventListener('mousemove', mouseMove);
-        window.removeEventListener('mouseup', removeListeners);
-        window.removeEventListener('blur', removeListeners);
-      }
-
-      window.addEventListener('mousemove', mouseMove);
-      window.addEventListener('mouseup', removeListeners);
-      window.addEventListener('blur', removeListeners);
-    }
-  }
+  startThumbDrag(event.clientX, wrapper, thumbWidth, callback, false);
 }
 
 
-function handleTrackMousedown(event:React.MouseEvent, wrapper:HTMLElement, callback:()=>void) {
+function handleTrackMousedown(event:React.MouseEvent, wrapper:HTMLElement, thumbWidth:number, callback:()=>void) {
   const x = event.nativeEvent.offsetX;
+  scrollFromTrackClick(x, wrapper, callback);
+  callback();
+  startThumbDrag(x, wrapper, thumbWidth, callback, false);
+}
+
+
+function handleTrackTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thumbWidth:number, callback:()=>void) {
+  event.stopPropagation();
+  if (event.touches.length > 1)
+    return;
+  const x = event.touches[0].clientX;
+  scrollFromTrackClick(x, wrapper, callback);
+  callback();
+  startThumbDrag(x, wrapper, thumbWidth, callback, true);
+}
+
+
+function scrollFromTrackClick(x:number, wrapper:HTMLElement, callback:()=>void) {
   const scrollbar = wrapper?.getElementsByClassName('custom-scrollbar')[0];
   if (scrollbar) {
     const noteLine = wrapper.getElementsByClassName('note-line')[0];
@@ -139,6 +100,42 @@ function handleTrackMousedown(event:React.MouseEvent, wrapper:HTMLElement, callb
       const wrapperWidth = wrapper.clientWidth;
       wrapper.scrollLeft = (scrollableWidth * tapRatio) - (wrapperWidth / 2);
       callback();
+    }
+  }
+}
+
+
+function startThumbDrag(startX:number, wrapper:HTMLElement, thumbWidth:number, callback:()=>void, touch:boolean) {
+  const scrollbarWidth = wrapper?.getElementsByClassName('custom-scrollbar')[0]?.clientWidth;
+  if (scrollbarWidth) {
+    const noteLineWidth = wrapper.getElementsByClassName('note-line')[0]?.clientWidth;
+    if (noteLineWidth) {
+      const scrollableWidth = noteLineWidth + 113;
+      const scrollableDistance = scrollableWidth - wrapper.clientWidth;
+      const scrollbarScrollableDistance = scrollbarWidth - thumbWidth;
+      let lastX = startX;
+
+      const getX = touch ?
+        (moveEvent:TouchEvent) => moveEvent.touches[0].clientX :
+        (moveEvent:MouseEvent) => moveEvent.clientX;
+
+      function touchmove(moveEvent) {
+        const newX = getX(moveEvent);
+        const moveRatio = (newX - lastX) / scrollbarScrollableDistance;
+        wrapper.scrollLeft += moveRatio * scrollableDistance;
+        callback();
+        lastX = newX;
+      }
+
+      const removeListeners = () => {
+        window.removeEventListener(touch ? 'touchmove' : 'mousemove', touchmove);
+        window.removeEventListener(touch ? 'touchend' : 'mouseup', removeListeners);
+        window.removeEventListener('blur', removeListeners);
+      }
+
+      window.addEventListener(touch ? 'touchmove' : 'mousemove', touchmove);
+      window.addEventListener(touch ? 'touchend' : 'mouseup', removeListeners);
+      window.addEventListener('blur', removeListeners);
     }
   }
 }
