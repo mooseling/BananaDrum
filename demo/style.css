@@ -373,6 +373,10 @@ So we're putting them in each track-viewer, where we can position them with no p
 .custom-scrollbar {
   position: absolute;
   width: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .custom-scrollbar > .track {
