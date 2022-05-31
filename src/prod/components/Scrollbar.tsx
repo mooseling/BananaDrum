@@ -1,26 +1,28 @@
 import {useState, useEffect} from 'react';
 
-export function Scrollbar({wrapperRef, widthPublisherRef, scrollPublisherRef}:
-  {
-    wrapperRef:React.MutableRefObject<HTMLDivElement>,
-    widthPublisherRef:React.MutableRefObject<Banana.Publisher>,
-    scrollPublisherRef:React.MutableRefObject<Banana.Publisher>
-  }
+export function Scrollbar({wrapperRef, contentWidthPublisher}:
+  {wrapperRef:React.MutableRefObject<HTMLDivElement>, contentWidthPublisher:Banana.Publisher}
 ): JSX.Element {
   const [thumbWidth, setThumbWidth] = useState(0);
   const [thumbLeft, setThumbLeft] = useState(0);
   const updateThumbWidth = () => setThumbWidth(calculateThumbWidth(wrapperRef.current));
   const updateThumbLeft = () => setThumbLeft(calculateThumbLeft(wrapperRef.current));
+  const updateAll = () => {
+    updateThumbLeft();
+    updateThumbWidth();
+  };
 
+  const resizeObserver = new ResizeObserver(updateAll);
 
   useEffect(() => {
-    widthPublisherRef.current.subscribe(updateThumbWidth);
-    return () => widthPublisherRef.current.unsubscribe(updateThumbWidth);
-  }, []);
-
-  useEffect(() => {
-    scrollPublisherRef.current.subscribe(updateThumbLeft);
-    return () => scrollPublisherRef.current.unsubscribe(updateThumbLeft);
+    wrapperRef.current.addEventListener('scroll', updateThumbLeft);
+    resizeObserver.observe(wrapperRef.current);
+    contentWidthPublisher.subscribe(updateAll);
+    return () => {
+      wrapperRef.current.removeEventListener('scroll', updateThumbLeft);
+      resizeObserver.unobserve(wrapperRef.current);
+      contentWidthPublisher.unsubscribe(updateAll);
+    }
   }, []);
 
   return (

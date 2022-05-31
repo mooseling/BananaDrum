@@ -3,8 +3,8 @@ import {ArrangementControls} from './ArrangementControls';
 import {Scrollbar} from './Scrollbar';
 import {InstrumentBrowser} from './InstrumentBrowser';
 import {Overlay, OverlayState} from './Overlay';
-import {EventEngine} from '../EventEngine';
 import {Publisher} from '../Publisher';
+import {EventEngine} from '../EventEngine';
 import {useState, useEffect, createContext, useRef} from 'react';
 
 
@@ -28,26 +28,15 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   const ref:React.MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>();
   const [scrollShadowClasses, setScrollShadowClasses] = useState('');
   const updateScrollShadows = () => setScrollShadowClasses(getScrollShadowClasses(ref.current));
-
-  const widthPublisherRef = useRef(Publisher());
-  const scrollPublisherRef = useRef(Publisher());
-
-  const widthBasedCalcs = () => {
+  const resizeObserver = new ResizeObserver(updateScrollShadows);
+  const contentWidthPublisher = Publisher()
+  const timeParamsSubscription = () => setTimeout(() => {
     updateScrollShadows();
-    widthPublisherRef.current.publish();
-    scrollPublisherRef.current.publish();
-  }
-
-  const scrollBasedUpdates = () => {
-    updateScrollShadows();
-    scrollPublisherRef.current.publish();
-  }
-
-  const resizeObserver = new ResizeObserver(widthBasedCalcs);
-  const timeParamsSubscription = () => setTimeout(widthBasedCalcs, 0); // timeout so DOM updates first
+    contentWidthPublisher.publish();
+  }, 0); // timeout so DOM updates first
 
   useEffect(() => {
-    setTimeout(widthBasedCalcs, 0);
+    setTimeout(updateScrollShadows, 0);
 
     arrangement.subscribe(tracksSubscription);
     EventEngine.subscribe(eventEngineSubscription);
@@ -73,13 +62,10 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
             <div
               className={`track-viewers-wrapper ${scrollShadowClasses}`}
               ref={ref}
-              onScroll={scrollBasedUpdates}
+              onScroll={updateScrollShadows}
             >
               {getTrackViewers(tracks)}
-              <Scrollbar wrapperRef={ref}
-                widthPublisherRef={widthPublisherRef}
-                scrollPublisherRef={scrollPublisherRef}
-              />
+              <Scrollbar wrapperRef={ref} contentWidthPublisher={contentWidthPublisher}/>
             </div>
             <Overlay state={overlayState}>
               <InstrumentBrowser close={() => overlayState.visible && overlayState.toggle()}/>
