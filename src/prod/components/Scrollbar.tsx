@@ -25,21 +25,16 @@ export function Scrollbar({wrapperRef, contentWidthPublisher}:
     }
   }, []);
 
-  function scroll(distance:number): void {
-    wrapperRef.current.scrollLeft += distance;
-    wrapperRef.current.dispatchEvent(new Event('scroll'));
-  }
-
   return (
     <div className="custom-scrollbar">
       <div className="track"
-        onMouseDown={event => handleTrackMousedown(event, wrapperRef.current, thumbWidth, scroll)}
-        onTouchStart={event => handleTrackTouchStart(event, wrapperRef.current, thumbWidth, scroll)}
+        onMouseDown={event => handleTrackMousedown(event, wrapperRef.current, thumbWidth)}
+        onTouchStart={event => handleTrackTouchStart(event, wrapperRef.current, thumbWidth)}
       />
       <div className="thumb"
         style={{width:thumbWidth + 'px', left: thumbLeft + 'px'}}
-        onMouseDown={event => handleThumbMouseDown(event, wrapperRef.current, thumbWidth, scroll)}
-        onTouchStart={event => handleThumbTouchStart(event, wrapperRef.current, thumbWidth, scroll)}
+        onMouseDown={event => handleThumbMouseDown(event, wrapperRef.current, thumbWidth)}
+        onTouchStart={event => handleThumbTouchStart(event, wrapperRef.current, thumbWidth)}
       />
     </div>
   );
@@ -65,80 +60,98 @@ function calculateThumbLeft(wrapper:HTMLElement): number {
   return (scrollLeft * scrollbarWidth) / scrollableWidth;
 }
 
-function handleThumbTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thumbWidth:number, scroll:(distance:number)=>void) {
+function handleThumbTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thumbWidth:number) {
   event.stopPropagation();
   if (event.touches.length > 1)
     return;
-  startThumbDrag(event.touches[0].clientX, wrapper, thumbWidth, scroll, true);
+  ScrollHandler(wrapper, thumbWidth, true).startThumbDrag(event.touches[0].clientX);
 }
 
 
-function handleThumbMouseDown(event:React.MouseEvent, wrapper:HTMLElement, thumbWidth:number, scroll:(distance:number)=>void) {
-  startThumbDrag(event.clientX, wrapper, thumbWidth, scroll, false);
+function handleThumbMouseDown(event:React.MouseEvent, wrapper:HTMLElement, thumbWidth:number) {
+  ScrollHandler(wrapper, thumbWidth, false).startThumbDrag(event.clientX);
 }
 
 
-function handleTrackMousedown(event:React.MouseEvent, wrapper:HTMLElement, thumbWidth:number, scroll:(distance:number)=>void) {
-  const x = event.nativeEvent.offsetX;
-  scrollFromTrackClick(x, wrapper, scroll);
-  startThumbDrag(x, wrapper, thumbWidth, scroll, false);
+function handleTrackMousedown(event:React.MouseEvent, wrapper:HTMLElement, thumbWidth:number) {
+  const startX = event.nativeEvent.offsetX;
+  const scrollHandler = ScrollHandler(wrapper, thumbWidth, false);
+  scrollHandler.scrollFromTrackClick(startX);
+  scrollHandler.startThumbDrag(startX);
 }
 
 
-function handleTrackTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thumbWidth:number, scroll:(distance:number)=>void) {
+function handleTrackTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thumbWidth:number) {
   event.stopPropagation();
   if (event.touches.length > 1)
     return;
-  const x = event.touches[0].clientX;
-  scrollFromTrackClick(x, wrapper, scroll);
-  startThumbDrag(x, wrapper, thumbWidth, scroll, true);
+  const startX = event.touches[0].clientX;
+  const scrollHandler = ScrollHandler(wrapper, thumbWidth, true);
+  scrollHandler.scrollFromTrackClick(startX);
+  scrollHandler.startThumbDrag(startX);
 }
 
-
-function scrollFromTrackClick(x:number, wrapper:HTMLElement, scroll:(distance:number)=>void) {
-  const scrollbar = wrapper?.getElementsByClassName('custom-scrollbar')[0];
-  if (scrollbar) {
-    const noteLine = wrapper.getElementsByClassName('note-line')[0];
-    if (noteLine) {
-      const scrollableWidth = noteLine.clientWidth + 113;
-      const tapRatio = x / scrollbar.clientWidth;
-      const wrapperWidth = wrapper.clientWidth;
-      scroll((scrollableWidth * tapRatio) - (wrapperWidth / 2) - wrapper.scrollLeft);
-    }
-  }
+type ScrollHandler = {
+  startThumbDrag: (startX:number) => void
+  scrollFromTrackClick: (startX:number) => void
 }
 
+function ScrollHandler(wrapper:HTMLElement, thumbWidth:number, touch:boolean) : ScrollHandler {
+  if (!wrapper)
+    return fakeScrollHandler;
+  const scrollbar = wrapper.getElementsByClassName('custom-scrollbar')[0];
+  const noteLine = scrollbar && wrapper.getElementsByClassName('note-line')[0];
+  if (!noteLine)
+    return fakeScrollHandler;
+  const scrollbarWidth = scrollbar.clientWidth;
+  const noteLineWidth = noteLine.clientWidth;
+  if (!scrollbarWidth || !noteLineWidth)
+    return fakeScrollHandler;
 
-function startThumbDrag(startX:number, wrapper:HTMLElement, thumbWidth:number, scroll:(distance:number)=>void, touch:boolean) {
-  const scrollbarWidth = wrapper?.getElementsByClassName('custom-scrollbar')[0]?.clientWidth;
-  if (scrollbarWidth) {
-    const noteLineWidth = wrapper.getElementsByClassName('note-line')[0]?.clientWidth;
-    if (noteLineWidth) {
-      const scrollableWidth = noteLineWidth + 113;
+  const scrollableWidth = noteLineWidth + 113;
+
+  const scroll = (distance:number) => {
+    wrapper.scrollLeft += distance;
+    wrapper.dispatchEvent(new Event('scroll'));
+  };
+
+  return {
+    startThumbDrag(startX:number): void {
       const scrollableDistance = scrollableWidth - wrapper.clientWidth;
       const scrollbarScrollableDistance = scrollbarWidth - thumbWidth;
-      let lastX = startX;
 
       const getX = touch ?
         (moveEvent:TouchEvent) => moveEvent.touches[0].clientX :
         (moveEvent:MouseEvent) => moveEvent.clientX;
+      const moveEventName = touch ? 'touchmove' : 'mousemove';
+      const endEventName = touch ? 'touchend' : 'mouseup';
 
-      function touchmove(moveEvent) {
+      function touchmove(moveEvent:(TouchEvent & MouseEvent)) {
         const newX = getX(moveEvent);
-        const moveRatio = (newX - lastX) / scrollbarScrollableDistance;
+        const moveRatio = (newX - startX) / scrollbarScrollableDistance;
         scroll(moveRatio * scrollableDistance);
-        lastX = newX;
+        startX = newX;
       }
 
       const removeListeners = () => {
-        window.removeEventListener(touch ? 'touchmove' : 'mousemove', touchmove);
-        window.removeEventListener(touch ? 'touchend' : 'mouseup', removeListeners);
+        window.removeEventListener(moveEventName, touchmove);
+        window.removeEventListener(endEventName, removeListeners);
         window.removeEventListener('blur', removeListeners);
       }
 
-      window.addEventListener(touch ? 'touchmove' : 'mousemove', touchmove);
-      window.addEventListener(touch ? 'touchend' : 'mouseup', removeListeners);
+      window.addEventListener(moveEventName, touchmove);
+      window.addEventListener(endEventName, removeListeners);
       window.addEventListener('blur', removeListeners);
+    },
+    scrollFromTrackClick(startX:number) {
+      const tapRatio = startX / scrollbarWidth;
+      const wrapperWidth = wrapper.clientWidth;
+      scroll((scrollableWidth * tapRatio) - (wrapperWidth / 2) - wrapper.scrollLeft);
     }
-  }
+  };
 }
+
+const fakeScrollHandler:ScrollHandler = {
+  startThumbDrag: (startX:number) => {},
+  scrollFromTrackClick: (startX:number) => {}
+};
