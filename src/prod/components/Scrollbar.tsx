@@ -25,16 +25,21 @@ export function Scrollbar({wrapperRef, contentWidthPublisher}:
     }
   }, []);
 
+  function scroll(distance:number): void {
+    wrapperRef.current.scrollLeft += distance;
+    wrapperRef.current.dispatchEvent(new Event('scroll'));
+  }
+
   return (
     <div className="custom-scrollbar">
       <div className="track"
-        onMouseDown={event => handleTrackMousedown(event, wrapperRef.current, thumbWidth, updateThumbLeft)}
-        onTouchStart={event => handleTrackTouchStart(event, wrapperRef.current, thumbWidth, updateThumbLeft)}
+        onMouseDown={event => handleTrackMousedown(event, wrapperRef.current, thumbWidth, scroll)}
+        onTouchStart={event => handleTrackTouchStart(event, wrapperRef.current, thumbWidth, scroll)}
       />
       <div className="thumb"
         style={{width:thumbWidth + 'px', left: thumbLeft + 'px'}}
-        onMouseDown={event => handleThumbMouseDown(event, wrapperRef.current, thumbWidth, updateThumbLeft)}
-        onTouchStart={event => handleThumbTouchStart(event, wrapperRef.current, thumbWidth, updateThumbLeft)}
+        onMouseDown={event => handleThumbMouseDown(event, wrapperRef.current, thumbWidth, scroll)}
+        onTouchStart={event => handleThumbTouchStart(event, wrapperRef.current, thumbWidth, scroll)}
       />
     </div>
   );
@@ -60,39 +65,37 @@ function calculateThumbLeft(wrapper:HTMLElement): number {
   return (scrollLeft * scrollbarWidth) / scrollableWidth;
 }
 
-function handleThumbTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thumbWidth:number, callback:()=>void) {
+function handleThumbTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thumbWidth:number, scroll:(distance:number)=>void) {
   event.stopPropagation();
   if (event.touches.length > 1)
     return;
-  startThumbDrag(event.touches[0].clientX, wrapper, thumbWidth, callback, true);
+  startThumbDrag(event.touches[0].clientX, wrapper, thumbWidth, scroll, true);
 }
 
 
-function handleThumbMouseDown(event:React.MouseEvent, wrapper:HTMLElement, thumbWidth:number, callback:()=>void) {
-  startThumbDrag(event.clientX, wrapper, thumbWidth, callback, false);
+function handleThumbMouseDown(event:React.MouseEvent, wrapper:HTMLElement, thumbWidth:number, scroll:(distance:number)=>void) {
+  startThumbDrag(event.clientX, wrapper, thumbWidth, scroll, false);
 }
 
 
-function handleTrackMousedown(event:React.MouseEvent, wrapper:HTMLElement, thumbWidth:number, callback:()=>void) {
+function handleTrackMousedown(event:React.MouseEvent, wrapper:HTMLElement, thumbWidth:number, scroll:(distance:number)=>void) {
   const x = event.nativeEvent.offsetX;
-  scrollFromTrackClick(x, wrapper, callback);
-  callback();
-  startThumbDrag(x, wrapper, thumbWidth, callback, false);
+  scrollFromTrackClick(x, wrapper, scroll);
+  startThumbDrag(x, wrapper, thumbWidth, scroll, false);
 }
 
 
-function handleTrackTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thumbWidth:number, callback:()=>void) {
+function handleTrackTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thumbWidth:number, scroll:(distance:number)=>void) {
   event.stopPropagation();
   if (event.touches.length > 1)
     return;
   const x = event.touches[0].clientX;
-  scrollFromTrackClick(x, wrapper, callback);
-  callback();
-  startThumbDrag(x, wrapper, thumbWidth, callback, true);
+  scrollFromTrackClick(x, wrapper, scroll);
+  startThumbDrag(x, wrapper, thumbWidth, scroll, true);
 }
 
 
-function scrollFromTrackClick(x:number, wrapper:HTMLElement, callback:()=>void) {
+function scrollFromTrackClick(x:number, wrapper:HTMLElement, scroll:(distance:number)=>void) {
   const scrollbar = wrapper?.getElementsByClassName('custom-scrollbar')[0];
   if (scrollbar) {
     const noteLine = wrapper.getElementsByClassName('note-line')[0];
@@ -100,14 +103,13 @@ function scrollFromTrackClick(x:number, wrapper:HTMLElement, callback:()=>void) 
       const scrollableWidth = noteLine.clientWidth + 113;
       const tapRatio = x / scrollbar.clientWidth;
       const wrapperWidth = wrapper.clientWidth;
-      wrapper.scrollLeft = (scrollableWidth * tapRatio) - (wrapperWidth / 2);
-      callback();
+      scroll((scrollableWidth * tapRatio) - (wrapperWidth / 2) - wrapper.scrollLeft);
     }
   }
 }
 
 
-function startThumbDrag(startX:number, wrapper:HTMLElement, thumbWidth:number, callback:()=>void, touch:boolean) {
+function startThumbDrag(startX:number, wrapper:HTMLElement, thumbWidth:number, scroll:(distance:number)=>void, touch:boolean) {
   const scrollbarWidth = wrapper?.getElementsByClassName('custom-scrollbar')[0]?.clientWidth;
   if (scrollbarWidth) {
     const noteLineWidth = wrapper.getElementsByClassName('note-line')[0]?.clientWidth;
@@ -124,8 +126,7 @@ function startThumbDrag(startX:number, wrapper:HTMLElement, thumbWidth:number, c
       function touchmove(moveEvent) {
         const newX = getX(moveEvent);
         const moveRatio = (newX - lastX) / scrollbarScrollableDistance;
-        wrapper.scrollLeft += moveRatio * scrollableDistance;
-        callback();
+        scroll(moveRatio * scrollableDistance);
         lastX = newX;
       }
 
