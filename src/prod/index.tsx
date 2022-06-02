@@ -24,9 +24,6 @@ document.getElementById('load-button').addEventListener('click', function() {
 
 
     // Expose some things for testing:
-    // @ts-ignore
-    window.arrangement = arrangement;
-    // @ts-ignore
-    window.Library = Library;
+    Object.assign(window, {arrangement, Library});
   });
 });
