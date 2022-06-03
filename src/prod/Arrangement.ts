@@ -31,11 +31,13 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
   // ==================================================================
 
 
-  function createTrack(instrument:Banana.Instrument|Promise<Banana.Instrument>) {
+  async function createTrack(instrument:Banana.Instrument|Promise<Banana.Instrument>):
+  Promise<Banana.Track|void> {
+    let promise:Promise<Banana.Track|void>;
     const trackId = getTrackId();
     if (instrument instanceof Promise) {
       // If we're waiting on an instrument, we put a pending-track into tracks
-      tracks[trackId] = instrument.then(instrument => {
+      promise = tracks[trackId] = instrument.then(instrument => {
         const track = Track(arrangement, instrument);
         tracks[trackId] = track;
         publisher.publish();
@@ -43,11 +45,13 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
       }).catch(() => {
         delete tracks[trackId];
         publisher.publish();
-      })
+      });
     } else {
-      tracks[trackId] = Track(arrangement, instrument);
+      const track = tracks[trackId] = Track(arrangement, instrument);
+      promise = new Promise(resolve => resolve(track));
     }
     publisher.publish();
+    return promise;
   }
 
 
