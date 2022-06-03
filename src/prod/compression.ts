@@ -1,12 +1,12 @@
 // No negative numbers
-export function urlEncodeNumber(input:number): string {
+export function urlEncodeNumber(input:bigint): string {
   let output = '';
 
   do {
-    const remainder = input % 64;
-    output = numberToCharacter[remainder] + output;
+    const remainder = input % conversionBase;
+    output = numberToCharacter[Number(remainder)] + output;
     input -= remainder;
-    input /= 64;
+    input /= conversionBase;
   } while (input);
 
   return output;
@@ -14,11 +14,11 @@ export function urlEncodeNumber(input:number): string {
 
 
 // No negative numbers
-export function urlDecodeNumber(input:string): number {
-  let output = 0;
+export function urlDecodeNumber(input:string): bigint {
+  let output = 0n;
   while (input.length) {
-    output *= 64;
-    output += characterToNumber[input[0]];
+    output *= conversionBase;
+    output += BigInt(characterToNumber[input[0]]);
     input = input.substring(1);
   }
 
@@ -26,26 +26,28 @@ export function urlDecodeNumber(input:string): number {
 }
 
 
-export function interpretAsBaseN(input:string[], base:number): number {
-  let multiplier = 1;
-  let total = 0;
-  for (let i = input.length - 1; i >= 0; i--) {
-    const digit = characterToNumber[input[i]];
+export function interpretAsBaseN(input:number[], base:number): bigint {
+  let multiplier = 1n;
+  let total = 0n;
+  const bigBase = BigInt(base);
+  for (let column = input.length - 1; column >= 0; column--) {
+    const digit = BigInt(input[column]);
     total += digit * multiplier;
-    multiplier *= base;
+    multiplier *= bigBase;
   }
   return total;
 }
 
 
-export function convertToBaseN(input:number, base:number): string[] {
-  let output:string[] = [];
+export function convertToBaseN(input:bigint, base:number): number[] {
+  const bigBase = BigInt(base);
+  let output:number[] = [];
 
   do {
-    const remainder = input % base;
-    output.unshift(numberToCharacter[remainder]);
+    const remainder = input % bigBase;
+    output.unshift(Number(remainder));
     input -= remainder;
-    input /= base;
+    input /= bigBase;
   } while (input);
 
   return output;
@@ -115,6 +117,8 @@ const numberToCharacter = {
   59: '7',
   60: '8',
   61: '9',
+const conversionBase = 64n; // 64 characters to safely use in URLs
+
   62: '~',
   63: '_'
 }
