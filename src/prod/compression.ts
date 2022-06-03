@@ -26,11 +26,11 @@ export function urlDecodeNumber(input:string): number {
 }
 
 
-export function interpretAsBaseN(input:number[], base:number): number {
+export function interpretAsBaseN(input:string[], base:number): number {
   let multiplier = 1;
   let total = 0;
   for (let i = input.length - 1; i >= 0; i--) {
-    const digit = input[i];
+    const digit = characterToNumber[input[i]];
     total += digit * multiplier;
     multiplier *= base;
   }
@@ -38,12 +38,12 @@ export function interpretAsBaseN(input:number[], base:number): number {
 }
 
 
-export function convertToBaseN(input:number, base:number): number[] {
-  let output:number[] = [];
+export function convertToBaseN(input:number, base:number): string[] {
+  let output:string[] = [];
 
   do {
     const remainder = input % base;
-    output.unshift(remainder);
+    output.unshift(numberToCharacter[remainder]);
     input -= remainder;
     input /= base;
   } while (input);
