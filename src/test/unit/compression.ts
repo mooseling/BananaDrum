@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import {urlEncodeString, urlDecodeString, urlEncodeNumber, urlDecodeNumber} from '../../prod/compression';
+import {urlEncodeNumber, urlDecodeNumber} from '../../prod/compression';
 
 describe('URL encoding numbers', function() {
   it ('decodes up to 100000 back to the same number', () => {
