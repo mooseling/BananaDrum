@@ -1,3 +1,5 @@
+import {Library} from './Library';
+
 // No negative numbers
 export function urlEncodeNumber(input:bigint): string {
   let output = '';
@@ -51,6 +53,44 @@ export function convertToBaseN(input:bigint, base:number): number[] {
   } while (input);
 
   return output;
+}
+
+
+export function urlEncodeTrack(track:Banana.Track): string {
+  const base:number = Object.keys(track.instrument.noteStyles).length;
+  const noteStyles:number[] = track.notes.map(note => characterToNumber[note.noteStyle?.id || '0']);
+  const musicAsNumber = interpretAsBaseN(noteStyles, base);
+  const musicAsString = urlEncodeNumber(musicAsNumber);
+  return track.instrument.id + musicAsString;
+}
+
+
+export async function createTrackFromUrl(urlEncodedTrack:string, arrangement:Banana.Arrangement): Promise<void> {
+  const trackId = urlEncodedTrack[0];
+  const instrumentMeta = Library.instrumentMetas.filter(({id}) => id === trackId)[0];
+  if (!instrumentMeta)
+    throw 'Instrument not found';
+  const instrument = await Library.getInstrument(instrumentMeta.id);
+  const track = await arrangement.createTrack(instrument);
+  if (!track)
+    throw "Couldn't create track";
+  const musicAsString = urlEncodedTrack.substring(1);
+  const musicAsNumber = urlDecodeNumber(musicAsString);
+  const base = Object.keys(instrument.noteStyles).length;
+  const musicInBaseN = convertToBaseN(musicAsNumber, base);
+  while (musicInBaseN.length < arrangement.timeParams.timings.length)
+    musicInBaseN.unshift(0); // pad number with leading 0s
+
+  // setTimeout so that GUI can mount and subscribe to notes
+  setTimeout(() => {
+    musicInBaseN.forEach((noteStyleNumber, index) => {
+      const noteStyleId = numberToCharacter[noteStyleNumber];
+      const noteStyle = Object.values(instrument.noteStyles)
+        .filter(({id}) => id === noteStyleId)[0];
+      if (noteStyle)
+        track.notes[index].noteStyle = noteStyle;
+    });
+  }, 0);
 }
 
 
