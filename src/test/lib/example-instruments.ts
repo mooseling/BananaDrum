@@ -1,167 +1,232 @@
 export const instrumentCollection:Banana.InstrumentCollection = [
   {
-    instrumentId: 'ride',
+    id: '0',
     displayName: 'Ride',
     packedNoteStyles: [
       {
-        noteStyleId: 'tap',
+        id: '1',
         file: 'ride_tap.mp3',
-        symbol:{src:'images/icons/o_closed_lower.svg'}
+        symbol:{
+          src:'images/icons/o_closed_lower.svg',
+          string: 'tap'
+        }
       },
       {
-        noteStyleId: 'crash',
+        id: '2',
         file: 'ride_crash.mp3',
-        symbol:{src:'images/icons/X.svg'}
+        symbol:{
+          src:'images/icons/X.svg',
+          string: 'crash'
+        }
       },
       {
-        noteStyleId: 'bell',
+        id: '3',
         file: 'ride_bell.mp3',
-        symbol:{src:'images/icons/hollow_diamond.svg'}
+        symbol:{
+          src:'images/icons/hollow_diamond.svg',
+          string: 'bell'
+        }
       }
     ],
     colourGroup: 'yellow'
   },
   {
-    instrumentId: 'crash',
+    id: '1',
     displayName: 'Crash',
     packedNoteStyles: [
       {
-        noteStyleId: 'crash',
+        id: '1',
         file: 'crash_crash.mp3',
-        symbol:{src:'images/icons/X.svg'}
+        symbol:{
+          src:'images/icons/X.svg',
+          string: 'crash'
+        }
       },
       {
-        noteStyleId: 'tap',
+        id: '2',
         file: 'crash_tap.mp3',
-        symbol:{src:'images/icons/o_closed_lower.svg'}
+        symbol:{
+          src:'images/icons/o_closed_lower.svg',
+          string: 'tap'
+        }
       },
       {
-        noteStyleId: 'bell',
+        id: '3',
         file: 'crash_bell.mp3',
-        symbol:{src:'images/icons/hollow_diamond.svg'}
+        symbol:{
+          src:'images/icons/hollow_diamond.svg',
+          string: 'bell'
+        }
       }
     ],
     colourGroup: 'yellow'
   },
   {
-    instrumentId: 'hihat',
+    id: '2',
     displayName: 'Hi Hat',
     packedNoteStyles: [
       {
-        noteStyleId: 'closed',
+        id: '1',
         file: 'hihat_closed.mp3',
-        symbol:{src:'images/icons/x_lower.svg'}
+        symbol:{
+          src:'images/icons/x_lower.svg',
+          string: 'closed'
+        }
       },
       {
-        noteStyleId: 'open',
+        id: '2',
         file: 'hihat_open.mp3',
-        symbol:{src:'images/icons/O.svg'}
+        symbol:{
+          src:'images/icons/O.svg',
+          string: 'open'
+        }
       },
       {
-        noteStyleId: 'foot',
+        id: '3',
         file: 'hihat_foot.mp3',
-        symbol:{src:'images/icons/o_lower.svg'}
+        symbol:{
+          src:'images/icons/o_lower.svg',
+          string: 'foot'
+        }
       },
       {
-        noteStyleId: 'trash',
+        id: '4',
         file: 'hihat_trash.mp3',
-        symbol:{src:'images/icons/X.svg'}
+        symbol:{
+          src:'images/icons/X.svg',
+          string: 'trash'
+        }
       }
     ],
     colourGroup: 'yellow'
   },
   {
-    instrumentId: 'snare',
+    id: '3',
     displayName: 'Snare',
     packedNoteStyles: [
       {
-        noteStyleId: 'accent',
+        id: '1',
         file: 'snare_accent.mp3',
-        symbol:{src:'images/icons/X.svg'}
+        symbol:{
+          src:'images/icons/X.svg',
+          string: 'accent'
+        }
       },
       {
-        noteStyleId: 'ghost',
+        id: '2',
         file: 'snare_ghost.mp3',
-        symbol:{src:'images/icons/x_lower.svg'}
+        symbol:{
+          src:'images/icons/x_lower.svg',
+          string: 'ghost'
+        }
       },
       {
-        noteStyleId: 'rimshot',
+        id: '3',
         file: 'snare_rimshot.mp3',
-        symbol:{src:'images/icons/sun_rise_rays.svg'}
+        symbol:{
+          src:'images/icons/sun_rise_rays.svg',
+          string: 'rimshot'
+        }
       },
       {
-        noteStyleId: 'sidestick',
+        id: '4',
         file: 'snare_sidestick.mp3',
-        symbol:{src:'images/icons/sidestick.svg'}
+        symbol:{
+          src:'images/icons/sidestick.svg',
+          string: 'sidestick'
+        }
       }
     ],
     colourGroup: 'green'
   },
   {
-    instrumentId: 'kick',
+    id: '4',
     displayName: 'Kick drum',
     packedNoteStyles: [
       {
-        noteStyleId: 'accent',
+        id: '1',
         file: 'kick_accent.mp3',
-        symbol:{src:'images/icons/O_closed.svg'}
+        symbol:{
+          src:'images/icons/O_closed.svg',
+          string: 'accent'
+        }
       },
       {
-        noteStyleId: 'ghost',
+        id: '2',
         file: 'kick_ghost.mp3',
-        symbol:{src:'images/icons/o_closed_lower.svg'}
-        // displayName, symbol
+        symbol:{
+          src:'images/icons/o_closed_lower.svg',
+          string: 'ghost'
+        }
       }
     ],
     colourGroup: 'blue'
   },
   {
-    instrumentId: 'hightom',
+    id: '5',
     displayName: 'High Tom',
     packedNoteStyles: [
       {
-        noteStyleId: 'accent',
+        id: '1',
         file: 'hightom_accent.mp3',
-        symbol:{src:'images/icons/O_closed.svg'}
+        symbol:{
+          src:'images/icons/O_closed.svg',
+          string: 'accent'
+        }
       },
       {
-        noteStyleId: 'ghost',
+        id: '2',
         file: 'hightom_ghost.mp3',
-        symbol:{src:'images/icons/o_closed_lower.svg'}
+        symbol:{
+          src:'images/icons/o_closed_lower.svg',
+          string: 'ghost'
+        }
       }
     ],
     colourGroup: 'purple'
   },
   {
-    instrumentId: 'midtom',
+    id: '6',
     displayName: 'Mid Tom',
     packedNoteStyles: [
       {
-        noteStyleId: 'accent',
+        id: '1',
         file: 'midtom_accent.mp3',
-        symbol:{src:'images/icons/O_closed.svg'}
+        symbol:{
+          src:'images/icons/O_closed.svg',
+          string: 'accent'
+        }
       },
       {
-        noteStyleId: 'ghost',
+        id: '2',
         file: 'midtom_ghost.mp3',
-        symbol:{src:'images/icons/o_closed_lower.svg'}
+        symbol:{
+          src:'images/icons/o_closed_lower.svg',
+          string: 'ghost'
+        }
       }
     ],
     colourGroup: 'purple'
   },
   {
-    instrumentId: 'floortom',
+    id: '7',
     displayName: 'Floor Tom',
     packedNoteStyles: [
       {
-        noteStyleId: 'accent',
+        id: '1',
         file: 'floortom_accent.mp3',
-        symbol:{src:'images/icons/O_closed.svg'}
+        symbol:{
+          src:'images/icons/O_closed.svg',
+          string: 'accent'
+        }
       },
       {
-        noteStyleId: 'ghost',
+        id: '2',
         file: 'floortom_ghost.mp3',
-        symbol:{src:'images/icons/o_closed_lower.svg'}
+        symbol:{
+          src:'images/icons/o_closed_lower.svg',
+          string: 'ghost'
+        }
       }
     ],
     colourGroup: 'purple'

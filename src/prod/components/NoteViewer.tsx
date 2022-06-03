@@ -112,13 +112,14 @@ function NoteDetailsViewer({noteStyle}:{noteStyle:Banana.NoteStyle}): JSX.Elemen
 function NoteStyleSymbolViewer({noteStyle}:{noteStyle:Banana.NoteStyle}): JSX.Element {
   if (!noteStyle)
     return null;
-  if (noteStyle.symbol) {
-    if (noteStyle.symbol.src)
-      return <img className="note-style-symbol" src={noteStyle.symbol.src} alt={noteStyle.noteStyleId}/>;
-    if (noteStyle.symbol.string)
-      return <span className="note-style-symbol">noteStyle.symbol.string</span>;
+  const {symbol} = noteStyle;
+  if (symbol) {
+    if (symbol.src)
+      return <img className="note-style-symbol" src={symbol.src} alt={symbol.string}/>;
+    if (symbol.string)
+      return <span className="note-style-symbol">{symbol.string}</span>;
   }
-  return <span className="note-style-symbol">noteStyle.noteStyleId</span>;
+  return <span className="note-style-symbol">{noteStyle.id}</span>;
 }
 
 
@@ -133,7 +134,7 @@ function getNextNoteStyle(note:Banana.Note): Banana.NoteStyle {
   const noteStyleIds = Object.keys(noteStyles);
   if (!note.noteStyle) // This happens when the note-style is null, meaning a rest
     return noteStyles[noteStyleIds[0]];
-  const currentNoteStyleId = note.noteStyle.noteStyleId;
+  const currentNoteStyleId = note.noteStyle.id;
   const index = noteStyleIds.indexOf(currentNoteStyleId);
   const nextNoteStyleId = noteStyleIds[index + 1];
   if (nextNoteStyleId)

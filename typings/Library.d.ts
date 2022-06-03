@@ -2,13 +2,13 @@ declare namespace Banana {
   interface Library {
     load(instrumentCollection:InstrumentCollection): void
     instrumentMetas: InstrumentMeta[]
-    getInstrument(instrumentId:string): Promise<Instrument>
+    getInstrument(id:string): Promise<Instrument>
   }
 
   type InstrumentCollection = PackedInstrument[]
 
   interface InstrumentMeta {
-    instrumentId: string
+    id: string // single digit or char, 0 is allowed
     displayName: string
     colourGroup: string // blue, purple, green, orange, or yellow
   }
@@ -17,24 +17,25 @@ declare namespace Banana {
     packedNoteStyles: PackedNoteStyle[]
   }
 
-  interface PackedNoteStyle {
-    noteStyleId: string
-    file: string
-    symbol?: NoteStyleSymbol
-  }
-
   interface Instrument extends InstrumentMeta {
-    noteStyles: {[styleId: string]: NoteStyle}
+    noteStyles: {[id: string]: NoteStyle}
   }
 
-  interface NoteStyle {
-    noteStyleId: string
+  interface NoteStyleBase {
+    id: string // single digit or char, can't be 0
+    symbol: NoteStyleSymbol
+  }
+
+  interface PackedNoteStyle extends NoteStyleBase {
+    file: string
+  }
+
+  interface NoteStyle extends NoteStyleBase {
     audioBuffer: AudioBuffer
-    symbol?: NoteStyleSymbol
   }
 
   interface NoteStyleSymbol {
     src?: string // path to use an img src
-    string?: string // string to display for this note-style
+    string: string // string to display for this note-style
   }
 }
