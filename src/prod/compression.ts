@@ -57,7 +57,7 @@ export function convertToBaseN(input:bigint, base:number): number[] {
 
 
 export function urlEncodeTrack(track:Banana.Track): string {
-  const base:number = Object.keys(track.instrument.noteStyles).length;
+  const base:number = Object.keys(track.instrument.noteStyles).length + 1; // + 1 for rests
   const noteStyles:number[] = track.notes.map(note => characterToNumber[note.noteStyle?.id || '0']);
   const musicAsNumber = interpretAsBaseN(noteStyles, base);
   const musicAsString = urlEncodeNumber(musicAsNumber);
@@ -76,7 +76,7 @@ export async function createTrackFromUrl(urlEncodedTrack:string, arrangement:Ban
     throw "Couldn't create track";
   const musicAsString = urlEncodedTrack.substring(1);
   const musicAsNumber = urlDecodeNumber(musicAsString);
-  const base = Object.keys(instrument.noteStyles).length;
+  const base = Object.keys(instrument.noteStyles).length + 1; // + 1 for rests
   const musicInBaseN = convertToBaseN(musicAsNumber, base);
   while (musicInBaseN.length < arrangement.timeParams.timings.length)
     musicInBaseN.unshift(0); // pad number with leading 0s
