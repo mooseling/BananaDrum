@@ -1,4 +1,6 @@
 import {Library} from './Library';
+import {TimeParams} from './TimeParams';
+import {Arrangement} from './Arrangement';
 
 // No negative numbers
 export function urlEncodeNumber(input:bigint): string {
@@ -91,6 +93,34 @@ export async function createTrackFromUrl(urlEncodedTrack:string, arrangement:Ban
         track.notes[index].noteStyle = noteStyle;
     });
   }, 0);
+}
+
+
+// async just because tracks may be loading
+export async function urlEncodeArrangement(arrangement:Banana.Arrangement): Promise<string> {
+  const {timeParams:tp} = arrangement;
+  let output = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
+  for (const trackId in arrangement.tracks) {
+    const track = await arrangement.tracks[trackId];
+    if (track)
+      output += '.' + urlEncodeTrack(track);
+  }
+  return output;
+}
+
+export function createArrangementFromUrl(url:string): Banana.Arrangement {
+  const chunks = url.split('.');
+  const timeParams = TimeParams({
+    timeSignature:chunks[0],
+    tempo:Number(chunks[1]),
+    length:Number(chunks[2]),
+    pulse:chunks[3],
+    stepResolution:Number(chunks[4])
+  });
+  const arrangement = Arrangement(timeParams);
+  for (let chunkIndex = 5; chunkIndex < chunks.length; chunkIndex++)
+    createTrackFromUrl(chunks[chunkIndex], arrangement);
+  return arrangement;
 }
 
 
