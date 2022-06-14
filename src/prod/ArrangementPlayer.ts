@@ -41,21 +41,39 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
   function getEvents(interval:Banana.Interval): Banana.Event[] {
     const events:Banana.Event[] = [];
     const loopIntervals:Banana.LoopInterval[] = timeCoordinator.convertToLoopIntervals(interval);
+    const audibleTrackPlayers:Banana.TrackPlayer[] = getAudibleTrackPlayers();
 
     loopIntervals.forEach(loopInterval => {
       const {loopNumber} = loopInterval;
-      for (const trackId in trackPlayers) {
-        trackPlayers[trackId].getEvents(loopInterval)
-          .forEach(event => events.push({
-            ...event,
-            realTime: timeCoordinator.convertToAudioTime(event.realTime, loopNumber)
-          }));
-      }
+      audibleTrackPlayers.forEach(({getEvents}) => {
+        getEvents(loopInterval).forEach(event => events.push({
+          ...event,
+          realTime: timeCoordinator.convertToAudioTime(event.realTime, loopNumber)
+        }));
+      });
     });
 
     events.push(...getCallbackEvents(interval));
 
     return events;
+  }
+
+
+  function getAudibleTrackPlayers(): Banana.TrackPlayer[] {
+    const soloedTracksPlayers:Banana.TrackPlayer[] = [];
+    const unmutedTracksPlayers:Banana.TrackPlayer[] = [];
+
+    for (const trackId in trackPlayers) {
+      const trackPlayer = trackPlayers[trackId];
+      if (trackPlayer.soloMute === 'solo')
+        soloedTracksPlayers.push(trackPlayer);
+      else if (trackPlayer.soloMute === null)
+        unmutedTracksPlayers.push(trackPlayer);
+    }
+
+    if (soloedTracksPlayers.length)
+      return soloedTracksPlayers;
+    return unmutedTracksPlayers;
   }
 
 
