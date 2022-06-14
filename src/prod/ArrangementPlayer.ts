@@ -5,7 +5,6 @@ import {Publisher} from './Publisher';
 
 export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.ArrangementPlayer {
   const timeCoordinator = TimeCoordinator(arrangement.timeParams);
-  let isLooping = false;
   const publisher:Banana.Publisher = Publisher();
 
   // We need a TrackPlayer for each Track, and add/remove them when needed
@@ -20,7 +19,7 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
   arrangement.timeParams.subscribe(updateCallbackEvents);
 
   return {
-    arrangement, getEvents, loop, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
+    arrangement, getEvents, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
     get currentTiming() {
       return currentTiming;
     }
@@ -41,9 +40,7 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
   // If we're looping we'll use TimeConverter to resolve it within loops
   function getEvents(interval:Banana.Interval): Banana.Event[] {
     const events:Banana.Event[] = [];
-    const loopIntervals:Banana.LoopInterval[] = isLooping ?
-      timeCoordinator.convertToLoopIntervals(interval) :
-      timeCoordinator.convertToLoopIntervals(interval).filter(({loopNumber}) => loopNumber === 0);
+    const loopIntervals:Banana.LoopInterval[] = timeCoordinator.convertToLoopIntervals(interval);
 
     loopIntervals.forEach(loopInterval => {
       const {loopNumber} = loopInterval;
@@ -64,9 +61,7 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
 
   function getCallbackEvents(interval:Banana.Interval): Banana.CallbackEvent[] {
     const eventsInInterval:Banana.CallbackEvent[] = [];
-    const loopIntervals:Banana.LoopInterval[] = isLooping ?
-      timeCoordinator.convertToLoopIntervals(interval) :
-      timeCoordinator.convertToLoopIntervals(interval).filter(({loopNumber}) => loopNumber === 0);
+    const loopIntervals:Banana.LoopInterval[] = timeCoordinator.convertToLoopIntervals(interval);
 
     loopIntervals.forEach(({loopNumber, start, end}) => {
       callbackEvents.filter(({realTime}) => realTime >= start && realTime < end)
@@ -77,11 +72,6 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
     });
 
     return eventsInInterval;
-  }
-
-
-  function loop(turnLoopingOn:boolean = true) {
-    isLooping = turnLoopingOn;
   }
 
 

@@ -19,7 +19,6 @@ document.getElementById('load-button').addEventListener('click', function() {
   this.replaceWith(loadingMessage);
   createTestEcosystem().then(({arrangement, arrangementPlayer}) => {
     EventEngine.connect(arrangementPlayer);
-    arrangementPlayer.loop();
     document.getElementById('welcome').remove();
     ReactDOM.render(<BananaDrum arrangementPlayer={arrangementPlayer}/>, document.getElementById('wrapper'));
 
