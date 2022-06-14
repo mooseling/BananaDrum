@@ -100,6 +100,7 @@ export async function createTrackFromUrl(urlEncodedTrack:string, arrangement:Ban
 export async function urlEncodeArrangement(arrangement:Banana.Arrangement): Promise<string> {
   const {timeParams:tp} = arrangement;
   let output = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
+  output = output.replaceAll('/', '-');
   for (const trackId in arrangement.tracks) {
     const track = await arrangement.tracks[trackId];
     if (track)
@@ -108,8 +109,8 @@ export async function urlEncodeArrangement(arrangement:Banana.Arrangement): Prom
   return output;
 }
 
-export function createArrangementFromUrl(url:string): Banana.Arrangement {
-  const chunks = url.split('.');
+export function urlDecodeArrangement(url:string): Banana.Arrangement {
+  const chunks = url.replaceAll('-', '/').split('.');
   const timeParams = TimeParams({
     timeSignature:chunks[0],
     tempo:Number(chunks[1]),
