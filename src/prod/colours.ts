@@ -1,15 +1,6 @@
 // We have certain color categories that instruments fall into
 const colours: {[colourName:string]:string[]} = {
   // surdos, bass drums
-  blue: [
-    'hsl(200, 97%, 51%)',
-    'hsl(196, 97%, 54%)',
-    'hsl(192, 97%, 57%)',
-    'hsl(188, 98%, 60%)',
-    'hsl(184, 98%, 63%)',
-    'hsl(180, 98%, 66%)'
-  ],
-  // Low-mids: toms, timba, congas
   purple: [
     'hsl(268, 61%, 69%)',
     'hsl(272, 69%, 73%)',
@@ -17,6 +8,15 @@ const colours: {[colourName:string]:string[]} = {
     'hsl(280, 85%, 81%)',
     'hsl(284, 93%, 85%)',
     'hsl(288, 100%, 89%)'
+  ],
+  // Low-mids: toms, timba, congas
+  blue: [
+    'hsl(200, 97%, 51%)',
+    'hsl(196, 97%, 54%)',
+    'hsl(192, 97%, 57%)',
+    'hsl(188, 98%, 60%)',
+    'hsl(184, 98%, 63%)',
+    'hsl(180, 98%, 66%)'
   ],
   // Mids: snare, caixa
   green: [
