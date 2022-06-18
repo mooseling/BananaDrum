@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import {instrumentCollection} from '../test/lib/example-instruments';
 import {createTestEcosystem} from '../test/lib/createTestEcosystem';
-import {urlEncodeNumber, urlDecodeNumber, interpretAsBaseN, convertToBaseN, urlEncodeTrack, createTrackFromUrl, urlEncodeArrangement, urlDecodeArrangement} from './compression';
+import {urlEncodeNumber, urlDecodeNumber, interpretAsBaseN, convertToBaseN, urlEncodeTrack, urlEncodeArrangement, urlDecodeArrangement} from './compression';
 
 // Set React to global so we don't have to import it in every file with JSX
 // A benefit of this is to supress TS messages about unused var React
@@ -26,7 +26,7 @@ document.getElementById('load-button').addEventListener('click', function() {
     );
 
     // Expose some things for testing:
-    Object.assign(window, {arrangement});
+    Object.assign(window, {arrangement, arrangementPlayer});
   });
 });
 
@@ -58,4 +58,4 @@ function getUrlEncodedArrangement(): string|null {
 
 
 // Expose functions for testing
-Object.assign(window, {Library, urlEncodeNumber, urlDecodeNumber, interpretAsBaseN, convertToBaseN, urlEncodeTrack, createTrackFromUrl, urlEncodeArrangement, urlDecodeArrangement});
+Object.assign(window, {Library, urlEncodeNumber, urlDecodeNumber, interpretAsBaseN, convertToBaseN, urlEncodeTrack, urlEncodeArrangement, urlDecodeArrangement});
