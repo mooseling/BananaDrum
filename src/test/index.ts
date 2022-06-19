@@ -10,3 +10,4 @@ import './unit/AudioGetter';
 import './unit/Library';
 import './unit/EventEngine';
 import './unit/compression';
+import './unit/instruments';
