@@ -11,6 +11,7 @@ declare namespace Banana {
     id: string // single digit or char, 0 is allowed
     displayName: string
     colourGroup: string // blue, purple, green, orange, or yellow
+    noteStyles?: {[id: string]: NoteStyleBase}
   }
 
   interface PackedInstrument extends InstrumentMeta {

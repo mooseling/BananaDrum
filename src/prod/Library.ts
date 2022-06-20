@@ -12,7 +12,8 @@ export const Library:Banana.Library = {
       Library.instrumentMetas.push({
         id: packedInstrument.id,
         displayName: packedInstrument.displayName,
-        colourGroup: packedInstrument.colourGroup
+        colourGroup: packedInstrument.colourGroup,
+        noteStyles: createNoteStyleBases(packedInstrument)
       });
     });
   },
@@ -24,6 +25,15 @@ export const Library:Banana.Library = {
     }
     return instruments[id];
   }
+}
+
+
+function createNoteStyleBases(packedInstrument:Banana.PackedInstrument):
+  {[id: string]: Banana.NoteStyleBase} {
+  const noteStyleBases:{[id: string]: Banana.NoteStyleBase} = {};
+  for (const id in packedInstrument.packedNoteStyles)
+    noteStyleBases[id] = {id, symbol:packedInstrument.packedNoteStyles[id].symbol};
+  return noteStyleBases;
 }
 
 
