@@ -8,7 +8,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         file: 'Agogo_Low.mp3',
         symbol: {
           src:'images/icons/arrow_down.svg',
-          string: 'high'
+          string: 'low'
         }
       },
       {
@@ -16,7 +16,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         file: 'Agogo_High.mp3',
         symbol: {
           src:'images/icons/arrow_up.svg',
-          string: 'low'
+          string: 'high'
         }
       }
     ],
@@ -117,7 +117,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         file: 'Repanique_Hand.mp3',
         symbol: {
           src:'images/icons/hand.svg',
-          string: 'buzz'
+          string: 'hand'
         }
       },
       {
@@ -125,7 +125,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         file: 'Repanique_Slap.mp3',
         symbol: {
           src:'images/icons/slap.svg',
-          string: 'buzz'
+          string: 'slap'
         }
       }
     ],
