@@ -18,7 +18,7 @@ declare namespace Banana {
   }
 
   interface Instrument extends InstrumentMeta, Subscribable {
-    loaded: boolean
+    readonly loaded: boolean
     noteStyles: {[id: string]: NoteStyle}
   }
 

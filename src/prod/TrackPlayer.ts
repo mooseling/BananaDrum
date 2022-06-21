@@ -23,6 +23,8 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
 
 
   function getEvents({start, end}:Banana.Interval): Banana.AudioEvent[] {
+    if (!track.instrument.loaded)
+      return [];
     return notesWithTime.filter(({realTime}) => realTime >= start && realTime < end)
       .filter(({note}) => note.noteStyle) // Filter out rests (which have noteStyle: null)
       .map(({realTime, note}) => ({realTime, note, audioBuffer:note.noteStyle.audioBuffer}))
