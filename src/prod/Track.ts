@@ -108,8 +108,9 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
 }
 
 
-trackBuilder.unpack = async function(arrangement:Banana.Arrangement, packedTrack:Banana.PackedTrack): Promise<Banana.Track> {
-  const instrument = await Library.getInstrument(packedTrack.instrumentId);
+trackBuilder.unpack = function(arrangement:Banana.Arrangement, packedTrack:Banana.PackedTrack):
+  Banana.Track {
+  const instrument = Library.getInstrument(packedTrack.instrumentId);
   return Track(arrangement, instrument, packedTrack.packedNotes);
 }
 

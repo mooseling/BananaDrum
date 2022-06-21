@@ -2,7 +2,7 @@ declare namespace Banana {
   interface Library {
     load(instrumentCollection:InstrumentCollection): void
     instrumentMetas: InstrumentMeta[]
-    getInstrument(id:string): Promise<Instrument>
+    getInstrument(id:string): Instrument
   }
 
   type InstrumentCollection = PackedInstrument[]
@@ -17,7 +17,8 @@ declare namespace Banana {
     packedNoteStyles: PackedNoteStyle[]
   }
 
-  interface Instrument extends InstrumentMeta {
+  interface Instrument extends InstrumentMeta, Subscribable {
+    loaded: boolean
     noteStyles: {[id: string]: NoteStyle}
   }
 
@@ -31,7 +32,7 @@ declare namespace Banana {
   }
 
   interface NoteStyle extends NoteStyleBase {
-    audioBuffer: AudioBuffer
+    audioBuffer: AudioBuffer|null // null while the instrument is loading
   }
 
   interface NoteStyleSymbol {

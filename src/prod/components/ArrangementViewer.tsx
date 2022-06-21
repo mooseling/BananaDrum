@@ -79,7 +79,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
 }
 
 
-function getTrackViewers(tracks:{[trackId:string]: Banana.PotentialTrack}): JSX.Element[] {
+function getTrackViewers(tracks:{[trackId:string]:Banana.Track}): JSX.Element[] {
   return Object.keys(tracks).map(trackId => (
     <TrackViewer
       track={tracks[trackId]}

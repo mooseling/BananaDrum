@@ -9,7 +9,7 @@ declare namespace Banana {
 
   interface TrackBuilder {
     (arrangement:Arrangement, instrument:Instrument, packedNotes?:PackedNote[]): Track
-    unpack(arrangement:Arrangement, packedTrack:PackedTrack): Promise<Track>
+    unpack(arrangement:Arrangement, packedTrack:PackedTrack): Track
   }
 
   interface PackedTrack {
@@ -24,7 +24,4 @@ declare namespace Banana {
 
   type PackedTiming = `${number}:${number}` // bar:step
   // We don't use "." because numbers might contain it
-
-  type PendingTrack = Promise<Track|void>
-  type PotentialTrack = Track|PendingTrack
 }

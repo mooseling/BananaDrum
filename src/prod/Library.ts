@@ -1,4 +1,5 @@
 import {AudioGetter} from './AudioGetter';
+import {Publisher} from './Publisher';
 
 const packedInstruments:{[id:string]: Banana.PackedInstrument} = {};
 const instruments: {[id:string]:Banana.Instrument} = {};
@@ -15,11 +16,11 @@ export const Library:Banana.Library = {
       });
     });
   },
-  async getInstrument(id:string): Promise<Banana.Instrument> {
+  getInstrument(id:string): Banana.Instrument {
     if (!instruments[id]) {
       if (!packedInstruments[id])
         throw 'Unknown instrument requested from Library';
-      instruments[id] = await Instrument(packedInstruments[id]);
+      instruments[id] = Instrument(packedInstruments[id]);
     }
     return instruments[id];
   }
@@ -27,23 +28,25 @@ export const Library:Banana.Library = {
 
 
 
-async function Instrument(packedInstrument:Banana.PackedInstrument): Promise<Banana.Instrument> {
+// This should be the only instance of an instrument
+// So if this is called, the instrument must start unloaded
+function Instrument(packedInstrument:Banana.PackedInstrument): Banana.Instrument {
   const {id, packedNoteStyles, displayName, colourGroup} = packedInstrument;
-  const noteStyles = await unpackNoteStyles(packedNoteStyles);
-  return {id, noteStyles, displayName, colourGroup};
-}
+  const publisher = Publisher();
 
-
-async function unpackNoteStyles(packedNoteStyles:Banana.PackedNoteStyle[]): Promise<{[id:string]: Banana.NoteStyle}> {
   const noteStyles:{[id:string]: Banana.NoteStyle|null} = {};
   const unpackPromises:Promise<any>[] = [];
   packedNoteStyles.forEach(({id, file, symbol}) => {
-    noteStyles[id] = null; // Set this so that they appear in the original order
+    noteStyles[id] = {id, symbol, audioBuffer:null};
     unpackPromises.push(
       AudioGetter.get(file)
         .then(audioBuffer => noteStyles[id] = {id, audioBuffer, symbol})
     );
   });
-  await Promise.all(unpackPromises);
-  return noteStyles;
+  Promise.all(unpackPromises).then(publisher.publish);
+
+  return {
+    id, noteStyles, displayName, colourGroup, loaded:false,
+    subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
+  };
 }

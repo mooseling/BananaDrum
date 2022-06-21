@@ -16,7 +16,7 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
     timeParams = TimeParams(defaultTimeParams);
 
   const publisher:Banana.Publisher = Publisher();
-  const tracks:{[trackId:string]:Banana.PotentialTrack} = {};
+  const tracks:{[trackId:string]:Banana.Track} = {};
   const arrangement:Banana.Arrangement = {timeParams, tracks, createTrack, unpackTracks, removeTrack, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
   return arrangement;
@@ -31,47 +31,20 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
   // ==================================================================
 
 
-  async function createTrack(instrument:Banana.Instrument|Promise<Banana.Instrument>):
-  Promise<Banana.Track|void> {
-    let promise:Promise<Banana.Track|void>;
+  function createTrack(instrument:Banana.Instrument): Banana.Track {
     const trackId = getTrackId();
-    if (instrument instanceof Promise) {
-      // If we're waiting on an instrument, we put a pending-track into tracks
-      promise = tracks[trackId] = instrument.then(instrument => {
-        const track = Track(arrangement, instrument);
-        tracks[trackId] = track;
-        publisher.publish();
-        return track;
-      }).catch(() => {
-        delete tracks[trackId];
-        publisher.publish();
-      });
-    } else {
-      const track = tracks[trackId] = Track(arrangement, instrument);
-      promise = new Promise(resolve => resolve(track));
-    }
+    const track = tracks[trackId] = Track(arrangement, instrument);
     publisher.publish();
-    return promise;
+    return track;
   }
 
 
   async function unpackTracks(packedTracks:Banana.PackedTrack[]) {
-    const trackMap:Map<Banana.PackedTrack, Banana.Track> = new Map();
-
-    // Unpacking tracks is async, but we want them to end up in the right order
-    // So we unpack them all randomly...
-    await Promise.all(packedTracks.map(async packedTrack => {
-      const track = await Track.unpack(arrangement, packedTrack);
-      trackMap.set(packedTrack, track);
-    }));
-
-    // And then add them in the right order
     packedTracks.forEach(packedTrack => {
-      const track = trackMap.get(packedTrack);
+      const track = Track.unpack(arrangement, packedTrack);
       const trackId = getTrackId();
       tracks[trackId] = track;
-    });
-
+    })
     publisher.publish();
   }
 
@@ -98,10 +71,10 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
 
 
 
-arrangementBuilder.unpack = async function(packedArrangement:Banana.PackedArrangement): Promise<Banana.Arrangement> {
+arrangementBuilder.unpack = function(packedArrangement:Banana.PackedArrangement): Banana.Arrangement {
   const timeParams = TimeParams(packedArrangement.timeParams);
   const arrangement = Arrangement(timeParams);
-  await arrangement.unpackTracks(packedArrangement.packedTracks);
+  arrangement.unpackTracks(packedArrangement.packedTracks);
   return arrangement;
 }
 

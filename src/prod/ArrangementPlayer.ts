@@ -94,9 +94,7 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
 
     // Then add trackPlayers for new tracks
     for (const trackId in arrangement.tracks) {
-      const track:Banana.PotentialTrack = arrangement.tracks[trackId];
-      if (track instanceof Promise)
-        continue; // Skip pending tracks
+      const track = arrangement.tracks[trackId];
       if (!trackPlayers[trackId])
         trackPlayers[trackId] = TrackPlayer(track, timeCoordinator);
     }
