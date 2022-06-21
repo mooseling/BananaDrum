@@ -41,7 +41,7 @@ function Instrument(packedInstrument:Banana.PackedInstrument): Banana.Instrument
     noteStyles[id] = {id, symbol, audioBuffer:null};
     unpackPromises.push(
       AudioGetter.get(file)
-        .then(audioBuffer => noteStyles[id] = {id, audioBuffer, symbol})
+        .then(audioBuffer => noteStyles[id].audioBuffer = audioBuffer)
     );
   });
   Promise.all(unpackPromises).then(() => {

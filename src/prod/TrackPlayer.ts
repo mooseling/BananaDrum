@@ -2,12 +2,23 @@ type NoteWithTime = {realTime:Banana.RealTime, note:Banana.Note};
 
 function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordinator): Banana.TrackPlayer {
   let notesWithTime:NoteWithTime[] = [];
-  fillInRealTimeNotes();
+
+  if (track.instrument.loaded) {
+    fillInRealTimeNotes();
+  } else {
+    const setupNotes = () => {
+      fillInRealTimeNotes();
+      track.instrument.unsubscribe(setupNotes);
+    }
+    track.instrument.subscribe(setupNotes);
+  }
+
   let lastNoteCount = track.notes.length;
   track.subscribe(handleNoteCountChange);
   let lastLength = track.arrangement.timeParams.length;
   timeCoordinator.subscribe(handleTimeChange);
   track.arrangement.subscribe(destroySelfIfNeeded);
+
 
   return {track, getEvents};
 

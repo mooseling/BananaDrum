@@ -8,13 +8,13 @@ export function Publisher(): Banana.Publisher {
     unsubscribe: function(callbackToRemove: Banana.Subscription) {
       subscriptions.some((subscription, index) => {
         if (callbackToRemove === subscription) {
-          subscriptions.splice(index, 1);
+          subscriptions[index] = null;
           return true;
         }
       });
     },
     publish: function() {
-      subscriptions.forEach(callback => callback());
+      subscriptions.forEach(callback => callback && callback());
     }
   }
 }
