@@ -12,7 +12,7 @@ export const ArrangementPlayerContext = createContext(null);
 
 
 export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.ArrangementPlayer}): JSX.Element {
-  const {arrangement} = arrangementPlayer;
+  const {arrangement, trackPlayers} = arrangementPlayer;
   const [tracks, setTracks] = useState({...arrangement.tracks});
   const tracksSubscription = () => setTracks({...arrangement.tracks});
   const [eventEngineState, updateEventEngineState] = useState(EventEngine.state);
@@ -64,7 +64,12 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
               ref={ref}
               onScroll={updateScrollShadows}
             >
-              {getTrackViewers(tracks)}
+              {Object.keys(trackPlayers).map(trackId => (
+                <TrackViewer
+                  trackPlayer={trackPlayers[trackId]}
+                  key={trackId}
+                />
+              ))}
               <Scrollbar wrapperRef={ref} contentWidthPublisher={contentWidthPublisher}/>
             </div>
             <Overlay state={overlayState}>
@@ -76,16 +81,6 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
       </div>
     </ArrangementPlayerContext.Provider>
   );
-}
-
-
-function getTrackViewers(tracks:{[trackId:string]:Banana.Track}): JSX.Element[] {
-  return Object.keys(tracks).map(trackId => (
-    <TrackViewer
-      track={tracks[trackId]}
-      key={trackId}
-    />
-  ));
 }
 
 

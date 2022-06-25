@@ -1,11 +1,15 @@
 import {NoteViewer} from './NoteViewer';
 import {Overlay, OverlayState} from './Overlay';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, createContext, useContext} from 'react';
+
+
+export const TrackPlayerContext = createContext(null);
 
 const widthPerNote = 55.5; // 50pt for width, 2 * 2pt for padding, and 1.5pt for border
 
 
-export function TrackViewer({track}:{track:Banana.Track}): JSX.Element {
+export function TrackViewer({trackPlayer}:{trackPlayer:Banana.TrackPlayer}): JSX.Element {
+  const track = trackPlayer.track;
   const [overlayState] = useState(OverlayState(false));
 
   const [loaded, setLoaded] = useState(track.instrument.loaded);
@@ -19,22 +23,26 @@ export function TrackViewer({track}:{track:Banana.Track}): JSX.Element {
     return PendingTrackViewer();
 
   return (
-    <div className="track-viewer">
-      <div className="note-line-wrapper overlay-wrapper">
-        <NoteLine track={track}/>
-        <Overlay state={overlayState}>
-          <TrackControls track={track}/>
-        </Overlay>
+    <TrackPlayerContext.Provider value={trackPlayer}>
+      <div className="track-viewer">
+        <div className="note-line-wrapper overlay-wrapper">
+          <NoteLine track={track}/>
+          <Overlay state={overlayState}>
+            <TrackControls track={track}/>
+          </Overlay>
+        </div>
+        <div className="scrollshadow left-scrollshadow" />
+        <div className="scrollshadow right-scrollshadow" />
+        <TrackMeta track={track} toggleControls={() => overlayState.toggle()}/>
       </div>
-      <div className="scrollshadow left-scrollshadow" />
-      <div className="scrollshadow right-scrollshadow" />
-      <TrackMeta track={track} toggleControls={() => overlayState.toggle()}/>
-    </div>
+    </TrackPlayerContext.Provider>
   );
 }
 
 
-function TrackMeta({track, toggleControls}:{track:Banana.Track, toggleControls:() => void}): JSX.Element {
+function TrackMeta({track, toggleControls}
+  : {track:Banana.Track, toggleControls:() => void}
+): JSX.Element {
   const instrumentName = track.instrument.displayName;
   return (
     <div
