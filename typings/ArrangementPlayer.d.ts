@@ -8,5 +8,8 @@ declare namespace Banana {
   type TrackPlayerBuilder = (track:Track, timeCoordinator:TimeCoordinator) => TrackPlayer
   interface TrackPlayer extends EventSource {
     track: Track
+    soloMute: SoloMute
   }
+
+  type SoloMute = null | 'solo' | 'mute'
 }

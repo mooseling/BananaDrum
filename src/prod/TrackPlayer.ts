@@ -18,9 +18,13 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
   let lastLength = track.arrangement.timeParams.length;
   timeCoordinator.subscribe(handleTimeChange);
   track.arrangement.subscribe(destroySelfIfNeeded);
+  let soloMute:Banana.SoloMute = null;
 
-
-  return {track, getEvents};
+  return {
+    track, getEvents,
+    get soloMute() {return soloMute;},
+    set soloMute(newSoloMute:Banana.SoloMute) {soloMute = newSoloMute}
+  };
 
 
 
