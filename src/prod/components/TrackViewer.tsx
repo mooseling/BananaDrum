@@ -6,6 +6,7 @@ import {useState, useEffect, createContext, useContext} from 'react';
 export const TrackPlayerContext = createContext(null);
 
 const widthPerNote = 55.5; // 50pt for width, 2 * 2pt for padding, and 1.5pt for border
+const smButtonClasses = 'options-button push-button small';
 
 
 export function TrackViewer({trackPlayer}:{trackPlayer:Banana.TrackPlayer}): JSX.Element {
@@ -53,7 +54,41 @@ function TrackMeta({track, toggleControls}
         <img src="images/icons/wrench.svg" alt="options"/>
       </button>
       {instrumentName}
+      <SoloMuteButtons />
     </div>
+  );
+}
+
+
+function SoloMuteButtons(): JSX.Element {
+  const trackPlayer = useContext(TrackPlayerContext);
+  const [soloed, setSoloed] = useState(trackPlayer.soloMute === 'solo');
+  const [muted, setMuted] = useState(trackPlayer.soloMute === 'mute');
+
+  const trackPlayerSubscription = () => {
+    setSoloed(trackPlayer.soloMute === 'solo');
+    setMuted(trackPlayer.soloMute === 'mute');
+  };
+  useEffect(() => {
+    trackPlayer.subscribe(trackPlayerSubscription);
+    return () => trackPlayer.unsubscribe(trackPlayerSubscription);
+  }, []);
+
+  const solo = () => trackPlayer.soloMute = (trackPlayer.soloMute === 'solo' ? null : 'solo');
+  const mute = () => trackPlayer.soloMute = (trackPlayer.soloMute === 'mute' ? null : 'mute');
+  const soloButtonColour = soloed ? 'green' : 'gray';
+  const muteButtonColour = muted ? 'red' : 'gray';
+
+
+  return (
+    <>
+      <button className={`${smButtonClasses} ${soloButtonColour}`} onClick={solo}>
+        S
+      </button>
+      <button className={`${smButtonClasses} ${muteButtonColour}`} onClick={mute}>
+        M
+      </button>
+    </>
   );
 }
 
