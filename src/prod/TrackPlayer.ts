@@ -1,6 +1,9 @@
+import {Publisher} from './Publisher';
+
 type NoteWithTime = {realTime:Banana.RealTime, note:Banana.Note};
 
 function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordinator): Banana.TrackPlayer {
+  const publisher:Banana.Publisher = Publisher();
   let notesWithTime:NoteWithTime[] = [];
 
   if (track.instrument.loaded) {
@@ -22,6 +25,7 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
 
   return {
     track, getEvents,
+    subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
     get soloMute() {return soloMute;},
     set soloMute(newSoloMute:Banana.SoloMute) {soloMute = newSoloMute}
   };

@@ -7,7 +7,7 @@ declare namespace Banana {
   }
 
   type TrackPlayerBuilder = (track:Track, timeCoordinator:TimeCoordinator) => TrackPlayer
-  interface TrackPlayer extends EventSource {
+  interface TrackPlayer extends EventSource, Subscribable {
     track: Track
     soloMute: SoloMute
   }
