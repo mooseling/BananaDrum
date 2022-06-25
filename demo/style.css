@@ -252,6 +252,16 @@ So we're putting them in each track-viewer, where we can position them with no p
   width: 10pt;
 }
 
+.track-meta .solo-mute-buttons-wrapper {
+  position: absolute;
+  bottom: 2pt;
+  right: 2pt;
+}
+
+.track-meta .solo-mute-button {
+  width: 15pt;
+}
+
 .note-line-wrapper {
   flex-grow: 1;
   margin-left: var(--track-meta-width);
@@ -436,12 +446,20 @@ button.push-button.green {
   background-color: var(--green);
 }
 
+button.push-button.lighter-green {
+  background-color: var(--lighter-green);
+}
+
 button.push-button.gray {
   background-color: var(--light-gray);
 }
 
 button.push-button.yellow {
   background-color: var(--yellow);
+}
+
+button.push-button.dark-blue {
+  background-color: var(--dark-blue);
 }
 
 button.push-button:active {

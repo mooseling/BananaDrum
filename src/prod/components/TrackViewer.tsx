@@ -6,7 +6,7 @@ import {useState, useEffect, createContext, useContext} from 'react';
 export const TrackPlayerContext = createContext(null);
 
 const widthPerNote = 55.5; // 50pt for width, 2 * 2pt for padding, and 1.5pt for border
-const smButtonClasses = 'options-button push-button small';
+const smButtonClasses = 'options-button push-button small solo-mute-button';
 
 
 export function TrackViewer({trackPlayer}:{trackPlayer:Banana.TrackPlayer}): JSX.Element {
@@ -76,19 +76,19 @@ function SoloMuteButtons(): JSX.Element {
 
   const solo = () => trackPlayer.soloMute = (trackPlayer.soloMute === 'solo' ? null : 'solo');
   const mute = () => trackPlayer.soloMute = (trackPlayer.soloMute === 'mute' ? null : 'mute');
-  const soloButtonColour = soloed ? 'green' : 'gray';
-  const muteButtonColour = muted ? 'red' : 'gray';
+  const soloButtonColour = soloed ? 'lighter-green' : 'gray';
+  const muteButtonColour = muted ? 'dark-blue' : 'gray';
 
 
   return (
-    <>
+    <div className="solo-mute-buttons-wrapper">
       <button className={`${smButtonClasses} ${soloButtonColour}`} onClick={solo}>
         S
       </button>
       <button className={`${smButtonClasses} ${muteButtonColour}`} onClick={mute}>
         M
       </button>
-    </>
+    </div>
   );
 }
 
