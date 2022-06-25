@@ -27,7 +27,12 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
     track, getEvents,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
     get soloMute() {return soloMute;},
-    set soloMute(newSoloMute:Banana.SoloMute) {soloMute = newSoloMute}
+    set soloMute(newSoloMute:Banana.SoloMute) {
+      if (newSoloMute !== soloMute) {
+        soloMute = newSoloMute;
+        publisher.publish();
+      }
+    }
   };
 
 
