@@ -228,7 +228,8 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 .track-meta {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  justify-content: space-between;
   --padding: 2pt;
   width: var(--track-meta-width);
   height: var(--note-height);
@@ -250,18 +251,17 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 .track-meta .buttons-wrapper {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: end
 }
 
-.track-meta .options-button {
+.track-meta .buttons-wrapper > * {
+  margin-left: 4pt;
+  width: 17pt;
 }
 
 .track-meta .options-button img {
-  width: 7pt;
-}
-
-.track-meta .solo-mute-button {
-  width: 15pt;
+  width: 8pt;
 }
 
 .note-line-wrapper {
@@ -437,11 +437,11 @@ button.push-button {
 }
 
 button.push-button.small {
-  font-size: 8pt;
-  padding: 2pt 4pt 3pt;
+  font-size: 10pt;
+  padding: 1.5pt 4pt 3pt;
   font-weight: 400;
   border-radius: 5pt;
-  line-height: 11pt;
+  line-height: 13pt;
 }
 
 button.push-button.green {
