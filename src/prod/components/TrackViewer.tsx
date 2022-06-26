@@ -49,13 +49,13 @@ function TrackMeta({track, toggleControls}
     <div
       className="track-meta"
       style={{backgroundColor:track.colour}}
-      >
+    >
       {instrumentName}
       <div className="buttons-wrapper">
+        <SoloMuteButtons />
         <button className="options-button push-button small gray" onClick={toggleControls}>
           <img src="images/icons/wrench.svg" alt="options"/>
         </button>
-        <SoloMuteButtons />
       </div>
     </div>
   );
