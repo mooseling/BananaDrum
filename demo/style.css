@@ -227,15 +227,16 @@ So we're putting them in each track-viewer, where we can position them with no p
 }
 
 .track-meta {
+  display: flex;
+  flex-direction: row;
   --padding: 2pt;
-  width: calc(var(--track-meta-width) - 2 * var(--padding));
-  height: calc(var(--note-height) - 2 * var(--padding));
+  width: var(--track-meta-width);
+  height: var(--note-height);
   border: var(--thick-border);
   /* Apply some negative margins to collapse borders */
   margin-top: calc(-1 * var(--thick-border-width));
   margin-bottom: calc(-1 * var(--thick-border-width));
   margin-left: calc(-1 * var(--thick-border-width));
-  padding: var(--padding);
   flex-shrink: 0;
   position: absolute;
   left: 0;
@@ -243,19 +244,20 @@ So we're putting them in each track-viewer, where we can position them with no p
   z-index: 100; /* Currently only for covering track-controls overlay */
 }
 
+.track-meta > * {
+  padding: var(--padding);
+}
+
+.track-meta .buttons-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 .track-meta .options-button {
-  float: right;
-  margin-left: 5pt;
 }
 
 .track-meta .options-button img {
-  width: 10pt;
-}
-
-.track-meta .solo-mute-buttons-wrapper {
-  position: absolute;
-  bottom: 2pt;
-  right: 2pt;
+  width: 7pt;
 }
 
 .track-meta .solo-mute-button {

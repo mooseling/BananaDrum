@@ -50,11 +50,13 @@ function TrackMeta({track, toggleControls}
       className="track-meta"
       style={{backgroundColor:track.colour}}
       >
-      <button className="options-button push-button small gray" onClick={toggleControls}>
-        <img src="images/icons/wrench.svg" alt="options"/>
-      </button>
+      <div className="buttons-wrapper">
+        <button className="options-button push-button small gray" onClick={toggleControls}>
+          <img src="images/icons/wrench.svg" alt="options"/>
+        </button>
+        <SoloMuteButtons />
+      </div>
       {instrumentName}
-      <SoloMuteButtons />
     </div>
   );
 }
@@ -81,14 +83,14 @@ function SoloMuteButtons(): JSX.Element {
 
 
   return (
-    <div className="solo-mute-buttons-wrapper">
+    <>
       <button className={`${smButtonClasses} ${soloButtonColour}`} onClick={solo}>
         S
       </button>
       <button className={`${smButtonClasses} ${muteButtonColour}`} onClick={mute}>
         M
       </button>
-    </div>
+    </>
   );
 }
 
