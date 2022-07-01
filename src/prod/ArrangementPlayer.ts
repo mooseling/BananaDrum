@@ -123,6 +123,8 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
       }
     }
 
+    updateAudibleTrackPlayers(trackPlayers, audibleTrackPlayers);
+
     if (somethingChanged)
       publisher.publish();
   }
