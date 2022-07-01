@@ -5,8 +5,9 @@ import {isSameTiming} from '../utils';
 
 
 export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
-  const player:Banana.ArrangementPlayer = useContext(ArrangementPlayerContext);
-  const [isCurrent, setIsCurrent] = useState(isSameTiming(player.currentTiming, note.timing));
+  const arrangementPlayer = useContext(ArrangementPlayerContext);
+  const timingPublisher:Banana.Subscribable = arrangementPlayer.currentTimingPublisher;
+  const [isCurrent, setIsCurrent] = useState(isSameTiming(arrangementPlayer.currentTiming, note.timing));
   const [playing, setPlaying] = useState(EventEngine.state === 'playing')
 
   const engineSubscription:Banana.Subscription = () => setPlaying(EventEngine.state === 'playing');
@@ -15,10 +16,11 @@ export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
     return () => EventEngine.unsubscribe(engineSubscription);
   }, []);
 
-  const timingSubscription:Banana.Subscription = () => setIsCurrent(isSameTiming(player.currentTiming, note.timing));
+  const timingSubscription:Banana.Subscription =
+    () => setIsCurrent(isSameTiming(arrangementPlayer.currentTiming, note.timing));
   useEffect(() => {
-    player.subscribe(timingSubscription);
-    return () => player.unsubscribe(timingSubscription);
+    timingPublisher.subscribe(timingSubscription);
+    return () => timingPublisher.unsubscribe(timingSubscription);
   }, []);
 
   const backgroundColor = (playing && isCurrent) ?

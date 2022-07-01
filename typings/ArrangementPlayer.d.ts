@@ -4,6 +4,7 @@ declare namespace Banana {
     arrangement: Arrangement
     trackPlayers: {[trackId:string]:Banana.TrackPlayer}
     get currentTiming(): Timing
+    currentTimingPublisher: Subscribable
   }
 
   type TrackPlayerBuilder = (track:Track, timeCoordinator:TimeCoordinator) => TrackPlayer

@@ -6,6 +6,7 @@ import {Publisher} from './Publisher';
 export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.ArrangementPlayer {
   const timeCoordinator = TimeCoordinator(arrangement.timeParams);
   const publisher:Banana.Publisher = Publisher();
+  const currentTimingPublisher = Publisher();
 
   // We need a TrackPlayer for each Track, and add/remove them when needed
   const trackPlayers:{[trackId:string]:Banana.TrackPlayer} = {};
@@ -23,6 +24,10 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
     get currentTiming() {
       return currentTiming;
+    },
+    currentTimingPublisher: {
+      subscribe: currentTimingPublisher.subscribe,
+      unsubscribe: currentTimingPublisher.unsubscribe
     }
   };
 
@@ -125,7 +130,7 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
       realTime: timeCoordinator.convertToRealTime(timing),
       callback: () => {
         currentTiming = timing;
-        publisher.publish();
+        currentTimingPublisher.publish();
       },
       identifier: timing
     }));
