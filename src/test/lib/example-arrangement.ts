@@ -1,1 +1,1 @@
-export const exampleSongString:string = '4-4.95.1.1-4.16.2tCNZv5.32Wh1k.41b1dj';
+export const exampleSongString = '4-4.115.1.1-4.16.06Neb.11IOwQ.26N2J.3MoMEP3ME.5Fv8Qor.76jSF.8Hgm.9SLHS';
