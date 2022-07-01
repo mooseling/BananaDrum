@@ -284,7 +284,12 @@ So we're putting them in each track-viewer, where we can position them with no p
 }
 
 .note-line {
+  transition: opacity 0.2s;
   display: flex;
+}
+
+.track-viewer.inaudible .note-line {
+  opacity: 0.5;
 }
 
 /* Effective note-widths must be hard-coded in JS as well */

@@ -1,5 +1,6 @@
 import {NoteViewer} from './NoteViewer';
 import {Overlay, OverlayState} from './Overlay';
+import {ArrangementPlayerContext} from './ArrangementViewer';
 import {useState, useEffect, createContext, useContext} from 'react';
 
 
@@ -20,12 +21,21 @@ export function TrackViewer({trackPlayer}:{trackPlayer:Banana.TrackPlayer}): JSX
     return () => track.instrument.unsubscribe(instrumentSubscripion);
   }, []);
 
+  const arrangementPlayer = useContext(ArrangementPlayerContext);
+  const {audibleTrackPlayers, audibleTrackPlayersPublisher} = arrangementPlayer;
+  const [audible, setAudible] = useState(!!audibleTrackPlayers[track.id]);
+  const arrangementPlayerSubscription = () => setAudible(!!audibleTrackPlayers[track.id]);
+  useEffect(() => {
+    audibleTrackPlayersPublisher.subscribe(arrangementPlayerSubscription);
+    return () => audibleTrackPlayersPublisher.unsubscribe(arrangementPlayerSubscription);
+  }, []);
+
   if (!loaded)
     return PendingTrackViewer();
 
   return (
     <TrackPlayerContext.Provider value={trackPlayer}>
-      <div className="track-viewer">
+      <div className={`track-viewer ${audible ? 'audible' : 'inaudible'}`}>
         <div className="note-line-wrapper overlay-wrapper">
           <NoteLine track={track}/>
           <Overlay state={overlayState}>
