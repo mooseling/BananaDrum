@@ -1,6 +1,5 @@
 import {Library} from './Library';
 import {TimeParams} from './TimeParams';
-import {Arrangement} from './Arrangement';
 
 // No negative numbers
 export function urlEncodeNumber(input:bigint): string {

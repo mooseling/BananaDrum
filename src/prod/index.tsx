@@ -18,17 +18,16 @@ document.getElementById('load-button').addEventListener('click', function() {
   EventEngine.initialise();
   this.replaceWith(createLoadingMessage());
 
-  getArrangementAndPlayer().then(({arrangement, arrangementPlayer}) => {
-    EventEngine.connect(arrangementPlayer);
-    document.getElementById('welcome').remove();
-    ReactDOM.render(
-      <BananaDrum arrangementPlayer={arrangementPlayer}/>,
-      document.getElementById('wrapper')
-    );
+  const {arrangement, arrangementPlayer} = getArrangementAndPlayer();
+  EventEngine.connect(arrangementPlayer);
+  document.getElementById('welcome').remove();
+  ReactDOM.render(
+    <BananaDrum arrangementPlayer={arrangementPlayer}/>,
+    document.getElementById('wrapper')
+  );
 
-    // Expose some things for testing:
-    Object.assign(window, {arrangement, arrangementPlayer});
-  });
+  // Expose some things for testing:
+  Object.assign(window, {arrangement, arrangementPlayer});
 });
 
 
@@ -40,11 +39,11 @@ function createLoadingMessage():HTMLDivElement {
 }
 
 
-async function getArrangementAndPlayer() {
+function getArrangementAndPlayer() {
   const encodedArrangement = getUrlEncodedArrangement() ?? exampleSongString;
   Library.load(instrumentCollection);
   const packedArrangement = urlDecodeArrangement(encodedArrangement);
-  const arrangement = await Arrangement.unpack(packedArrangement);
+  const arrangement = Arrangement.unpack(packedArrangement);
   const arrangementPlayer = ArrangementPlayer(arrangement);
   return {arrangement, arrangementPlayer};
 }
