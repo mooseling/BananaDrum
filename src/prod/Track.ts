@@ -5,10 +5,11 @@ import {getColour} from './colours';
 import {isSameTiming} from './utils';
 
 function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrument, packedNotes:Banana.PackedNote[]): Banana.Track {
+  const id = getNewId();
   const publisher:Banana.Publisher = Publisher();
   const notes:Banana.Note[] = [];
   const colour = getColour(instrument.colourGroup);
-  const track:Banana.Track = {arrangement, instrument, notes, getNoteAt, colour, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
+  const track:Banana.Track = {id, arrangement, instrument, notes, getNoteAt, colour, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
   if (packedNotes)
     unpackNotes();
@@ -115,6 +116,27 @@ trackBuilder.unpack = function(arrangement:Banana.Arrangement, packedTrack:Banan
 }
 
 export const Track:Banana.TrackBuilder = trackBuilder;
+
+
+
+
+
+
+// ==================================================================
+//                       Private Static Functions
+// ==================================================================
+
+
+
+
+// Track-ids need to be unique, so we simply bung a globally increasing counter on them
+let trackCounter = 0;
+// We need unique identifiers for tracks, even if their instrument is the same
+// This needs to work even if instruments have been deleted
+function getNewId(): string {
+  trackCounter++;
+  return `${trackCounter}`;
+}
 
 
 

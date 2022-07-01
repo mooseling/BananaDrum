@@ -1,5 +1,6 @@
 declare namespace Banana {
   interface Track extends Subscribable {
+    id: string;
     arrangement: Arrangement
     instrument: Instrument
     notes: Note[] // Must be kept in order - this is Track's job

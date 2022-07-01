@@ -6,9 +6,6 @@ const defaultTimeParams:Banana.PackedTimeParams = {
   timeSignature:'4/4', tempo:120, length:1, pulse:'1/4', stepResolution:16
 };
 
-// Track-ids need to be unique, so we simply bung a globally increasing counter on them
-let trackCounter = 0;
-
 export const Arrangement:Banana.ArrangementBuilder = arrangementBuilder;
 
 function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
@@ -32,8 +29,8 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
 
 
   function createTrack(instrument:Banana.Instrument): Banana.Track {
-    const trackId = getTrackId();
-    const track = tracks[trackId] = Track(arrangement, instrument);
+    const track = Track(arrangement, instrument);
+    tracks[track.id] = track;
     publisher.publish();
     return track;
   }
@@ -42,21 +39,20 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
   async function unpackTracks(packedTracks:Banana.PackedTrack[]) {
     packedTracks.forEach(packedTrack => {
       const track = Track.unpack(arrangement, packedTrack);
-      const trackId = getTrackId();
-      tracks[trackId] = track;
+      tracks[track.id] = track;
     })
     publisher.publish();
   }
 
 
   function removeTrack(trackToRemove:Banana.Track) {
-    Object.keys(tracks).some(trackId => {
-      if (tracks[trackId] === trackToRemove) {
-        delete tracks[trackId];
-        publisher.publish();
-        return true;
-      }
-    });
+    if (tracks[trackToRemove.id]) {
+      delete tracks[trackToRemove.id];
+      publisher.publish();
+      return true;
+    } else {
+      console.warn("Tried to remove a track but no reference to it. id: " + trackToRemove.id);
+    }
   }
 };
 
@@ -76,22 +72,4 @@ arrangementBuilder.unpack = function(packedArrangement:Banana.PackedArrangement)
   const arrangement = Arrangement(timeParams);
   arrangement.unpackTracks(packedArrangement.packedTracks);
   return arrangement;
-}
-
-
-
-
-
-
-// ==================================================================
-//                       Private Static Functions
-// ==================================================================
-
-
-
-// We need unique identifiers for tracks, even if their instrument is the same
-// This needs to work even if instruments have been deleted
-function getTrackId(): string {
-  trackCounter++;
-  return `${trackCounter}`;
 }
