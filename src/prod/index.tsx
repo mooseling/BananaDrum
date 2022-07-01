@@ -1,11 +1,12 @@
 import {EventEngine} from './EventEngine';
+import {Arrangement} from './Arrangement';
 import {ArrangementPlayer} from './ArrangementPlayer';
 import {Library} from './Library';
 import {BananaDrum} from './components/BananaDrum';
 import ReactDOM from 'react-dom';
 import React from 'react';
 import {instrumentCollection} from '../test/lib/example-instruments';
-import {createTestEcosystem} from '../test/lib/createTestEcosystem';
+import {exampleSongString} from '../test/lib/example-arrangement';
 import {urlEncodeNumber, urlDecodeNumber, interpretAsBaseN, convertToBaseN, urlEncodeTrack, urlEncodeArrangement, urlDecodeArrangement} from './compression';
 
 // Set React to global so we don't have to import it in every file with JSX
@@ -40,14 +41,12 @@ function createLoadingMessage():HTMLDivElement {
 
 
 async function getArrangementAndPlayer() {
-  const encodedArrangement = getUrlEncodedArrangement();
-  if (encodedArrangement != null) {
-    Library.load(instrumentCollection);
-    const arrangement = urlDecodeArrangement(encodedArrangement);
-    const arrangementPlayer = ArrangementPlayer(arrangement);
-    return {arrangement, arrangementPlayer};
-  }
-  return createTestEcosystem();
+  const encodedArrangement = getUrlEncodedArrangement() ?? exampleSongString;
+  Library.load(instrumentCollection);
+  const packedArrangement = urlDecodeArrangement(encodedArrangement);
+  const arrangement = await Arrangement.unpack(packedArrangement);
+  const arrangementPlayer = ArrangementPlayer(arrangement);
+  return {arrangement, arrangementPlayer};
 }
 
 
