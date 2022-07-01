@@ -67,32 +67,34 @@ export function urlEncodeTrack(track:Banana.Track): string {
 }
 
 
-export function createTrackFromUrl(urlEncodedTrack:string, arrangement:Banana.Arrangement): void {
+export function createPackedTrack(urlEncodedTrack:string, timings:Banana.Timing[]):
+  Banana.PackedTrack {
   const instrumentId = urlEncodedTrack[0];
   const instrumentMeta = Library.instrumentMetas.filter(({id}) => id === instrumentId)[0];
   if (!instrumentMeta)
     throw 'Instrument not found';
-  const instrument = Library.getInstrument(instrumentMeta.id);
-  const track = arrangement.createTrack(instrument);
-  if (!track)
-    throw "Couldn't create track";
   const musicAsString = urlEncodedTrack.substring(1);
   const musicAsNumber = urlDecodeNumber(musicAsString);
-  const base = Object.keys(instrument.noteStyles).length + 1; // + 1 for rests
+  const base = Object.keys(instrumentMeta.noteStyles).length + 1; // + 1 for rests
   const musicInBaseN = convertToBaseN(musicAsNumber, base);
-  while (musicInBaseN.length < arrangement.timeParams.timings.length)
+  while (musicInBaseN.length < timings.length)
     musicInBaseN.unshift(0); // pad number with leading 0s
 
-  // setTimeout so that GUI can mount and subscribe to notes
-  setTimeout(() => {
-    musicInBaseN.forEach((noteStyleNumber, index) => {
-      const noteStyleId = numberToCharacter[noteStyleNumber];
-      const noteStyle = Object.values(instrument.noteStyles)
-        .filter(({id}) => id === noteStyleId)[0];
-      if (noteStyle)
-        track.notes[index].noteStyle = noteStyle;
-    });
-  }, 0);
+  return {
+    instrumentId: instrumentMeta.id,
+    packedNotes: musicInBaseN.reduce((packedNotes, value, column) => {
+      packedNotes.push({
+        noteStyleId: numberToCharacter[value],
+        timing: packTiming(timings[column])
+      });
+      return packedNotes;
+    }, [])
+  };
+}
+
+
+function packTiming({bar, step}:Banana.Timing): Banana.PackedTiming {
+  return `${bar}:${step}`;
 }
 
 
@@ -108,7 +110,7 @@ export function urlEncodeArrangement(arrangement:Banana.Arrangement): string {
   return output;
 }
 
-export function urlDecodeArrangement(url:string): Banana.Arrangement {
+export function urlDecodeArrangement(url:string): Banana.PackedArrangement {
   const chunks = url.replaceAll('-', '/').split('.');
   const timeParams = TimeParams({
     timeSignature:chunks[0],
@@ -117,10 +119,10 @@ export function urlDecodeArrangement(url:string): Banana.Arrangement {
     pulse:chunks[3],
     stepResolution:Number(chunks[4])
   });
-  const arrangement = Arrangement(timeParams);
-  for (let chunkIndex = 5; chunkIndex < chunks.length; chunkIndex++)
-    createTrackFromUrl(chunks[chunkIndex], arrangement);
-  return arrangement;
+  return {
+    timeParams,
+    packedTracks: chunks.slice(5).map(url => createPackedTrack(url, timeParams.timings))
+  };
 }
 
 
