@@ -67,13 +67,13 @@ export function urlEncodeTrack(track:Banana.Track): string {
 }
 
 
-export async function createTrackFromUrl(urlEncodedTrack:string, arrangement:Banana.Arrangement): Promise<void> {
-  const trackId = urlEncodedTrack[0];
-  const instrumentMeta = Library.instrumentMetas.filter(({id}) => id === trackId)[0];
+export function createTrackFromUrl(urlEncodedTrack:string, arrangement:Banana.Arrangement): void {
+  const instrumentId = urlEncodedTrack[0];
+  const instrumentMeta = Library.instrumentMetas.filter(({id}) => id === instrumentId)[0];
   if (!instrumentMeta)
     throw 'Instrument not found';
-  const instrument = await Library.getInstrument(instrumentMeta.id);
-  const track = await arrangement.createTrack(instrument);
+  const instrument = Library.getInstrument(instrumentMeta.id);
+  const track = arrangement.createTrack(instrument);
   if (!track)
     throw "Couldn't create track";
   const musicAsString = urlEncodedTrack.substring(1);
@@ -96,13 +96,12 @@ export async function createTrackFromUrl(urlEncodedTrack:string, arrangement:Ban
 }
 
 
-// async just because tracks may be loading
-export async function urlEncodeArrangement(arrangement:Banana.Arrangement): Promise<string> {
+export function urlEncodeArrangement(arrangement:Banana.Arrangement): string {
   const {timeParams:tp} = arrangement;
   let output = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
   output = output.replaceAll('/', '-');
   for (const trackId in arrangement.tracks) {
-    const track = await arrangement.tracks[trackId];
+    const track = arrangement.tracks[trackId];
     if (track)
       output += '.' + urlEncodeTrack(track);
   }
