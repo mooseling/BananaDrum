@@ -2,15 +2,21 @@ import {TimeCoordinator} from './TimeCoordinator';
 import {TrackPlayer} from './TrackPlayer';
 import {Publisher} from './Publisher';
 
+type TrackPlayers = {[trackId:string]: Banana.TrackPlayer}
+
 
 export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.ArrangementPlayer {
   const timeCoordinator = TimeCoordinator(arrangement.timeParams);
   const publisher:Banana.Publisher = Publisher();
   const currentTimingPublisher = Publisher();
+  const audibleTrackPlayersPublisher = Publisher();
 
   // We need a TrackPlayer for each Track, and add/remove them when needed
-  const trackPlayers:{[trackId:string]:Banana.TrackPlayer} = {};
+  const trackPlayers:TrackPlayers = {};
+  const audibleTrackPlayers:TrackPlayers = {};
+  const trackPlayerSubscriptions:{[trackId:string]:Banana.Subscription} = {};
   updateTrackPlayers();
+  updateAudibleTrackPlayers(trackPlayers, audibleTrackPlayers);
   arrangement.subscribe(updateTrackPlayers);
 
   // currentTiming updates as we play, and ArrangementPlayer publishes when it does
@@ -28,6 +34,11 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
     currentTimingPublisher: {
       subscribe: currentTimingPublisher.subscribe,
       unsubscribe: currentTimingPublisher.unsubscribe
+    },
+    audibleTrackPlayers,
+    audibleTrackPlayersPublisher: {
+      subscribe: audibleTrackPlayersPublisher.subscribe,
+      unsubscribe: audibleTrackPlayersPublisher.unsubscribe
     }
   };
 
@@ -47,39 +58,20 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
   function getEvents(interval:Banana.Interval): Banana.Event[] {
     const events:Banana.Event[] = [];
     const loopIntervals:Banana.LoopInterval[] = timeCoordinator.convertToLoopIntervals(interval);
-    const audibleTrackPlayers:Banana.TrackPlayer[] = getAudibleTrackPlayers();
 
     loopIntervals.forEach(loopInterval => {
       const {loopNumber} = loopInterval;
-      audibleTrackPlayers.forEach(({getEvents}) => {
-        getEvents(loopInterval).forEach(event => events.push({
+      for (const trackId in audibleTrackPlayers) {
+        trackPlayers[trackId].getEvents(loopInterval).forEach(event => events.push({
           ...event,
           realTime: timeCoordinator.convertToAudioTime(event.realTime, loopNumber)
         }));
-      });
+      }
     });
 
     events.push(...getCallbackEvents(interval));
 
     return events;
-  }
-
-
-  function getAudibleTrackPlayers(): Banana.TrackPlayer[] {
-    const soloedTracksPlayers:Banana.TrackPlayer[] = [];
-    const unmutedTracksPlayers:Banana.TrackPlayer[] = [];
-
-    for (const trackId in trackPlayers) {
-      const trackPlayer = trackPlayers[trackId];
-      if (trackPlayer.soloMute === 'solo')
-        soloedTracksPlayers.push(trackPlayer);
-      else if (trackPlayer.soloMute === null)
-        unmutedTracksPlayers.push(trackPlayer);
-    }
-
-    if (soloedTracksPlayers.length)
-      return soloedTracksPlayers;
-    return unmutedTracksPlayers;
   }
 
 
@@ -110,18 +102,41 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
 
 
   function updateTrackPlayers(): void {
+    let somethingChanged = false;
     // First remove trackPlayers for removed tracks
     for (const trackId in trackPlayers) {
-      if (!arrangement.tracks[trackId])
+      if (!arrangement.tracks[trackId]) {
+        trackPlayers[trackId].unsubscribe(trackPlayerSubscriptions[trackId]);
+        delete trackPlayerSubscriptions[trackId];
         delete trackPlayers[trackId];
+        somethingChanged = true;
+      }
     }
 
     // Then add trackPlayers for new tracks
     for (const trackId in arrangement.tracks) {
       const track = arrangement.tracks[trackId];
-      if (!trackPlayers[trackId])
+      if (!trackPlayers[trackId]) {
         trackPlayers[trackId] = TrackPlayer(track, timeCoordinator);
+        trackPlayers[trackId].subscribe(getNewSubscription(trackId));
+        somethingChanged = true;
+      }
     }
+
+    if (somethingChanged)
+      publisher.publish();
+  }
+
+
+  function getNewSubscription(trackId:string): Banana.Subscription {
+    if (trackPlayerSubscriptions[trackId])
+      throw 'Trying to subscribe to a TrackPlayer but already subscribed';
+    const subscription = () => {
+      updateAudibleTrackPlayers(trackPlayers, audibleTrackPlayers);
+      audibleTrackPlayersPublisher.publish();
+    };
+    trackPlayerSubscriptions[trackId] = subscription;
+    return subscription;
   }
 
 
@@ -135,4 +150,34 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
       identifier: timing
     }));
   }
+}
+
+
+export function updateAudibleTrackPlayers(trackPlayers:TrackPlayers, target:TrackPlayers) {
+  const audibleTrackPlayers = getAudibleTrackPlayers(Object.values(trackPlayers));
+
+  for (const trackId in trackPlayers) {
+    const trackPlayer = trackPlayers[trackId];
+    if (audibleTrackPlayers.includes(trackPlayer))
+      target[trackId] = trackPlayer;
+    else if (target[trackId])
+      delete target[trackId];
+  }
+}
+
+
+function getAudibleTrackPlayers(trackPlayers:Banana.TrackPlayer[]): Banana.TrackPlayer[] {
+  const soloedTracksPlayers:Banana.TrackPlayer[] = [];
+  const unmutedTracksPlayers:Banana.TrackPlayer[] = [];
+
+  trackPlayers.forEach(trackPlayer => {
+    if (trackPlayer.soloMute === 'solo')
+      soloedTracksPlayers.push(trackPlayer);
+    else if (trackPlayer.soloMute === null)
+      unmutedTracksPlayers.push(trackPlayer);
+  });
+
+  if (soloedTracksPlayers.length)
+    return soloedTracksPlayers;
+  return unmutedTracksPlayers;
 }
