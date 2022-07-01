@@ -12,9 +12,9 @@ export const ArrangementPlayerContext = createContext(null);
 
 
 export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.ArrangementPlayer}): JSX.Element {
-  const {arrangement, trackPlayers} = arrangementPlayer;
-  const [tracks, setTracks] = useState({...arrangement.tracks});
-  const tracksSubscription = () => setTracks({...arrangement.tracks});
+  const {arrangement} = arrangementPlayer;
+  const [trackPlayers, setTrackPlayers] = useState({...arrangementPlayer.trackPlayers});
+  const arrangementPlayerSubscription = () => setTrackPlayers({...arrangementPlayer.trackPlayers});
   const [eventEngineState, updateEventEngineState] = useState(EventEngine.state);
   const eventEngineSubscription = () => updateEventEngineState(EventEngine.state);
   const [overlayState] = useState(OverlayState(false));
@@ -38,13 +38,13 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   useEffect(() => {
     setTimeout(updateScrollShadows, 0);
 
-    arrangement.subscribe(tracksSubscription);
+    arrangementPlayer.subscribe(arrangementPlayerSubscription);
     EventEngine.subscribe(eventEngineSubscription);
     arrangement.timeParams.subscribe(timeParamsSubscription);
     resizeObserver.observe(ref.current);
 
     return () => {
-      arrangement.unsubscribe(tracksSubscription);
+      arrangementPlayer.unsubscribe(arrangementPlayerSubscription);
       EventEngine.unsubscribe(eventEngineSubscription);
       resizeObserver.unobserve(ref.current);
       arrangement.timeParams.unsubscribe(timeParamsSubscription);
