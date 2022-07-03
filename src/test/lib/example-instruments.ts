@@ -30,7 +30,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '1',
         file: 'Chocalho_Accent.mp3',
         symbol: {
-          src:'images/icons/X.svg',
+          src:'images/icons/x_big.svg',
           string: 'accent'
         }
       },
@@ -38,7 +38,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '2',
         file: 'Chocalho_Ghost.mp3',
         symbol: {
-          src:'images/icons/x_lower.svg',
+          src:'images/icons/x_small.svg',
           string: 'ghost'
         }
       }
@@ -53,7 +53,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '1',
         file: 'Tamborim_Accent.mp3',
         symbol: {
-          src:'images/icons/X.svg',
+          src:'images/icons/x_big.svg',
           string: 'accent'
         }
       },
@@ -61,7 +61,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '2',
         file: 'Tamborim_Ghost.mp3',
         symbol: {
-          src:'images/icons/x_lower.svg',
+          src:'images/icons/x_small.svg',
           string: 'ghost'
         }
       }
@@ -76,7 +76,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '1',
         file: 'Repanique_Center.mp3',
         symbol: {
-          src:'images/icons/X.svg',
+          src:'images/icons/x_big.svg',
           string: 'center'
         }
       },
@@ -84,7 +84,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '2',
         file: 'Repanique_Edge.mp3',
         symbol: {
-          src:'images/icons/x_lower.svg',
+          src:'images/icons/x_small.svg',
           string: 'edge'
         }
       },
@@ -116,7 +116,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '6',
         file: 'Repanique_Hand.mp3',
         symbol: {
-          src:'images/icons/O.svg',
+          src:'images/icons/o_big.svg',
           string: 'hand'
         }
       },
@@ -139,7 +139,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '1',
         file: 'Repanique_Whippy_Accent.mp3',
         symbol: {
-          src:'images/icons/X.svg',
+          src:'images/icons/x_big.svg',
           string: 'accent'
         }
       },
@@ -147,7 +147,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '2',
         file: 'Repanique_Whippy_Ghost.mp3',
         symbol: {
-          src:'images/icons/x_lower.svg',
+          src:'images/icons/x_small.svg',
           string: 'ghost'
         }
       }
@@ -162,7 +162,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '1',
         file: 'Caixa_Accent.mp3',
         symbol: {
-          src:'images/icons/X.svg',
+          src:'images/icons/x_big.svg',
           string: 'accent'
         }
       },
@@ -170,7 +170,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '2',
         file: 'Caixa_Ghost.mp3',
         symbol: {
-          src:'images/icons/x_lower.svg',
+          src:'images/icons/x_small.svg',
           string: 'ghost'
         }
       },
@@ -207,7 +207,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '1',
         file: 'High_Surdo_Accent.mp3',
         symbol: {
-          src:'images/icons/O.svg',
+          src:'images/icons/o_big.svg',
           string: 'accent'
         }
       },
@@ -215,7 +215,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '2',
         file: 'High_Surdo_Muted.mp3',
         symbol: {
-          src:'images/icons/O_closed.svg',
+          src:'images/icons/o_big_closed.svg',
           string: 'muted'
         }
       }
@@ -230,7 +230,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '1',
         file: 'Mid_Surdo_Accent.mp3',
         symbol: {
-          src:'images/icons/O.svg',
+          src:'images/icons/o_big.svg',
           string: 'accent'
         }
       },
@@ -238,7 +238,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '2',
         file: 'Mid_Surdo_Muted.mp3',
         symbol: {
-          src:'images/icons/O_closed.svg',
+          src:'images/icons/o_big_closed.svg',
           string: 'muted'
         }
       }
@@ -253,7 +253,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '1',
         file: 'Low_Surdo_Accent.mp3',
         symbol: {
-          src:'images/icons/O.svg',
+          src:'images/icons/o_big.svg',
           string: 'accent'
         }
       },
@@ -261,7 +261,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '2',
         file: 'Low_Surdo_Muted.mp3',
         symbol: {
-          src:'images/icons/O_closed.svg',
+          src:'images/icons/o_big_closed.svg',
           string: 'muted'
         }
       }
