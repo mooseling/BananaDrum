@@ -116,7 +116,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '6',
         file: 'Repanique_Hand.mp3',
         symbol: {
-          src:'images/icons/hand.svg',
+          src:'images/icons/O.svg',
           string: 'hand'
         }
       },
@@ -124,7 +124,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '7',
         file: 'Repanique_Slap.mp3',
         symbol: {
-          src:'images/icons/slap.svg',
+          src:'images/icons/sun_rays.svg',
           string: 'slap'
         }
       }
