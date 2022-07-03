@@ -100,7 +100,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
         id: '4',
         file: 'Repanique_Rim.mp3',
         symbol: {
-          src:'images/icons/hollow_diamond.svg',
+          src:'images/icons/rim.svg',
           string: 'rim'
         }
       },
