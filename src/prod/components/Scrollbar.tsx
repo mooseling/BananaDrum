@@ -43,9 +43,12 @@ export function Scrollbar({wrapperRef, contentWidthPublisher}:
 
 
 function calculateThumbWidth(wrapper:HTMLElement): number {
+  const firstNoteLineWrapper = wrapper.getElementsByClassName('note-line-wrapper')[0];
+  if (!firstNoteLineWrapper)
+    return 0;
+
   const scrollableWidth =
-    wrapper.getElementsByClassName('note-line-wrapper')[0].clientWidth
-    + 113; // hard-coded note-meta width for performance
+    firstNoteLineWrapper.clientWidth + 113; // hard-coded note-meta width for performance
   const ratio = wrapper.offsetWidth / scrollableWidth;
   const scrollbar = wrapper.getElementsByClassName('custom-scrollbar')[0];
   return ratio * scrollbar.clientWidth;
@@ -55,9 +58,12 @@ function calculateThumbWidth(wrapper:HTMLElement): number {
 function calculateThumbLeft(wrapper:HTMLElement): number {
   const scrollLeft = wrapper.scrollLeft;
   const scrollbarWidth = wrapper.getElementsByClassName('custom-scrollbar')[0].clientWidth;
+  const firstNoteLineWrapper = wrapper.getElementsByClassName('note-line-wrapper')[0];
+  if (!firstNoteLineWrapper)
+    return 0;
+
   const scrollableWidth =
-    wrapper.getElementsByClassName('note-line-wrapper')[0].clientWidth
-    + 113; // hard-coded note-meta width for performance
+    firstNoteLineWrapper.clientWidth + 113; // hard-coded note-meta width for performance
   return (scrollLeft * scrollbarWidth) / scrollableWidth;
 }
 
