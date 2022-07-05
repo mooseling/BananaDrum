@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
 
+
 export function Scrollbar({wrapperRef, contentWidthPublisher}:
   {wrapperRef:React.MutableRefObject<HTMLDivElement>, contentWidthPublisher:Banana.Publisher}
 ): JSX.Element {
@@ -60,6 +61,7 @@ function calculateThumbLeft(wrapper:HTMLElement): number {
   return (scrollLeft * scrollbarWidth) / scrollableWidth;
 }
 
+
 function handleThumbTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thumbWidth:number) {
   event.stopPropagation();
   if (event.touches.length > 1)
@@ -91,10 +93,12 @@ function handleTrackTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thum
   scrollHandler.startThumbDrag(startX);
 }
 
+
 type ScrollHandler = {
   startThumbDrag: (startX:number) => void
   scrollFromTrackClick: (startX:number) => void
 }
+
 
 function ScrollHandler(wrapper:HTMLElement, thumbWidth:number, touch:boolean) : ScrollHandler {
   if (!wrapper)
@@ -150,6 +154,7 @@ function ScrollHandler(wrapper:HTMLElement, thumbWidth:number, touch:boolean) : 
     }
   };
 }
+
 
 const fakeScrollHandler:ScrollHandler = {
   startThumbDrag: (startX:number) => {},
