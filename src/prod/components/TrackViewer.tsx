@@ -1,5 +1,5 @@
 import {NoteViewer} from './NoteViewer';
-import {Overlay, OverlayState} from './Overlay';
+import {Overlay, toggleOverlay} from './Overlay';
 import {ArrangementPlayerContext} from './ArrangementViewer';
 import {useState, useEffect, createContext, useContext} from 'react';
 
@@ -12,7 +12,7 @@ const smButtonClasses = 'options-button push-button small solo-mute-button';
 
 export function TrackViewer({trackPlayer}:{trackPlayer:Banana.TrackPlayer}): JSX.Element {
   const track = trackPlayer.track;
-  const [overlayState] = useState(OverlayState(false));
+  const overlayName = 'track_overlay_' + track.id;
 
   const [loaded, setLoaded] = useState(track.instrument.loaded);
   const instrumentSubscripion = () => setLoaded(track.instrument.loaded);
@@ -38,13 +38,13 @@ export function TrackViewer({trackPlayer}:{trackPlayer:Banana.TrackPlayer}): JSX
       <div className={`track-viewer ${audible ? 'audible' : 'inaudible'}`}>
         <div className="note-line-wrapper overlay-wrapper">
           <NoteLine track={track}/>
-          <Overlay state={overlayState}>
+          <Overlay name={overlayName}>
             <TrackControls track={track}/>
           </Overlay>
         </div>
         <div className="scrollshadow left-scrollshadow" />
         <div className="scrollshadow right-scrollshadow" />
-        <TrackMeta track={track} toggleControls={() => overlayState.toggle()}/>
+        <TrackMeta track={track} toggleControls={() => toggleOverlay(overlayName)}/>
       </div>
     </TrackPlayerContext.Provider>
   );

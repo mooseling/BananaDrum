@@ -1,20 +1,26 @@
 import {useState, useEffect} from 'react';
 import {Publisher} from '../Publisher';
 
-export function Overlay({state, children}:{state:Banana.OverlayState, children:JSX.Element}): JSX.Element {
-  const [visibilityClass, setVisibilityClass] = useState(state.visible ? 'visible' : 'invisible hidden');
-  const overlaySubscription = () => {
-    if (state.visible) {
-      // If we remove
-      setVisibilityClass('invisible'); // First remove hidden class, so we remove display:none
-      setTimeout(() => setVisibilityClass('visible'), 0); // Then fade in
-    } else {
-      setVisibilityClass('invisible'); // hidden class will be set after animation ends
-    }
-  }; // .hidden will be set after transition
+
+export function Overlay({name, children}:{name:string, children:JSX.Element}): JSX.Element {
+  const [visibilityClass, setVisibilityClass] = useState('invisible hidden');
+
   useEffect(() => {
+    const state = OverlayState();
+    const overlaySubscription = () => {
+      if (state.visible) {
+        setVisibilityClass('invisible'); // First remove hidden class, so we remove display:none
+        setTimeout(() => setVisibilityClass('visible'), 0); // Then fade in
+      } else {
+        setVisibilityClass('invisible'); // hidden class will be set after animation ends
+      }
+    };
     state.subscribe(overlaySubscription);
-    return () => state.unsubscribe(overlaySubscription);
+    overlayStates[name] = state;
+    return () => {
+      state.unsubscribe(overlaySubscription);
+      delete overlayStates[name];
+    };
   }, []);
 
   const className = `overlay ${visibilityClass}`;
@@ -26,7 +32,7 @@ export function Overlay({state, children}:{state:Banana.OverlayState, children:J
     if (!elem?.classList.contains('overlay'))
       return;
 
-    if (!state.visible)
+    if (visibilityClass === 'invisible')
       setVisibilityClass('invisible hidden');
     event.stopPropagation(); // Don't want to catch this if we have overlays within overlays... ee gads
   }
@@ -39,13 +45,36 @@ export function Overlay({state, children}:{state:Banana.OverlayState, children:J
 }
 
 
-export function OverlayState(initialVisible:boolean): Banana.OverlayState {
+type OverlayState = Banana.Subscribable & {visible:boolean};
+function OverlayState(): OverlayState {
   const publisher:Banana.Publisher = Publisher();
-  return Object.assign(publisher, {
-    visible: initialVisible,
-    toggle: function() {
-      this.visible = !this.visible;
-      this.publish();
-    }
-  })
+  let visible = false;
+  return {
+    get visible() {return visible;},
+    set visible(newVisible) {
+      if (visible !== newVisible) {
+        visible = newVisible;
+        publisher.publish();
+      }
+    },
+    subscribe: publisher.subscribe,
+    unsubscribe: publisher.unsubscribe
+  };
+}
+
+
+const overlayStates:{[name:string]:OverlayState} = {};
+
+
+export function toggleOverlay(name:string, mode:'toggle'|'show'|'hide' = 'toggle') {
+  const state = overlayStates[name];
+  if (state === undefined) {
+    console.warn("Toggled an overlay that wasn't registered");
+    return;
+  }
+
+  state.visible =
+    mode === 'toggle' ? !state.visible :
+    mode === 'show' ? true :
+    false; // mode === 'hide'
 }

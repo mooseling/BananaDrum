@@ -2,7 +2,7 @@ import {TrackViewer} from './TrackViewer';
 import {ArrangementControls} from './ArrangementControls';
 import {Scrollbar} from './Scrollbar';
 import {InstrumentBrowser} from './InstrumentBrowser';
-import {Overlay, OverlayState} from './Overlay';
+import {Overlay, toggleOverlay} from './Overlay';
 import {Publisher} from '../Publisher';
 import {EventEngine} from '../EventEngine';
 import {useState, useEffect, createContext, useRef} from 'react';
@@ -17,7 +17,6 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   const arrangementPlayerSubscription = () => setTrackPlayers({...arrangementPlayer.trackPlayers});
   const [eventEngineState, updateEventEngineState] = useState(EventEngine.state);
   const eventEngineSubscription = () => updateEventEngineState(EventEngine.state);
-  const [overlayState] = useState(OverlayState(false));
 
   // Scroll-shadows over the track-viewers
   // We need to recalculate these classes when:
@@ -72,12 +71,16 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
               ))}
               <Scrollbar wrapperRef={ref} contentWidthPublisher={contentWidthPublisher}/>
             </div>
-            <Overlay state={overlayState}>
-              <InstrumentBrowser close={() => overlayState.visible && overlayState.toggle()}/>
+            <Overlay name="instrument_browser">
+              <InstrumentBrowser close={() => toggleOverlay('instrument_browser', 'hide')}/>
             </Overlay>
           </div>
         </div>
-        <button id="show-instrument-browser" className="push-button" onClick={() => !overlayState.visible && overlayState.toggle()}>Add Instrument</button>
+        <button
+          id="show-instrument-browser"
+          className="push-button"
+          onClick={() => toggleOverlay('instrument_browser', 'show')}
+        >Add Instrument</button>
       </div>
     </ArrangementPlayerContext.Provider>
   );

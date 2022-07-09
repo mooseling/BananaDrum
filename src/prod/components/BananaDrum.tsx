@@ -1,32 +1,31 @@
 import {ArrangementViewer} from './ArrangementViewer';
-import {Overlay, OverlayState} from './Overlay';
-import {useState} from 'react';
+import {Overlay, toggleOverlay} from './Overlay';
 
-export function BananaDrum({arrangementPlayer}:{arrangementPlayer:Banana.ArrangementPlayer}): JSX.Element {
-  const [overlayState] = useState(OverlayState(false));
+export function BananaDrum(
+  {arrangementPlayer}:{arrangementPlayer:Banana.ArrangementPlayer}): JSX.Element {
 
   return (
     <div id="banana-drum" className="overlay-wrapper">
       <ArrangementViewer arrangementPlayer={arrangementPlayer}/>
-      <Footer aboutState={overlayState}/>
-      <Overlay state={overlayState}>
-        <About overlayState={overlayState}/>
+      <Footer />
+      <Overlay name="about">
+        <About />
       </Overlay>
     </div>
   );
 }
 
 
-function Footer({aboutState}:{aboutState:Banana.OverlayState}): JSX.Element {
+function Footer(): JSX.Element {
   return (
     <div id="footer">
-      <button className="anchor-button" onClick={() => aboutState.visible || aboutState.toggle()}>About</button>
+      <button className="anchor-button" onClick={() => toggleOverlay('about', 'show')}>About</button>
     </div>
   );
 }
 
 
-function About({overlayState}:{overlayState:Banana.OverlayState}): JSX.Element {
+function About(): JSX.Element {
   return (
     <div id="about" className="welcome">
       <img src="images/banana-with-feet.svg" style={{height:"80pt"}}/>
@@ -39,7 +38,11 @@ function About({overlayState}:{overlayState:Banana.OverlayState}): JSX.Element {
         <br/>
         <a target="_blank" href="https://trello.com/b/f6731Frf/bananadrum">Check on progress</a>
       </p>
-      <button id="load-button" className="push-button" onClick={() => overlayState.toggle()}>Back to my beat!</button>
+      <button
+        id="load-button"
+        className="push-button"
+        onClick={() => toggleOverlay('about', 'hide')}
+      >Back to my beat!</button>
     </div>
   );
 }
