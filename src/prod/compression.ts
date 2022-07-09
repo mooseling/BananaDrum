@@ -125,6 +125,12 @@ export function urlDecodeArrangement(url:string): Banana.PackedArrangement {
 }
 
 
+export function getShareLink(arrangement:Banana.Arrangement) {
+  const query = urlEncodeArrangement(arrangement);
+  return 'https://bananadrum.net/?a=' + query;
+}
+
+
 const conversionBase = 64n; // 64 characters to safely use in URLs
 
 const numberToCharacter : {
