@@ -1,6 +1,7 @@
 import {TrackViewer} from './TrackViewer';
 import {ArrangementControls} from './ArrangementControls';
 import {Scrollbar} from './Scrollbar';
+import {Share} from './Share';
 import {InstrumentBrowser} from './InstrumentBrowser';
 import {Overlay, toggleOverlay} from './Overlay';
 import {Publisher} from '../Publisher';
@@ -52,7 +53,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
 
   return (
     <ArrangementPlayerContext.Provider value={arrangementPlayer}>
-      <div className="arrangement-viewer" event-engine-state={eventEngineState}>
+      <div className="arrangement-viewer overlay-wrapper" event-engine-state={eventEngineState}>
         <div className="arrangement-viewer-head">
           <ArrangementControls />
         </div>
@@ -81,6 +82,9 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
           className="push-button"
           onClick={() => toggleOverlay('instrument_browser', 'show')}
         >Add Instrument</button>
+        <Overlay name="share">
+          <Share />
+        </Overlay>
       </div>
     </ArrangementPlayerContext.Provider>
   );

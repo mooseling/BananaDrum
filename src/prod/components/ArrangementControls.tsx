@@ -1,5 +1,6 @@
 import {useState, useEffect, useContext} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
+import {ShareButton} from './ShareButton';
 import {NumberInput} from './General';
 import {EventEngine} from '../EventEngine';
 
@@ -11,6 +12,7 @@ export function ArrangementControls(): JSX.Element {
       <button className="playback-control push-button" onClick={() => EventEngine.play()}>Play</button>
       <button className="playback-control push-button" onClick={() => EventEngine.pause()}>Pause</button>
       <TimeControls arrangement={arrangement} />
+      <ShareButton />
     </div>
   );
 }

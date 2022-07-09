@@ -354,6 +354,18 @@ So we're putting them in each track-viewer, where we can position them with no p
   vertical-align: middle;
 }
 
+@keyframes shinyLink {
+  /* Colours from colours.ts */
+  0% {background-color: hsl(268, 61%, 69%);}
+  33% {background-color: hsl(200, 97%, 51%);}
+  67% {background-color: hsl(174, 61%, 47%)}
+  100% {background-color: hsl(29, 88%, 69%)}
+}
+
+.shiny-link {
+  animation: shinyLink 3s infinite alternate;
+}
+
 
 /* Overlays */
 .overlay-wrapper {
