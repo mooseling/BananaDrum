@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import {instrumentCollection} from '../test/lib/example-instruments';
 import {exampleSongString} from '../test/lib/example-arrangement';
-import {urlEncodeNumber, urlDecodeNumber, interpretAsBaseN, convertToBaseN, urlEncodeTrack, urlEncodeArrangement, urlDecodeArrangement} from './compression';
+import {urlDecodeArrangement} from './compression';
 
 // Set React to global so we don't have to import it in every file with JSX
 // A benefit of this is to supress TS messages about unused var React
@@ -56,4 +56,4 @@ function getUrlEncodedArrangement(): string|null {
 
 
 // Expose functions for testing
-Object.assign(window, {Library, urlEncodeNumber, urlDecodeNumber, interpretAsBaseN, convertToBaseN, urlEncodeTrack, urlEncodeArrangement, urlDecodeArrangement});
+Object.assign(window, {Library});
