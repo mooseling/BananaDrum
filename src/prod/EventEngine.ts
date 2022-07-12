@@ -12,7 +12,7 @@ export const EventEngine:Banana.EventEngine = (function(){
   const eventSources:Banana.EventSource[] = [];
   let nextIteration: number|null = null;
   let timeCovered:number = 0;
-  let state:string = 'stopped';
+  let state:'playing'|'paused'|'stopped' = 'stopped';
   const publisher:Banana.Publisher = Publisher();
 
   type ScheduledEvent = AudioBufferSourceNode|number;
