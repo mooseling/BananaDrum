@@ -6,11 +6,23 @@ import {EventEngine} from '../EventEngine';
 
 
 export function ArrangementControls(): JSX.Element {
+  const [playing, setPlaying] = useState(EventEngine.state === 'playing');
+  const eventEngineSubscription = () => setPlaying(EventEngine.state === 'playing');
+  useEffect(() => {
+    EventEngine.subscribe(eventEngineSubscription);
+    return () => EventEngine.unsubscribe(eventEngineSubscription);
+  }, []);
+
   const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
   return (
     <div className="arrangement-controls">
-      <button className="playback-control push-button" onClick={() => EventEngine.play()}>Play</button>
-      <button className="playback-control push-button" onClick={() => EventEngine.pause()}>Pause</button>
+      {
+        playing ? (
+          <button className="playback-control push-button" onClick={() => EventEngine.pause()}>Pause</button>
+        ) : (
+          <button className="playback-control push-button" onClick={() => EventEngine.play()}>Play</button>
+        )
+      }
       <TimeControls arrangement={arrangement} />
       <ShareButton />
     </div>
