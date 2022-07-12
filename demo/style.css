@@ -109,6 +109,7 @@ body {
   display: flex;
   padding: 20pt;
   border-bottom: var(--thick-border);
+  align-items: center;
 }
 
 .arrangement-controls > * {
@@ -117,6 +118,10 @@ body {
 
 .playback-control {
   max-height: 57pt;
+}
+
+.playback-control img {
+  height: 20pt;
 }
 
 .time-controls-wrapper {

@@ -18,9 +18,13 @@ export function ArrangementControls(): JSX.Element {
     <div className="arrangement-controls">
       {
         playing ? (
-          <button className="playback-control push-button" onClick={() => EventEngine.pause()}>Pause</button>
+          <button className="playback-control push-button" onClick={() => EventEngine.pause()}>
+            <img src="images/icons/pause.svg" alt="pause" />
+          </button>
         ) : (
-          <button className="playback-control push-button" onClick={() => EventEngine.play()}>Play</button>
+          <button className="playback-control push-button" onClick={() => EventEngine.play()}>
+            <img src="images/icons/play.svg" alt="play" />
+          </button>
         )
       }
       <TimeControls arrangement={arrangement} />
