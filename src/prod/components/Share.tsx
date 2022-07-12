@@ -4,6 +4,10 @@ import {ArrangementPlayerContext} from './ArrangementViewer';
 import {getShareLink} from '../compression';
 
 
+const haveNativeSharing = navigator.share !== undefined;
+const haveClipboardAccess = navigator.clipboard !== undefined;
+
+
 export function Share(): JSX.Element {
   const [url, setUrl] = useState('');
   const arrangementPlayer = useContext(ArrangementPlayerContext);
@@ -23,6 +27,7 @@ export function Share(): JSX.Element {
           (<>
             <h2>Your beat has been compressed into this:</h2>
             <h1>{url}</h1>
+            <ShareOrCopyButton url={url}/>
             <p>Send it to your friends, save it somewhere for yourself, or post it on our <a href="https://www.facebook.com/Banana-Drum-108081858593069" target="_blank">Facebook page</a>!</p>
           </>) :
           (<>
@@ -39,4 +44,28 @@ export function Share(): JSX.Element {
       >Back to my beat!</button>
     </div>
   );
+}
+
+
+function ShareOrCopyButton({url}:{url:string}): JSX.Element {
+  if (haveNativeSharing) {
+    return (
+      <button
+        className="push-button"
+        onClick={() => navigator.share({
+          url,
+          title:'Banana Drum - Samba Rhythms'
+        })}
+      >share</button>
+    );
+  }
+
+  if (haveClipboardAccess) {
+    return (
+      <button
+        className="push-button"
+        onClick={() => navigator.clipboard.writeText(url)}
+      >copy</button>
+    );
+  }
 }
