@@ -50,6 +50,8 @@ export function Share(): JSX.Element {
 
 
 function ShareOrCopyButton({url}:{url:string}): JSX.Element {
+  const [copyText, setCopyText] = useState('copy');
+
   if (haveNativeSharing) {
     return (
       <button
@@ -65,9 +67,19 @@ function ShareOrCopyButton({url}:{url:string}): JSX.Element {
   if (haveClipboardAccess) {
     return (
       <button
-        className="push-button shiny-link"
-        onClick={() => navigator.clipboard.writeText(url)}
-      >copy</button>
+        className="push-button"
+        onClick={
+          () => {
+            navigator.clipboard.writeText(url).catch(() => {
+              setCopyText("That didn't work :(");
+              setTimeout(() => setCopyText('copy'), 3000);
+            }).then(() => {
+              setCopyText('copied!');
+              setTimeout(() => setCopyText('copy'), 3000);
+            })
+          }
+        }
+      >{copyText}</button>
     );
   }
 }
