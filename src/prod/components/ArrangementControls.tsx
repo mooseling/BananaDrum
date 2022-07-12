@@ -24,6 +24,7 @@ export function ArrangementControls(): JSX.Element {
         )
       }
       <TimeControls arrangement={arrangement} />
+      <div style={{flexGrow:1}}></div>
       <ShareButton />
     </div>
   );
