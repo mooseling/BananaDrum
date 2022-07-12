@@ -65,6 +65,12 @@ body {
     background-color: var(--lighter-yellow);
 }
 
+.welcome p {
+  max-width: 500pt;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 #wrapper {
   height: 100%;
 }
@@ -80,12 +86,6 @@ body {
   flex-grow: 1;
 }
 
-#about p {
-  max-width: 500pt;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 #footer {
   --footer-height: 20pt;
   flex-basis: var(--footer-height);
@@ -94,6 +94,13 @@ body {
   text-align: center;
   background-color: var(--lightest-gray);
   line-height: var(--footer-height)
+}
+
+.beat-url {
+  background-color: white;
+  padding: 9.5pt 12pt;
+  display: inline-block;
+  border-radius: 11pt;
 }
 
 .arrangement-controls {

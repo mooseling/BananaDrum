@@ -25,9 +25,11 @@ export function Share(): JSX.Element {
       <div className="share-content-wrapper">
         { url ?
           (<>
-            <h2>Your beat has been compressed into this:</h2>
-            <h1>{url}</h1>
-            <ShareOrCopyButton url={url}/>
+            <h2>Here's your beat:</h2>
+            <div className="beat-url">
+              <p onClick={event => window.getSelection().selectAllChildren(event.currentTarget)}>{url}</p>
+              <ShareOrCopyButton url={url}/>
+              </div>
             <p>Send it to your friends, save it somewhere for yourself, or post it on our <a href="https://www.facebook.com/Banana-Drum-108081858593069" target="_blank">Facebook page</a>!</p>
           </>) :
           (<>
@@ -51,7 +53,7 @@ function ShareOrCopyButton({url}:{url:string}): JSX.Element {
   if (haveNativeSharing) {
     return (
       <button
-        className="push-button"
+        className="push-button shiny-link"
         onClick={() => navigator.share({
           url,
           title:'Banana Drum - Samba Rhythms'
@@ -63,7 +65,7 @@ function ShareOrCopyButton({url}:{url:string}): JSX.Element {
   if (haveClipboardAccess) {
     return (
       <button
-        className="push-button"
+        className="push-button shiny-link"
         onClick={() => navigator.clipboard.writeText(url)}
       >copy</button>
     );
