@@ -30,7 +30,7 @@ export function Share(): JSX.Element {
               <p onClick={event => window.getSelection().selectAllChildren(event.currentTarget)}>{url}</p>
               <ShareOrCopyButton url={url}/>
               </div>
-            <p>Send it to your friends, save it somewhere for yourself, or post it on our <a href="https://www.facebook.com/Banana-Drum-108081858593069" target="_blank">Facebook page</a>!</p>
+            <p>Send it to your friends, save it for yourself, or post it on our <a href="https://www.facebook.com/Banana-Drum-108081858593069" target="_blank">Facebook page</a>!</p>
           </>) :
           (<>
             <h2>Ready to share this beat?</h2>
