@@ -56,13 +56,14 @@ body {
 }
 
 .welcome {
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
-    text-align: center;
-    width: 100%;
-    padding: 20pt 0;
-    background-color: var(--lighter-yellow);
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+  width: 100%;
+  padding: 20pt 10pt;
+  background-color: var(--lighter-yellow);
+  box-sizing: border-box;
 }
 
 .welcome p {
@@ -101,6 +102,7 @@ body {
   padding: 9.5pt 12pt;
   display: inline-block;
   border-radius: 11pt;
+  overflow-wrap: anywhere;
 }
 
 .arrangement-controls {
