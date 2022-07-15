@@ -127,7 +127,12 @@ function NoteLine({track}:{track:Banana.Track}): JSX.Element {
 function TrackControls({track}:{track:Banana.Track}): JSX.Element {
   return (
     <div className="track-controls">
-      <button className="push-button gray" onClick={() => track.arrangement.removeTrack(track)}>Remove track</button>
+      <button className="push-button gray"
+        onClick={() => track.arrangement.removeTrack(track)}
+      >Remove track</button>
+      <button className="push-button gray"
+        onClick={track.clear}
+      >Clear track</button>
     </div>
   );
 }
