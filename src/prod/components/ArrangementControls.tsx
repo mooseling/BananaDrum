@@ -5,7 +5,7 @@ import {NumberInput} from './General';
 import {EventEngine} from '../EventEngine';
 
 
-export function ArrangementControls(): JSX.Element {
+export function ArrangementControlsTop(): JSX.Element {
   const [playing, setPlaying] = useState(EventEngine.state === 'playing');
   const eventEngineSubscription = () => setPlaying(EventEngine.state === 'playing');
   useEffect(() => {
@@ -15,7 +15,7 @@ export function ArrangementControls(): JSX.Element {
 
   const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
   return (
-    <div className="arrangement-controls">
+    <div className="arrangement-controls arrangement-controls-top">
       {
         playing ? (
           <button className="playback-control push-button" onClick={() => EventEngine.pause()}>

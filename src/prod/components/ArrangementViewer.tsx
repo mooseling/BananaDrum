@@ -1,5 +1,5 @@
 import {TrackViewer} from './TrackViewer';
-import {ArrangementControls} from './ArrangementControls';
+import {ArrangementControlsTop} from './ArrangementControls';
 import {Scrollbar} from './Scrollbar';
 import {Share} from './Share';
 import {InstrumentBrowser} from './InstrumentBrowser';
@@ -55,7 +55,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
     <ArrangementPlayerContext.Provider value={arrangementPlayer}>
       <div className="arrangement-viewer overlay-wrapper" event-engine-state={eventEngineState}>
         <div className="arrangement-viewer-head">
-          <ArrangementControls />
+          <ArrangementControlsTop />
         </div>
         <div className="arrangement-viewer-body overlay-wrapper">
           <div>
