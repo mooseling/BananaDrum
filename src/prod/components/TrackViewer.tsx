@@ -39,7 +39,7 @@ export function TrackViewer({trackPlayer}:{trackPlayer:Banana.TrackPlayer}): JSX
         <div className="note-line-wrapper overlay-wrapper">
           <NoteLine track={track}/>
           <Overlay name={overlayName}>
-            <TrackControls track={track}/>
+            <TrackControls track={track} overlayName={overlayName}/>
           </Overlay>
         </div>
         <div className="scrollshadow left-scrollshadow" />
@@ -124,14 +124,18 @@ function NoteLine({track}:{track:Banana.Track}): JSX.Element {
 }
 
 
-function TrackControls({track}:{track:Banana.Track}): JSX.Element {
+function TrackControls(
+  {track, overlayName}:{track:Banana.Track, overlayName:string}): JSX.Element {
   return (
     <div className="track-controls">
       <button className="push-button gray"
         onClick={() => track.arrangement.removeTrack(track)}
       >Remove track</button>
       <button className="push-button gray"
-        onClick={track.clear}
+        onClick={() => {
+          track.clear();
+          toggleOverlay(overlayName, 'hide');
+        }}
       >Clear track</button>
     </div>
   );
