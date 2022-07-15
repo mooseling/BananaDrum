@@ -121,7 +121,8 @@ body {
 }
 
 .playback-control img {
-  height: 20pt;
+  height: 18pt;
+  width: 18pt;
 }
 
 .time-controls-wrapper {
