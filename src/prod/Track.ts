@@ -9,7 +9,8 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
   const publisher:Banana.Publisher = Publisher();
   const notes:Banana.Note[] = [];
   const colour = getColour(instrument.colourGroup);
-  const track:Banana.Track = {id, arrangement, instrument, notes, getNoteAt, colour, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
+  const track:Banana.Track = {id, arrangement, instrument, notes, getNoteAt, colour, clear,
+    subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
   if (packedNotes)
     unpackNotes();
@@ -35,6 +36,11 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
       if (isSameTiming(note.timing, timing))
         return note;
     }
+  }
+
+
+  function clear() {
+    notes.forEach(note => note.noteStyle = null);
   }
 
 

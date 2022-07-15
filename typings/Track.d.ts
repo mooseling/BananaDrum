@@ -6,6 +6,7 @@ declare namespace Banana {
     notes: Note[] // Must be kept in order - this is Track's job
     getNoteAt(timing:Timing): Note
     colour: string // A specific hsl() string
+    clear(): void
   }
 
   interface TrackBuilder {
