@@ -298,6 +298,10 @@ So we're putting them in each track-viewer, where we can position them with no p
   box-sizing: border-box;
 }
 
+.track-controls button {
+  margin-right: 10pt;
+}
+
 .note-line {
   transition: opacity 0.2s;
   display: flex;
