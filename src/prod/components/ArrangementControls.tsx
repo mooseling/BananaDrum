@@ -111,6 +111,10 @@ export function ArrangementControlsBottom(): JSX.Element {
         className="push-button"
         onClick={() => toggleOverlay('clear_tracks', 'show')}
       >Clear all tracks</button>
+      <button
+        className="push-button"
+        onClick={() => toggleOverlay('delete_tracks', 'show')}
+      >Delete all tracks</button>
       <Overlay name="clear_tracks">
         <>
           <span>Are you sure?</span>
@@ -119,11 +123,30 @@ export function ArrangementControlsBottom(): JSX.Element {
             onClick={() => {
               for (const trackId in arrangement.tracks)
                 arrangement.tracks[trackId].clear();
+              toggleOverlay('clear_tracks', 'hide');
             }}
           >Yes, clear tracks</button>
           <button
             className="push-button"
             onClick={() => toggleOverlay('clear_tracks', 'hide')}
+          >No, go back</button>
+        </>
+      </Overlay>
+      <Overlay name="delete_tracks">
+        <>
+          <span>Are you sure?</span>
+          <button
+            className="push-button"
+            onClick={() => {
+              Object.keys(arrangement.tracks).forEach(trackId => {
+                arrangement.removeTrack(arrangement.tracks[trackId]);
+              });
+              toggleOverlay('delete_tracks', 'hide');
+            }}
+          >Yes, delete tracks</button>
+          <button
+            className="push-button"
+            onClick={() => toggleOverlay('delete_tracks', 'hide')}
           >No, go back</button>
         </>
       </Overlay>
