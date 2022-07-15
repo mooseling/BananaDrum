@@ -1,5 +1,5 @@
 import {TrackViewer} from './TrackViewer';
-import {ArrangementControlsTop} from './ArrangementControls';
+import {ArrangementControlsTop, ArrangementControlsBottom} from './ArrangementControls';
 import {Scrollbar} from './Scrollbar';
 import {Share} from './Share';
 import {InstrumentBrowser} from './InstrumentBrowser';
@@ -77,11 +77,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
             </Overlay>
           </div>
         </div>
-        <button
-          id="show-instrument-browser"
-          className="push-button"
-          onClick={() => toggleOverlay('instrument_browser', 'show')}
-        >Add Instrument</button>
+        <ArrangementControlsBottom />
         <Overlay name="share">
           <Share />
         </Overlay>

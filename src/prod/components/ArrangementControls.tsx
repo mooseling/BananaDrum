@@ -1,5 +1,6 @@
 import {useState, useEffect, useContext} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
+import {toggleOverlay} from './Overlay';
 import {ShareButton} from './ShareButton';
 import {NumberInput} from './General';
 import {EventEngine} from '../EventEngine';
@@ -94,4 +95,16 @@ function TimeControls({arrangement}:{arrangement:Banana.Arrangement}): JSX.Eleme
         break;
     }
   }
+}
+
+
+export function ArrangementControlsBottom(): JSX.Element {
+  return (
+    <div className="arrangement-controls arrangement-controls-bottom">
+      <button
+        className="push-button"
+        onClick={() => toggleOverlay('instrument_browser', 'show')}
+      >Add Instrument</button>
+    </div>
+  );
 }

@@ -156,7 +156,6 @@ body {
 .track-viewers-wrapper {
   --scrollbar-height: 20pt;
   overflow-x: auto;
-  padding-bottom: var(--scrollbar-height);
 
   /* Hide scrollbars on a couple browsers */
   -ms-overflow-style: none;  /* IE */
@@ -171,6 +170,10 @@ body {
   height: var(--scrollbar-height);
   left: 0;
   bottom: 0;
+}
+
+.track-viewers-wrapper.overflowing-left, .track-viewers-wrapper.overflowing-right {
+  padding-bottom: var(--scrollbar-height);
 }
 
 .track-viewers-wrapper:not(.overflowing-left):not(.overflowing-right) .custom-scrollbar {
@@ -353,12 +356,6 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 .note-details-viewer img.note-style-symbol {
   height: 70%;
-}
-
-#show-instrument-browser {
-  width: 86pt;
-  height: 50pt;
-  margin-top: 10pt;
 }
 
 .arrangement-viewer-body > .overlay {
