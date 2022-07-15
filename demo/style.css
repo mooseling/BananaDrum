@@ -116,6 +116,14 @@ body {
   margin-right: 8pt;
 }
 
+.arrangement-controls .overlay {
+  padding: 20pt;
+}
+
+.arrangement-controls button {
+  margin-left: 20pt;
+}
+
 .playback-control {
   max-height: 57pt;
 }

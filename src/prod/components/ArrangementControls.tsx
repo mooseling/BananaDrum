@@ -1,6 +1,6 @@
 import {useState, useEffect, useContext} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
-import {toggleOverlay} from './Overlay';
+import {Overlay, toggleOverlay} from './Overlay';
 import {ShareButton} from './ShareButton';
 import {NumberInput} from './General';
 import {EventEngine} from '../EventEngine';
@@ -99,12 +99,34 @@ function TimeControls({arrangement}:{arrangement:Banana.Arrangement}): JSX.Eleme
 
 
 export function ArrangementControlsBottom(): JSX.Element {
+  const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
   return (
-    <div className="arrangement-controls arrangement-controls-bottom">
+    <div className="arrangement-controls arrangement-controls-bottom overlay-wrapper">
       <button
         className="push-button"
         onClick={() => toggleOverlay('instrument_browser', 'show')}
       >Add Instrument</button>
+      <div style={{flexGrow:1}} />
+      <button
+        className="push-button"
+        onClick={() => toggleOverlay('clear_tracks', 'show')}
+      >Clear all tracks</button>
+      <Overlay name="clear_tracks">
+        <>
+          <span>Are you sure?</span>
+          <button
+            className="push-button"
+            onClick={() => {
+              for (const trackId in arrangement.tracks)
+                arrangement.tracks[trackId].clear();
+            }}
+          >Yes, clear tracks</button>
+          <button
+            className="push-button"
+            onClick={() => toggleOverlay('clear_tracks', 'hide')}
+          >No, go back</button>
+        </>
+      </Overlay>
     </div>
   );
 }
