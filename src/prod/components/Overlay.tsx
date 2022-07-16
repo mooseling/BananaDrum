@@ -66,15 +66,23 @@ function OverlayState(): OverlayState {
 const overlayStates:{[name:string]:OverlayState} = {};
 
 
-export function toggleOverlay(name:string, mode:'toggle'|'show'|'hide' = 'toggle') {
+export function toggleOverlay(name:string, mode:'toggle'|'show'|'hide' = 'toggle'): void {
   const state = overlayStates[name];
   if (state === undefined) {
     console.warn("Toggled an overlay that wasn't registered");
     return;
   }
 
-  state.visible =
-    mode === 'toggle' ? !state.visible :
-    mode === 'show' ? true :
-    false; // mode === 'hide'
+  if (mode === 'show' || (mode === 'toggle' && !state.visible)) {
+    closeAllOverlays();
+    state.visible = true;
+  } else {
+    state.visible = false;
+  }
+}
+
+
+function closeAllOverlays(): void {
+  for (const name in overlayStates)
+    overlayStates[name].visible = false;
 }
