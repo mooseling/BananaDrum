@@ -112,16 +112,8 @@ body {
   align-items: center;
 }
 
-.arrangement-controls > * {
-  margin-right: 8pt;
-}
-
 .arrangement-controls .overlay {
   padding: 20pt;
-}
-
-.arrangement-controls button {
-  margin-left: 20pt;
 }
 
 .playback-control {
@@ -402,6 +394,7 @@ So we're putting them in each track-viewer, where we can position them with no p
   position: absolute;
   z-index: 1000;
   top: 0px;
+  left: 0px;
   background: white;
   box-sizing: border-box; /* For when it has added padding */
   transition: opacity 0.2s;

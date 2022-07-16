@@ -28,7 +28,9 @@ export function ArrangementControlsTop(): JSX.Element {
           </button>
         )
       }
+      <div style={{width:'8pt'}} />
       <TimeControls arrangement={arrangement} />
+      <div style={{width:'8pt'}} />
       <div style={{flexGrow:1}}></div>
       <ShareButton />
     </div>
@@ -112,8 +114,12 @@ export function ArrangementControlsBottom(): JSX.Element {
         onClick={() => toggleOverlay('clear_tracks', 'show')}
       >Clear all tracks</button>
       <Overlay name="clear_tracks">
-        <>
-          <span>Are you sure?</span>
+        <div style={{
+          display: 'flex',
+          height: '100%',
+          width: '100%',
+          boxSizing: 'border-box'
+        }}>
           <button
             className="push-button"
             onClick={() => {
@@ -121,12 +127,13 @@ export function ArrangementControlsBottom(): JSX.Element {
                 arrangement.tracks[trackId].clear();
               toggleOverlay('clear_tracks', 'hide');
             }}
-          >Yes, clear tracks</button>
+          >Really, clear tracks</button>
+          <div style={{flexGrow:1}} />
           <button
             className="push-button"
             onClick={() => toggleOverlay('clear_tracks', 'hide')}
           >No, go back</button>
-        </>
+        </div>
       </Overlay>
     </div>
   );
