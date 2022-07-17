@@ -28,10 +28,10 @@ export function ArrangementControlsTop(): JSX.Element {
           </button>
         )
       }
-      <div style={{width:'8pt'}} />
+      <SmallSpacer />
       <TimeControls arrangement={arrangement} />
-      <div style={{width:'8pt'}} />
-      <div style={{flexGrow:1}}></div>
+      <SmallSpacer />
+      <ExpandingSpacer />
       <ShareButton />
     </div>
   );
@@ -108,7 +108,7 @@ export function ArrangementControlsBottom(): JSX.Element {
         className="push-button"
         onClick={() => toggleOverlay('instrument_browser', 'show')}
       >Add Instrument</button>
-      <div style={{flexGrow:1}} />
+      <ExpandingSpacer />
       <button
         className="push-button"
         onClick={() => toggleOverlay('clear_tracks', 'show')}
@@ -120,6 +120,7 @@ export function ArrangementControlsBottom(): JSX.Element {
           width: '100%',
           boxSizing: 'border-box'
         }}>
+          <ExpandingSpacer />
           <button
             className="push-button"
             onClick={() => {
@@ -128,7 +129,7 @@ export function ArrangementControlsBottom(): JSX.Element {
               toggleOverlay('clear_tracks', 'hide');
             }}
           >Really, clear tracks</button>
-          <div style={{flexGrow:1}} />
+          <SmallSpacer />
           <button
             className="push-button"
             onClick={() => toggleOverlay('clear_tracks', 'hide')}
@@ -137,4 +138,14 @@ export function ArrangementControlsBottom(): JSX.Element {
       </Overlay>
     </div>
   );
+}
+
+
+function SmallSpacer(): JSX.Element {
+  return <div style={{width:'8pt'}} />;
+}
+
+
+function ExpandingSpacer(): JSX.Element {
+  return <div style={{flexGrow:1}} />;
 }
