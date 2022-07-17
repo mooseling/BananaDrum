@@ -109,6 +109,7 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
         trackPlayers[trackId].unsubscribe(trackPlayerSubscriptions[trackId]);
         delete trackPlayerSubscriptions[trackId];
         delete trackPlayers[trackId];
+        delete audibleTrackPlayers[trackId];
         somethingChanged = true;
       }
     }
