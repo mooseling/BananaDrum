@@ -193,12 +193,37 @@ export const instrumentCollection:Banana.InstrumentCollection = [
     ],
     colourGroup: 'green'
   },
-  // {
-  //   id: '6',
-  //   displayName: 'Timba',
-  //   packedNoteStyles: [],
-  //   colourGroup: 'blue'
-  // },
+  {
+    id: '6',
+    displayName: 'Timba',
+    packedNoteStyles: [
+      {
+        id: '1',
+        file: 'Timba_Open.mp3',
+        symbol: {
+          src:'images/icons/o_big.svg',
+          string: 'open'
+        }
+      },
+      {
+        id: '2',
+        file: 'Timba_Slap.mp3',
+        symbol: {
+          src:'images/icons/sun_rays.svg',
+          string: 'slap'
+        }
+      },
+      {
+        id: '3',
+        file: 'Timba_Bass.mp3',
+        symbol: {
+          src:'images/icons/o_big_closed.svg',
+          string: 'bass'
+        }
+      }
+    ],
+    colourGroup: 'blue'
+  },
   {
     id: '7',
     displayName: 'High Surdo',
