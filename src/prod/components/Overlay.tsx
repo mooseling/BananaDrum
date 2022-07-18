@@ -82,7 +82,7 @@ export function toggleOverlay(name:string, mode:'toggle'|'show'|'hide' = 'toggle
 }
 
 
-function closeAllOverlays(): void {
+export function closeAllOverlays(): void {
   for (const name in overlayStates)
     overlayStates[name].visible = false;
 }
