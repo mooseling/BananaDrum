@@ -86,3 +86,12 @@ export function closeAllOverlays(): void {
   for (const name in overlayStates)
     overlayStates[name].visible = false;
 }
+
+
+export function anyOverlaysAreOpen(): boolean {
+  for (const name in overlayStates) {
+    if (overlayStates[name].visible)
+      return true;
+  }
+  return false;
+}
