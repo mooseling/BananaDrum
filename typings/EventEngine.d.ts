@@ -5,6 +5,7 @@ declare namespace Banana {
     play(): void
     pause(): void
     getTime(): RealTime
+    playSound(audioBuffer:AudioBuffer, time?:number): AudioBufferSourceNode
     state: string // 'stopped'|'playing'|'paused'
   }
 

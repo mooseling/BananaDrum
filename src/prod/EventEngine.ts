@@ -8,7 +8,8 @@ const lookahead = 0.25; // (s) Look 250ms ahead for events
 const loopFrequency = 125 // (ms) Check for upcoming events every 125ms
 
 export const EventEngine:Banana.EventEngine = (function(){
-  let audioContext:AudioContext|null = null;
+  let playbackAudioContext:AudioContext|null = null;
+  let oneOffAudioContext:AudioContext|null = null;
   const eventSources:Banana.EventSource[] = [];
   let nextIteration: number|null = null;
   let timeCovered:number = 0;
@@ -19,7 +20,8 @@ export const EventEngine:Banana.EventEngine = (function(){
   const scheduledEvents:ScheduledEvent[] = [];
 
   return {
-    initialise, connect, play, pause, getTime, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
+    initialise, connect, play, pause, getTime, playSound,
+    subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
     get state(): string {
       return state;
     }
@@ -38,9 +40,10 @@ export const EventEngine:Banana.EventEngine = (function(){
 
   // Browsers require that an AudioContext is created as a result of user interaction
   function initialise() {
-    if (audioContext === null) {
-      audioContext = new AudioContext();
-      audioContext.suspend();
+    if (playbackAudioContext === null) {
+      playbackAudioContext = new AudioContext();
+      playbackAudioContext.suspend();
+      oneOffAudioContext = new AudioContext();
     }
   }
 
@@ -53,7 +56,7 @@ export const EventEngine:Banana.EventEngine = (function(){
   function play() {
     checkInitialised();
     if (nextIteration === null) {
-      audioContext.resume();
+      playbackAudioContext.resume();
       loop();
       state = 'playing';
       publisher.publish();
@@ -63,11 +66,11 @@ export const EventEngine:Banana.EventEngine = (function(){
 
   function pause() {
     if (nextIteration !== null) {
-      audioContext.suspend();
+      playbackAudioContext.suspend();
       clearScheduledEvents();
       clearTimeout(nextIteration);
       nextIteration = null;
-      timeCovered = audioContext.currentTime;
+      timeCovered = playbackAudioContext.currentTime;
       state = 'paused';
       publisher.publish();
     }
@@ -76,7 +79,16 @@ export const EventEngine:Banana.EventEngine = (function(){
 
   function getTime() {
     checkInitialised();
-    return audioContext.currentTime;
+    return playbackAudioContext.currentTime;
+  }
+
+
+  function playSound(audioBuffer:AudioBuffer, time = 0): AudioBufferSourceNode {
+    let context = time === 0 ? oneOffAudioContext : playbackAudioContext;
+    const sourceNode = new AudioBufferSourceNode(context, {buffer:audioBuffer});
+    sourceNode.connect(context.destination);
+    sourceNode.start(time);
+    return sourceNode;
   }
 
 
@@ -91,7 +103,7 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   function checkInitialised() {
-    if (audioContext === null)
+    if (playbackAudioContext === null)
       throw 'The AudioPlayer has not been initialised';
   }
 
@@ -100,7 +112,7 @@ export const EventEngine:Banana.EventEngine = (function(){
   // It gets and schedules events in an upcoming time interval
   // We make sure never to request any time we've requested before
   function loop() {
-    const currentTime = audioContext.currentTime;
+    const currentTime = playbackAudioContext.currentTime;
     const interval:Banana.Interval = {start:timeCovered, end: currentTime + lookahead};
     scheduleEvents(interval);
     nextIteration = setTimeout(loop, loopFrequency);
@@ -121,16 +133,14 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   function scheduleAudioEvent({audioBuffer, realTime}:Banana.AudioEvent) {
-    const sourceNode = new AudioBufferSourceNode(audioContext, {buffer:audioBuffer});
-    sourceNode.connect(audioContext.destination);
-    sourceNode.start(realTime);
+    const sourceNode = playSound(audioBuffer, realTime);
     scheduledEvents.push(sourceNode);
     sourceNode.addEventListener('ended', () => unSchedule(sourceNode));
   }
 
 
   function scheduleCallbackEvent({realTime, callback}:Banana.CallbackEvent) {
-    const msFromNow = (realTime - audioContext.currentTime) * 1000;
+    const msFromNow = (realTime - playbackAudioContext.currentTime) * 1000;
     const timeoutId = setTimeout(() => {
       callback();
       unSchedule(timeoutId);
