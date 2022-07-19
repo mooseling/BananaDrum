@@ -45,7 +45,16 @@ function createLoadingMessage():HTMLDivElement {
 
 
 function getArrangementAndPlayer() {
-  const encodedArrangement = getUrlEncodedArrangement() ?? exampleSongString;
+  const sharedArrangement = getSharedArrangement();
+  let encodedArrangement:string;
+  if (sharedArrangement) {
+    encodedArrangement = sharedArrangement;
+    // Want to prevent people copying the url thinking it encodes their latest changes
+    removeSharedArrangementFromUrl();
+  } else {
+    encodedArrangement = exampleSongString;
+  }
+
   Library.load(instrumentCollection);
   const packedArrangement = urlDecodeArrangement(encodedArrangement);
   const arrangement = Arrangement.unpack(packedArrangement);
@@ -54,9 +63,15 @@ function getArrangementAndPlayer() {
 }
 
 
-function getUrlEncodedArrangement(): string|null {
+function getSharedArrangement(): string|null {
   const searchParams = new URLSearchParams(window.location.search);
   return searchParams.get('a');
+}
+
+
+function removeSharedArrangementFromUrl(): void {
+  const {origin, pathname} = window.location;
+  window.history.replaceState({}, '', origin + pathname);
 }
 
 
