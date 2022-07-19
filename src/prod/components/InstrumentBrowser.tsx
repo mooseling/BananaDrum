@@ -4,7 +4,7 @@ import {ArrangementPlayerContext} from './ArrangementViewer';
 
 export function InstrumentBrowser({close}:{close:() => void}): JSX.Element {
   return (
-    <div>
+    <div style={{padding:'20pt'}}>
       {Library.instrumentMetas.map(meta => <InstrumentChooser key={meta.id} instrumentMeta={meta} close={close}/>)}
       <br />
       <br />
