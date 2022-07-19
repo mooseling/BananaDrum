@@ -3,6 +3,7 @@ import {Arrangement} from './Arrangement';
 import {ArrangementPlayer} from './ArrangementPlayer';
 import {Library} from './Library';
 import {HistoryController} from './HistoryController';
+import {KeyboardHandler} from './KeyboardHandler';
 import {BananaDrum} from './components/BananaDrum';
 import ReactDOM from 'react-dom';
 import React from 'react';
@@ -17,7 +18,9 @@ window.React = React;
 
 document.getElementById('load-button').addEventListener('click', function() {
   HistoryController.init();
+  KeyboardHandler.init();
   EventEngine.initialise();
+
   this.replaceWith(createLoadingMessage());
 
   const {arrangement, arrangementPlayer} = getArrangementAndPlayer();
