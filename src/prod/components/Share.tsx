@@ -21,29 +21,31 @@ export function Share(): JSX.Element {
   const showLink = () => setUrl(getShareLink(arrangement))
 
   return (
-    <div id="share" className="welcome">
-      <div className="share-content-wrapper">
-        { url ?
-          (<>
-            <h2>Here's your beat:</h2>
-            <div className="beat-url">
-              <p onClick={event => window.getSelection().selectAllChildren(event.currentTarget)}>{url}</p>
-              <ShareOrCopyButton url={url}/>
-              </div>
-            <p>Send it to your friends, save it for yourself, or post it on our <a href="https://www.facebook.com/Banana-Drum-108081858593069" target="_blank">Facebook page</a>!</p>
-          </>) :
-          (<>
-            <h2>Ready to share this beat?</h2>
-            <button className="push-button shiny-link" onClick={showLink}>generate link!</button>
-            <p>You can also use this to save your work</p>
-          </>)
-        }
+    <div className="viewport-wrapper">
+      <div id="share" className="welcome">
+        <div className="share-content-wrapper">
+          { url ?
+            (<>
+              <h2>Here's your beat:</h2>
+              <div className="beat-url">
+                <p onClick={event => window.getSelection().selectAllChildren(event.currentTarget)}>{url}</p>
+                <ShareOrCopyButton url={url}/>
+                </div>
+              <p>Send it to your friends, save it for yourself, or post it on our <a href="https://www.facebook.com/Banana-Drum-108081858593069" target="_blank">Facebook page</a>!</p>
+            </>) :
+            (<>
+              <h2>Ready to share this beat?</h2>
+              <button className="push-button shiny-link" onClick={showLink}>generate link!</button>
+              <p>You can also use this to save your work</p>
+            </>)
+          }
+        </div>
+        <button
+          id="load-button"
+          className="push-button"
+          onClick={close}
+        >Back to my beat!</button>
       </div>
-      <button
-        id="load-button"
-        className="push-button"
-        onClick={close}
-      >Back to my beat!</button>
     </div>
   );
 }

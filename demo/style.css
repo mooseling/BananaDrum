@@ -412,6 +412,16 @@ So we're putting them in each track-viewer, where we can position them with no p
   display: none;
 }
 
+.viewport-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  overflow: scroll;
+}
+
 /* =============================================================== */
 /*                         Custom Scrollbars                       */
 /* =============================================================== */
