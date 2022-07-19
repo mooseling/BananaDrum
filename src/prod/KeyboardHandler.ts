@@ -1,9 +1,13 @@
 import {EventEngine} from './EventEngine';
+import {closeAllOverlays} from './components/Overlay';
 
 export const KeyboardHandler = {
   init() {
     window.addEventListener('keypress', event => {
       handleKeyPress(event);
+    });
+    window.addEventListener('keydown', event => {
+      handleKeyDown(event);
     });
   }
 }
@@ -19,6 +23,14 @@ function handleKeyPress(event:KeyboardEvent): void {
       EventEngine.pause();
     event.preventDefault();
   }
+}
+
+
+function handleKeyDown(event:KeyboardEvent): void {
+  if (isInInput(event))
+    return;
+  if (event.key === 'Escape')
+    closeAllOverlays();
 }
 
 
