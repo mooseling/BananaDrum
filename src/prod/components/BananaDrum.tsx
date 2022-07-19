@@ -31,7 +31,8 @@ function About(): JSX.Element {
       <div id="about" className="welcome">
         <img src="images/banana-with-feet.svg" style={{height:"80pt"}}/>
         <h1>Welcome to Banana Drum!</h1>
-        <p>Banana Drum is currently just a drum sequencer, but one day soon it will be an amazing drum sequencer for samba bands! It will have all the drums of the bateria, and it will be easy for anyone to compose songs, grooves, and breaks, and to share them with their bands.</p>
+        <p>On your lap or in your pocket, an easy way to compose and share samba grooves</p>
+        <p>Send feedback and rhythms to <a target="_blank" href="https://www.facebook.com/bananadrum.net">Banana Drum on Facebook</a>!</p>
         <p>
           <a target="_blank" href="https://jamofalltrades.com">Check out the author</a>
           <br/>
