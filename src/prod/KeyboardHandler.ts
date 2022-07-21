@@ -13,9 +13,11 @@ export const KeyboardHandler = {
 }
 
 
-function handleKeyPress(event:KeyboardEvent): void {
+function handleKeyDown(event:KeyboardEvent): void {
   if (isInInput(event))
     return;
+  if (event.key === 'Escape')
+    closeAllOverlays();
   if (event.key === ' ') {
     if (EventEngine.state === 'stopped' || EventEngine.state == 'paused')
       EventEngine.play();
@@ -23,14 +25,6 @@ function handleKeyPress(event:KeyboardEvent): void {
       EventEngine.pause();
     event.preventDefault();
   }
-}
-
-
-function handleKeyDown(event:KeyboardEvent): void {
-  if (isInInput(event))
-    return;
-  if (event.key === 'Escape')
-    closeAllOverlays();
 }
 
 
