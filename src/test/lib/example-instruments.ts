@@ -70,7 +70,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
   },
   {
     id: '3',
-    displayName: 'Repanique',
+    displayName: 'Repinique',
     packedNoteStyles: [
       {
         id: '1',
@@ -133,7 +133,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
   },
   {
     id: '4',
-    displayName: 'Repanique (Whippy Sticks)',
+    displayName: 'Repinique (Whippy Sticks)',
     packedNoteStyles: [
       {
         id: '1',
