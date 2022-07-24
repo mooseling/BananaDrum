@@ -4,6 +4,7 @@ import {ArrangementPlayer} from './ArrangementPlayer';
 import {Library} from './Library';
 import {HistoryController} from './HistoryController';
 import {KeyboardHandler} from './KeyboardHandler';
+import {ErrorHandler} from './ErrorHandler';
 import {BananaDrum} from './components/BananaDrum';
 import ReactDOM from 'react-dom';
 import React from 'react';
@@ -15,24 +16,31 @@ import {urlDecodeArrangement} from './compression';
 // A benefit of this is to supress TS messages about unused var React
 window.React = React;
 
+ErrorHandler.init();
+
 
 document.getElementById('load-button').addEventListener('click', function() {
-  HistoryController.init();
-  KeyboardHandler.init();
-  EventEngine.initialise();
+  try {
+    HistoryController.init();
+    KeyboardHandler.init();
+    EventEngine.initialise();
 
-  this.replaceWith(createLoadingMessage());
+    this.replaceWith(createLoadingMessage());
 
-  const {arrangement, arrangementPlayer} = getArrangementAndPlayer();
-  EventEngine.connect(arrangementPlayer);
-  document.getElementById('welcome').remove();
-  ReactDOM.render(
-    <BananaDrum arrangementPlayer={arrangementPlayer}/>,
-    document.getElementById('wrapper')
-  );
+    const {arrangement, arrangementPlayer} = getArrangementAndPlayer();
+    EventEngine.connect(arrangementPlayer);
+    document.getElementById('welcome').remove();
+    ReactDOM.render(
+      <BananaDrum arrangementPlayer={arrangementPlayer}/>,
+      document.getElementById('wrapper')
+    );
 
-  // Expose some things for testing:
-  Object.assign(window, {arrangement, arrangementPlayer});
+    // Expose some things for testing:
+    Object.assign(window, {arrangement, arrangementPlayer});
+  } catch (error) {
+    this.replaceWith(createErrorMessage());
+    throw error;
+  }
 });
 
 
@@ -72,6 +80,22 @@ function getSharedArrangement(): string|null {
 function removeSharedArrangementFromUrl(): void {
   const {origin, pathname} = window.location;
   window.history.replaceState({}, '', origin + pathname);
+}
+
+
+function createErrorMessage():HTMLElement {
+  const div = document.createElement('div');
+
+  const paragraph = document.createElement('p');
+  paragraph.innerText = 'Something went wrong. Please press this button to generate an error report, and send it to James. It will be a big help!';
+  div.appendChild(paragraph);
+
+  const button = document.createElement('button');
+  button.innerText = 'Generate report';
+  button.addEventListener('click', () => document.body.innerText = ErrorHandler.getReport());
+  div.appendChild(button);
+
+  return div;
 }
 
 
