@@ -6,6 +6,14 @@
   };
 
 
+  if (!window.AudioContext) {
+    if (window.webkitAudioContext)
+      window.AudioContext = window.webkitAudioContext;
+    else
+      displayNoAudioContextMessage();
+  }
+
+
   function reportTopLevelError(message, url, lineNumber, columnNumber, error) {
     addErrorReportToLog(message, url, lineNumber, columnNumber, error);
     displayErrorReportButton();
@@ -49,5 +57,11 @@
     newWrapperDiv.appendChild(button);
 
     elementToReplace.replaceWith(newWrapperDiv);
+  }
+
+
+  function displayNoAudioContextMessage() {
+    const elementToReplace = document.getElementById('load-button-wrapper');
+    elementToReplace.innerHtml = "<p>Really sorry but Banana Drum won't run on this browser.</p><p>Banana Drum requires something called AudioContext, and this browser doesn't have it. If you think your browser is up to date, <a href=https://facebook.com/bananadrum.net>please get in touch on Facebook</a>. Maybe I need to fix something!";
   }
 })();
