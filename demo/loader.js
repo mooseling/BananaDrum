@@ -12,6 +12,8 @@
     else
       displayNoAudioContextMessage();
   }
+  if (window.AudioContext)
+    loadBananaDrum();
 
 
   function reportTopLevelError(message, url, lineNumber, columnNumber, error) {
@@ -22,7 +24,7 @@
 
   function addErrorReportToLog(message, url, lineNumber, columnNumber, error) {
     let errorReport = '================================================\n';
-    errorReport += 'Caught an exception at the top:';
+    errorReport += 'Caught an exception at the top:\n';
     errorReport += message + '\n';
     errorReport += url + ':' + lineNumber + '.' + columnNumber + '\n';
     if (error) {
@@ -42,7 +44,8 @@
 
   function displayErrorReportButton() {
     const elementToReplace = document.getElementById('load-button-wrapper');
-    const newWrapperDiv = document.createElement('div');
+    if (!elementToReplace)
+      return;
 
     const blurb = document.createElement('p');
     blurb.innerText = "Something went wrong and Banana Drum won't work. Please send me an error report, so I can make Banana Drum work on your device.";
@@ -53,6 +56,7 @@
       document.body.innerText = errorLog;
     });
 
+    const newWrapperDiv = document.createElement('div');
     newWrapperDiv.appendChild(blurb);
     newWrapperDiv.appendChild(button);
 
@@ -62,6 +66,15 @@
 
   function displayNoAudioContextMessage() {
     const elementToReplace = document.getElementById('load-button-wrapper');
-    elementToReplace.innerHtml = "<p>Really sorry but Banana Drum won't run on this browser.</p><p>Banana Drum requires something called AudioContext, and this browser doesn't have it. If you think your browser is up to date, <a href=https://facebook.com/bananadrum.net>please get in touch on Facebook</a>. Maybe I need to fix something!";
+    if (elementToReplace) {
+      elementToReplace.innerHTML = "<p>Really sorry but Banana Drum won't run on this browser.</p><p>Banana Drum requires a browser feature called AudioContext, but Banana Drum didn't find it. Try to update your browser, or, if that doesn't help, <a href=https://facebook.com/bananadrum.net>get in touch on Facebook</a>. Maybe I need to fix something!</p>";
+    }
+  }
+
+
+  function loadBananaDrum() {
+    const script = document.createElement('script');
+    script.src = '../dist/prod.js';
+    document.body.appendChild(script);
   }
 })();
