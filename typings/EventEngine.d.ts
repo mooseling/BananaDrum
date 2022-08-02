@@ -6,8 +6,10 @@ declare namespace Banana {
     pause(): void
     getTime(): RealTime
     playSound(audioBuffer:AudioBuffer, time?:number): AudioBufferSourceNode
-    state: 'stopped'|'playing'|'paused'
+    state: EventEngineState
   }
+
+  type EventEngineState = 'stopped'|'playing'|'paused'
 
   interface EventDetails {
     realTime: RealTime
