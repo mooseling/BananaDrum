@@ -29,7 +29,7 @@
     "pretest": "tsc && npm run build",
     "test": "mocha \"dist/test.js\"",
     "babel": "babel src --out-dir dist --extensions \".ts,.js,.tsx,.jsx\"",
-    "build": "webpack"
+    "build": "webpack && cp dist/prod.js demo/"
   },
   "dependencies": {
     "core-js": "^3.23.5",
