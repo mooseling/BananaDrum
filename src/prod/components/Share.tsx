@@ -85,4 +85,6 @@ function ShareOrCopyButton({url}:{url:string}): JSX.Element {
       >{copyText}</button>
     );
   }
+
+  return null;
 }
