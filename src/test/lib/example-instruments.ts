@@ -23,6 +23,45 @@ export const instrumentCollection:Banana.InstrumentCollection = [
     colourGroup: 'yellow'
   },
   {
+    id: 'a',
+    displayName: '4-Bell Agogo',
+    packedNoteStyles: [
+      {
+        id: '1',
+        file: '4_Bell_Agogo_Low_Low.mp3',
+        symbol: {
+          src:'images/icons/arrow_down_with_line.svg',
+          string: 'low'
+        }
+      },
+      {
+        id: '2',
+        file: '4_Bell_Agogo_Low.mp3',
+        symbol: {
+          src:'images/icons/arrow_half_down.svg',
+          string: 'high'
+        }
+      },
+      {
+        id: '3',
+        file: '4_Bell_Agogo_High.mp3',
+        symbol: {
+          src:'images/icons/arrow_half_up.svg',
+          string: 'low'
+        }
+      },
+      {
+        id: '4',
+        file: '4_Bell_Agogo_High_High.mp3',
+        symbol: {
+          src:'images/icons/arrow_up_with_line.svg',
+          string: 'high'
+        }
+      }
+    ],
+    colourGroup: 'yellow'
+  },
+  {
     id: '1',
     displayName: 'Chocalho',
     packedNoteStyles: [
