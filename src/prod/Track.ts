@@ -139,6 +139,9 @@ export const Track:Banana.TrackBuilder = trackBuilder;
 let trackCounter = 0;
 // We need unique identifiers for tracks, even if their instrument is the same
 // This needs to work even if instruments have been deleted
+
+// Even though these are strings, ArrangementViewer relies on them being numbers!
+// Bad, I know...
 function getNewId(): string {
   trackCounter++;
   return `${trackCounter}`;

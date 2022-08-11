@@ -64,12 +64,16 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
               ref={ref}
               onScroll={updateScrollShadows}
             >
-              {Object.keys(trackPlayers).map(trackId => (
-                <TrackViewer
-                  trackPlayer={trackPlayers[trackId]}
-                  key={trackId}
-                />
-              ))}
+              {
+                Object.keys(trackPlayers)
+                  .sort((a, b) => sortTracks(trackPlayers[a], trackPlayers[b]))
+                  .map(trackId => (
+                    <TrackViewer
+                      trackPlayer={trackPlayers[trackId]}
+                      key={trackId}
+                    />
+                  ))
+              }
               <Scrollbar wrapperRef={ref} contentWidthPublisher={contentWidthPublisher}/>
             </div>
             <Overlay name="instrument_browser">
@@ -110,4 +114,16 @@ function getScrollShadowClasses(trackViewersWrapper: HTMLElement): string {
   if (metaRight - noteLineLeft > 2)
     return 'overflowing-left';
   return '';
+}
+
+
+function sortTracks(trackPlayer1:Banana.TrackPlayer, trackPlayer2:Banana.TrackPlayer): number {
+  const track1 = trackPlayer1.track;
+  const track2 = trackPlayer2.track;
+
+  if (track1.instrument.displayOrder === track2.instrument.displayOrder) {
+    return Number(track1.id) - Number(track2.id);
+  }
+
+  return track1.instrument.displayOrder - track2.instrument.displayOrder;
 }
