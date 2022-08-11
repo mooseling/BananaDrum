@@ -14,6 +14,10 @@ describe('Instrument Library', function() {
       (noteStyleId:string) => `Duplicate noteStyle-id: ${id}.${noteStyleId}`);
     });
   });
+
+  it("doesn't have clashes displayOrders", () => {
+    assertNoClashes(instrumentCollection, 'displayOrder', (displayOrder:number) => `Duplicate instrument-displayOrder: ${displayOrder}`);
+  });
 });
 
 

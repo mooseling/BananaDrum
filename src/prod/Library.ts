@@ -11,6 +11,7 @@ export const Library:Banana.Library = {
       packedInstruments[packedInstrument.id] = packedInstrument;
       Library.instrumentMetas.push({
         id: packedInstrument.id,
+        displayOrder: packedInstrument.displayOrder,
         displayName: packedInstrument.displayName,
         colourGroup: packedInstrument.colourGroup,
         noteStyles: createNoteStyleBases(packedInstrument)
@@ -41,7 +42,7 @@ function createNoteStyleBases(packedInstrument:Banana.PackedInstrument):
 // This should be the only instance of an instrument
 // So if this is called, the instrument must start unloaded
 function Instrument(packedInstrument:Banana.PackedInstrument): Banana.Instrument {
-  const {id, packedNoteStyles, displayName, colourGroup} = packedInstrument;
+  const {id, packedNoteStyles, displayOrder, displayName, colourGroup} = packedInstrument;
   const publisher = Publisher();
 
   let loaded = false;
@@ -60,7 +61,7 @@ function Instrument(packedInstrument:Banana.PackedInstrument): Banana.Instrument
   });
 
   return {
-    id, noteStyles, displayName, colourGroup,
+    id, noteStyles, displayOrder, displayName, colourGroup,
     get loaded() {return loaded;},
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
   };

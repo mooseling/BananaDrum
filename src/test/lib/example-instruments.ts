@@ -1,6 +1,7 @@
 export const instrumentCollection:Banana.InstrumentCollection = [
   {
     id: '0',
+    displayOrder: 0,
     displayName: 'Agogo',
     packedNoteStyles: [
       {
@@ -24,6 +25,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
   },
   {
     id: 'a',
+    displayOrder: 1,
     displayName: '4-Bell Agogo',
     packedNoteStyles: [
       {
@@ -63,6 +65,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
   },
   {
     id: '1',
+    displayOrder: 2,
     displayName: 'Chocalho',
     packedNoteStyles: [
       {
@@ -86,6 +89,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
   },
   {
     id: '2',
+    displayOrder: 3,
     displayName: 'Tamborim',
     packedNoteStyles: [
       {
@@ -109,6 +113,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
   },
   {
     id: '3',
+    displayOrder: 4,
     displayName: 'Repinique',
     packedNoteStyles: [
       {
@@ -172,6 +177,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
   },
   {
     id: '4',
+    displayOrder: 5,
     displayName: 'Repinique (Whippy Sticks)',
     packedNoteStyles: [
       {
@@ -195,6 +201,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
   },
   {
     id: '5',
+    displayOrder: 6,
     displayName: 'Caixa',
     packedNoteStyles: [
       {
@@ -234,6 +241,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
   },
   {
     id: '6',
+    displayOrder: 7,
     displayName: 'Timba',
     packedNoteStyles: [
       {
@@ -265,6 +273,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
   },
   {
     id: '7',
+    displayOrder: 8,
     displayName: 'High Surdo',
     packedNoteStyles: [
       {
@@ -288,6 +297,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
   },
   {
     id: '8',
+    displayOrder: 9,
     displayName: 'Mid Surdo',
     packedNoteStyles: [
       {
@@ -311,6 +321,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
   },
   {
     id: '9',
+    displayOrder: 10,
     displayName: 'Low Surdo',
     packedNoteStyles: [
       {
