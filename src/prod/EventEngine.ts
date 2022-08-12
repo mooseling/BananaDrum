@@ -153,6 +153,10 @@ export const EventEngine:Banana.EventEngine = (function(){
     const scheduleIndex = scheduledEvents.indexOf(scheduledEvent);
     if (scheduleIndex !== -1)
       scheduledEvents.splice(scheduleIndex, 1);
+    if (scheduledEvent instanceof AudioBufferSourceNode) {
+      scheduledEvent.stop();
+      scheduledEvent.disconnect();
+    }
   }
 
 
