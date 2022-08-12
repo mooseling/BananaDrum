@@ -10,7 +10,14 @@ export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
   const [isCurrent, setIsCurrent] = useState(isSameTiming(arrangementPlayer.currentTiming, note.timing));
   const [playing, setPlaying] = useState(EventEngine.state === 'playing')
 
-  const engineSubscription:Banana.Subscription = () => setPlaying(EventEngine.state === 'playing');
+  const engineSubscription:Banana.Subscription = () => {
+    if (EventEngine.state === 'playing'){
+      setPlaying(true);
+    } else {
+      setPlaying(false);
+      setIsCurrent(false);
+    }
+  };
   useEffect(() => {
     EventEngine.subscribe(engineSubscription);
     return () => EventEngine.unsubscribe(engineSubscription);
