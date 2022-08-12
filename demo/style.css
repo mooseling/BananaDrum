@@ -343,6 +343,11 @@ So we're putting them in each track-viewer, where we can position them with no p
   background-color: var(--lighter-gray);
 }
 
+
+.note-viewer.start-of-bar:not(:first-child) {
+    border-left: 5pt solid var(--dark-gray);
+}
+
 .note-details-viewer {
   width: 100%;
   height: 100%;
