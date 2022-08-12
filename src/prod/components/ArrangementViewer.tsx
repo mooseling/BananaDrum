@@ -5,7 +5,6 @@ import {Share} from './Share';
 import {InstrumentBrowser} from './InstrumentBrowser';
 import {Overlay, toggleOverlay} from './Overlay';
 import {Publisher} from '../Publisher';
-import {EventEngine} from '../EventEngine';
 import {useState, useEffect, createContext, useRef} from 'react';
 
 
@@ -16,8 +15,6 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   const {arrangement} = arrangementPlayer;
   const [trackPlayers, setTrackPlayers] = useState({...arrangementPlayer.trackPlayers});
   const arrangementPlayerSubscription = () => setTrackPlayers({...arrangementPlayer.trackPlayers});
-  const [eventEngineState, updateEventEngineState] = useState(EventEngine.state);
-  const eventEngineSubscription = () => updateEventEngineState(EventEngine.state);
 
   // Scroll-shadows over the track-viewers
   // We need to recalculate these classes when:
@@ -39,13 +36,11 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
     setTimeout(updateScrollShadows, 0);
 
     arrangementPlayer.subscribe(arrangementPlayerSubscription);
-    EventEngine.subscribe(eventEngineSubscription);
     arrangement.timeParams.subscribe(timeParamsSubscription);
     resizeObserver.observe(ref.current);
 
     return () => {
       arrangementPlayer.unsubscribe(arrangementPlayerSubscription);
-      EventEngine.unsubscribe(eventEngineSubscription);
       resizeObserver.unobserve(ref.current);
       arrangement.timeParams.unsubscribe(timeParamsSubscription);
     }
@@ -53,7 +48,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
 
   return (
     <ArrangementPlayerContext.Provider value={arrangementPlayer}>
-      <div className="arrangement-viewer overlay-wrapper" event-engine-state={eventEngineState}>
+      <div className="arrangement-viewer overlay-wrapper">
         <div className="arrangement-viewer-head">
           <ArrangementControlsTop />
         </div>
