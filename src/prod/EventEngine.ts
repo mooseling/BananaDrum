@@ -79,7 +79,7 @@ export const EventEngine:Banana.EventEngine = (function(){
 
   function getTime() {
     checkInitialised();
-    return playbackAudioContext.currentTime - offset;
+    return playbackAudioContext.currentTime;
   }
 
 
