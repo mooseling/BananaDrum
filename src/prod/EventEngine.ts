@@ -13,7 +13,6 @@ export const EventEngine:Banana.EventEngine = (function(){
   const eventSources:Banana.EventSource[] = [];
   let nextIteration: number|null = null;
   let timeCovered:number = 0;
-  let offset:number = 0; // We offset playback to 0 to stop
   let state:Banana.EventEngineState = 'stopped';
   const publisher:Banana.Publisher = Publisher();
 
@@ -72,7 +71,6 @@ export const EventEngine:Banana.EventEngine = (function(){
       clearTimeout(nextIteration);
       nextIteration = null;
       timeCovered = playbackAudioContext.currentTime;
-      offset = timeCovered;
       state = 'paused';
       publisher.publish();
     }
@@ -115,7 +113,7 @@ export const EventEngine:Banana.EventEngine = (function(){
   // We make sure never to request any time we've requested before
   function loop() {
     const currentTime = playbackAudioContext.currentTime;
-    const interval:Banana.Interval = {start:timeCovered - offset, end: currentTime + lookahead - offset};
+    const interval:Banana.Interval = {start:timeCovered, end: currentTime + lookahead};
     scheduleEvents(interval);
     nextIteration = setTimeout(loop, loopFrequency);
     timeCovered = currentTime + lookahead;
@@ -135,14 +133,14 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   function scheduleAudioEvent({audioBuffer, realTime}:Banana.AudioEvent) {
-    const sourceNode = playSound(audioBuffer, realTime + offset);
+    const sourceNode = playSound(audioBuffer, realTime);
     scheduledEvents.push(sourceNode);
     sourceNode.addEventListener('ended', () => unSchedule(sourceNode));
   }
 
 
   function scheduleCallbackEvent({realTime, callback}:Banana.CallbackEvent) {
-    const msFromNow = (realTime - playbackAudioContext.currentTime + offset) * 1000;
+    const msFromNow = (realTime - playbackAudioContext.currentTime) * 1000;
     const timeoutId = setTimeout(() => {
       callback();
       unSchedule(timeoutId);
