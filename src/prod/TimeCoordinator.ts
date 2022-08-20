@@ -16,6 +16,7 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
   let offset = 0;
 
   timeParams.subscribe(handleTimeParamsChange);
+  EventEngine.subscribe(handlePlaybackChange)
 
   return {convertToRealTime, convertToLoopIntervals, convertToAudioTime, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
@@ -141,8 +142,21 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
     const newOffsetTime = (loopsFinished * realTimeLength) + targetTimeWithinLoop;
     offset = newOffsetTime - audioTime;
   }
+
+
+  function handlePlaybackChange() {
+    if (EventEngine.state !== 'playing')
+      offset = 0;
+  }
 }
 
+
+
+
+
+// ==================================================================
+//                       Private Static Functions
+// ==================================================================
 
 
 function calcNoteTimes({timeSignature, tempo, pulse, stepResolution}:Banana.PackedTimeParams) {
