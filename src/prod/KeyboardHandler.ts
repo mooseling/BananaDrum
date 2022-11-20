@@ -11,8 +11,6 @@ export const KeyboardHandler = {
 
 
 function handleKeyDown(event:KeyboardEvent): void {
-  if (isInInput(event))
-    return;
   if (event.key === 'Escape')
     closeAllOverlays();
   if (event.key === ' ') {
@@ -22,14 +20,4 @@ function handleKeyDown(event:KeyboardEvent): void {
       EventEngine.pause();
     event.preventDefault();
   }
-}
-
-
-function isInInput(event:KeyboardEvent): boolean {
-  const element = event.target;
-  if (element instanceof HTMLElement) {
-    const tagName = element.tagName;
-    return (tagName === 'INPUT' || tagName === 'TEXTAREA')
-  }
-  return false;
 }
