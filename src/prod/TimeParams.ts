@@ -108,7 +108,7 @@ function validateTimeSignature(timeSignature:string): boolean {
 // The only invalid tempos are negative... unless we want to play backwards!
 // That's an idea for another time
 function validateTempo(tempo:number) {
-  if (tempo < 1)
+  if (isNaN(tempo) || tempo < 1)
     return false;
   return true;
 }
@@ -117,7 +117,7 @@ function validateTempo(tempo:number) {
 // Lengths must be natural numbers for now
 // Later we may want half-bar breaks, etc
 function validateLength(length:number) {
-  if (length <= 0)
+  if (isNaN(length) || length <= 0)
     return false;
   if (length != Math.floor(length))
     return false;
