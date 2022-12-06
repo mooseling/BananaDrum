@@ -137,7 +137,7 @@ export const EventEngine:Banana.EventEngine = (function(){
   function scheduleAudioEvent({audioBuffer, realTime}:Banana.AudioEvent) {
     const sourceNode = playSound(audioBuffer, realTime + offset);
     scheduledEvents.push(sourceNode);
-    sourceNode.addEventListener('ended', () => unSchedule(sourceNode));
+    sourceNode.addEventListener('ended', () => removeFromSchedule(sourceNode));
   }
 
 
@@ -145,13 +145,13 @@ export const EventEngine:Banana.EventEngine = (function(){
     const msFromNow = (realTime - playbackAudioContext.currentTime + offset) * 1000;
     const timeoutId = setTimeout(() => {
       callback();
-      unSchedule(timeoutId);
+      removeFromSchedule(timeoutId);
     }, msFromNow);
     scheduledEvents.push(timeoutId);
   }
 
 
-  function unSchedule(scheduledEvent:ScheduledEvent) {
+  function removeFromSchedule(scheduledEvent:ScheduledEvent) {
     const scheduleIndex = scheduledEvents.indexOf(scheduledEvent);
     if (scheduleIndex !== -1)
       scheduledEvents.splice(scheduleIndex, 1);
@@ -159,6 +159,9 @@ export const EventEngine:Banana.EventEngine = (function(){
       scheduledEvent.stop();
       scheduledEvent.disconnect();
     }
+    // Currently no need to clearTimeout on callback events
+    // They are only getting unscheduled by this function after they fire
+    // They are also getting unscheduled by clearScheduledEvents, which does clearTimeout
   }
 
 
