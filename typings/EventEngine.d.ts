@@ -24,9 +24,14 @@ declare namespace Banana {
     callback(): void
   }
 
-  type Event = CallbackEvent|AudioEvent
+  type MuteFilter = (audioEvent:AudioEvent) => boolean
+  interface MuteEvent extends EventDetails {
+    muteFilter: MuteFilter
+  }
+
+  type Event = CallbackEvent|AudioEvent|MuteEvent
 
   interface EventSource {
-    getEvents(interval:Interval): (Event)[]
+    getEvents(interval:Interval): Event[]
   }
 }
