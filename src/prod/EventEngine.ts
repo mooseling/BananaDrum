@@ -17,8 +17,11 @@ export const EventEngine:Banana.EventEngine = (function(){
   let state:Banana.EventEngineState = 'stopped';
   const publisher:Banana.Publisher = Publisher();
 
-  type ScheduledEvent = AudioBufferSourceNode|number;
-  const scheduledEvents:ScheduledEvent[] = [];
+  type ScheduledAudioEvent =  {event:Banana.AudioEvent, sourceNode:AudioBufferSourceNode};
+  const scheduledAudioEvents:ScheduledAudioEvent[] = [];
+
+  type ScheduledCallbackEvent = {event:Banana.CallbackEvent, timeoutId:number};
+  const scheduledCallbackEvents:ScheduledCallbackEvent[] = [];
 
   return {
     initialise, connect, play, pause, getTime, playSound,
@@ -134,31 +137,41 @@ export const EventEngine:Banana.EventEngine = (function(){
   }
 
 
-  function scheduleAudioEvent({audioBuffer, realTime}:Banana.AudioEvent) {
-    const sourceNode = playSound(audioBuffer, realTime + offset);
-    scheduledEvents.push(sourceNode);
-    sourceNode.addEventListener('ended', () => removeFromSchedule(sourceNode));
+  function scheduleAudioEvent(event:Banana.AudioEvent) {
+    const sourceNode = playSound(event.audioBuffer, event.realTime + offset);
+    const audioEvent:ScheduledAudioEvent = {event, sourceNode};
+    scheduledAudioEvents.push(audioEvent);
+    sourceNode.addEventListener('ended', () => removeFromAudioSchedule(audioEvent));
   }
 
-
-  function scheduleCallbackEvent({realTime, callback}:Banana.CallbackEvent) {
-    const msFromNow = (realTime - playbackAudioContext.currentTime + offset) * 1000;
-    const timeoutId = setTimeout(() => {
-      callback();
-      removeFromSchedule(timeoutId);
-    }, msFromNow);
-    scheduledEvents.push(timeoutId);
-  }
-
-
-  function removeFromSchedule(scheduledEvent:ScheduledEvent) {
-    const scheduleIndex = scheduledEvents.indexOf(scheduledEvent);
+  function removeFromAudioSchedule(scheduledEvent:ScheduledAudioEvent) {
+    const scheduleIndex = scheduledAudioEvents.indexOf(scheduledEvent);
     if (scheduleIndex !== -1)
-      scheduledEvents.splice(scheduleIndex, 1);
+      scheduledAudioEvents.splice(scheduleIndex, 1);
     if (scheduledEvent instanceof AudioBufferSourceNode) {
       scheduledEvent.stop();
       scheduledEvent.disconnect();
     }
+  }
+
+
+  function scheduleCallbackEvent(event:Banana.CallbackEvent) {
+    const msFromNow = (event.realTime - playbackAudioContext.currentTime + offset) * 1000;
+    const callbackEvent:ScheduledCallbackEvent = {
+      event,
+      timeoutId: setTimeout(() => {
+        event.callback();
+        removeFromCallbackSchedule(callbackEvent);
+      }, msFromNow)
+    };
+    scheduledCallbackEvents.push(callbackEvent);
+  }
+
+
+  function removeFromCallbackSchedule(scheduledEvent:ScheduledCallbackEvent) {
+    const scheduleIndex = scheduledCallbackEvents.indexOf(scheduledEvent);
+    if (scheduleIndex !== -1)
+      scheduledCallbackEvents.splice(scheduleIndex, 1);
     // Currently no need to clearTimeout on callback events
     // They are only getting unscheduled by this function after they fire
     // They are also getting unscheduled by clearScheduledEvents, which does clearTimeout
@@ -166,12 +179,9 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   function clearScheduledEvents(): void {
-    scheduledEvents.forEach((scheduledEvent:ScheduledEvent) => {
-      if (scheduledEvent instanceof AudioBufferSourceNode)
-        scheduledEvent.stop();
-      else
-        clearTimeout(scheduledEvent);
-    });
-    scheduledEvents.splice(0);
+    scheduledAudioEvents.forEach(({sourceNode}) => sourceNode.stop());
+    scheduledCallbackEvents.forEach(({timeoutId}) => clearTimeout(timeoutId));
+    scheduledAudioEvents.splice(0);
+    scheduledCallbackEvents.splice(0);
   }
 })();
