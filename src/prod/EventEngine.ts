@@ -141,15 +141,22 @@ export const EventEngine:Banana.EventEngine = (function(){
     const sourceNode = playSound(event.audioBuffer, event.realTime + offset);
     const audioEvent:ScheduledAudioEvent = {event, sourceNode};
     scheduledAudioEvents.push(audioEvent);
-    sourceNode.addEventListener('ended', () => removeFromAudioSchedule(audioEvent));
+    // Event listener will fire on context.suspend() as well as audiobuffer finishing
+    sourceNode.addEventListener('ended', () => stopAudioAndUnschedule(audioEvent));
   }
 
-  function removeFromAudioSchedule(scheduledEvent:ScheduledAudioEvent) {
-    scheduledEvent.sourceNode.stop();
-    scheduledEvent.sourceNode.disconnect();
+
+  function stopAudioAndUnschedule(scheduledEvent:ScheduledAudioEvent) {
+    stopAudio(scheduledEvent.sourceNode);
     const scheduleIndex = scheduledAudioEvents.indexOf(scheduledEvent);
     if (scheduleIndex !== -1)
       scheduledAudioEvents.splice(scheduleIndex, 1);
+  }
+
+
+  function stopAudio(sourceNode:AudioBufferSourceNode) {
+    sourceNode.stop();
+    sourceNode.disconnect();
   }
 
 
@@ -177,7 +184,7 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   function clearScheduledEvents(): void {
-    scheduledAudioEvents.forEach(({sourceNode}) => sourceNode.stop());
+    scheduledAudioEvents.forEach(({sourceNode}) => stopAudio(sourceNode));
     scheduledCallbackEvents.forEach(({timeoutId}) => clearTimeout(timeoutId));
     scheduledAudioEvents.splice(0);
     scheduledCallbackEvents.splice(0);
