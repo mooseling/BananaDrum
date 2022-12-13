@@ -145,13 +145,11 @@ export const EventEngine:Banana.EventEngine = (function(){
   }
 
   function removeFromAudioSchedule(scheduledEvent:ScheduledAudioEvent) {
+    scheduledEvent.sourceNode.stop();
+    scheduledEvent.sourceNode.disconnect();
     const scheduleIndex = scheduledAudioEvents.indexOf(scheduledEvent);
     if (scheduleIndex !== -1)
       scheduledAudioEvents.splice(scheduleIndex, 1);
-    if (scheduledEvent instanceof AudioBufferSourceNode) {
-      scheduledEvent.stop();
-      scheduledEvent.disconnect();
-    }
   }
 
 
