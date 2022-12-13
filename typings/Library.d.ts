@@ -35,6 +35,7 @@ declare namespace Banana {
 
   interface NoteStyle extends NoteStyleBase {
     audioBuffer: AudioBuffer|null // null while the instrument is loading
+    instrument: Instrument
   }
 
   interface NoteStyleSymbol {

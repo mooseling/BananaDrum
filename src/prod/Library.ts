@@ -48,8 +48,15 @@ function Instrument(packedInstrument:Banana.PackedInstrument): Banana.Instrument
   let loaded = false;
   const noteStyles:{[id:string]: Banana.NoteStyle|null} = {};
   const unpackPromises:Promise<any>[] = [];
+
+  const instrument = {
+    id, noteStyles, displayOrder, displayName, colourGroup,
+    get loaded() {return loaded;},
+    subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
+  };
+
   packedNoteStyles.forEach(({id, file, symbol}) => {
-    noteStyles[id] = {id, symbol, audioBuffer:null};
+    noteStyles[id] = {id, symbol, audioBuffer:null, instrument};
     unpackPromises.push(
       AudioGetter.get(file)
         .then(audioBuffer => noteStyles[id].audioBuffer = audioBuffer)
@@ -60,9 +67,5 @@ function Instrument(packedInstrument:Banana.PackedInstrument): Banana.Instrument
     publisher.publish();
   });
 
-  return {
-    id, noteStyles, displayOrder, displayName, colourGroup,
-    get loaded() {return loaded;},
-    subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
-  };
+  return instrument;
 }
