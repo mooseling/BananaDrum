@@ -17,11 +17,17 @@ export const EventEngine:Banana.EventEngine = (function(){
   let state:Banana.EventEngineState = 'stopped';
   const publisher:Banana.Publisher = Publisher();
 
+
   type ScheduledAudioEvent =  {event:Banana.AudioEvent, sourceNode:AudioBufferSourceNode};
   const scheduledAudioEvents:ScheduledAudioEvent[] = [];
 
   type ScheduledCallbackEvent = {event:Banana.CallbackEvent, timeoutId:number};
   const scheduledCallbackEvents:ScheduledCallbackEvent[] = [];
+
+  type ScheduledMuteEvent = {event:Banana.MuteEvent, timeoutId:number};
+  const scheduledMuteEvents:ScheduledMuteEvent[] = [];
+
+
 
   return {
     initialise, connect, play, pause, getTime, playSound,
@@ -132,6 +138,8 @@ export const EventEngine:Banana.EventEngine = (function(){
           scheduleAudioEvent(event as Banana.AudioEvent);
         if ('callback' in event)
           scheduleCallbackEvent(event as Banana.CallbackEvent);
+        if ('muteFilter' in event)
+          scheduleMuteEvent(event as Banana.MuteEvent);
       });
     });
   }
@@ -183,10 +191,42 @@ export const EventEngine:Banana.EventEngine = (function(){
   }
 
 
+  function scheduleMuteEvent(event:Banana.MuteEvent) {
+    const msFromNow = (event.realTime - playbackAudioContext.currentTime + offset) * 1000;
+    const scheduledMuteEvent = {
+      event,
+      timeoutId: setTimeout(() => {
+        muteUsingFilter(event.muteFilter)
+        removeFromMuteSchedule(scheduledMuteEvent);
+      }, msFromNow)
+    };
+    scheduledMuteEvents.push(scheduledMuteEvent)
+  }
+
+
+
+
+  function removeFromMuteSchedule(scheduledEvent:ScheduledMuteEvent) {
+    const scheduleIndex = scheduledMuteEvents.indexOf(scheduledEvent);
+    if (scheduleIndex !== -1)
+      scheduledMuteEvents.splice(scheduleIndex, 1);
+  }
+
+
   function clearScheduledEvents(): void {
     scheduledAudioEvents.forEach(({sourceNode}) => stopAudio(sourceNode));
     scheduledCallbackEvents.forEach(({timeoutId}) => clearTimeout(timeoutId));
+    scheduledMuteEvents.forEach(({timeoutId}) => clearTimeout(timeoutId));
     scheduledAudioEvents.splice(0);
     scheduledCallbackEvents.splice(0);
+    scheduledMuteEvents.splice(0);
+  }
+
+
+  function muteUsingFilter(muteFilter:Banana.MuteFilter) {
+    scheduledAudioEvents.forEach(event => {
+      if (event.event.realTime <= getTime() && muteFilter(event.event))
+        stopAudioAndUnschedule(event);
+    });
   }
 })();
