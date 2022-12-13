@@ -150,6 +150,7 @@ export const EventEngine:Banana.EventEngine = (function(){
     const audioEvent:ScheduledAudioEvent = {event, sourceNode};
     scheduledAudioEvents.push(audioEvent);
     // Event listener will fire on context.suspend() as well as audiobuffer finishing
+    // The 'stop' button wants to clear audio that's in mid-play
     sourceNode.addEventListener('ended', () => stopAudioAndUnschedule(audioEvent));
   }
 
