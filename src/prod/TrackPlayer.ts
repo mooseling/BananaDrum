@@ -57,7 +57,7 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
     const events:Banana.Event[] = notesInInterval
       .filter(({note}) => note.noteStyle) // Filter out rests (which have noteStyle: null)
       .map(({realTime, note}) => ({realTime, note, audioBuffer:note.noteStyle.audioBuffer}));
-    notesInInterval.forEach(({realTime, note}) => events.concat(getMuteEvents(note, realTime)));
+    notesInInterval.forEach(({realTime, note}) => events.push(...getMuteEvents(note, realTime)));
 
     return events;
   }
