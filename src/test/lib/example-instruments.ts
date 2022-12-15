@@ -303,6 +303,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
       {
         id: '1',
         file: 'Mid_Surdo_Accent.mp3',
+        muting: {name:'sameTrack'},
         symbol: {
           src:'images/icons/o_big.svg',
           string: 'accent'
@@ -311,6 +312,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
       {
         id: '2',
         file: 'Mid_Surdo_Muted.mp3',
+        muting: {name:'sameTrack'},
         symbol: {
           src:'images/icons/o_big_closed.svg',
           string: 'muted'
@@ -327,6 +329,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
       {
         id: '1',
         file: 'Low_Surdo_Accent.mp3',
+        muting: {name:'sameTrack'},
         symbol: {
           src:'images/icons/o_big.svg',
           string: 'accent'
@@ -335,6 +338,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
       {
         id: '2',
         file: 'Low_Surdo_Muted.mp3',
+        muting: {name:'sameTrack'},
         symbol: {
           src:'images/icons/o_big_closed.svg',
           string: 'muted'
