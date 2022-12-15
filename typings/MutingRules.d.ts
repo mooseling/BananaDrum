@@ -1,9 +1,9 @@
 declare namespace Banana {
 
-  type MutingRule = MutingRuleSimple | MutingRuleInstrument
+  type MutingRule = MutingRuleSimple | MutingRuleOtherInstrument
 
-  interface MutingRuleInstrument {
-    name: 'instrument'
+  interface MutingRuleOtherInstrument {
+    name: 'otherInstrument'
     id: string
   }
 
