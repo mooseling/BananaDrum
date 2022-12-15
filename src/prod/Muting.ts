@@ -1,17 +1,26 @@
-export function getMuteEvent(note:Banana.Note, realTime:Banana.RealTime): Banana.MuteEvent|undefined {
-  const muteFilter:Banana.MuteFilter|void = getMuteFilter(note);
-  if (!muteFilter)
-    return;
+import {exists} from './utils';
 
-  return {muteFilter, realTime};
+
+export function getMuteEvents(note:Banana.Note, realTime:Banana.RealTime): Banana.MuteEvent[] {
+  const muteFilters:Banana.MuteFilter[] = getMuteFilters(note);
+
+  return muteFilters.map(muteFilter => ({muteFilter, realTime}));
 }
 
 
-function getMuteFilter(note:Banana.Note): Banana.MuteFilter|void {
-  if (!note.noteStyle?.muting)
-    return;
+function getMuteFilters(note:Banana.Note): Banana.MuteFilter[] {
+  const muting = note.noteStyle?.muting;
+  if (!muting)
+    return [];
 
-  switch (note.noteStyle.muting.name) {
+  if (Array.isArray(muting))
+    return muting.map(muting => getMuteFilter(note, muting)).filter(exists);
+  return [getMuteFilter(note, muting)];
+}
+
+
+function getMuteFilter(note:Banana.Note, muting:Banana.MutingRule): Banana.MuteFilter|undefined {
+  switch (muting.name) {
     case 'sameTrack':
       return getSameTrackMuteFilter(note);
   }

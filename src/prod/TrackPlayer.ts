@@ -1,5 +1,5 @@
 import {Publisher} from './Publisher';
-import {getMuteEvent} from './Muting';
+import {getMuteEvents} from './Muting';
 
 type NoteWithTime = {realTime:Banana.RealTime, note:Banana.Note};
 
@@ -56,11 +56,10 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
     // Can't do this all in one go because TypeScript won't allow the concat
     const events:Banana.Event[] = notesInInterval
       .filter(({note}) => note.noteStyle) // Filter out rests (which have noteStyle: null)
-      .map(({realTime, note}) => ({realTime, note, audioBuffer:note.noteStyle.audioBuffer}))
-    const muteEvents = notesInInterval.map(({realTime, note}) => getMuteEvent(note, realTime))
-      .filter(exists);
+      .map(({realTime, note}) => ({realTime, note, audioBuffer:note.noteStyle.audioBuffer}));
+    notesInInterval.forEach(({realTime, note}) => events.concat(getMuteEvents(note, realTime)));
 
-    return events.concat(muteEvents);
+    return events;
   }
 
 
@@ -127,8 +126,3 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
 }
 
 export const TrackPlayer:Banana.TrackPlayerBuilder = buildTrackPlayer;
-
-
-function exists<T>(value: T | undefined | null): value is T {
-  return value === (value ?? !value);
-}

@@ -27,7 +27,7 @@ declare namespace Banana {
   interface NoteStyleBase {
     id: string // single digit or char, can't be 0
     symbol: NoteStyleSymbol
-    muting?: MutingRule
+    muting?: MutingRule|MutingRule[]
   }
 
   interface PackedNoteStyle extends NoteStyleBase {
