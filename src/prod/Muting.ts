@@ -24,6 +24,8 @@ function getMuteFilter(note:Banana.Note, muting:Banana.MutingRule): Banana.MuteF
   switch (ruleName) {
     case 'sameTrack':
       return getSameTrackMuteFilter(note);
+    case 'otherInstrument':
+      return getOtherInstrumentMuteFilter(note, muting as Banana.MutingRuleOtherInstrument);
   }
 }
 
@@ -38,4 +40,18 @@ function getSameTrackMuteFilter(note:Banana.Note): Banana.MuteFilter|undefined {
   return (audioEvent:Banana.AudioEvent) =>
     audioEvent.note.track === track
     && audioEvent.note !== note;
+}
+
+
+function getOtherInstrumentMuteFilter(note:Banana.Note, muting:Banana.MutingRuleOtherInstrument)
+    : Banana.MuteFilter|undefined {
+  const noteStyle = note.noteStyle;
+  if (noteStyle === null)
+    return;
+
+  const otherInstrumentId = muting.id;
+
+  return (audioEvent:Banana.AudioEvent) =>
+    audioEvent.note.track.instrument.id === otherInstrumentId
+    && audioEvent.note.timing !== note.timing; // Don't cross-mute when played together
 }
