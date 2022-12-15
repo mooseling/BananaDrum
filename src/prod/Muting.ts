@@ -20,7 +20,8 @@ function getMuteFilters(note:Banana.Note): Banana.MuteFilter[] {
 
 
 function getMuteFilter(note:Banana.Note, muting:Banana.MutingRule): Banana.MuteFilter|undefined {
-  switch (muting.name) {
+  const ruleName = typeof muting === 'string' ? muting : muting.name;
+  switch (ruleName) {
     case 'sameTrack':
       return getSameTrackMuteFilter(note);
   }
