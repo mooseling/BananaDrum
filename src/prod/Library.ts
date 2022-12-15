@@ -55,8 +55,8 @@ function Instrument(packedInstrument:Banana.PackedInstrument): Banana.Instrument
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
   };
 
-  packedNoteStyles.forEach(({id, file, symbol}) => {
-    noteStyles[id] = {id, symbol, audioBuffer:null, instrument};
+  packedNoteStyles.forEach(({id, file, symbol, muting}) => {
+    noteStyles[id] = {id, symbol, audioBuffer:null, instrument, muting};
     unpackPromises.push(
       AudioGetter.get(file)
         .then(audioBuffer => noteStyles[id].audioBuffer = audioBuffer)
