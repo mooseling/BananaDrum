@@ -9,8 +9,9 @@ const lookahead = 0.25; // (s) Look 250ms ahead for events
 const loopFrequency = 125 // (ms) Check for upcoming events every 125ms
 
 export const EventEngine:Banana.EventEngine = (function(){
-  let playbackAudioContext:AudioContext|null = null;
-  let oneOffAudioContext:AudioContext|null = null;
+  let playbackAudioContext:AudioContext = new AudioContext();
+  playbackAudioContext.suspend();
+  let oneOffAudioContext:AudioContext = new AudioContext();
   const eventSources:Banana.EventSource[] = [];
   let nextIteration: number|null = null;
   let timeCovered:number = 0;
@@ -31,7 +32,7 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   return {
-    initialise, connect, play, stop, getTime, playSound,
+    connect, play, stop, getTime, playSound,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
     get state():Banana.EventEngineState {
       return state;
@@ -49,25 +50,14 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
 
-  // Browsers require that an AudioContext is created as a result of user interaction
-  function initialise() {
-    if (playbackAudioContext === null) {
-      playbackAudioContext = new AudioContext();
-      playbackAudioContext.suspend();
-      oneOffAudioContext = new AudioContext();
-    }
-  }
-
-
   function connect(eventSource:Banana.EventSource) {
     eventSources.push(eventSource);
   }
 
 
-  function play() {
-    checkInitialised();
+  async function play() {
+    await ensureContextIsRunning();
     if (nextIteration === null) {
-      playbackAudioContext.resume();
       loop();
       state = 'playing';
       publisher.publish();
@@ -90,7 +80,6 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   function getTime() {
-    checkInitialised();
     return playbackAudioContext.currentTime - offset;
   }
 
@@ -112,9 +101,15 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
 
-  function checkInitialised() {
-    if (playbackAudioContext === null)
-      throw 'The AudioPlayer has not been initialised';
+  async function ensureContextIsRunning() {
+    if (playbackAudioContext.state !== 'running') {
+      await playbackAudioContext.resume();
+      await oneOffAudioContext.resume();
+
+      // @ts-ignore
+      if (playbackAudioContext.state !== 'running')
+        throw 'The AudioPlayer has not been initialised';
+    }
   }
 
 

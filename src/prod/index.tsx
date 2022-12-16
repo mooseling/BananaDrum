@@ -19,7 +19,6 @@ window.React = React;
 document.getElementById('load-button').addEventListener('click', function() {
   HistoryController.init();
   KeyboardHandler.init();
-  EventEngine.initialise();
 
   this.replaceWith(createLoadingMessage());
 
