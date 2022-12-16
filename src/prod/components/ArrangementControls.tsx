@@ -19,8 +19,8 @@ export function ArrangementControlsTop(): JSX.Element {
     <div className="arrangement-controls arrangement-controls-top">
       {
         playing ? (
-          <button className="playback-control push-button" onClick={() => EventEngine.pause()}>
-            <img src="images/icons/pause.svg" alt="pause" />
+          <button className="playback-control push-button" onClick={() => EventEngine.stop()}>
+            <img src="images/icons/pause.svg" alt="stop" />
           </button>
         ) : (
           <button className="playback-control push-button" onClick={() => EventEngine.play()}>

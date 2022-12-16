@@ -14,10 +14,10 @@ function handleKeyDown(event:KeyboardEvent): void {
   if (event.key === 'Escape')
     closeAllOverlays();
   if (event.key === ' ') {
-    if (EventEngine.state === 'stopped' || EventEngine.state == 'paused')
+    if (EventEngine.state === 'stopped')
       EventEngine.play();
     else
-      EventEngine.pause();
+      EventEngine.stop();
     event.preventDefault();
   }
 }

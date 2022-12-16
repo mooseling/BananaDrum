@@ -31,7 +31,7 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   return {
-    initialise, connect, play, pause, getTime, playSound,
+    initialise, connect, play, stop, getTime, playSound,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
     get state():Banana.EventEngineState {
       return state;
@@ -75,7 +75,7 @@ export const EventEngine:Banana.EventEngine = (function(){
   }
 
 
-  function pause() {
+  function stop() {
     if (nextIteration !== null) {
       playbackAudioContext.suspend();
       clearScheduledEvents();
@@ -83,7 +83,7 @@ export const EventEngine:Banana.EventEngine = (function(){
       nextIteration = null;
       timeCovered = playbackAudioContext.currentTime;
       offset = timeCovered;
-      state = 'paused';
+      state = 'stopped';
       publisher.publish();
     }
   }

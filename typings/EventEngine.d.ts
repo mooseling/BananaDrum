@@ -3,13 +3,13 @@ declare namespace Banana {
     initialise(): void
     connect(eventSource:EventSource): void
     play(): void
-    pause(): void
+    stop(): void
     getTime(): RealTime
     playSound(audioBuffer:AudioBuffer, time?:number): AudioBufferPlayer
     state: EventEngineState
   }
 
-  type EventEngineState = 'stopped'|'playing'|'paused'
+  type EventEngineState = 'stopped'|'playing'
 
   interface EventDetails {
     realTime: RealTime
