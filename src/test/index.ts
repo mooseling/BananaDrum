@@ -1,5 +1,4 @@
 import {EventEngine} from '../prod/EventEngine';
-EventEngine.initialise();
 
 import './lib/set-global-mocks';
 import './unit/TimeParams';
