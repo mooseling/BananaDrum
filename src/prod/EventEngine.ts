@@ -9,12 +9,12 @@ const lookahead = 0.25; // (s) Look 250ms ahead for events
 const loopFrequency = 125 // (ms) Check for upcoming events every 125ms
 
 export const EventEngine:Banana.EventEngine = (function(){
-  let audioContext:AudioContext = new AudioContext();
+  const audioContext:AudioContext = new AudioContext();
   audioContext.suspend();
   const eventSources:Banana.EventSource[] = [];
   let nextIteration: number|null = null;
   let timeCovered:number = 0;
-  let offset:number = 0; // We offset playback to 0 to stop
+  let offset:number = 0;
   let state:Banana.EventEngineState = 'stopped';
   const publisher:Banana.Publisher = Publisher();
 
@@ -105,7 +105,7 @@ export const EventEngine:Banana.EventEngine = (function(){
 
       // @ts-ignore
       if (audioContext.state !== 'running')
-        throw 'The AudioPlayer has not been initialised';
+        throw "Couldn't start the AudioContext";
     }
   }
 
