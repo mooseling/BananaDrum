@@ -155,13 +155,12 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   function scheduleCallbackEvent(callbackEvent:Banana.CallbackEvent) {
-    const msFromNow = (callbackEvent.realTime - audioContext.currentTime + offset) * 1000;
     const callbackEventReference:CallbackEventReference = {
       callbackEvent,
       timeoutId: setTimeout(() => {
         callbackEvent.callback();
         removeFromCallbackSchedule(callbackEventReference);
-      }, msFromNow)
+      }, getMsFromNow(callbackEvent.realTime))
     };
     scheduledCallbackEvents.push(callbackEventReference);
   }
@@ -178,18 +177,15 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   function scheduleMuteEvent(muteEvent:Banana.MuteEvent) {
-    const msFromNow = (muteEvent.realTime - audioContext.currentTime + offset) * 1000;
     const scheduledMuteEvent = {
       muteEvent,
       timeoutId: setTimeout(() => {
         muteUsingFilter(muteEvent.muteFilter)
         removeFromMuteSchedule(scheduledMuteEvent);
-      }, msFromNow)
+      }, getMsFromNow(muteEvent.realTime))
     };
     scheduledMuteEvents.push(scheduledMuteEvent)
   }
-
-
 
 
   function removeFromMuteSchedule(muteEventReference:MuteEventReference) {
@@ -206,6 +202,11 @@ export const EventEngine:Banana.EventEngine = (function(){
     scheduledAudioEvents.splice(0);
     scheduledCallbackEvents.splice(0);
     scheduledMuteEvents.splice(0);
+  }
+
+
+  function getMsFromNow(time:number) {
+    return (time - getTime()) * 1000;
   }
 
 
