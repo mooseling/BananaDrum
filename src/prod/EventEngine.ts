@@ -3,6 +3,7 @@
 // Playing audio boils down to the WebAudio API, so we must warp our design around that
 
 import {Publisher} from './Publisher';
+import {AudioBufferPlayer} from './AudioBufferPlayer';
 
 const lookahead = 0.25; // (s) Look 250ms ahead for events
 const loopFrequency = 125 // (ms) Check for upcoming events every 125ms
@@ -18,7 +19,7 @@ export const EventEngine:Banana.EventEngine = (function(){
   const publisher:Banana.Publisher = Publisher();
 
 
-  type AudioEventReference =  {audioEvent:Banana.AudioEvent, sourceNode:AudioBufferSourceNode};
+  type AudioEventReference =  {audioEvent:Banana.AudioEvent, audioBufferPlayer:Banana.AudioBufferPlayer};
   const scheduledAudioEvents:AudioEventReference[] = [];
 
   type CallbackEventReference = {callbackEvent:Banana.CallbackEvent, timeoutId:number};
@@ -94,12 +95,10 @@ export const EventEngine:Banana.EventEngine = (function(){
   }
 
 
-  function playSound(audioBuffer:AudioBuffer, time = 0): AudioBufferSourceNode {
+  function playSound(audioBuffer:AudioBuffer, time = 0): Banana.AudioBufferPlayer {
     let context = time === 0 ? oneOffAudioContext : playbackAudioContext;
-    const sourceNode = new AudioBufferSourceNode(context, {buffer:audioBuffer});
-    sourceNode.connect(context.destination);
-    sourceNode.start(time);
-    return sourceNode;
+    const audioBufferPlayer = AudioBufferPlayer(audioBuffer, context, time);
+    return audioBufferPlayer;
   }
 
 
@@ -146,26 +145,20 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   function scheduleAudioEvent(audioEvent:Banana.AudioEvent) {
-    const sourceNode = playSound(audioEvent.audioBuffer, audioEvent.realTime + offset);
-    const audioEventReference:AudioEventReference = {audioEvent, sourceNode};
+    const audioBufferPlayer = playSound(audioEvent.audioBuffer, audioEvent.realTime + offset);
+    const audioEventReference:AudioEventReference = {audioEvent, audioBufferPlayer};
     scheduledAudioEvents.push(audioEventReference);
     // Event listener will fire on context.suspend() as well as audiobuffer finishing
     // The 'stop' button wants to clear audio that's in mid-play
-    sourceNode.addEventListener('ended', () => stopAudioAndUnschedule(audioEventReference));
+    audioBufferPlayer.onEnded(() => stopAudioAndUnschedule(audioEventReference));
   }
 
 
   function stopAudioAndUnschedule(audioEventReference:AudioEventReference) {
-    stopAudio(audioEventReference.sourceNode);
+    audioEventReference.audioBufferPlayer.stop();
     const scheduleIndex = scheduledAudioEvents.indexOf(audioEventReference);
     if (scheduleIndex !== -1)
       scheduledAudioEvents.splice(scheduleIndex, 1);
-  }
-
-
-  function stopAudio(sourceNode:AudioBufferSourceNode) {
-    sourceNode.stop();
-    sourceNode.disconnect();
   }
 
 
@@ -215,7 +208,7 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   function clearScheduledEvents(): void {
-    scheduledAudioEvents.forEach(({sourceNode}) => stopAudio(sourceNode));
+    scheduledAudioEvents.forEach(({audioBufferPlayer}) => audioBufferPlayer.stop());
     scheduledCallbackEvents.forEach(({timeoutId}) => clearTimeout(timeoutId));
     scheduledMuteEvents.forEach(({timeoutId}) => clearTimeout(timeoutId));
     scheduledAudioEvents.splice(0);
