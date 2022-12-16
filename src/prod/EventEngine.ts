@@ -9,9 +9,8 @@ const lookahead = 0.25; // (s) Look 250ms ahead for events
 const loopFrequency = 125 // (ms) Check for upcoming events every 125ms
 
 export const EventEngine:Banana.EventEngine = (function(){
-  let playbackAudioContext:AudioContext = new AudioContext();
-  playbackAudioContext.suspend();
-  let oneOffAudioContext:AudioContext = new AudioContext();
+  let audioContext:AudioContext = new AudioContext();
+  audioContext.suspend();
   const eventSources:Banana.EventSource[] = [];
   let nextIteration: number|null = null;
   let timeCovered:number = 0;
@@ -67,11 +66,11 @@ export const EventEngine:Banana.EventEngine = (function(){
 
   function stop() {
     if (nextIteration !== null) {
-      playbackAudioContext.suspend();
+      audioContext.suspend();
       clearScheduledEvents();
       clearTimeout(nextIteration);
       nextIteration = null;
-      timeCovered = playbackAudioContext.currentTime;
+      timeCovered = audioContext.currentTime;
       offset = timeCovered;
       state = 'stopped';
       publisher.publish();
@@ -80,13 +79,12 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   function getTime() {
-    return playbackAudioContext.currentTime - offset;
+    return audioContext.currentTime - offset;
   }
 
 
   function playSound(audioBuffer:AudioBuffer, time = 0): Banana.AudioBufferPlayer {
-    let context = time === 0 ? oneOffAudioContext : playbackAudioContext;
-    const audioBufferPlayer = AudioBufferPlayer(audioBuffer, context, time);
+    const audioBufferPlayer = AudioBufferPlayer(audioBuffer, audioContext, time);
     return audioBufferPlayer;
   }
 
@@ -102,12 +100,11 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   async function ensureContextIsRunning() {
-    if (playbackAudioContext.state !== 'running') {
-      await playbackAudioContext.resume();
-      await oneOffAudioContext.resume();
+    if (audioContext.state !== 'running') {
+      await audioContext.resume();
 
       // @ts-ignore
-      if (playbackAudioContext.state !== 'running')
+      if (audioContext.state !== 'running')
         throw 'The AudioPlayer has not been initialised';
     }
   }
@@ -117,7 +114,7 @@ export const EventEngine:Banana.EventEngine = (function(){
   // It gets and schedules events in an upcoming time interval
   // We make sure never to request any time we've requested before
   function loop() {
-    const currentTime = playbackAudioContext.currentTime;
+    const currentTime = audioContext.currentTime;
     const interval:Banana.Interval = {start:timeCovered - offset, end: currentTime + lookahead - offset};
     scheduleEvents(interval);
     nextIteration = setTimeout(loop, loopFrequency);
@@ -158,7 +155,7 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   function scheduleCallbackEvent(callbackEvent:Banana.CallbackEvent) {
-    const msFromNow = (callbackEvent.realTime - playbackAudioContext.currentTime + offset) * 1000;
+    const msFromNow = (callbackEvent.realTime - audioContext.currentTime + offset) * 1000;
     const callbackEventReference:CallbackEventReference = {
       callbackEvent,
       timeoutId: setTimeout(() => {
@@ -181,7 +178,7 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   function scheduleMuteEvent(muteEvent:Banana.MuteEvent) {
-    const msFromNow = (muteEvent.realTime - playbackAudioContext.currentTime + offset) * 1000;
+    const msFromNow = (muteEvent.realTime - audioContext.currentTime + offset) * 1000;
     const scheduledMuteEvent = {
       muteEvent,
       timeoutId: setTimeout(() => {
