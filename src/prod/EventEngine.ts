@@ -10,7 +10,6 @@ const loopFrequency = 125 // (ms) Check for upcoming events every 125ms
 
 export const EventEngine:Banana.EventEngine = (function(){
   const audioContext:AudioContext = new AudioContext();
-  audioContext.suspend();
   const eventSources:Banana.EventSource[] = [];
   let nextIteration: number|null = null;
   let timeCovered:number = 0;
@@ -57,6 +56,7 @@ export const EventEngine:Banana.EventEngine = (function(){
   async function play() {
     await ensureContextIsRunning();
     if (nextIteration === null) {
+      offset = audioContext.currentTime; // should always have timeCovered = 0 at this point
       loop();
       state = 'playing';
       publisher.publish();
@@ -66,12 +66,10 @@ export const EventEngine:Banana.EventEngine = (function(){
 
   function stop() {
     if (nextIteration !== null) {
-      audioContext.suspend();
       clearScheduledEvents();
       clearTimeout(nextIteration);
       nextIteration = null;
-      timeCovered = audioContext.currentTime;
-      offset = timeCovered;
+      timeCovered = 0;
       state = 'stopped';
       publisher.publish();
     }
@@ -79,7 +77,9 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   function getTime() {
-    return audioContext.currentTime - offset;
+    if (state === 'playing')
+      return audioContext.currentTime - offset;
+    return 0;
   }
 
 
@@ -114,11 +114,11 @@ export const EventEngine:Banana.EventEngine = (function(){
   // It gets and schedules events in an upcoming time interval
   // We make sure never to request any time we've requested before
   function loop() {
-    const currentTime = audioContext.currentTime;
-    const interval:Banana.Interval = {start:timeCovered - offset, end: currentTime + lookahead - offset};
+    const intervalEnd = getTime() + lookahead;
+    const interval:Banana.Interval = {start:timeCovered, end: intervalEnd};
     scheduleEvents(interval);
     nextIteration = setTimeout(loop, loopFrequency);
-    timeCovered = currentTime + lookahead;
+    timeCovered = intervalEnd;
   }
 
 
