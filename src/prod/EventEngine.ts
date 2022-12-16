@@ -11,11 +11,18 @@ const loopFrequency = 125 // (ms) Check for upcoming events every 125ms
 export const EventEngine:Banana.EventEngine = (function(){
   const audioContext:AudioContext = new AudioContext();
   const eventSources:Banana.EventSource[] = [];
-  let nextIteration: number|null = null;
-  let timeCovered:number = 0;
-  let offset:number = 0;
+  let nextIterationId: number|null = null;
   let state:Banana.EventEngineState = 'stopped';
   const publisher:Banana.Publisher = Publisher();
+
+  // We use the AudioContext to move forward in time
+  // But it always moves forward, even when the EventEngine is stopped
+  // This means the AudioContext is way ahead in time
+  // So we maintain an offset to calculate EventEngine time from AudioContext time
+  let offset = 0;
+
+  // We ask for events in time-intervals, but never ask for time we've already covered
+  let timeCovered = 0;
 
 
   type AudioEventReference =  {audioEvent:Banana.AudioEvent, audioBufferPlayer:Banana.AudioBufferPlayer};
@@ -55,7 +62,7 @@ export const EventEngine:Banana.EventEngine = (function(){
 
   async function play() {
     await ensureContextIsRunning();
-    if (nextIteration === null) {
+    if (nextIterationId === null) {
       offset = audioContext.currentTime; // should always have timeCovered = 0 at this point
       loop();
       state = 'playing';
@@ -65,10 +72,10 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   function stop() {
-    if (nextIteration !== null) {
+    if (nextIterationId !== null) {
       clearScheduledEvents();
-      clearTimeout(nextIteration);
-      nextIteration = null;
+      clearTimeout(nextIterationId);
+      nextIterationId = null;
       timeCovered = 0;
       state = 'stopped';
       publisher.publish();
@@ -117,7 +124,7 @@ export const EventEngine:Banana.EventEngine = (function(){
     const intervalEnd = getTime() + lookahead;
     const interval:Banana.Interval = {start:timeCovered, end: intervalEnd};
     scheduleEvents(interval);
-    nextIteration = setTimeout(loop, loopFrequency);
+    nextIterationId = setTimeout(loop, loopFrequency);
     timeCovered = intervalEnd;
   }
 
