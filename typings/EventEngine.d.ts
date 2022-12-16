@@ -34,4 +34,9 @@ declare namespace Banana {
   interface EventSource {
     getEvents(interval:Interval): Event[]
   }
+
+  interface AudioBufferPlayer {
+    stop(): void
+    onEnded: (callback:() => void) => void
+  }
 }
