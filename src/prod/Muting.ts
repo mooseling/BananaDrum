@@ -1,4 +1,4 @@
-import {exists} from './utils';
+import {isSameTiming, exists} from './utils';
 
 
 export function getMuteEvents(note:Banana.Note, realTime:Banana.RealTime): Banana.MuteEvent[] {
@@ -53,5 +53,5 @@ function getOtherInstrumentMuteFilter(note:Banana.Note, muting:Banana.MutingRule
 
   return (audioEvent:Banana.AudioEvent) =>
     audioEvent.note.track.instrument.id === otherInstrumentId
-    && audioEvent.note.timing !== note.timing; // Don't cross-mute when played together
+    && !isSameTiming(audioEvent.note.timing, note.timing); // Don't cross-mute when played together
 }
