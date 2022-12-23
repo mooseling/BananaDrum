@@ -218,9 +218,13 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   function muteUsingFilter(muteFilter:Banana.MuteFilter) {
-    scheduledAudioEvents.forEach(audioEventReference => {
-      if (audioEventReference.audioEvent.realTime <= getTime() && muteFilter(audioEventReference.audioEvent))
-        stopAudioAndUnschedule(audioEventReference);
-    });
+    scheduledAudioEvents
+      .filter(audioEventReference => hasStarted(audioEventReference) && muteFilter(audioEventReference.audioEvent))
+      .forEach(stopAudioAndUnschedule);
+  }
+
+
+  function hasStarted(audioEventReference:AudioEventReference): boolean {
+    return audioEventReference.audioEvent.realTime <= getTime();
   }
 })();
