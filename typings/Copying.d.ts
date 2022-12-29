@@ -1,12 +1,10 @@
 declare namespace Banana {
   type CopyRequest = {
-    track:Track,
     start:Timing,
     end:Timing
   }
 
   type PasteRequest = {
-    track:Track,
     start:Timing,
     end?:Timing
   }
