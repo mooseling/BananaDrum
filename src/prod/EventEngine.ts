@@ -37,7 +37,7 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
   return {
-    connect, play, stop, getTime, playSound,
+    connect, play, stop, getTime,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
     get state():Banana.EventEngineState {
       return state;
