@@ -19,7 +19,7 @@ export class TrackClipboard implements Banana.TrackClipboard {
     let index = notes.indexOf(note);
     this.buffer = [note.noteStyle];
 
-    while (!isSameTiming(note.timing, end) && (note = notes[++index]))
+    while (!isSameTiming(note.timing, end) && (note = notes[++index]) !== undefined)
       this.buffer.push(note.noteStyle);
   }
 
@@ -32,8 +32,8 @@ export class TrackClipboard implements Banana.TrackClipboard {
 
     while (
       (!end || !isSameTiming(note.timing, end))
-      && (note = notes[trackIndex++])
-      && (noteStyleToPaste = this.buffer[bufferIndex++])
+      && (note = notes[trackIndex++]) !== undefined
+      && (noteStyleToPaste = this.buffer[bufferIndex++]) !== undefined
     )
       note.noteStyle = noteStyleToPaste;
   }
