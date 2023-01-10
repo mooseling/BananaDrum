@@ -17,10 +17,17 @@ export class TrackClipboard implements Banana.TrackClipboard {
     const notes = this.track.notes;
     let note = this.track.getNoteAt(start);
     let index = notes.indexOf(note);
-    this.buffer = [note.noteStyle];
+    this.buffer = [];
 
-    while (!isSameTiming(note.timing, end) && (note = notes[++index]) !== undefined)
+    while (true) {
       this.buffer.push(note.noteStyle);
+      if (isSameTiming(note.timing, end))
+        break;
+      index++;
+      note = notes[index];
+      if (!note)
+        return;
+    }
   }
 
   paste({start, end}: Banana.PasteRequest) {
