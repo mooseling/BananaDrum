@@ -20,7 +20,7 @@ describe('TrackClipboard', function() {
       start: {bar:1, step:3},
       end: {bar:1, step:5}
     });
-    checkNoteStyleIds('0', '1', '2', '0', '1', '2', '6', '7', '8', '9');
+    checkNoteStyleIds('0', '1', '2', '0', '1', '2', null, '7', '8', '9');
   });
 
   it('copies and pastes without specifying end', () => {
@@ -43,7 +43,7 @@ describe('TrackClipboard', function() {
     target.paste({
       start: {bar:1, step:9}
     });
-    checkNoteStyleIds('0', '1', '2', '3', '4', '5', '6', '7', '8', '7');
+    checkNoteStyleIds('0', '1', '2', '3', '4', '5', null, '7', '8', '7');
     assert.lengthOf(mockTrack.notes, 10);
   });
 
@@ -58,7 +58,18 @@ describe('TrackClipboard', function() {
       target.paste({
         start: {bar:1, step:7}
       });
-      checkNoteStyleIds('0', '1', '1000', '3', '4', '5', '6', '2', '3', '9');
+      checkNoteStyleIds('0', '1', '1000', '3', '4', '5', null, '2', '3', '9');
+    });
+
+    it("copies nulls", () => {
+      target.copy({
+        start: {bar:1, step:5},
+        end: {bar:1, step:7}
+      });
+      target.paste({
+        start: {bar:1, step:0}
+      });
+      checkNoteStyleIds('5', null, '7', '3', '4', '5', null, '7', '8', '9')
     });
 });
 
@@ -73,6 +84,9 @@ function setupTrack(): void {
     mockNote.noteStyle = MockNoteStyle();
     mockNote.noteStyle.id = '' + i;
   }
+
+  // Add a null, make sure that works
+  mockTrack.notes[6].noteStyle = null;
 
   mockTrack.getNoteAt = function(timing:Banana.Timing): Banana.Note {
     for (const note of mockTrack.notes) {
@@ -101,7 +115,7 @@ function assertNoteStylesInBaseState() {
   assert(isSameTiming(mockTrack.notes[4].timing, {bar:1, step:4}));
   assert.equal(mockTrack.notes[5].noteStyle.id, '5');
   assert(isSameTiming(mockTrack.notes[5].timing, {bar:1, step:5}));
-  assert.equal(mockTrack.notes[6].noteStyle.id, '6');
+  assert.isNull(mockTrack.notes[6].noteStyle);
   assert(isSameTiming(mockTrack.notes[6].timing, {bar:1, step:6}));
   assert.equal(mockTrack.notes[7].noteStyle.id, '7');
   assert(isSameTiming(mockTrack.notes[7].timing, {bar:1, step:7}));
@@ -113,5 +127,11 @@ function assertNoteStylesInBaseState() {
 
 
 function checkNoteStyleIds(...noteStyleIds: String[]) {
-  noteStyleIds.forEach((id, index) => assert.equal(mockTrack.notes[index].noteStyle.id, id));
+  noteStyleIds.forEach((id, index) => {
+    const noteStyle = mockTrack.notes[index].noteStyle;
+    if (id !== null)
+      assert.equal(noteStyle.id, id)
+    else
+      assert.isNull(noteStyle);
+  });
 }
