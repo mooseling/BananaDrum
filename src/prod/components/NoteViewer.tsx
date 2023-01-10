@@ -1,7 +1,10 @@
 import {useState, useContext, useEffect} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
 import {EventEngine} from '../EventEngine';
+import {AudioBufferPlayer} from '../AudioBufferPlayer';
 import {isSameTiming} from '../utils';
+
+const audioContext = new AudioContext();
 
 
 export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
@@ -135,6 +138,10 @@ function NoteStyleSymbolViewer({noteStyle}:{noteStyle:Banana.NoteStyle}): JSX.El
 function cycleNoteStyle(note:Banana.Note) {
   const noteStyle:Banana.NoteStyle|null = getNextNoteStyle(note);
   note.noteStyle = noteStyle;
+  if (noteStyle && noteStyle.audioBuffer) {
+    AudioBufferPlayer(noteStyle.audioBuffer, audioContext, 0);
+    audioContext.resume();
+  }
 }
 
 
