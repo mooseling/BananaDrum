@@ -10,6 +10,7 @@ declare namespace Banana {
   }
 
   interface TrackClipboard {
+    readonly length: number
     copy(copyRequest:CopyRequest): void
     paste(pasteRequest:PasteRequest): void
   }

@@ -9,6 +9,10 @@ export class TrackClipboard implements Banana.TrackClipboard {
     return this;
   }
 
+  get length() {
+    return this.buffer.length;
+  }
+
   copy({start, end}: Banana.CopyRequest) {
     const notes = this.track.notes;
     let note = this.track.getNoteAt(start);
