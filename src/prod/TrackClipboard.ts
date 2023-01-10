@@ -22,11 +22,12 @@ export class TrackClipboard implements Banana.TrackClipboard {
     while (true) {
       this.buffer.push(note.noteStyle);
       if (isSameTiming(note.timing, end))
-        break;
+        return; // Reached end of region to copy
+
       index++;
       note = notes[index];
       if (!note)
-        return;
+        return; // Reached end of track
     }
   }
 
