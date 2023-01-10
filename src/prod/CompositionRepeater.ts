@@ -1,19 +1,40 @@
-class CompositionRepeater {
-  private timeParams:Banana.TimeParams;
-  private lastLength:number;
+import {TrackClipboard} from './TrackClipboard';
 
-  constructor(timeParams:Banana.TimeParams) {
-    this.timeParams = timeParams;
-    this.lastLength = timeParams.length;
-    timeParams.subscribe(this.handleLengthChange);
+export function CompositionRepeater(arrangement:Banana.Arrangement) {
+  let lastLength:number;
+  let lastNoteCount:number;
+
+  setCachedValues();
+  arrangement.timeParams.subscribe(handleLengthChange);
+
+
+
+  function handleLengthChange() {
+    if (arrangement.timeParams.length >lastLength)
+      Object.values(arrangement.tracks).forEach(repeatNotesInTrack);
+    setCachedValues();
   }
 
 
-  private handleLengthChange() {
-    if (this.timeParams.length <= this.lastLength)
-      return;
+  function repeatNotesInTrack(track:Banana.Track) {
+    const firstTiming = track.notes[0].timing;
+    const lastTiming = track.notes[lastNoteCount - 1].timing;
 
-    // Copy all old stuff
-    // Paste until thing is full
+    const clipboard = new TrackClipboard(track);
+    clipboard.copy({start:firstTiming, end:lastTiming});
+    let numNotesCovered = clipboard.length;
+
+    while (numNotesCovered < track.notes.length) {
+      const pasteStart = track.notes[numNotesCovered].timing;
+      const pasteEnd = track.notes[numNotesCovered + clipboard.length - 1].timing;
+      clipboard.paste({start:pasteStart, end:pasteEnd});
+      numNotesCovered += clipboard.length;
+    }
+  }
+
+
+  function setCachedValues() {
+    lastLength = arrangement.timeParams.length;
+    lastNoteCount = Object.values(arrangement.tracks)[0].notes.length;
   }
 }
