@@ -26,8 +26,7 @@ export function CompositionRepeater(arrangement:Banana.Arrangement) {
 
     while (numNotesCovered < track.notes.length) {
       const pasteStart = track.notes[numNotesCovered].timing;
-      const pasteEnd = track.notes[numNotesCovered + clipboard.length - 1].timing;
-      clipboard.paste({start:pasteStart, end:pasteEnd});
+      clipboard.paste({start:pasteStart});
       numNotesCovered += clipboard.length;
     }
   }
