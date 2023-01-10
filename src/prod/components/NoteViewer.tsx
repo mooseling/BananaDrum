@@ -139,7 +139,7 @@ function cycleNoteStyle(note:Banana.Note) {
   const noteStyle:Banana.NoteStyle|null = getNextNoteStyle(note);
   note.noteStyle = noteStyle;
   if (noteStyle && noteStyle.audioBuffer) {
-    AudioBufferPlayer(noteStyle.audioBuffer, audioContext, 0);
+    AudioBufferPlayer(noteStyle.audioBuffer, audioContext);
     audioContext.resume();
   }
 }
