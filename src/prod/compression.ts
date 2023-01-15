@@ -79,16 +79,17 @@ export function createPackedTrack(urlEncodedTrack:string, timings:Banana.Timing[
   while (musicInBaseN.length < timings.length)
     musicInBaseN.unshift(0); // pad number with leading 0s
 
-  return {
-    instrumentId: instrumentMeta.id,
-    packedNotes: musicInBaseN.reduce((packedNotes, value, column) => {
+  const packedNotes:Banana.PackedNote[] = [];
+  musicInBaseN.forEach((value, column) => {
+    if (value) { // Rests will have value 0
       packedNotes.push({
         noteStyleId: numberToCharacter[value],
         timing: packTiming(timings[column])
       });
-      return packedNotes;
-    }, [])
-  };
+    }
+  })
+
+  return {instrumentId: instrumentMeta.id, packedNotes};
 }
 
 
