@@ -137,6 +137,9 @@ function TrackControls(
           toggleOverlay(overlayName, 'hide');
         }}
       >Clear track</button>
+      <button className="push-button gray"
+        onClick={() => toggleOverlay(overlayName, 'hide')}
+      >Cancel</button>
     </div>
   );
 }
