@@ -4,7 +4,6 @@ import {ArrangementPlayer} from './ArrangementPlayer';
 import {Library} from './Library';
 import {HistoryController} from './HistoryController';
 import {KeyboardHandler} from './KeyboardHandler';
-import {CompositionRepeater} from './CompositionRepeater';
 import {BananaDrum} from './components/BananaDrum';
 import ReactDOM from 'react-dom';
 import React from 'react';
@@ -25,7 +24,6 @@ document.getElementById('load-button').addEventListener('click', function() {
 
   const {arrangement, arrangementPlayer} = getArrangementAndPlayer();
   EventEngine.connect(arrangementPlayer);
-  CompositionRepeater(arrangement);
   document.getElementById('welcome').remove();
   ReactDOM.render(
     <BananaDrum arrangementPlayer={arrangementPlayer}/>,
