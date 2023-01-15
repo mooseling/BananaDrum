@@ -1,6 +1,7 @@
 import {Library} from './Library';
 import {Note} from './Note';
 import {Publisher} from './Publisher';
+import {TrackClipboard} from './TrackClipboard';
 import {getColour} from './colours';
 import {isSameTiming} from './utils';
 
@@ -67,38 +68,54 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
 
 
   // Return value indicates whether anything changed
-  function fillInRests(): boolean {
+  function fillInRests(): void {
     const timingsWithNoNotes = arrangement.timeParams.timings
       .filter(timing => !notes.some(note => isSameTiming(note.timing, timing)));
     if (timingsWithNoNotes.length) {
       timingsWithNoNotes.forEach(timing => notes.push(Note(track, timing, null)));
       notes.sort((a, b) => (a.timing.bar - b.timing.bar) || (a.timing.step - b.timing.step));
-      return true;
     }
-    return false;
   }
 
 
   function handleTimeParamsChange() {
-    let somethingChanged = false;
+    const originalNoteCount = notes.length;
 
     // Remove invalid notes, e.g. arrangement has shortened
     let index = 0;
     while (index < notes.length) {
       if (!arrangement.timeParams.isValid(notes[index].timing)) {
         notes.splice(index, 1);
-        somethingChanged = true;
       } else {
         index++;
       }
     }
 
-    // Fill in new notes, e.g. arrangement has lengthened
-    if(fillInRests())
-      somethingChanged = true;
+    fillInRests(); // Fill in new notes, e.g. arrangement has lengthened
 
-    if (somethingChanged)
+    if (originalNoteCount !== notes.length) {
+      if (notes.length > originalNoteCount)
+        copyComposition(originalNoteCount);
       publisher.publish();
+    }
+  }
+
+
+  function copyComposition(originalNoteCount:number): void {
+    const lastTiming = track.notes[originalNoteCount - 1].timing;
+
+    const clipboard = new TrackClipboard(track);
+    clipboard.copy({
+      start:{bar:1, step:1},
+      end:lastTiming
+    });
+    let numNotesCovered = clipboard.length;
+
+    while (numNotesCovered < track.notes.length) {
+      const pasteStart = track.notes[numNotesCovered].timing;
+      clipboard.paste({start:pasteStart});
+      numNotesCovered += clipboard.length;
+    }
   }
 
 
