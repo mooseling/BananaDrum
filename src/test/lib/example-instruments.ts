@@ -242,7 +242,7 @@ export const instrumentCollection:Banana.InstrumentCollection = [
   {
     id: '6',
     displayOrder: 7,
-    displayName: 'Timba',
+    displayName: 'Timbau',
     packedNoteStyles: [
       {
         id: '1',
