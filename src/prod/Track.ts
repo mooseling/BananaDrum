@@ -62,7 +62,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
   function unpackNote(packedNote:Banana.PackedNote): Banana.Note {
     const {timing:packedTiming, noteStyleId} = packedNote;
     const timing:Banana.Timing = unpackTiming(packedTiming);
-    return Note(track, timing, instrument.noteStyles[noteStyleId]);
+    return Note(track, timing, instrument.noteStyles[noteStyleId] ?? null);
   }
 
 
