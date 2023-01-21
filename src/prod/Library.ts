@@ -1,12 +1,13 @@
+import { PackedInstrument, Instrument, NoteStyleBase, NoteStyle, ILibrary } from './types';
 import {AudioGetter} from './AudioGetter';
-import {Publisher} from './Publisher';
+import {createPublisher} from './Publisher';
 
-const packedInstruments:{[id:string]: Banana.PackedInstrument} = {};
-const instruments: {[id:string]:Banana.Instrument} = {};
+const packedInstruments:{[id:string]: PackedInstrument} = {};
+const instruments: {[id:string]:Instrument} = {};
 
-export const Library:Banana.Library = {
+export const Library:ILibrary = {
   instrumentMetas: [],
-  load(instrumentCollection:Banana.InstrumentCollection): void {
+  load(instrumentCollection:PackedInstrument[]): void {
     instrumentCollection.forEach(packedInstrument => {
       packedInstruments[packedInstrument.id] = packedInstrument;
       Library.instrumentMetas.push({
@@ -18,20 +19,20 @@ export const Library:Banana.Library = {
       });
     });
   },
-  getInstrument(id:string): Banana.Instrument {
+  getInstrument(id:string): Instrument {
     if (!instruments[id]) {
       if (!packedInstruments[id])
         throw 'Unknown instrument requested from Library';
-      instruments[id] = Instrument(packedInstruments[id]);
+      instruments[id] = createInstrument(packedInstruments[id]);
     }
     return instruments[id];
   }
 }
 
 
-function createNoteStyleBases(packedInstrument:Banana.PackedInstrument):
-  {[id: string]: Banana.NoteStyleBase} {
-  const noteStyleBases:{[id: string]: Banana.NoteStyleBase} = {};
+function createNoteStyleBases(packedInstrument:PackedInstrument):
+  {[id: string]: NoteStyleBase} {
+  const noteStyleBases:{[id: string]: NoteStyleBase} = {};
   for (const id in packedInstrument.packedNoteStyles)
     noteStyleBases[id] = {id, symbol:packedInstrument.packedNoteStyles[id].symbol};
   return noteStyleBases;
@@ -41,12 +42,12 @@ function createNoteStyleBases(packedInstrument:Banana.PackedInstrument):
 
 // This should be the only instance of an instrument
 // So if this is called, the instrument must start unloaded
-function Instrument(packedInstrument:Banana.PackedInstrument): Banana.Instrument {
+function createInstrument(packedInstrument:PackedInstrument): Instrument {
   const {id, packedNoteStyles, displayOrder, displayName, colourGroup} = packedInstrument;
-  const publisher = Publisher();
+  const publisher = createPublisher();
 
   let loaded = false;
-  const noteStyles:{[id:string]: Banana.NoteStyle|null} = {};
+  const noteStyles:{[id:string]: NoteStyle|null} = {};
   const unpackPromises:Promise<any>[] = [];
 
   const instrument = {

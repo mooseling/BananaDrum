@@ -1,19 +1,20 @@
+import { Note, NoteStyle, Subscribable, Subscription } from '../types';
 import {useState, useContext, useEffect} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
 import {EventEngine} from '../EventEngine';
-import {AudioBufferPlayer} from '../AudioBufferPlayer';
+import {createAudioBufferPlayer} from '../AudioBufferPlayer';
 import {isSameTiming} from '../utils';
 
 const audioContext = new AudioContext();
 
 
-export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
+export function NoteViewer({note}:{note:Note}): JSX.Element {
   const arrangementPlayer = useContext(ArrangementPlayerContext);
-  const timingPublisher:Banana.Subscribable = arrangementPlayer.currentTimingPublisher;
+  const timingPublisher:Subscribable = arrangementPlayer.currentTimingPublisher;
   const [isCurrent, setIsCurrent] = useState(isSameTiming(arrangementPlayer.currentTiming, note.timing));
   const [playing, setPlaying] = useState(EventEngine.state === 'playing')
 
-  const engineSubscription:Banana.Subscription = () => {
+  const engineSubscription:Subscription = () => {
     if (EventEngine.state === 'playing'){
       setPlaying(true);
     } else {
@@ -26,7 +27,7 @@ export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
     return () => EventEngine.unsubscribe(engineSubscription);
   }, []);
 
-  const timingSubscription:Banana.Subscription =
+  const timingSubscription:Subscription =
     () => setIsCurrent(isSameTiming(arrangementPlayer.currentTiming, note.timing));
   useEffect(() => {
     timingPublisher.subscribe(timingSubscription);
@@ -39,7 +40,7 @@ export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
     : '';                                 // Inactive notes have no inline background colour
 
   const [noteStyle, setNoteStyle] = useState(note.noteStyle)
-  const noteSubscription:Banana.Subscription = () => setNoteStyle(note.noteStyle);
+  const noteSubscription:Subscription = () => setNoteStyle(note.noteStyle);
   useEffect(() => {
     note.subscribe(noteSubscription);
     return () => note.unsubscribe(noteSubscription);
@@ -59,7 +60,7 @@ export function NoteViewer({note}:{note:Banana.Note}): JSX.Element {
 }
 
 
-function getClasses(note:Banana.Note): string {
+function getClasses(note:Note): string {
   let classes:string[] = ['note-viewer'];
   const {step} = note.timing;
 
@@ -72,7 +73,7 @@ function getClasses(note:Banana.Note): string {
 }
 
 
-function getParityClass(note:Banana.Note): string|null {
+function getParityClass(note:Note): string|null {
   const {timeSignature, stepResolution} = note.track.arrangement.timeParams;
   const {bar, step} = note.timing;
 
@@ -112,7 +113,7 @@ function getParityClass(note:Banana.Note): string|null {
 }
 
 
-function NoteDetailsViewer({noteStyle}:{noteStyle:Banana.NoteStyle}): JSX.Element {
+function NoteDetailsViewer({noteStyle}:{noteStyle:NoteStyle}): JSX.Element {
   return (
     <div className="note-details-viewer" >
       <NoteStyleSymbolViewer noteStyle={noteStyle}/>
@@ -121,7 +122,7 @@ function NoteDetailsViewer({noteStyle}:{noteStyle:Banana.NoteStyle}): JSX.Elemen
 }
 
 
-function NoteStyleSymbolViewer({noteStyle}:{noteStyle:Banana.NoteStyle}): JSX.Element {
+function NoteStyleSymbolViewer({noteStyle}:{noteStyle:NoteStyle}): JSX.Element {
   if (!noteStyle)
     return null;
   const {symbol} = noteStyle;
@@ -135,17 +136,17 @@ function NoteStyleSymbolViewer({noteStyle}:{noteStyle:Banana.NoteStyle}): JSX.El
 }
 
 
-function cycleNoteStyle(note:Banana.Note) {
-  const noteStyle:Banana.NoteStyle|null = getNextNoteStyle(note);
+function cycleNoteStyle(note:Note) {
+  const noteStyle:NoteStyle|null = getNextNoteStyle(note);
   note.noteStyle = noteStyle;
   if (noteStyle && noteStyle.audioBuffer) {
-    AudioBufferPlayer(noteStyle.audioBuffer, audioContext);
+    createAudioBufferPlayer(noteStyle.audioBuffer, audioContext);
     audioContext.resume();
   }
 }
 
 
-function getNextNoteStyle(note:Banana.Note): Banana.NoteStyle {
+function getNextNoteStyle(note:Note): NoteStyle {
   const noteStyles = note.track.instrument.noteStyles;
   const noteStyleIds = Object.keys(noteStyles);
   if (!note.noteStyle) // This happens when the note-style is null, meaning a rest

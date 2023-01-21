@@ -1,14 +1,15 @@
+import { AudioEvent, MuteEvent, MuteFilter, MutingRule, MutingRuleOtherInstrument, Note, RealTime } from './types';
 import {isSameTiming, exists} from './utils';
 
 
-export function getMuteEvents(note:Banana.Note, realTime:Banana.RealTime): Banana.MuteEvent[] {
-  const muteFilters:Banana.MuteFilter[] = getMuteFilters(note);
+export function getMuteEvents(note:Note, realTime:RealTime): MuteEvent[] {
+  const muteFilters:MuteFilter[] = getMuteFilters(note);
 
   return muteFilters.map(muteFilter => ({muteFilter, realTime}));
 }
 
 
-function getMuteFilters(note:Banana.Note): Banana.MuteFilter[] {
+function getMuteFilters(note:Note): MuteFilter[] {
   const muting = note.noteStyle?.muting;
   if (!muting)
     return [];
@@ -19,39 +20,39 @@ function getMuteFilters(note:Banana.Note): Banana.MuteFilter[] {
 }
 
 
-function getMuteFilter(note:Banana.Note, muting:Banana.MutingRule): Banana.MuteFilter|undefined {
+function getMuteFilter(note:Note, muting:MutingRule): MuteFilter|undefined {
   const ruleName = typeof muting === 'string' ? muting : muting.name;
   switch (ruleName) {
     case 'sameTrack':
       return getSameTrackMuteFilter(note);
     case 'otherInstrument':
-      return getOtherInstrumentMuteFilter(note, muting as Banana.MutingRuleOtherInstrument);
+      return getOtherInstrumentMuteFilter(note, muting as MutingRuleOtherInstrument);
   }
 }
 
 
-function getSameTrackMuteFilter(note:Banana.Note): Banana.MuteFilter|undefined {
+function getSameTrackMuteFilter(note:Note): MuteFilter|undefined {
   const noteStyle = note.noteStyle;
   if (noteStyle === null)
     return;
 
   const track = note.track;
 
-  return (audioEvent:Banana.AudioEvent) =>
+  return (audioEvent:AudioEvent) =>
     audioEvent.note.track === track
     && audioEvent.note !== note;
 }
 
 
-function getOtherInstrumentMuteFilter(note:Banana.Note, muting:Banana.MutingRuleOtherInstrument)
-    : Banana.MuteFilter|undefined {
+function getOtherInstrumentMuteFilter(note:Note, muting:MutingRuleOtherInstrument)
+    : MuteFilter|undefined {
   const noteStyle = note.noteStyle;
   if (noteStyle === null)
     return;
 
   const otherInstrumentId = muting.id;
 
-  return (audioEvent:Banana.AudioEvent) =>
+  return (audioEvent:AudioEvent) =>
     audioEvent.note.track.instrument.id === otherInstrumentId
     && !isSameTiming(audioEvent.note.timing, note.timing); // Don't cross-mute when played together
 }

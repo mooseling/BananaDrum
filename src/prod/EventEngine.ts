@@ -2,18 +2,19 @@
 // It plays audio and fires callbacks at the right time
 // Playing audio boils down to the WebAudio API, so we must warp our design around that
 
-import {Publisher} from './Publisher';
-import {AudioBufferPlayer} from './AudioBufferPlayer';
+import { AudioEvent, CallbackEvent, EventEngineState, IEventEngine, Interval, MuteEvent, EventSource, MuteFilter, AudioBufferPlayer } from './types';
+import {createPublisher} from './Publisher';
+import {createAudioBufferPlayer} from './AudioBufferPlayer';
 
 const lookahead = 0.25; // (s) Look 250ms ahead for events
 const loopFrequency = 125 // (ms) Check for upcoming events every 125ms
 
-export const EventEngine:Banana.EventEngine = (function(){
+export const EventEngine:IEventEngine = (function(){
   const audioContext:AudioContext = new AudioContext();
-  const eventSources:Banana.EventSource[] = [];
+  const eventSources:EventSource[] = [];
   let nextIterationId: number|null = null;
-  let state:Banana.EventEngineState = 'stopped';
-  const publisher:Banana.Publisher = Publisher();
+  let state:EventEngineState = 'stopped';
+  const publisher = createPublisher();
 
   // We use the AudioContext to move forward in time
   // But it always moves forward, even when the EventEngine is stopped
@@ -25,13 +26,13 @@ export const EventEngine:Banana.EventEngine = (function(){
   let timeCovered = 0;
 
 
-  type AudioEventReference =  {audioEvent:Banana.AudioEvent, audioBufferPlayer:Banana.AudioBufferPlayer};
+  type AudioEventReference =  {audioEvent:AudioEvent, audioBufferPlayer:AudioBufferPlayer};
   const scheduledAudioEvents:AudioEventReference[] = [];
 
-  type CallbackEventReference = {callbackEvent:Banana.CallbackEvent, timeoutId:number};
+  type CallbackEventReference = {callbackEvent:CallbackEvent, timeoutId:number};
   const scheduledCallbackEvents:CallbackEventReference[] = [];
 
-  type MuteEventReference = {muteEvent:Banana.MuteEvent, timeoutId:number};
+  type MuteEventReference = {muteEvent:MuteEvent, timeoutId:number};
   const scheduledMuteEvents:MuteEventReference[] = [];
 
 
@@ -39,7 +40,7 @@ export const EventEngine:Banana.EventEngine = (function(){
   return {
     connect, play, stop, getTime,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
-    get state():Banana.EventEngineState {
+    get state():EventEngineState {
       return state;
     }
   };
@@ -55,7 +56,7 @@ export const EventEngine:Banana.EventEngine = (function(){
 
 
 
-  function connect(eventSource:Banana.EventSource) {
+  function connect(eventSource:EventSource) {
     eventSources.push(eventSource);
   }
 
@@ -90,8 +91,8 @@ export const EventEngine:Banana.EventEngine = (function(){
   }
 
 
-  function playSound(audioBuffer:AudioBuffer, time = 0): Banana.AudioBufferPlayer {
-    const audioBufferPlayer = AudioBufferPlayer(audioBuffer, audioContext, time);
+  function playSound(audioBuffer:AudioBuffer, time = 0): AudioBufferPlayer {
+    const audioBufferPlayer = createAudioBufferPlayer(audioBuffer, audioContext, time);
     return audioBufferPlayer;
   }
 
@@ -122,28 +123,28 @@ export const EventEngine:Banana.EventEngine = (function(){
   // We make sure never to request any time we've requested before
   function loop() {
     const intervalEnd = getTime() + lookahead;
-    const interval:Banana.Interval = {start:timeCovered, end: intervalEnd};
+    const interval:Interval = {start:timeCovered, end: intervalEnd};
     scheduleEvents(interval);
     nextIterationId = setTimeout(loop, loopFrequency);
     timeCovered = intervalEnd;
   }
 
 
-  function scheduleEvents(interval:Banana.Interval) {
+  function scheduleEvents(interval:Interval) {
     eventSources.forEach(eventSource => {
       eventSource.getEvents(interval).forEach(event => {
         if ('audioBuffer' in event)
-          scheduleAudioEvent(event as Banana.AudioEvent);
+          scheduleAudioEvent(event as AudioEvent);
         if ('callback' in event)
-          scheduleCallbackEvent(event as Banana.CallbackEvent);
+          scheduleCallbackEvent(event as CallbackEvent);
         if ('muteFilter' in event)
-          scheduleMuteEvent(event as Banana.MuteEvent);
+          scheduleMuteEvent(event as MuteEvent);
       });
     });
   }
 
 
-  function scheduleAudioEvent(audioEvent:Banana.AudioEvent) {
+  function scheduleAudioEvent(audioEvent:AudioEvent) {
     const audioBufferPlayer = playSound(audioEvent.audioBuffer, audioEvent.realTime + offset);
     const audioEventReference:AudioEventReference = {audioEvent, audioBufferPlayer};
     scheduledAudioEvents.push(audioEventReference);
@@ -161,7 +162,7 @@ export const EventEngine:Banana.EventEngine = (function(){
   }
 
 
-  function scheduleCallbackEvent(callbackEvent:Banana.CallbackEvent) {
+  function scheduleCallbackEvent(callbackEvent:CallbackEvent) {
     const callbackEventReference:CallbackEventReference = {
       callbackEvent,
       timeoutId: setTimeout(() => {
@@ -183,7 +184,7 @@ export const EventEngine:Banana.EventEngine = (function(){
   }
 
 
-  function scheduleMuteEvent(muteEvent:Banana.MuteEvent) {
+  function scheduleMuteEvent(muteEvent:MuteEvent) {
     const scheduledMuteEvent = {
       muteEvent,
       timeoutId: setTimeout(() => {
@@ -217,7 +218,7 @@ export const EventEngine:Banana.EventEngine = (function(){
   }
 
 
-  function muteUsingFilter(muteFilter:Banana.MuteFilter) {
+  function muteUsingFilter(muteFilter:MuteFilter) {
     scheduledAudioEvents
       .filter(audioEventReference => hasStarted(audioEventReference) && muteFilter(audioEventReference.audioEvent))
       .forEach(stopAudioAndUnschedule);

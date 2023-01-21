@@ -1,6 +1,6 @@
 import {EventEngine} from './EventEngine';
-import {Arrangement} from './Arrangement';
-import {ArrangementPlayer} from './ArrangementPlayer';
+import {unpackArrangement} from './Arrangement';
+import {createArrangementPlayer} from './ArrangementPlayer';
 import {Library} from './Library';
 import {HistoryController} from './HistoryController';
 import {KeyboardHandler} from './KeyboardHandler';
@@ -56,8 +56,9 @@ function getArrangementAndPlayer() {
 
   Library.load(instrumentCollection);
   const packedArrangement = urlDecodeArrangement(encodedArrangement);
-  const arrangement = Arrangement.unpack(packedArrangement);
-  const arrangementPlayer = ArrangementPlayer(arrangement);
+  const arrangement = unpackArrangement
+  (packedArrangement);
+  const arrangementPlayer = createArrangementPlayer(arrangement);
   return {arrangement, arrangementPlayer};
 }
 

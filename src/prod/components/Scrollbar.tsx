@@ -1,8 +1,9 @@
+import { Publisher } from '../types';
 import {useState, useEffect} from 'react';
 
 
 export function Scrollbar({wrapperRef, contentWidthPublisher}:
-  {wrapperRef:React.MutableRefObject<HTMLDivElement>, contentWidthPublisher:Banana.Publisher}
+  {wrapperRef:React.MutableRefObject<HTMLDivElement>, contentWidthPublisher:Publisher}
 ): JSX.Element {
   const [thumbWidth, setThumbWidth] = useState(0);
   const [thumbLeft, setThumbLeft] = useState(0);

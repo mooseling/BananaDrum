@@ -1,11 +1,13 @@
-export function Publisher(): Banana.Publisher {
-  const subscriptions: Banana.Subscription[] = [];
+import { Publisher, Subscription } from './types';
+
+export function createPublisher(): Publisher {
+  const subscriptions: Subscription[] = [];
 
   return {
-    subscribe: function(callback: Banana.Subscription) {
+    subscribe: function(callback: Subscription) {
       subscriptions.push(callback);
     },
-    unsubscribe: function(callbackToRemove: Banana.Subscription) {
+    unsubscribe: function(callbackToRemove: Subscription) {
       subscriptions.some((subscription, index) => {
         if (callbackToRemove === subscription) {
           subscriptions[index] = null;

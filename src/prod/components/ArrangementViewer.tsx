@@ -1,17 +1,18 @@
+import { ArrangementPlayer, TrackPlayer } from '../types';
 import {TrackViewer} from './TrackViewer';
 import {ArrangementControlsTop, ArrangementControlsBottom} from './ArrangementControls';
 import {Scrollbar} from './Scrollbar';
 import {Share} from './Share';
 import {InstrumentBrowser} from './InstrumentBrowser';
 import {Overlay, toggleOverlay} from './Overlay';
-import {Publisher} from '../Publisher';
+import {createPublisher} from '../Publisher';
 import {useState, useEffect, createContext, useRef} from 'react';
 
 
 export const ArrangementPlayerContext = createContext(null);
 
 
-export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.ArrangementPlayer}): JSX.Element {
+export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:ArrangementPlayer}): JSX.Element {
   const {arrangement} = arrangementPlayer;
   const [trackPlayers, setTrackPlayers] = useState({...arrangementPlayer.trackPlayers});
   const arrangementPlayerSubscription = () => setTrackPlayers({...arrangementPlayer.trackPlayers});
@@ -26,7 +27,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Banana.
   const [scrollShadowClasses, setScrollShadowClasses] = useState('');
   const updateScrollShadows = () => setScrollShadowClasses(getScrollShadowClasses(ref.current));
   const resizeObserver = new ResizeObserver(updateScrollShadows);
-  const contentWidthPublisher = Publisher()
+  const contentWidthPublisher = createPublisher()
   const timeParamsSubscription = () => setTimeout(() => {
     updateScrollShadows();
     contentWidthPublisher.publish();
@@ -112,7 +113,7 @@ function getScrollShadowClasses(trackViewersWrapper: HTMLElement): string {
 }
 
 
-function sortTracks(trackPlayer1:Banana.TrackPlayer, trackPlayer2:Banana.TrackPlayer): number {
+function sortTracks(trackPlayer1:TrackPlayer, trackPlayer2:TrackPlayer): number {
   const track1 = trackPlayer1.track;
   const track2 = trackPlayer2.track;
 

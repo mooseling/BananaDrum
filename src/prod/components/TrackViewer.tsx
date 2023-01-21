@@ -1,3 +1,4 @@
+import { Track, TrackPlayer } from '../types';
 import {NoteViewer} from './NoteViewer';
 import {Overlay, toggleOverlay} from './Overlay';
 import {ArrangementPlayerContext} from './ArrangementViewer';
@@ -10,7 +11,7 @@ const widthPerNote = 55.5; // 50pt for width, 2 * 2pt for padding, and 1.5pt for
 const smButtonClasses = 'options-button push-button small solo-mute-button';
 
 
-export function TrackViewer({trackPlayer}:{trackPlayer:Banana.TrackPlayer}): JSX.Element {
+export function TrackViewer({trackPlayer}:{trackPlayer:TrackPlayer}): JSX.Element {
   const track = trackPlayer.track;
   const overlayName = 'track_overlay_' + track.id;
 
@@ -52,7 +53,7 @@ export function TrackViewer({trackPlayer}:{trackPlayer:Banana.TrackPlayer}): JSX
 
 
 function TrackMeta({track, toggleControls}
-  : {track:Banana.Track, toggleControls:() => void}
+  : {track:Track, toggleControls:() => void}
 ): JSX.Element {
   const instrumentName = track.instrument.displayName;
   return (
@@ -105,7 +106,7 @@ function SoloMuteButtons(): JSX.Element {
 }
 
 
-function NoteLine({track}:{track:Banana.Track}): JSX.Element {
+function NoteLine({track}:{track:Track}): JSX.Element {
   const [notes, setNotes] = useState([...track.notes]);
 
   const subscription = () => setNotes([...track.notes]);
@@ -125,7 +126,7 @@ function NoteLine({track}:{track:Banana.Track}): JSX.Element {
 
 
 function TrackControls(
-  {track, overlayName}:{track:Banana.Track, overlayName:string}): JSX.Element {
+  {track, overlayName}:{track:Track, overlayName:string}): JSX.Element {
   return (
     <div className="track-controls">
       <button className="push-button gray"

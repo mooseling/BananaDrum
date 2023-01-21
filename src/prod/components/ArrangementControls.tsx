@@ -1,3 +1,4 @@
+import { Arrangement } from '../types';
 import {useState, useEffect, useContext} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
 import {Overlay, toggleOverlay} from './Overlay';
@@ -14,7 +15,7 @@ export function ArrangementControlsTop(): JSX.Element {
     return () => EventEngine.unsubscribe(eventEngineSubscription);
   }, []);
 
-  const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
+  const arrangement:Arrangement = useContext(ArrangementPlayerContext).arrangement;
   return (
     <div className="arrangement-controls arrangement-controls-top">
       {
@@ -38,7 +39,7 @@ export function ArrangementControlsTop(): JSX.Element {
 }
 
 
-function TimeControls({arrangement}:{arrangement:Banana.Arrangement}): JSX.Element {
+function TimeControls({arrangement}:{arrangement:Arrangement}): JSX.Element {
   const {timeParams} = arrangement;
   let [state, update] = useState({arrangement});
 
@@ -101,7 +102,7 @@ function TimeControls({arrangement}:{arrangement:Banana.Arrangement}): JSX.Eleme
 
 
 export function ArrangementControlsBottom(): JSX.Element {
-  const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
+  const arrangement:Arrangement = useContext(ArrangementPlayerContext).arrangement;
   return (
     <div className="arrangement-controls arrangement-controls-bottom overlay-wrapper">
       <button

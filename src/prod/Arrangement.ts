@@ -1,20 +1,19 @@
-import {Track} from './Track';
-import {TimeParams} from './TimeParams';
-import {Publisher} from './Publisher';
+import { PackedTimeParams, TimeParams, Arrangement, Track, Instrument, PackedTrack, PackedArrangement } from './types';
+import {createTrack, unpackTrack} from './Track';
+import {createTimeParams} from './TimeParams';
+import {createPublisher} from './Publisher';
 
-const defaultTimeParams:Banana.PackedTimeParams = {
+const defaultTimeParams:PackedTimeParams = {
   timeSignature:'4/4', tempo:120, length:1, pulse:'1/4', stepResolution:16
 };
 
-export const Arrangement:Banana.ArrangementBuilder = arrangementBuilder;
-
-function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
+export function createArrangement(timeParams?:TimeParams): Arrangement {
   if (!timeParams)
-    timeParams = TimeParams(defaultTimeParams);
+    timeParams = createTimeParams(defaultTimeParams);
 
-  const publisher:Banana.Publisher = Publisher();
-  const tracks:{[trackId:string]:Banana.Track} = {};
-  const arrangement:Banana.Arrangement = {timeParams, tracks, createTrack, unpackTracks, removeTrack, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
+  const publisher = createPublisher();
+  const tracks:{[trackId:string]:Track} = {};
+  const arrangement:Arrangement = {timeParams, tracks, addTrack, unpackTracks, removeTrack, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
   return arrangement;
 
@@ -28,24 +27,24 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
   // ==================================================================
 
 
-  function createTrack(instrument:Banana.Instrument): Banana.Track {
-    const track = Track(arrangement, instrument);
+  function addTrack(instrument:Instrument): Track {
+    const track = createTrack(arrangement, instrument);
     tracks[track.id] = track;
     publisher.publish();
     return track;
   }
 
 
-  async function unpackTracks(packedTracks:Banana.PackedTrack[]) {
+  async function unpackTracks(packedTracks:PackedTrack[]) {
     packedTracks.forEach(packedTrack => {
-      const track = Track.unpack(arrangement, packedTrack);
+      const track = unpackTrack(arrangement, packedTrack);
       tracks[track.id] = track;
     })
     publisher.publish();
   }
 
 
-  function removeTrack(trackToRemove:Banana.Track) {
+  function removeTrack(trackToRemove:Track) {
     if (tracks[trackToRemove.id]) {
       delete tracks[trackToRemove.id];
       publisher.publish();
@@ -67,9 +66,9 @@ function arrangementBuilder(timeParams?:Banana.TimeParams): Banana.Arrangement {
 
 
 
-arrangementBuilder.unpack = function(packedArrangement:Banana.PackedArrangement): Banana.Arrangement {
-  const timeParams = TimeParams(packedArrangement.timeParams);
-  const arrangement = Arrangement(timeParams);
+export function unpackArrangement(packedArrangement:PackedArrangement): Arrangement {
+  const timeParams = createTimeParams(packedArrangement.timeParams);
+  const arrangement = createArrangement(timeParams);
   arrangement.unpackTracks(packedArrangement.packedTracks);
   return arrangement;
 }

@@ -1,10 +1,11 @@
+import { CopyRequest, NoteStyle, PasteRequest, Track } from './types';
 import {isSameTiming} from './utils';
 
-export class TrackClipboard implements Banana.TrackClipboard {
-  private track:Banana.Track;
-  private buffer:Banana.NoteStyle[] = [];
+export class TrackClipboard implements TrackClipboard {
+  private track:Track;
+  private buffer:NoteStyle[] = [];
 
-  constructor(track:Banana.Track) {
+  constructor(track:Track) {
     this.track = track;
     return this;
   }
@@ -13,7 +14,7 @@ export class TrackClipboard implements Banana.TrackClipboard {
     return this.buffer.length;
   }
 
-  copy({start, end}: Banana.CopyRequest) {
+  copy({start, end}: CopyRequest) {
     const notes = this.track.notes;
     let note = this.track.getNoteAt(start);
     let index = notes.indexOf(note);
@@ -31,7 +32,7 @@ export class TrackClipboard implements Banana.TrackClipboard {
     }
   }
 
-  paste({start, end}: Banana.PasteRequest) {
+  paste({start, end}: PasteRequest) {
     const notes = this.track.notes;
     let note = this.track.getNoteAt(start);
     let trackIndex = notes.indexOf(note);

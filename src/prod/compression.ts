@@ -1,5 +1,6 @@
+import { Arrangement, PackedArrangement, PackedNote, PackedTiming, PackedTrack, Timing, Track } from './types';
 import {Library} from './Library';
-import {TimeParams} from './TimeParams';
+import {createTimeParams} from './TimeParams';
 
 // No negative numbers
 export function urlEncodeNumber(input:bigint): string {
@@ -57,7 +58,7 @@ export function convertToBaseN(input:bigint, base:number): number[] {
 }
 
 
-export function urlEncodeTrack(track:Banana.Track): string {
+export function urlEncodeTrack(track:Track): string {
   const base:number = Object.keys(track.instrument.noteStyles).length + 1; // + 1 for rests
   const noteStyles:number[] = track.notes.map(note => characterToNumber[note.noteStyle?.id || '0']);
   const musicAsNumber = interpretAsBaseN(noteStyles, base);
@@ -66,8 +67,7 @@ export function urlEncodeTrack(track:Banana.Track): string {
 }
 
 
-export function createPackedTrack(urlEncodedTrack:string, timings:Banana.Timing[]):
-  Banana.PackedTrack {
+export function createPackedTrack(urlEncodedTrack:string, timings:Timing[]): PackedTrack {
   const instrumentId = urlEncodedTrack[0];
   const instrumentMeta = Library.instrumentMetas.filter(({id}) => id === instrumentId)[0];
   if (!instrumentMeta)
@@ -79,7 +79,7 @@ export function createPackedTrack(urlEncodedTrack:string, timings:Banana.Timing[
   while (musicInBaseN.length < timings.length)
     musicInBaseN.unshift(0); // pad number with leading 0s
 
-  const packedNotes:Banana.PackedNote[] = [];
+  const packedNotes:PackedNote[] = [];
   musicInBaseN.forEach((value, column) => {
     if (value) { // Rests will have value 0
       packedNotes.push({
@@ -93,12 +93,12 @@ export function createPackedTrack(urlEncodedTrack:string, timings:Banana.Timing[
 }
 
 
-function packTiming({bar, step}:Banana.Timing): Banana.PackedTiming {
+function packTiming({bar, step}:Timing): PackedTiming {
   return `${bar}:${step}`;
 }
 
 
-export function urlEncodeArrangement(arrangement:Banana.Arrangement): string {
+export function urlEncodeArrangement(arrangement:Arrangement): string {
   const {timeParams:tp} = arrangement;
   let output = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
   output = output.replaceAll('/', '-');
@@ -110,9 +110,9 @@ export function urlEncodeArrangement(arrangement:Banana.Arrangement): string {
   return output;
 }
 
-export function urlDecodeArrangement(url:string): Banana.PackedArrangement {
+export function urlDecodeArrangement(url:string): PackedArrangement {
   const chunks = url.replaceAll('-', '/').split('.');
-  const timeParams = TimeParams({
+  const timeParams = createTimeParams({
     timeSignature:chunks[0],
     tempo:Number(chunks[1]),
     length:Number(chunks[2]),
@@ -126,7 +126,7 @@ export function urlDecodeArrangement(url:string): Banana.PackedArrangement {
 }
 
 
-export function getShareLink(arrangement:Banana.Arrangement) {
+export function getShareLink(arrangement:Arrangement) {
   const query = urlEncodeArrangement(arrangement);
   return 'https://bananadrum.net/?a=' + query;
 }

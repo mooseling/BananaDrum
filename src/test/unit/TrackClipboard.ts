@@ -1,3 +1,4 @@
+import { Note, Timing, Track } from '../../prod/types';
 import {assert} from 'chai';
 import {TrackClipboard} from '../../prod/TrackClipboard';
 import {isSameTiming} from '../../prod/utils';
@@ -5,7 +6,7 @@ import {MockTrack} from '../mocks/MockTrack';
 import {MockNote} from '../mocks/MockNote';
 import {MockNoteStyle} from '../mocks/MockNoteStyle';
 
-let mockTrack:Banana.Track, target:Banana.TrackClipboard;
+let mockTrack:Track, target:TrackClipboard;
 
 describe('TrackClipboard', function() {
 
@@ -89,7 +90,7 @@ function setupTrack(): void {
   // Add a rest, make sure that works
   mockTrack.notes[5].noteStyle = undefined;
 
-  mockTrack.getNoteAt = function(timing:Banana.Timing): Banana.Note {
+  mockTrack.getNoteAt = function(timing:Timing): Note {
     for (const note of mockTrack.notes) {
       if (isSameTiming(note.timing, timing))
         return note;

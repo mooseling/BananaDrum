@@ -1,4 +1,6 @@
-export const instrumentCollection:Banana.InstrumentCollection = [
+import { PackedInstrument } from "../../prod/types";
+
+export const instrumentCollection:PackedInstrument[] = [
   {
     id: '0',
     displayOrder: 0,

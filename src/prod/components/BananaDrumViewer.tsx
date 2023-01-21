@@ -1,8 +1,9 @@
+import { ArrangementPlayer } from '../types';
 import {ArrangementViewer} from './ArrangementViewer';
 import {Overlay, toggleOverlay} from './Overlay';
 
 export function BananaDrumViewer(
-  {arrangementPlayer}:{arrangementPlayer:Banana.ArrangementPlayer}): JSX.Element {
+  {arrangementPlayer}:{arrangementPlayer:ArrangementPlayer}): JSX.Element {
 
   return (
     <div id="banana-drum" className="overlay-wrapper">

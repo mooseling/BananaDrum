@@ -1,3 +1,4 @@
+import { Arrangement, InstrumentMeta } from '../types';
 import {useContext} from 'react';
 import {Library} from '../Library';
 import {ArrangementPlayerContext} from './ArrangementViewer';
@@ -16,9 +17,9 @@ export function InstrumentBrowser({close}:{close:() => void}): JSX.Element {
 }
 
 
-function InstrumentChooser({instrumentMeta, close}:{instrumentMeta:Banana.InstrumentMeta, close:() => void}): JSX.Element {
+function InstrumentChooser({instrumentMeta, close}:{instrumentMeta:InstrumentMeta, close:() => void}): JSX.Element {
   const {id, displayName} = instrumentMeta;
-  const arrangement:Banana.Arrangement = useContext(ArrangementPlayerContext).arrangement;
+  const arrangement:Arrangement = useContext(ArrangementPlayerContext).arrangement;
   return (
     <button className="instrument-chooser push-button" onClick={() => {choose(id, arrangement); close();}}>
       {displayName}
@@ -27,6 +28,6 @@ function InstrumentChooser({instrumentMeta, close}:{instrumentMeta:Banana.Instru
 }
 
 
-function choose(id:string, arrangement:Banana.Arrangement) {
-  arrangement.createTrack(Library.getInstrument(id));
+function choose(id:string, arrangement:Arrangement) {
+  arrangement.addTrack(Library.getInstrument(id));
 }

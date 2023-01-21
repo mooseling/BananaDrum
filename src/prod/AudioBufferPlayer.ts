@@ -1,5 +1,7 @@
-export function AudioBufferPlayer(audioBuffer:AudioBuffer, audioContext:AudioContext, time:number = 0)
-    : Banana.AudioBufferPlayer {
+import { AudioBufferPlayer } from "./types";
+
+export function createAudioBufferPlayer(audioBuffer:AudioBuffer, audioContext:AudioContext, time:number = 0)
+    : AudioBufferPlayer {
   const sourceNode = new AudioBufferSourceNode(audioContext, {buffer:audioBuffer});
   const gainNode = audioContext.createGain();
   gainNode.connect(audioContext.destination);

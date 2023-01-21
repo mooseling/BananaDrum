@@ -1,16 +1,17 @@
+import { Arrangement, Instrument, Note, PackedNote, PackedTiming, PackedTrack, Timing, Track } from './types';
 import {Library} from './Library';
-import {Note} from './Note';
-import {Publisher} from './Publisher';
+import {createNote} from './Note';
+import {createPublisher} from './Publisher';
 import {TrackClipboard} from './TrackClipboard';
 import {getColour} from './colours';
 import {isSameTiming} from './utils';
 
-function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrument, packedNotes:Banana.PackedNote[]): Banana.Track {
+export function createTrack(arrangement:Arrangement, instrument:Instrument, packedNotes?:PackedNote[]): Track {
   const id = getNewId();
-  const publisher:Banana.Publisher = Publisher();
-  const notes:Banana.Note[] = [];
+  const publisher = createPublisher();
+  const notes:Note[] = [];
   const colour = getColour(instrument.colourGroup);
-  const track:Banana.Track = {id, arrangement, instrument, notes, getNoteAt, colour, clear,
+  const track:Track = {id, arrangement, instrument, notes, getNoteAt, colour, clear,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
   if (packedNotes)
@@ -32,7 +33,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
   // ==================================================================
 
 
-  function getNoteAt(timing:Banana.Timing): Banana.Note {
+  function getNoteAt(timing:Timing): Note {
     for (const note of notes) {
       if (isSameTiming(note.timing, timing))
         return note;
@@ -60,10 +61,10 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
   }
 
 
-  function unpackNote(packedNote:Banana.PackedNote): Banana.Note {
+  function unpackNote(packedNote:PackedNote): Note {
     const {timing:packedTiming, noteStyleId} = packedNote;
-    const timing:Banana.Timing = unpackTiming(packedTiming);
-    return Note(track, timing, instrument.noteStyles[noteStyleId] ?? null);
+    const timing = unpackTiming(packedTiming);
+    return createNote(track, timing, instrument.noteStyles[noteStyleId] ?? null);
   }
 
 
@@ -72,7 +73,7 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
     const timingsWithNoNotes = arrangement.timeParams.timings
       .filter(timing => !notes.some(note => isSameTiming(note.timing, timing)));
     if (timingsWithNoNotes.length) {
-      timingsWithNoNotes.forEach(timing => notes.push(Note(track, timing, null)));
+      timingsWithNoNotes.forEach(timing => notes.push(createNote(track, timing, null)));
       notes.sort((a, b) => (a.timing.bar - b.timing.bar) || (a.timing.step - b.timing.step));
     }
   }
@@ -132,13 +133,11 @@ function trackBuilder(arrangement:Banana.Arrangement, instrument:Banana.Instrume
 }
 
 
-trackBuilder.unpack = function(arrangement:Banana.Arrangement, packedTrack:Banana.PackedTrack):
-  Banana.Track {
+export function unpackTrack(arrangement:Arrangement, packedTrack:PackedTrack):
+  Track {
   const instrument = Library.getInstrument(packedTrack.instrumentId);
-  return Track(arrangement, instrument, packedTrack.packedNotes);
+  return createTrack(arrangement, instrument, packedTrack.packedNotes);
 }
-
-export const Track:Banana.TrackBuilder = trackBuilder;
 
 
 
@@ -166,7 +165,7 @@ function getNewId(): string {
 
 
 
-function unpackTiming(packedTiming:Banana.PackedTiming): Banana.Timing {
+function unpackTiming(packedTiming:PackedTiming): Timing {
   const [bar, step] = packedTiming.split(':').map(value => Number(value));
   return {bar, step};
 }

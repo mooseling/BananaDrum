@@ -1,27 +1,28 @@
-import {TimeCoordinator} from './TimeCoordinator';
-import {TrackPlayer} from './TrackPlayer';
-import {Publisher} from './Publisher';
+import { Arrangement, ArrangementPlayer, CallbackEvent, Interval, LoopInterval, Subscription, Timing, TrackPlayer, Event } from './types';
+import {createTimeCoordinator} from './TimeCoordinator';
+import {createTrackPlayer} from './TrackPlayer';
+import {createPublisher} from './Publisher';
 
-type TrackPlayers = {[trackId:string]: Banana.TrackPlayer}
+type TrackPlayers = {[trackId:string]: TrackPlayer}
 
 
-export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.ArrangementPlayer {
-  const timeCoordinator = TimeCoordinator(arrangement.timeParams);
-  const publisher:Banana.Publisher = Publisher();
-  const currentTimingPublisher = Publisher();
-  const audibleTrackPlayersPublisher = Publisher();
+export function createArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
+  const timeCoordinator = createTimeCoordinator(arrangement.timeParams);
+  const publisher = createPublisher();
+  const currentTimingPublisher = createPublisher();
+  const audibleTrackPlayersPublisher = createPublisher();
 
   // We need a TrackPlayer for each Track, and add/remove them when needed
   const trackPlayers:TrackPlayers = {};
   const audibleTrackPlayers:TrackPlayers = {};
-  const trackPlayerSubscriptions:{[trackId:string]:Banana.Subscription} = {};
+  const trackPlayerSubscriptions:{[trackId:string]:Subscription} = {};
   updateTrackPlayers();
   updateAudibleTrackPlayers(trackPlayers, audibleTrackPlayers);
   arrangement.subscribe(updateTrackPlayers);
 
   // currentTiming updates as we play, and ArrangementPlayer publishes when it does
-  let currentTiming:Banana.Timing = {bar:1, step:1};
-  let callbackEvents:Banana.CallbackEvent[]|null;
+  let currentTiming:Timing = {bar:1, step:1};
+  let callbackEvents:CallbackEvent[]|null;
   updateCallbackEvents();
   arrangement.timeParams.subscribe(updateCallbackEvents);
 
@@ -55,9 +56,9 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
 
   // The interval may be beyond the end of the arrangement
   // If we're looping we'll use TimeConverter to resolve it within loops
-  function getEvents(interval:Banana.Interval): Banana.Event[] {
-    const events:Banana.Event[] = [];
-    const loopIntervals:Banana.LoopInterval[] = timeCoordinator.convertToLoopIntervals(interval);
+  function getEvents(interval:Interval): Event[] {
+    const events:Event[] = [];
+    const loopIntervals:LoopInterval[] = timeCoordinator.convertToLoopIntervals(interval);
 
     loopIntervals.forEach(loopInterval => {
       const {loopNumber} = loopInterval;
@@ -75,9 +76,9 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
   }
 
 
-  function getCallbackEvents(interval:Banana.Interval): Banana.CallbackEvent[] {
-    const eventsInInterval:Banana.CallbackEvent[] = [];
-    const loopIntervals:Banana.LoopInterval[] = timeCoordinator.convertToLoopIntervals(interval);
+  function getCallbackEvents(interval:Interval): CallbackEvent[] {
+    const eventsInInterval:CallbackEvent[] = [];
+    const loopIntervals:LoopInterval[] = timeCoordinator.convertToLoopIntervals(interval);
 
     loopIntervals.forEach(({loopNumber, start, end}) => {
       callbackEvents.filter(({realTime}) => realTime >= start && realTime < end)
@@ -118,7 +119,7 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
     for (const trackId in arrangement.tracks) {
       const track = arrangement.tracks[trackId];
       if (!trackPlayers[trackId]) {
-        trackPlayers[trackId] = TrackPlayer(track, timeCoordinator);
+        trackPlayers[trackId] = createTrackPlayer(track, timeCoordinator);
         trackPlayers[trackId].subscribe(getNewSubscription(trackId));
         somethingChanged = true;
       }
@@ -131,7 +132,7 @@ export function ArrangementPlayer(arrangement:Banana.Arrangement): Banana.Arrang
   }
 
 
-  function getNewSubscription(trackId:string): Banana.Subscription {
+  function getNewSubscription(trackId:string): Subscription {
     if (trackPlayerSubscriptions[trackId])
       throw 'Trying to subscribe to a TrackPlayer but already subscribed';
     const subscription = () => {
@@ -169,9 +170,9 @@ export function updateAudibleTrackPlayers(trackPlayers:TrackPlayers, target:Trac
 }
 
 
-function getAudibleTrackPlayers(trackPlayers:Banana.TrackPlayer[]): Banana.TrackPlayer[] {
-  const soloedTracksPlayers:Banana.TrackPlayer[] = [];
-  const unmutedTracksPlayers:Banana.TrackPlayer[] = [];
+function getAudibleTrackPlayers(trackPlayers:TrackPlayer[]): TrackPlayer[] {
+  const soloedTracksPlayers:TrackPlayer[] = [];
+  const unmutedTracksPlayers:TrackPlayer[] = [];
 
   trackPlayers.forEach(trackPlayer => {
     if (trackPlayer.soloMute === 'solo')

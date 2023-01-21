@@ -1,9 +1,10 @@
-import {Publisher} from './Publisher';
+import { PackedTimeParams, TimeParams, Timing } from './types';
+import {createPublisher} from './Publisher';
 
-export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimeParams {
+export function createTimeParams(packedParams:PackedTimeParams): TimeParams {
   let {timeSignature, tempo, length, pulse, stepResolution} = packedParams;
-  const publisher:Banana.Publisher = Publisher();
-  const timings:Banana.Timing[] = [];
+  const publisher = createPublisher();
+  const timings:Timing[] = [];
   regenerateTimings();
 
   return {
@@ -65,7 +66,7 @@ export function TimeParams(packedParams:Banana.PackedTimeParams): Banana.TimePar
     subscribe: publisher.subscribe,
     unsubscribe: publisher.unsubscribe,
 
-    isValid({bar, step}:Banana.Timing) {
+    isValid({bar, step}:Timing) {
       if (bar > length)
         return false; // timing falls outside the arrangement entirely
 

@@ -1,10 +1,11 @@
-import {Publisher} from './Publisher';
+import { RealTime, Note, TimeCoordinator, TrackPlayer, Track, SoloMute, Interval, Event } from './types';
+import {createPublisher} from './Publisher';
 import {getMuteEvents} from './Muting';
 
-type NoteWithTime = {realTime:Banana.RealTime, note:Banana.Note};
+type NoteWithTime = {realTime:RealTime, note:Note};
 
-function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordinator): Banana.TrackPlayer {
-  const publisher:Banana.Publisher = Publisher();
+export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator): TrackPlayer {
+  const publisher = createPublisher();
   let notesWithTime:NoteWithTime[] = [];
 
   if (track.instrument.loaded) {
@@ -22,13 +23,13 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
   let lastLength = track.arrangement.timeParams.length;
   timeCoordinator.subscribe(handleTimeChange);
   track.arrangement.subscribe(destroySelfIfNeeded);
-  let soloMute:Banana.SoloMute = null;
+  let soloMute:SoloMute = null;
 
   return {
     track, getEvents,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
     get soloMute() {return soloMute;},
-    set soloMute(newSoloMute:Banana.SoloMute) {
+    set soloMute(newSoloMute:SoloMute) {
       if (newSoloMute !== soloMute) {
         soloMute = newSoloMute;
         publisher.publish();
@@ -47,14 +48,14 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
 
 
 
-  function getEvents({start, end}:Banana.Interval): Banana.Event[] {
+  function getEvents({start, end}:Interval): Event[] {
     if (!track.instrument.loaded)
       return [];
 
     const notesInInterval = notesWithTime.filter(({realTime}) => realTime >= start && realTime < end);
 
     // Can't do this all in one go because TypeScript won't allow the concat
-    const events:Banana.Event[] = notesInInterval
+    const events:Event[] = notesInInterval
       .filter(({note}) => note.noteStyle) // Filter out rests (which have noteStyle: null)
       .map(({realTime, note}) => ({realTime, note, audioBuffer:note.noteStyle.audioBuffer}));
     notesInInterval.forEach(({realTime, note}) => events.push(...getMuteEvents(note, realTime)));
@@ -73,7 +74,7 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
 
 
 
-  function createRealTimeNote(note:Banana.Note): NoteWithTime {
+  function createRealTimeNote(note:Note): NoteWithTime {
     return {
       realTime: timeCoordinator.convertToRealTime(note.timing),
       note
@@ -124,5 +125,3 @@ function buildTrackPlayer(track:Banana.Track, timeCoordinator:Banana.TimeCoordin
     track.arrangement.unsubscribe(destroySelfIfNeeded);
   }
 }
-
-export const TrackPlayer:Banana.TrackPlayerBuilder = buildTrackPlayer;

@@ -1,5 +1,6 @@
+import { Subscribable } from '../types';
 import {useState, useEffect} from 'react';
-import {Publisher} from '../Publisher';
+import {createPublisher} from '../Publisher';
 
 
 export function Overlay({name, children}:{name:string, children:JSX.Element}): JSX.Element {
@@ -45,9 +46,9 @@ export function Overlay({name, children}:{name:string, children:JSX.Element}): J
 }
 
 
-type OverlayState = Banana.Subscribable & {visible:boolean};
+type OverlayState = Subscribable & {visible:boolean};
 function OverlayState(): OverlayState {
-  const publisher:Banana.Publisher = Publisher();
+  const publisher = createPublisher();
   let visible = false;
   return {
     get visible() {return visible;},

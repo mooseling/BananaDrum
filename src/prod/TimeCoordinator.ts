@@ -1,13 +1,14 @@
+import { Interval, LoopInterval, PackedTimeParams, RealTime, TimeCoordinator, TimeParams, Timing } from './types';
 import {EventEngine} from './EventEngine';
-import {Publisher} from './Publisher';
+import {createPublisher} from './Publisher';
 
 // TimeCoordinator handles all maths that need to be done with TimeParams
 // In the EventEngine, time always marches forward (except when paused)
 // In music-related objects, times are always between 0 and the length of the section
 // A TimeCoordinator adjust times from the EventEngine to make sense to music objects
-export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordinator {
-  const publisher: Banana.Publisher = Publisher();
-  let secondsPerBar:Banana.RealTime, secondsPerStep:Banana.RealTime, realTimeLength:Banana.RealTime;
+export function createTimeCoordinator(timeParams:TimeParams): TimeCoordinator {
+  const publisher = createPublisher();
+  let secondsPerBar:RealTime, secondsPerStep:RealTime, realTimeLength:RealTime;
   setInternalParams(); // Sets the variables above
 
   // Tempo and length changes incur offset changes
@@ -31,14 +32,14 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
 
 
   // Converting is currently extremely easy, but will become more complicated with polyrhythms
-  function convertToRealTime(timing:Banana.Timing): Banana.RealTime {
+  function convertToRealTime(timing:Timing): RealTime {
     return (secondsPerBar * (timing.bar - 1)) + (secondsPerStep * (timing.step - 1));
   }
 
   // Takes an interval whose times may be beyond the end of the loop
   // And returns up to two intervals with times within the loop
   // The two new intervals will cover the same total amount of time
-  function convertToLoopIntervals({start, end}:Banana.Interval):Banana.LoopInterval[] {
+  function convertToLoopIntervals({start, end}:Interval):LoopInterval[] {
     const offsetStart = start + offset;
     const offsetEnd = end + offset;
     const startLoopNumber = Math.floor(offsetStart / realTimeLength);
@@ -159,7 +160,7 @@ export function TimeCoordinator(timeParams:Banana.TimeParams): Banana.TimeCoordi
 // ==================================================================
 
 
-function calcNoteTimes({timeSignature, tempo, pulse, stepResolution}:Banana.PackedTimeParams) {
+function calcNoteTimes({timeSignature, tempo, pulse, stepResolution}:PackedTimeParams) {
   const [beatsPerBar, beatUnit] = timeSignature.split('/').map(str => Number(str));
   const [pulseFrequency, pulseResolution] = pulse.split('/').map(str => Number(str));
 
