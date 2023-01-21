@@ -2,3 +2,4 @@ dist
 node_modules
 demo/sounds
 demo/prod.js
+.vscode/settings.json
