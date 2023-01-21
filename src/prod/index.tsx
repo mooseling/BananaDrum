@@ -4,7 +4,7 @@ import {ArrangementPlayer} from './ArrangementPlayer';
 import {Library} from './Library';
 import {HistoryController} from './HistoryController';
 import {KeyboardHandler} from './KeyboardHandler';
-import {BananaDrum} from './components/BananaDrum';
+import {BananaDrumViewer} from './components/BananaDrumViewer';
 import ReactDOM from 'react-dom';
 import React from 'react';
 import {instrumentCollection} from '../test/lib/example-instruments';
@@ -26,7 +26,7 @@ document.getElementById('load-button').addEventListener('click', function() {
   EventEngine.connect(arrangementPlayer);
   document.getElementById('welcome').remove();
   ReactDOM.render(
-    <BananaDrum arrangementPlayer={arrangementPlayer}/>,
+    <BananaDrumViewer arrangementPlayer={arrangementPlayer}/>,
     document.getElementById('wrapper')
   );
 

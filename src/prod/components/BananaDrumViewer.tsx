@@ -1,7 +1,7 @@
 import {ArrangementViewer} from './ArrangementViewer';
 import {Overlay, toggleOverlay} from './Overlay';
 
-export function BananaDrum(
+export function BananaDrumViewer(
   {arrangementPlayer}:{arrangementPlayer:Banana.ArrangementPlayer}): JSX.Element {
 
   return (
