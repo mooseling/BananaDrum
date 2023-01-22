@@ -1,5 +1,7 @@
-import {EventEngine} from './EventEngine';
+import {getEventEngine} from './EventEngine';
 import {closeAllOverlays} from './components/Overlay';
+
+const eventEngine = getEventEngine();
 
 export const KeyboardHandler = {
   init() {
@@ -14,10 +16,10 @@ function handleKeyDown(event:KeyboardEvent): void {
   if (event.key === 'Escape')
     closeAllOverlays();
   if (event.key === ' ') {
-    if (EventEngine.state === 'stopped')
-      EventEngine.play();
+    if (eventEngine.state === 'stopped')
+      eventEngine.play();
     else
-      EventEngine.stop();
+      eventEngine.stop();
     event.preventDefault();
   }
 }

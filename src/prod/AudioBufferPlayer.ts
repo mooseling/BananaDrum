@@ -1,4 +1,8 @@
-import { AudioBufferPlayer } from "./types";
+export interface AudioBufferPlayer {
+  stop(): void
+  onEnded: (callback:() => void) => void
+}
+
 
 export function createAudioBufferPlayer(audioBuffer:AudioBuffer, audioContext:AudioContext, time:number = 0)
     : AudioBufferPlayer {

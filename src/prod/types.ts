@@ -139,7 +139,7 @@ export interface Note extends Subscribable {
   noteStyle: NoteStyle|null // null means this is a rest
 }
 
-export interface IEventEngine extends Subscribable {
+export interface EventEngine extends Subscribable {
   connect(eventSource:EventSource): void
   play(): void
   stop(): void
@@ -171,11 +171,6 @@ export type Event = CallbackEvent|AudioEvent|MuteEvent
 
 export interface EventSource {
   getEvents(interval:Interval): Event[]
-}
-
-export interface AudioBufferPlayer {
-  stop(): void
-  onEnded: (callback:() => void) => void
 }
 
 export interface ArrangementPlayer extends EventSource, Subscribable {

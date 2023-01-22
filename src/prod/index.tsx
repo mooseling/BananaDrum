@@ -1,4 +1,4 @@
-import {EventEngine} from './EventEngine';
+import {getEventEngine} from './EventEngine';
 import {unpackArrangement} from './Arrangement';
 import {createArrangementPlayer} from './ArrangementPlayer';
 import {Library} from './Library';
@@ -23,7 +23,7 @@ document.getElementById('load-button').addEventListener('click', function() {
   this.replaceWith(createLoadingMessage());
 
   const {arrangement, arrangementPlayer} = getArrangementAndPlayer();
-  EventEngine.connect(arrangementPlayer);
+  getEventEngine().connect(arrangementPlayer);
   document.getElementById('welcome').remove();
   ReactDOM.render(
     <BananaDrumViewer arrangementPlayer={arrangementPlayer}/>,

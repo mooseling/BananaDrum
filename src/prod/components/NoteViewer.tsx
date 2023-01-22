@@ -1,21 +1,22 @@
 import { Note, NoteStyle, Subscribable, Subscription } from '../types';
 import {useState, useContext, useEffect} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer';
-import {EventEngine} from '../EventEngine';
+import {getEventEngine} from '../EventEngine';
 import {createAudioBufferPlayer} from '../AudioBufferPlayer';
 import {isSameTiming} from '../utils';
 
 const audioContext = new AudioContext();
+const eventEngine = getEventEngine();
 
 
 export function NoteViewer({note}:{note:Note}): JSX.Element {
   const arrangementPlayer = useContext(ArrangementPlayerContext);
   const timingPublisher:Subscribable = arrangementPlayer.currentTimingPublisher;
   const [isCurrent, setIsCurrent] = useState(isSameTiming(arrangementPlayer.currentTiming, note.timing));
-  const [playing, setPlaying] = useState(EventEngine.state === 'playing')
+  const [playing, setPlaying] = useState(eventEngine.state === 'playing')
 
   const engineSubscription:Subscription = () => {
-    if (EventEngine.state === 'playing'){
+    if (eventEngine.state === 'playing'){
       setPlaying(true);
     } else {
       setPlaying(false);
@@ -23,8 +24,8 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
     }
   };
   useEffect(() => {
-    EventEngine.subscribe(engineSubscription);
-    return () => EventEngine.unsubscribe(engineSubscription);
+    eventEngine.subscribe(engineSubscription);
+    return () => eventEngine.unsubscribe(engineSubscription);
   }, []);
 
   const timingSubscription:Subscription =

@@ -2,14 +2,20 @@
 // It plays audio and fires callbacks at the right time
 // Playing audio boils down to the WebAudio API, so we must warp our design around that
 
-import { AudioEvent, CallbackEvent, EventEngineState, IEventEngine, Interval, MuteEvent, EventSource, MuteFilter, AudioBufferPlayer } from './types';
+import { AudioEvent, CallbackEvent, EventEngineState, EventEngine, Interval, MuteEvent, EventSource, MuteFilter } from './types';
 import {createPublisher} from './Publisher';
-import {createAudioBufferPlayer} from './AudioBufferPlayer';
+import { AudioBufferPlayer, createAudioBufferPlayer } from './AudioBufferPlayer';
 
 const lookahead = 0.25; // (s) Look 250ms ahead for events
 const loopFrequency = 125 // (ms) Check for upcoming events every 125ms
 
-export const EventEngine:IEventEngine = (function(){
+
+export function getEventEngine(): EventEngine {
+  return eventEngine;
+}
+
+
+const eventEngine:EventEngine = (function(){
   const audioContext:AudioContext = new AudioContext();
   const eventSources:EventSource[] = [];
   let nextIterationId: number|null = null;

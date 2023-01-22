@@ -1,6 +1,10 @@
 import { Interval, LoopInterval, PackedTimeParams, RealTime, TimeCoordinator, TimeParams, Timing } from './types';
-import {EventEngine} from './EventEngine';
+import {getEventEngine} from './EventEngine';
 import {createPublisher} from './Publisher';
+
+
+const eventEngine = getEventEngine();
+
 
 // TimeCoordinator handles all maths that need to be done with TimeParams
 // In the EventEngine, time always marches forward (except when paused)
@@ -17,7 +21,7 @@ export function createTimeCoordinator(timeParams:TimeParams): TimeCoordinator {
   let offset = 0;
 
   timeParams.subscribe(handleTimeParamsChange);
-  EventEngine.subscribe(handlePlaybackChange)
+  eventEngine.subscribe(handlePlaybackChange)
 
   return {convertToRealTime, convertToLoopIntervals, convertToAudioTime, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
@@ -115,7 +119,7 @@ export function createTimeCoordinator(timeParams:TimeParams): TimeCoordinator {
     setInternalParams();
     const oldTempo = cachedTempo;
     const newTempo = timeParams.tempo;
-    const audioTime = EventEngine.getTime();
+    const audioTime = eventEngine.getTime();
     const oldOffsetTime = audioTime + offset;
     const newOffsetTime = oldOffsetTime * (oldTempo / newTempo);
     offset = newOffsetTime - audioTime;
@@ -129,7 +133,7 @@ export function createTimeCoordinator(timeParams:TimeParams): TimeCoordinator {
     const oldRealTimeLength = realTimeLength;
     setInternalParams();
 
-    const audioTime = EventEngine.getTime();
+    const audioTime = eventEngine.getTime();
     const oldOffsetTime = audioTime + offset;
 
     const oldTimeWithinLoop = oldOffsetTime % oldRealTimeLength;
@@ -146,7 +150,7 @@ export function createTimeCoordinator(timeParams:TimeParams): TimeCoordinator {
 
 
   function handlePlaybackChange() {
-    if (EventEngine.state !== 'playing')
+    if (eventEngine.state !== 'playing')
       offset = 0;
   }
 }

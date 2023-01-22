@@ -4,15 +4,18 @@ import {ArrangementPlayerContext} from './ArrangementViewer';
 import {Overlay, toggleOverlay} from './Overlay';
 import {ShareButton} from './ShareButton';
 import {NumberInput} from './General';
-import {EventEngine} from '../EventEngine';
+import {getEventEngine} from '../EventEngine';
+
+
+const eventEngine = getEventEngine();
 
 
 export function ArrangementControlsTop(): JSX.Element {
-  const [playing, setPlaying] = useState(EventEngine.state === 'playing');
-  const eventEngineSubscription = () => setPlaying(EventEngine.state === 'playing');
+  const [playing, setPlaying] = useState(eventEngine.state === 'playing');
+  const eventEngineSubscription = () => setPlaying(eventEngine.state === 'playing');
   useEffect(() => {
-    EventEngine.subscribe(eventEngineSubscription);
-    return () => EventEngine.unsubscribe(eventEngineSubscription);
+    eventEngine.subscribe(eventEngineSubscription);
+    return () => eventEngine.unsubscribe(eventEngineSubscription);
   }, []);
 
   const arrangement:Arrangement = useContext(ArrangementPlayerContext).arrangement;
@@ -20,11 +23,11 @@ export function ArrangementControlsTop(): JSX.Element {
     <div className="arrangement-controls arrangement-controls-top">
       {
         playing ? (
-          <button className="playback-control push-button" onClick={() => EventEngine.stop()}>
+          <button className="playback-control push-button" onClick={() => eventEngine.stop()}>
             <img src="images/icons/pause.svg" alt="stop" />
           </button>
         ) : (
-          <button className="playback-control push-button" onClick={() => EventEngine.play()}>
+          <button className="playback-control push-button" onClick={() => eventEngine.play()}>
             <img src="images/icons/play.svg" alt="play" />
           </button>
         )

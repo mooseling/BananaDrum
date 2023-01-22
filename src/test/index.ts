@@ -1,5 +1,3 @@
-import {EventEngine} from '../prod/EventEngine';
-
 import './lib/set-global-mocks';
 import './unit/TimeParams';
 import './unit/TimeCoordinator';
