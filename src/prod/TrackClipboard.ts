@@ -1,7 +1,20 @@
-import { CopyRequest, NoteStyle, PasteRequest, Track } from './types';
+import { Timing, NoteStyle, Track } from './types';
 import {isSameTiming} from './utils';
 
-export class TrackClipboard implements TrackClipboard {
+
+type CopyRequest = {
+  start:Timing,
+  end:Timing
+}
+
+
+type PasteRequest = {
+  start:Timing,
+  end?:Timing
+}
+
+
+export class TrackClipboard {
   private track:Track;
   private buffer:NoteStyle[] = [];
 

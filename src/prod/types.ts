@@ -178,27 +178,6 @@ export interface AudioBufferPlayer {
   onEnded: (callback:() => void) => void
 }
 
-export type CopyRequest = {
-  start:Timing,
-  end:Timing
-}
-
-export type PasteRequest = {
-  start:Timing,
-  end?:Timing
-}
-
-export interface TrackClipboard {
-  readonly length: number
-  copy(copyRequest:CopyRequest): void
-  paste(pasteRequest:PasteRequest): void
-}
-
-export interface MultitrackClipboard {
-  copy(copyRequests:CopyRequest[]): void
-  paste(pasteRequests:PasteRequest[]): void
-}
-
 export interface ArrangementPlayer extends EventSource, Subscribable {
   arrangement: Arrangement
   trackPlayers: {[trackId:string]:TrackPlayer}
