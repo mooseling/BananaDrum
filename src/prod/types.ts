@@ -214,7 +214,3 @@ export interface TrackPlayer extends EventSource, Subscribable {
 }
 
 export type SoloMute = null | 'solo' | 'mute'
-
-export interface IAudioGetter {
-  get(filename: string): Promise<AudioBuffer>
-}

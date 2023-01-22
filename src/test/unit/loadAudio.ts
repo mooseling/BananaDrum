@@ -1,12 +1,12 @@
 /* global fetch */
 import {assert} from 'chai';
 import '../mocks/fetch';
-import {AudioGetter} from '../../prod/AudioGetter';
+import {loadAudio} from '../../prod/loadAudio';
 import * as log from '../lib/logging';
 
-describe('AudioGetter', function() {
+describe('loadAudio', function() {
   const filename = 'boop.mp3';
-  const audioPromise = AudioGetter.get(filename);
+  const audioPromise = loadAudio(filename);
   const requestLog = log.get('fetchRequestLog');
   const latestRequest = requestLog[requestLog.length - 1];
 

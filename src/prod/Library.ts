@@ -1,5 +1,5 @@
 import { PackedInstrument, Instrument, NoteStyleBase, NoteStyle, ILibrary } from './types';
-import {AudioGetter} from './AudioGetter';
+import {loadAudio} from './loadAudio';
 import {createPublisher} from './Publisher';
 
 const packedInstruments:{[id:string]: PackedInstrument} = {};
@@ -59,7 +59,7 @@ function createInstrument(packedInstrument:PackedInstrument): Instrument {
   packedNoteStyles.forEach(({id, file, symbol, muting}) => {
     noteStyles[id] = {id, symbol, audioBuffer:null, instrument, muting};
     unpackPromises.push(
-      AudioGetter.get(file)
+      loadAudio(file)
         .then(audioBuffer => noteStyles[id].audioBuffer = audioBuffer)
     );
   });
