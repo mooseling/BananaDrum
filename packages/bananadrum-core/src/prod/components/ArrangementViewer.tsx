@@ -1,10 +1,10 @@
 import { ArrangementPlayer, TrackPlayer } from '../types.js';
-import {TrackViewer} from './TrackViewer.js';
-import {ArrangementControlsTop, ArrangementControlsBottom} from './ArrangementControls.js';
-import {Scrollbar} from './Scrollbar.js';
-import {Share} from './Share.js';
-import {InstrumentBrowser} from './InstrumentBrowser.js';
-import {Overlay, toggleOverlay} from './Overlay.js';
+import {TrackViewer} from './TrackViewer.jsx';
+import {ArrangementControlsTop, ArrangementControlsBottom} from './ArrangementControls.jsx';
+import {Scrollbar} from './Scrollbar.jsx';
+import {Share} from './Share.jsx';
+import {InstrumentBrowser} from './InstrumentBrowser.jsx';
+import {Overlay, toggleOverlay} from './Overlay.jsx';
 import {createPublisher} from '../Publisher.js';
 import {useState, useEffect, createContext, useRef} from 'react';
 

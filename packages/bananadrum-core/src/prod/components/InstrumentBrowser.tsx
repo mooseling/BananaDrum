@@ -1,6 +1,6 @@
 import { Arrangement, InstrumentMeta } from '../types.js';
 import {Library} from '../Library.js';
-import {ArrangementPlayerContext} from './ArrangementViewer.js';
+import {ArrangementPlayerContext} from './ArrangementViewer.jsx';
 import {useContext} from 'react';
 
 export function InstrumentBrowser({close}:{close:() => void}): JSX.Element {

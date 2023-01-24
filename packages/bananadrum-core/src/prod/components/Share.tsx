@@ -1,6 +1,6 @@
 import {useState, useContext} from 'react';
-import {toggleOverlay} from './Overlay.js';
-import {ArrangementPlayerContext} from './ArrangementViewer.js';
+import {toggleOverlay} from './Overlay.jsx';
+import {ArrangementPlayerContext} from './ArrangementViewer.jsx';
 import {getShareLink} from '../compression.js';
 
 
