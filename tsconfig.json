@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
+    "composite": true,
     "module": "es6",
     "lib": ["esnext", "dom"],
     "target": "esnext",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["chai", "mocha", "react", "react-dom"]
-  }
+    "types": [],
+    "noEmit": true
+  },
+  "references": [
+    { "path": "packages/bananadrum-core" }
+  ]
 }
