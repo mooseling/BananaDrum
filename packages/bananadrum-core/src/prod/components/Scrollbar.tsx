@@ -1,5 +1,5 @@
-import { Publisher } from '../types';
 import {useState, useEffect} from 'react';
+import { Publisher } from '../types.js';
 
 
 export function Scrollbar({wrapperRef, contentWidthPublisher}:

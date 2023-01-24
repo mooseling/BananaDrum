@@ -1,10 +1,10 @@
-import { Arrangement } from '../types';
+import { Arrangement } from '../types.js';
 import {useState, useEffect, useContext} from 'react';
-import {ArrangementPlayerContext} from './ArrangementViewer';
-import {Overlay, toggleOverlay} from './Overlay';
-import {ShareButton} from './ShareButton';
-import {NumberInput} from './General';
-import {getEventEngine} from '../EventEngine';
+import {ArrangementPlayerContext} from './ArrangementViewer.js';
+import {Overlay, toggleOverlay} from './Overlay.js';
+import {ShareButton} from './ShareButton.js';
+import {NumberInput} from './General.js';
+import {getEventEngine} from '../EventEngine.js';
 
 
 const eventEngine = getEventEngine();

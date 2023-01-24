@@ -1,5 +1,5 @@
-import {getEventEngine} from './EventEngine';
-import {closeAllOverlays} from './components/Overlay';
+import {getEventEngine} from './EventEngine.js';
+import {closeAllOverlays} from './components/Overlay.js';
 
 const eventEngine = getEventEngine();
 

@@ -1,4 +1,4 @@
-import { Track } from "../../prod/types";
+import { Track } from "../../prod/types.js";
 
 export function MockTrack(): Track {
   return {

@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import {instrumentCollection} from '../lib/example-instruments';
+import {instrumentCollection} from '../lib/example-instruments.js';
 
 describe('Instrument Library', function() {
 

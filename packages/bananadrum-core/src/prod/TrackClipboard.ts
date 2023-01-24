@@ -1,5 +1,5 @@
-import { Timing, NoteStyle, Track } from './types';
-import {isSameTiming} from './utils';
+import { Timing, NoteStyle, Track } from './types.js';
+import {isSameTiming} from './utils.js';
 
 
 type CopyRequest = {

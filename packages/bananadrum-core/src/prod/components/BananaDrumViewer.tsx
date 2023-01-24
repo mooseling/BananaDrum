@@ -1,6 +1,6 @@
-import { ArrangementPlayer } from '../types';
-import {ArrangementViewer} from './ArrangementViewer';
-import {Overlay, toggleOverlay} from './Overlay';
+import { ArrangementPlayer } from '../types.js';
+import {ArrangementViewer} from './ArrangementViewer.js';
+import {Overlay, toggleOverlay} from './Overlay.js';
 
 export function BananaDrumViewer(
   {arrangementPlayer}:{arrangementPlayer:ArrangementPlayer}): JSX.Element {

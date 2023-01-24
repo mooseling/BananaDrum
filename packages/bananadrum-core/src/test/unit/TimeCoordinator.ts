@@ -1,7 +1,7 @@
-import { TimeParams, Timing } from '../../prod/types';
 import {assert} from 'chai';
-import {createTimeCoordinator} from '../../prod/TimeCoordinator';
-import {createTimeParams} from '../../prod/TimeParams';
+import { TimeParams, Timing } from '../../prod/types.js';
+import {createTimeCoordinator} from '../../prod/TimeCoordinator.js';
+import {createTimeParams} from '../../prod/TimeParams.js';
 
 type TestCase = [Timing, number];
 

@@ -1,6 +1,6 @@
-import { Subscribable } from '../types';
 import {useState, useEffect} from 'react';
-import {createPublisher} from '../Publisher';
+import { Subscribable } from '../types.js';
+import {createPublisher} from '../Publisher.js';
 
 
 export function Overlay({name, children}:{name:string, children:JSX.Element}): JSX.Element {

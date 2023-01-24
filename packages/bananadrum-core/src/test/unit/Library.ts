@@ -1,6 +1,6 @@
 import {assert} from 'chai';
-import {Library} from '../../prod/Library';
-import {instrumentCollection} from '../lib/example-instruments';
+import {Library} from '../../prod/Library.js';
+import {instrumentCollection} from '../lib/example-instruments.js';
 
 Library.load(instrumentCollection);
 

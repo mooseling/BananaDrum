@@ -1,10 +1,12 @@
-// The core of Banana Drum is the EventEngine
+import { AudioEvent, CallbackEvent, EventEngineState, EventEngine, Interval, MuteEvent, EventSource, MuteFilter } from './types.js';
+import {createPublisher} from './Publisher.js';
+import { AudioBufferPlayer, createAudioBufferPlayer } from './AudioBufferPlayer.js';
+
+
+// The core of the Banana Drum Player is the EventEngine
 // It plays audio and fires callbacks at the right time
 // Playing audio boils down to the WebAudio API, so we must warp our design around that
 
-import { AudioEvent, CallbackEvent, EventEngineState, EventEngine, Interval, MuteEvent, EventSource, MuteFilter } from './types';
-import {createPublisher} from './Publisher';
-import { AudioBufferPlayer, createAudioBufferPlayer } from './AudioBufferPlayer';
 
 const lookahead = 0.25; // (s) Look 250ms ahead for events
 const loopFrequency = 125 // (ms) Check for upcoming events every 125ms

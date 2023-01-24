@@ -1,7 +1,7 @@
 import {useState, useContext} from 'react';
-import {toggleOverlay} from './Overlay';
-import {ArrangementPlayerContext} from './ArrangementViewer';
-import {getShareLink} from '../compression';
+import {toggleOverlay} from './Overlay.js';
+import {ArrangementPlayerContext} from './ArrangementViewer.js';
+import {getShareLink} from '../compression.js';
 
 
 const haveNativeSharing = navigator.share !== undefined;

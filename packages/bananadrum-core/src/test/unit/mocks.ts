@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import * as log from '../lib/logging';
+import * as log from '../lib/logging.js';
 
 
 describe('Logging', function() {

@@ -1,5 +1,5 @@
-import { AudioEvent, MuteEvent, MuteFilter, MutingRule, MutingRuleOtherInstrument, Note, RealTime } from './types';
-import {isSameTiming, exists} from './utils';
+import { AudioEvent, MuteEvent, MuteFilter, MutingRule, MutingRuleOtherInstrument, Note, RealTime } from './types.js';
+import {isSameTiming, exists} from './utils.js';
 
 
 export function getMuteEvents(note:Note, realTime:RealTime): MuteEvent[] {

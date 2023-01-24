@@ -1,4 +1,4 @@
-import { NoteStyle } from "../../prod/types";
+import { NoteStyle } from "../../prod/types.js";
 
 export function MockNoteStyle(): NoteStyle {
   return {

@@ -1,4 +1,4 @@
-import { Note } from "../../prod/types";
+import { Note } from "../../prod/types.js";
 
 export function MockNote(): Note {
   return {

@@ -1,7 +1,7 @@
-import { Arrangement, ArrangementPlayer, CallbackEvent, Interval, LoopInterval, Subscription, Timing, TrackPlayer, Event } from './types';
-import {createTimeCoordinator} from './TimeCoordinator';
-import {createTrackPlayer} from './TrackPlayer';
-import {createPublisher} from './Publisher';
+import { Arrangement, ArrangementPlayer, CallbackEvent, Interval, LoopInterval, Subscription, Timing, TrackPlayer, Event } from './types.js';
+import {createTimeCoordinator} from './TimeCoordinator.js';
+import {createTrackPlayer} from './TrackPlayer.js';
+import {createPublisher} from './Publisher.js';
 
 type TrackPlayers = {[trackId:string]: TrackPlayer}
 

@@ -1,11 +1,11 @@
-import { ArrangementPlayer, TrackPlayer } from '../types';
-import {TrackViewer} from './TrackViewer';
-import {ArrangementControlsTop, ArrangementControlsBottom} from './ArrangementControls';
-import {Scrollbar} from './Scrollbar';
-import {Share} from './Share';
-import {InstrumentBrowser} from './InstrumentBrowser';
-import {Overlay, toggleOverlay} from './Overlay';
-import {createPublisher} from '../Publisher';
+import { ArrangementPlayer, TrackPlayer } from '../types.js';
+import {TrackViewer} from './TrackViewer.js';
+import {ArrangementControlsTop, ArrangementControlsBottom} from './ArrangementControls.js';
+import {Scrollbar} from './Scrollbar.js';
+import {Share} from './Share.js';
+import {InstrumentBrowser} from './InstrumentBrowser.js';
+import {Overlay, toggleOverlay} from './Overlay.js';
+import {createPublisher} from '../Publisher.js';
 import {useState, useEffect, createContext, useRef} from 'react';
 
 

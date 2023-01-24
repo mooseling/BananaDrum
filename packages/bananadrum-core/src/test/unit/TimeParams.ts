@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import {createTimeParams} from '../../prod/TimeParams';
+import {createTimeParams} from '../../prod/TimeParams.js';
 
 describe('TimeParams', function() {
   const initialTimeSignature = '4/4';

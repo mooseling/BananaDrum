@@ -1,6 +1,6 @@
-import { Interval, LoopInterval, PackedTimeParams, RealTime, TimeCoordinator, TimeParams, Timing } from './types';
-import {getEventEngine} from './EventEngine';
-import {createPublisher} from './Publisher';
+import { Interval, LoopInterval, PackedTimeParams, RealTime, TimeCoordinator, TimeParams, Timing } from './types.js';
+import {getEventEngine} from './EventEngine.js';
+import {createPublisher} from './Publisher.js';
 
 
 const eventEngine = getEventEngine();

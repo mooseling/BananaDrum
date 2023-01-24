@@ -1,6 +1,6 @@
-import { RealTime, Note, TimeCoordinator, TrackPlayer, Track, SoloMute, Interval, Event } from './types';
-import {createPublisher} from './Publisher';
-import {getMuteEvents} from './Muting';
+import { RealTime, Note, TimeCoordinator, TrackPlayer, Track, SoloMute, Interval, Event } from './types.js';
+import {createPublisher} from './Publisher.js';
+import {getMuteEvents} from './Muting.js';
 
 type NoteWithTime = {realTime:RealTime, note:Note};
 

@@ -1,6 +1,6 @@
-import { Arrangement, PackedArrangement, PackedNote, PackedTiming, PackedTrack, Timing, Track } from './types';
-import {Library} from './Library';
-import {createTimeParams} from './TimeParams';
+import { Arrangement, PackedArrangement, PackedNote, PackedTiming, PackedTrack, Timing, Track } from './types.js';
+import {Library} from './Library.js';
+import {createTimeParams} from './TimeParams.js';
 
 // No negative numbers
 export function urlEncodeNumber(input:bigint): string {

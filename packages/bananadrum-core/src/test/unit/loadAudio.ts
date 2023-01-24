@@ -1,8 +1,8 @@
 /* global fetch */
 import {assert} from 'chai';
-import '../mocks/fetch';
-import {loadAudio} from '../../prod/loadAudio';
-import * as log from '../lib/logging';
+import '../mocks/fetch.js';
+import {loadAudio} from '../../prod/loadAudio.js';
+import * as log from '../lib/logging.js';
 
 describe('loadAudio', function() {
   const filename = 'boop.mp3';

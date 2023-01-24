@@ -1,15 +1,15 @@
 import {getEventEngine} from './EventEngine';
-import {unpackArrangement} from './Arrangement';
-import {createArrangementPlayer} from './ArrangementPlayer';
-import {Library} from './Library';
-import {HistoryController} from './HistoryController';
-import {KeyboardHandler} from './KeyboardHandler';
-import {BananaDrumViewer} from './components/BananaDrumViewer';
 import ReactDOM from 'react-dom';
 import React from 'react';
-import {instrumentCollection} from '../test/lib/example-instruments';
-import {exampleSongString} from '../test/lib/example-arrangement';
-import {urlDecodeArrangement} from './compression';
+import {unpackArrangement} from './Arrangement.js';
+import {createArrangementPlayer} from './ArrangementPlayer.js';
+import {Library} from './Library.js';
+import {HistoryController} from './HistoryController.js';
+import {KeyboardHandler} from './KeyboardHandler.js';
+import {BananaDrumViewer} from './components/BananaDrumViewer.js';
+import {instrumentCollection} from '../test/lib/example-instruments.js';
+import {exampleSongString} from '../test/lib/example-arrangement.js';
+import {urlDecodeArrangement} from './compression.js';
 
 // Set React to global so we don't have to import it in every file with JSX
 // A benefit of this is to supress TS messages about unused var React

@@ -1,10 +1,10 @@
-import { Note, Timing, Track } from '../../prod/types';
 import {assert} from 'chai';
-import {TrackClipboard} from '../../prod/TrackClipboard';
-import {isSameTiming} from '../../prod/utils';
-import {MockTrack} from '../mocks/MockTrack';
-import {MockNote} from '../mocks/MockNote';
-import {MockNoteStyle} from '../mocks/MockNoteStyle';
+import { Note, Timing, Track } from '../../prod/types.js';
+import {TrackClipboard} from '../../prod/TrackClipboard.js';
+import {isSameTiming} from '../../prod/utils.js';
+import {MockTrack} from '../mocks/MockTrack.js';
+import {MockNote} from '../mocks/MockNote.js';
+import {MockNoteStyle} from '../mocks/MockNoteStyle.js';
 
 let mockTrack:Track, target:TrackClipboard;
 

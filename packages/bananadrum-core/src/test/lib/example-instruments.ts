@@ -1,4 +1,4 @@
-import { PackedInstrument } from "../../prod/types";
+import { PackedInstrument } from "../../prod/types.js";
 
 export const instrumentCollection:PackedInstrument[] = [
   {

@@ -1,5 +1,5 @@
-import { PackedTimeParams, TimeParams, Timing } from './types';
-import {createPublisher} from './Publisher';
+import { PackedTimeParams, TimeParams, Timing } from './types.js';
+import {createPublisher} from './Publisher.js';
 
 export function createTimeParams(packedParams:PackedTimeParams): TimeParams {
   let {timeSignature, tempo, length, pulse, stepResolution} = packedParams;

@@ -1,9 +1,9 @@
-import { Note, NoteStyle, Subscribable, Subscription } from '../types';
 import {useState, useContext, useEffect} from 'react';
-import {ArrangementPlayerContext} from './ArrangementViewer';
-import {getEventEngine} from '../EventEngine';
-import {createAudioBufferPlayer} from '../AudioBufferPlayer';
-import {isSameTiming} from '../utils';
+import { Note, NoteStyle, Subscribable, Subscription } from '../types.js';
+import {ArrangementPlayerContext} from './ArrangementViewer.js';
+import {getEventEngine} from '../EventEngine.js';
+import {createAudioBufferPlayer} from '../AudioBufferPlayer.js';
+import {isSameTiming} from '../utils.js';
 
 const audioContext = new AudioContext();
 const eventEngine = getEventEngine();

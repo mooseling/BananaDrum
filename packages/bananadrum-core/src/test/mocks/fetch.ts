@@ -1,4 +1,4 @@
-import * as log from '../lib/logging';
+import * as log from '../lib/logging.js';
 
 
 
