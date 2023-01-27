@@ -1,18 +1,23 @@
 const config = {
   mode: 'development',
   entry: {
-    prod: './src/prod/index.tsx',
-    test: './src/test/index.ts'
+    prod: './packages/bananadrum-core/src/prod/index.tsx',
+    test: './packages/bananadrum-core/src/test/index.ts'
   },
   module: {
-    rules: [{
-      test: /\.[tj]sx?/,
-      exclude: /node_modules/,
-      loader: 'babel-loader'
-    }]
+    rules: [
+      {
+        test: /\.[tj]sx?/,
+        loader: 'ts-loader'
+      }
+    ]
   },
   resolve: {
-    extensions:['.ts', '.tsx', '.js', '.jsx']
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    extensionAlias: {
+      '.js': ['.js', '.ts'],
+      '.jsx': ['.jsx', '.tsx']
+     }
   }
 };
 
