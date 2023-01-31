@@ -2,7 +2,7 @@
   "name": "bananadrum-core",
   "version": "1.0.0",
   "description": "Allows creating and editing a composition",
-  "main": "index.js",
+  "main": "dist/prod/index.js",
   "dependencies": {
     "core-js": "^3.23.5",
     "react": "^17.0.2",
