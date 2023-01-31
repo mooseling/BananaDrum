@@ -1,8 +1,8 @@
 import {useState, useEffect, createContext, useContext} from 'react';
 import { Track, TrackPlayer } from '../types.js';
-import {NoteViewer} from './NoteViewer.jsx';
-import {Overlay, toggleOverlay} from './Overlay.jsx';
-import {ArrangementPlayerContext} from './ArrangementViewer.jsx';
+import {NoteViewer} from './NoteViewer.js';
+import {Overlay, toggleOverlay} from './Overlay.js';
+import {ArrangementPlayerContext} from './ArrangementViewer.js';
 
 
 export const TrackPlayerContext = createContext(null);

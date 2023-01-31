@@ -1,4 +1,4 @@
-import {toggleOverlay} from './Overlay.jsx';
+import {toggleOverlay} from './Overlay.js';
 
 export function ShareButton(): JSX.Element {
   return (
