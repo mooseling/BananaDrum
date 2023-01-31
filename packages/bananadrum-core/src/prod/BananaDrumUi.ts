@@ -17,4 +17,6 @@ export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HT
     ),
     wrapper
   );
+
+  return {bananaDrumPlayer, wrapper};
 }
