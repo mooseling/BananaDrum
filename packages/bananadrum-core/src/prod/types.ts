@@ -1,3 +1,19 @@
+export interface BananaDrum {
+  library: ILibrary
+  arrangement: Arrangement
+}
+
+export interface BananaDrumPlayer {
+  bananaDrum: BananaDrum
+  eventEngine: EventEngine
+  arrangementPlayer: ArrangementPlayer
+}
+
+export interface BananaDrumUi {
+  bananaDrumPlayer: BananaDrumPlayer
+  wrapper: HTMLElement
+}
+
 export interface ILibrary {
   load(instrumentCollection:PackedInstrument[]): void
   instrumentMetas: InstrumentMeta[]
