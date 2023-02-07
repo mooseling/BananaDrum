@@ -4,21 +4,18 @@ const config = {
     prod: './index.js',
     // test: './packages/bananadrum-core/src/test/index.ts'
   },
-  // module: {
-  //   rules: [
-  //     {
-  //       test: /\.[tj]sx?/,
-  //       loader: 'ts-loader'
-  //     }
-  //   ]
-  // },
-  // resolve: {
-  //   extensions: ['.ts', '.tsx', '.js', '.jsx'],
-  //   extensionAlias: {
-  //     '.js': ['.js', '.ts'],
-  //     '.jsx': ['.jsx', '.tsx']
-  //    }
-  // }
+  module: {
+    rules: [
+      {
+        test: /\.js/,
+        exclude: /node_modules/,
+        loader: 'babel-loader'
+      }
+    ]
+  },
+  resolve: {
+    extensions: ['.js']
+  }
 };
 
 export default config;
