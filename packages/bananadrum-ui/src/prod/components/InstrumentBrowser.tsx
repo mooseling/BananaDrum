@@ -1,5 +1,5 @@
-import { Arrangement, InstrumentMeta } from '../types.js';
-import {Library} from '../Library.js';
+import { Arrangement, InstrumentMeta } from 'bananadrum-core';
+import {Library} from 'bananadrum-core';
 import {ArrangementPlayerContext} from './ArrangementViewer.js';
 import {useContext} from 'react';
 

@@ -1,5 +1,5 @@
-import { AudioEvent, CallbackEvent, EventEngineState, EventEngine, Interval, MuteEvent, EventSource, MuteFilter } from './types.js';
-import {createPublisher} from './Publisher.js';
+import { AudioEvent, CallbackEvent, EventEngineState, EventEngine, Interval, MuteEvent, EventSource, MuteFilter } from 'bananadrum-core';
+import { createPublisher } from 'bananadrum-core';
 import { AudioBufferPlayer, createAudioBufferPlayer } from './AudioBufferPlayer.js';
 
 

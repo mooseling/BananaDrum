@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import { Publisher } from '../types.js';
+import { Publisher } from 'bananadrum-core';
 
 
 export function Scrollbar({wrapperRef, contentWidthPublisher}:

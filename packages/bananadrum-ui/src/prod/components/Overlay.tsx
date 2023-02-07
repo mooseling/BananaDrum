@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
-import { Subscribable } from '../types.js';
-import {createPublisher} from '../Publisher.js';
+import { Subscribable } from 'bananadrum-core';
+import { createPublisher } from 'bananadrum-core';
 
 
 export function Overlay({name, children}:{name:string, children:JSX.Element}): JSX.Element {

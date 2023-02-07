@@ -1,11 +1,11 @@
-import { ArrangementPlayer, TrackPlayer } from '../types.js';
+import { ArrangementPlayer, TrackPlayer } from 'bananadrum-core';
+import {createPublisher} from 'bananadrum-core';
 import {TrackViewer} from './TrackViewer.js';
 import {ArrangementControlsTop, ArrangementControlsBottom} from './ArrangementControls.js';
 import {Scrollbar} from './Scrollbar.js';
 import {Share} from './Share.js';
 import {InstrumentBrowser} from './InstrumentBrowser.js';
 import {Overlay, toggleOverlay} from './Overlay.js';
-import {createPublisher} from '../Publisher.js';
 import {useState, useEffect, createContext, useRef} from 'react';
 
 

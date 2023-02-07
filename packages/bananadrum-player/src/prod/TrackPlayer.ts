@@ -1,5 +1,5 @@
-import { RealTime, Note, TimeCoordinator, TrackPlayer, Track, SoloMute, Interval, Event } from './types.js';
-import {createPublisher} from './Publisher.js';
+import { RealTime, Note, TimeCoordinator, TrackPlayer, Track, SoloMute, Interval, Event } from 'bananadrum-core';
+import {createPublisher} from 'bananadrum-core';
 import {getMuteEvents} from './Muting.js';
 
 type NoteWithTime = {realTime:RealTime, note:Note};

@@ -1,7 +1,7 @@
-import { createArrangement, unpackArrangement } from "./Arrangement";
-import { urlDecodeArrangement } from "./compression";
-import { Library } from "./Library";
-import { Arrangement, BananaDrum, PackedInstrument } from "./types";
+import { createArrangement, unpackArrangement } from "./Arrangement.js";
+import { urlDecodeArrangement } from "./compression.js";
+import { Library } from "./Library.js";
+import { Arrangement, BananaDrum, PackedInstrument } from "./types.js";
 
 
 export function createBananaDrum(instrumentCollection?:PackedInstrument[], compressedArrangement?:string): BananaDrum {

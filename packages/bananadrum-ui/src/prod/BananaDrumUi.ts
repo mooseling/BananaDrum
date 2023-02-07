@@ -1,9 +1,9 @@
-import { BananaDrumPlayer, BananaDrumUi } from "./types";
+import { BananaDrumPlayer, BananaDrumUi } from 'bananadrum-core';
 import ReactDOM from 'react-dom';
 import React from 'react';
-import { HistoryController } from "./HistoryController";
-import { KeyboardHandler } from "./KeyboardHandler";
-import { BananaDrumViewer } from "./components/BananaDrumViewer";
+import { HistoryController } from "./HistoryController.js";
+import { KeyboardHandler } from "./KeyboardHandler.js";
+import { BananaDrumViewer } from "./components/BananaDrumViewer.js";
 
 
 export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HTMLElement): BananaDrumUi {

@@ -3,7 +3,8 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
-    "types": [],
+    "types": ["react", "react-dom"],
+    "jsx": "react-jsx",
     "noEmit": false
   },
   "include": ["src/**/*"]

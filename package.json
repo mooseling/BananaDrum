@@ -33,6 +33,8 @@
     "build": "tsc --build && webpack && cp dist/prod.js demo/"
   },
   "workspaces": [
-    "packages/bananadrum-core"
+    "packages/bananadrum-core",
+    "packages/bananadrum-player",
+    "packages/bananadrum-ui"
   ]
 }

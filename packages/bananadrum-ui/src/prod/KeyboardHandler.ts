@@ -1,4 +1,4 @@
-import {getEventEngine} from './EventEngine.js';
+import {getEventEngine} from 'bananadrum-player';
 import {closeAllOverlays} from './components/Overlay.js';
 
 const eventEngine = getEventEngine();

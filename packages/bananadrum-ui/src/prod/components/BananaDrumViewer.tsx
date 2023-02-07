@@ -1,4 +1,4 @@
-import { ArrangementPlayer } from '../types.js';
+import { ArrangementPlayer } from 'bananadrum-core';
 import {ArrangementViewer} from './ArrangementViewer.js';
 import {Overlay, toggleOverlay} from './Overlay.js';
 

@@ -1,5 +1,7 @@
 import React from 'react';
-import { createBananaDrum, createBananaDrumPlayer, createBananaDrumUi, instrumentCollection, exampleSongString } from 'bananadrum-core';
+import { createBananaDrum, instrumentCollection, exampleSongString } from 'bananadrum-core';
+import { createBananaDrumPlayer } from 'bananadrum-player';
+import { createBananaDrumUi } from 'bananadrum-ui';
 
 // Set React to global so we don't have to import it in every file with JSX
 // A benefit of this is to supress TS messages about unused var React

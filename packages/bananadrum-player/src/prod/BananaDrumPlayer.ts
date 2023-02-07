@@ -1,6 +1,6 @@
-import { createArrangementPlayer } from "./ArrangementPlayer";
-import { getEventEngine } from "./EventEngine";
-import { BananaDrum, BananaDrumPlayer } from "./types";
+import { BananaDrum, BananaDrumPlayer } from 'bananadrum-core';
+import { createArrangementPlayer } from "./ArrangementPlayer.js";
+import { getEventEngine } from "./EventEngine.js";
 
 export function createBananaDrumPlayer(bananaDrum:BananaDrum): BananaDrumPlayer {
   const eventEngine = getEventEngine();

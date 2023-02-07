@@ -1,7 +1,7 @@
-import { Arrangement, ArrangementPlayer, CallbackEvent, Interval, LoopInterval, Subscription, Timing, TrackPlayer, Event } from './types.js';
+import { Arrangement, ArrangementPlayer, CallbackEvent, Interval, LoopInterval, Subscription, Timing, TrackPlayer, Event } from 'bananadrum-core';
+import {createPublisher} from 'bananadrum-core';
 import {createTimeCoordinator} from './TimeCoordinator.js';
 import {createTrackPlayer} from './TrackPlayer.js';
-import {createPublisher} from './Publisher.js';
 
 type TrackPlayers = {[trackId:string]: TrackPlayer}
 

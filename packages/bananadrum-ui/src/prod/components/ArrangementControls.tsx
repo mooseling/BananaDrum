@@ -1,10 +1,10 @@
-import { Arrangement } from '../types.js';
+import { Arrangement } from 'bananadrum-core';
 import {useState, useEffect, useContext} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer.js';
 import {Overlay, toggleOverlay} from './Overlay.js';
 import {ShareButton} from './ShareButton.js';
 import {NumberInput} from './General.js';
-import {getEventEngine} from '../EventEngine.js';
+import {getEventEngine} from 'bananadrum-player';
 
 
 const eventEngine = getEventEngine();

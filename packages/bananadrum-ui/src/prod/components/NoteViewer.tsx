@@ -1,9 +1,7 @@
+import { Note, NoteStyle, Subscribable, Subscription, isSameTiming } from 'bananadrum-core';
+import {getEventEngine, createAudioBufferPlayer} from 'bananadrum-player';
 import {useState, useContext, useEffect} from 'react';
-import { Note, NoteStyle, Subscribable, Subscription } from '../types.js';
 import {ArrangementPlayerContext} from './ArrangementViewer.js';
-import {getEventEngine} from '../EventEngine.js';
-import {createAudioBufferPlayer} from '../AudioBufferPlayer.js';
-import {isSameTiming} from '../utils.js';
 
 const audioContext = new AudioContext();
 const eventEngine = getEventEngine();
