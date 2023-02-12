@@ -12,7 +12,8 @@
   "references": [
     { "path": "packages/bananadrum-core" },
     { "path": "packages/bananadrum-player" },
-    { "path": "packages/bananadrum-ui" }
+    { "path": "packages/bananadrum-ui" },
+    { "path": "packages/bananadrum-webapp" }
   ],
   "include": []
 }

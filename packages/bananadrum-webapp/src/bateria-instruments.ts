@@ -1,6 +1,6 @@
-import { PackedInstrument } from "../../prod/types.js";
+import { PackedInstrument } from 'bananadrum-core';
 
-export const instrumentCollection:PackedInstrument[] = [
+export const bateriaInstruments:PackedInstrument[] = [
   {
     id: '0',
     displayOrder: 0,

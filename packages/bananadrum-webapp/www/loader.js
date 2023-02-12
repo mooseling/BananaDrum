@@ -74,7 +74,7 @@
 
   function loadBananaDrum() {
     const script = document.createElement('script');
-    script.src = '/prod.js';
+    script.src = '/bundle.js';
     document.body.appendChild(script);
   }
 })();

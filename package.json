@@ -30,11 +30,12 @@
     "pretest": "tsc && npm run build",
     "test": "mocha \"dist/test.js\"",
     "babel": "babel packages/bananadrum-core/src --out-dir dist --extensions \".ts,.js,.tsx,.jsx\"",
-    "build": "tsc --build && webpack && cp dist/prod.js demo/"
+    "build": "tsc --build && webpack"
   },
   "workspaces": [
     "packages/bananadrum-core",
     "packages/bananadrum-player",
-    "packages/bananadrum-ui"
+    "packages/bananadrum-ui",
+    "packages/bananadrum-webapp"
   ]
 }

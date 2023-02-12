@@ -1,0 +1,21 @@
+{
+  "name": "bananadrum-player",
+  "version": "1.0.0",
+  "description": "Allows playing a composition",
+  "main": "dist/prod/index.js",
+  "dependencies": {
+    "bananadrum-core": "^1.0.0",
+    "bananadrum-player": "^1.0.0",
+    "bananadrum-ui": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mooseling/BananaDrum.git"
+  },
+  "author": "James Stevenson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mooseling/BananaDrum/issues"
+  },
+  "homepage": "https://github.com/mooseling/BananaDrum"
+}

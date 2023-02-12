@@ -1,12 +1,14 @@
-import { createBananaDrum, instrumentCollection, exampleSongString } from 'bananadrum-core';
+import { createBananaDrum } from 'bananadrum-core';
 import { createBananaDrumPlayer } from 'bananadrum-player';
 import { createBananaDrumUi } from 'bananadrum-ui';
+import { bateriaInstruments } from './bateria-instruments';
+import { demoSongString } from './demo-song';
 
 
 document.getElementById('load-button').addEventListener('click', function() {
   this.replaceWith(createLoadingMessage());
 
-  const bananaDrum = createBananaDrum(instrumentCollection, getCompressedArrangement());
+  const bananaDrum = createBananaDrum(bateriaInstruments, getCompressedArrangement());
   const bananaDrumPlayer = createBananaDrumPlayer(bananaDrum);
   const bananaDrumUi = createBananaDrumUi(bananaDrumPlayer, document.getElementById('wrapper'))
 
@@ -35,7 +37,7 @@ function getCompressedArrangement() {
     return sharedArrangement;
   }
 
-  return exampleSongString;
+  return demoSongString;
 }
 
 

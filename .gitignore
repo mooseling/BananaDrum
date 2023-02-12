@@ -1,6 +1,5 @@
 dist
 node_modules
-demo/sounds
-demo/prod.js
+bundle.js
 .vscode/settings.json
 tsconfig.tsbuildinfo
