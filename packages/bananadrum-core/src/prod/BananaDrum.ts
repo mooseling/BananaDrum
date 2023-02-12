@@ -1,17 +1,19 @@
 import { createArrangement, unpackArrangement } from "./Arrangement.js";
 import { urlDecodeArrangement } from "./compression.js";
-import { Library } from "./Library.js";
+import { getLibrary } from "./Library.js";
 import { Arrangement, BananaDrum, PackedInstrument } from "./types.js";
 
 
 export function createBananaDrum(instrumentCollection?:PackedInstrument[], compressedArrangement?:string): BananaDrum {
   if (compressedArrangement) {
+    const library = getLibrary();
+
     if (instrumentCollection)
-      Library.load(instrumentCollection);
+      library.load(instrumentCollection);
     
     const arrangement = getNewArrangement(compressedArrangement);
     
-    return {library: Library, arrangement};
+    return {library, arrangement};
   }
 }
 

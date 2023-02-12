@@ -1,5 +1,5 @@
 import { Arrangement, Instrument, Note, PackedNote, PackedTiming, PackedTrack, Timing, Track } from './types.js';
-import {Library} from './Library.js';
+import {getLibrary} from './Library.js';
 import {createNote} from './Note.js';
 import {createPublisher} from './Publisher.js';
 import {TrackClipboard} from './TrackClipboard.js';
@@ -135,7 +135,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, pack
 
 export function unpackTrack(arrangement:Arrangement, packedTrack:PackedTrack):
   Track {
-  const instrument = Library.getInstrument(packedTrack.instrumentId);
+  const instrument = getLibrary().getInstrument(packedTrack.instrumentId);
   return createTrack(arrangement, instrument, packedTrack.packedNotes);
 }
 

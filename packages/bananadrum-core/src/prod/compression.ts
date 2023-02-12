@@ -1,5 +1,5 @@
 import { Arrangement, PackedArrangement, PackedNote, PackedTiming, PackedTrack, Timing, Track } from './types.js';
-import {Library} from './Library.js';
+import {getLibrary} from './Library.js';
 import {createTimeParams} from './TimeParams.js';
 
 // No negative numbers
@@ -69,7 +69,7 @@ export function urlEncodeTrack(track:Track): string {
 
 export function createPackedTrack(urlEncodedTrack:string, timings:Timing[]): PackedTrack {
   const instrumentId = urlEncodedTrack[0];
-  const instrumentMeta = Library.instrumentMetas.filter(({id}) => id === instrumentId)[0];
+  const instrumentMeta = getLibrary().instrumentMetas.filter(({id}) => id === instrumentId)[0];
   if (!instrumentMeta)
     throw 'Instrument not found';
   const musicAsString = urlEncodedTrack.substring(1);

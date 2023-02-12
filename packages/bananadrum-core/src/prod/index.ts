@@ -1,5 +1,5 @@
 export { createBananaDrum } from './BananaDrum.js';
-export { Library } from './Library.js';
+export { getLibrary } from './Library.js';
 export { getShareLink } from './compression.js';
 
 export { instrumentCollection } from '../test/lib/example-instruments.js';

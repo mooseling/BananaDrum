@@ -1,5 +1,5 @@
 export interface BananaDrum {
-  library: ILibrary
+  library: Library
   arrangement: Arrangement
 }
 
@@ -14,7 +14,7 @@ export interface BananaDrumUi {
   wrapper: HTMLElement
 }
 
-export interface ILibrary {
+export interface Library {
   load(instrumentCollection:PackedInstrument[]): void
   instrumentMetas: InstrumentMeta[]
   getInstrument(id:string): Instrument
