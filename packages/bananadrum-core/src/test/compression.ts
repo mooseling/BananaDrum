@@ -1,5 +1,6 @@
 import {assert} from 'chai';
-import {urlEncodeNumber, urlDecodeNumber, interpretAsBaseN, convertToBaseN} from '../../prod/compression.js';
+import {describe, it} from 'mocha';
+import {urlEncodeNumber, urlDecodeNumber, interpretAsBaseN, convertToBaseN} from '../prod/compression.js';
 
 describe('URL encoding numbers', function() {
   it ('decodes up to 100000 back to the same number', () => {
