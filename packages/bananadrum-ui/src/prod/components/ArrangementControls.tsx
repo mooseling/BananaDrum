@@ -57,7 +57,7 @@ function TimeControls({arrangement}:{arrangement:Arrangement}): JSX.Element {
   return (
     <div className="time-controls-wrapper">
       <div className="time-control">
-        <select onChange={changeTimeSignature}>
+        <select onChange={changeTimeSignature} value={timeParams.timeSignature}>
           <option>4/4</option>
           <option>6/8</option>
           <option>5/4</option>
