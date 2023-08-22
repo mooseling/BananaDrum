@@ -74,7 +74,7 @@
 
   function loadBananaDrum() {
     const script = document.createElement('script');
-    script.src = '/bundle.js';
+    script.src = '/bundle.js?1.1-time-sig-select';
     document.body.appendChild(script);
   }
 })();
