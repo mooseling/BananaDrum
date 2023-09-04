@@ -1,4 +1,4 @@
-import { ArrangementPlayer, TrackPlayer } from 'bananadrum-core';
+import { ArrangementPlayer, TrackPlayer } from 'bananadrum-player';
 import {createPublisher} from 'bananadrum-core';
 import {TrackViewer} from './TrackViewer.js';
 import {ArrangementControlsTop, ArrangementControlsBottom} from './ArrangementControls.js';

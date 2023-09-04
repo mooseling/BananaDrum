@@ -1,8 +1,9 @@
 import {useState, useEffect, createContext, useContext} from 'react';
-import { Track, TrackPlayer } from 'bananadrum-core';
+import { Track } from 'bananadrum-core';
 import {NoteViewer} from './NoteViewer.js';
 import {Overlay, toggleOverlay} from './Overlay.js';
 import {ArrangementPlayerContext} from './ArrangementViewer.js';
+import { TrackPlayer } from 'bananadrum-player';
 
 
 export const TrackPlayerContext = createContext(null);

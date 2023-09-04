@@ -1,6 +1,7 @@
-import { Interval, LoopInterval, PackedTimeParams, RealTime, TimeCoordinator, TimeParams, Timing } from 'bananadrum-core';
+import { PackedTimeParams, RealTime, TimeParams, Timing } from 'bananadrum-core';
 import {createPublisher} from 'bananadrum-core';
 import {getEventEngine} from './EventEngine.js';
+import { Interval, LoopInterval, TimeCoordinator } from './types.js';
 
 
 const eventEngine = getEventEngine();
