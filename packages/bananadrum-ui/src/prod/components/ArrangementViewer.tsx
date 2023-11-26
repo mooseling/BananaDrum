@@ -1,3 +1,4 @@
+import { RealTime } from 'bananadrum-core';
 import { ArrangementPlayer, TrackPlayer } from 'bananadrum-player';
 import {createPublisher} from 'bananadrum-core';
 import {TrackViewer} from './TrackViewer.js';
@@ -6,7 +7,9 @@ import {Scrollbar} from './Scrollbar.js';
 import {Share} from './Share.js';
 import {InstrumentBrowser} from './InstrumentBrowser.js';
 import {Overlay, toggleOverlay} from './Overlay.js';
-import {useState, useEffect, createContext, useRef} from 'react';
+import {useState, useEffect, createContext, useRef, useContext, TouchEvent} from 'react';
+import {AnimationEngineContext} from './BananaDrumViewer.js';
+import { AnimationEngine } from '../types.js';
 
 
 export const ArrangementPlayerContext = createContext(null);
@@ -16,6 +19,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
   const {arrangement} = arrangementPlayer;
   const [trackPlayers, setTrackPlayers] = useState({...arrangementPlayer.trackPlayers});
   const arrangementPlayerSubscription = () => setTrackPlayers({...arrangementPlayer.trackPlayers});
+  const animationEngine = useContext(AnimationEngineContext);
 
   // Scroll-shadows over the track-viewers
   // We need to recalculate these classes when:
@@ -33,6 +37,12 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
     contentWidthPublisher.publish();
   }, 0); // timeout so DOM updates first
 
+
+
+  const {trackViewerCallbacks, handleWheel, onScrollbarGrab} = useAutoFollow(animationEngine, arrangementPlayer, ref);
+
+
+
   useEffect(() => {
     setTimeout(updateScrollShadows, 0);
 
@@ -43,7 +53,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
     return () => {
       arrangementPlayer.unsubscribe(arrangementPlayerSubscription);
       resizeObserver.unobserve(ref.current);
-      arrangement.timeParams.unsubscribe(timeParamsSubscription);
+      arrangement.timeParams.unsubscribe(timeParamsSubscription)
     }
   }, []);
 
@@ -59,6 +69,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
               className={`track-viewers-wrapper ${scrollShadowClasses}`}
               ref={ref}
               onScroll={updateScrollShadows}
+              onWheel={handleWheel}
             >
               {
                 Object.keys(trackPlayers)
@@ -66,11 +77,12 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
                   .map(trackId => (
                     <TrackViewer
                       trackPlayer={trackPlayers[trackId]}
+                      callbacks={trackViewerCallbacks}
                       key={trackId}
                     />
                   ))
               }
-              <Scrollbar wrapperRef={ref} contentWidthPublisher={contentWidthPublisher}/>
+              <Scrollbar wrapperRef={ref} contentWidthPublisher={contentWidthPublisher} callbacks={{onGrab:onScrollbarGrab}}/>
             </div>
             <Overlay name="instrument_browser">
               <InstrumentBrowser close={() => toggleOverlay('instrument_browser', 'hide')}/>
@@ -122,4 +134,96 @@ function sortTracks(trackPlayer1:TrackPlayer, trackPlayer2:TrackPlayer): number 
   }
 
   return track1.instrument.displayOrder - track2.instrument.displayOrder;
+}
+
+
+function autoFollow(wrapper:HTMLDivElement, arrangementPlayer:ArrangementPlayer, realTime:RealTime) {
+  const distanceMultiplier = arrangementPlayer.convertToLoopProgress(realTime);
+  wrapper.scrollLeft = (distanceMultiplier * wrapper.scrollWidth) - (wrapper.offsetWidth / 2);
+}
+
+
+function useAutoFollow(animationEngine: AnimationEngine, arrangementPlayer: ArrangementPlayer, wrapperRef:React.MutableRefObject<HTMLDivElement>) {
+  // Placing auto-follow in state means we rerender when toggling auto-follow
+  // This means we get register/don't register auto-follow callbacks based on state
+  // The alternative is to use a ref, always fire the callbacks, and use the ref to decide then what to do
+  const [autoFollowIsOn, setAutoFollow] = useState(true);
+
+  useEffect(() => {
+    // If desired, turn on auto-follow like so
+    if (autoFollowIsOn) {
+      const autoFollowAnimation = realTime => autoFollow(wrapperRef.current, arrangementPlayer, realTime);
+      animationEngine.connect(autoFollowAnimation);
+      return () => animationEngine.disconnect(autoFollowAnimation);
+    }
+
+    // Otherwise, set up the subscription which will turn it on again
+    const animationEngineSubscription = () => animationEngine.state === 'playing' && setAutoFollow(true);
+    animationEngine.subscribe(animationEngineSubscription);
+    return () => animationEngine.unsubscribe(animationEngineSubscription)
+  }, [autoFollowIsOn]);
+
+  
+  return {
+    handleWheel: autoFollowIsOn ? (event:React.WheelEvent<HTMLDivElement>) => event.deltaX > 6 && setAutoFollow(false) : undefined,
+    onScrollbarGrab: autoFollowIsOn ? () => setAutoFollow(false) : undefined,
+    trackViewerCallbacks: useTrackViewerTouchInterpretation(autoFollowIsOn, setAutoFollow)
+  }
+}
+
+
+function useTrackViewerTouchInterpretation(autoFollowIsOn, setAutoFollow) {
+  // Touchscreens:
+  // If user touches the tracks while we're auto-following
+  // If they are scrolling up or down, we do nothing
+  // If they are scrolling left or right, we stop auto-following
+  // If they hold for a whole second, we stop auto-following
+
+  const [userMightBeTakingControl, setUserMightBeTakingControl] = useState(false);
+  const lastY = useRef(0);
+  const lastX = useRef(0);
+  const stopAutoFollowTimeoutId = useRef(0);
+
+  if (!autoFollowIsOn) {
+    return {
+      noteLineTouchStart: undefined,
+      noteLineTouchMove: undefined,
+      noteLineTouchEnd: undefined
+    };
+  }
+
+  if (userMightBeTakingControl) {
+    return {
+      noteLineTouchStart: undefined,
+      noteLineTouchMove: (event:TouchEvent) => {
+        if (Math.abs(lastX.current - event.touches[0].pageX) > 10) {
+          setAutoFollow(false);
+          clearTimeout(stopAutoFollowTimeoutId.current);
+          setUserMightBeTakingControl(false);
+          return;
+        }
+
+        if (Math.abs(lastY.current - event.touches[0].pageY) > 10) {
+          clearTimeout(stopAutoFollowTimeoutId.current);
+          setUserMightBeTakingControl(false);
+        }
+      },
+      noteLineTouchEnd: () => setUserMightBeTakingControl(false)
+    };
+  } else {
+    return {
+      noteLineTouchStart: (event:TouchEvent) => {
+        if (event.touches.length != 1)
+          return;
+    
+        lastY.current = event.touches[0].pageY;
+        lastX.current = event.touches[0].pageX;
+        stopAutoFollowTimeoutId.current = setTimeout(() => setAutoFollow(false), 1000);
+    
+        setUserMightBeTakingControl(true)
+      },
+      noteLineTouchMove: undefined,
+      noteLineTouchEnd: undefined
+    };
+  }
 }

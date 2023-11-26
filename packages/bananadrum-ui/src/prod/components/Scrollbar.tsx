@@ -2,8 +2,13 @@ import {useState, useEffect} from 'react';
 import { Publisher } from 'bananadrum-core';
 
 
-export function Scrollbar({wrapperRef, contentWidthPublisher}:
-  {wrapperRef:React.MutableRefObject<HTMLDivElement>, contentWidthPublisher:Publisher}
+type ScrollbarCallbacks = {
+  onGrab: () => void
+}
+
+
+export function Scrollbar({wrapperRef, contentWidthPublisher, callbacks}:
+  {wrapperRef:React.MutableRefObject<HTMLDivElement>, contentWidthPublisher:Publisher, callbacks:ScrollbarCallbacks}
 ): JSX.Element {
   const [thumbWidth, setThumbWidth] = useState(0);
   const [thumbLeft, setThumbLeft] = useState(0);
@@ -31,12 +36,12 @@ export function Scrollbar({wrapperRef, contentWidthPublisher}:
     <div className="custom-scrollbar">
       <div className="track"
         onMouseDown={event => handleTrackMousedown(event, wrapperRef.current, thumbWidth)}
-        onTouchStart={event => handleTrackTouchStart(event, wrapperRef.current, thumbWidth)}
+        onTouchStart={event => handleTrackTouchStart(event, wrapperRef.current, thumbWidth, callbacks.onGrab)}
       />
       <div className="thumb"
         style={{width:thumbWidth + 'px', left: thumbLeft + 'px'}}
         onMouseDown={event => handleThumbMouseDown(event, wrapperRef.current, thumbWidth)}
-        onTouchStart={event => handleThumbTouchStart(event, wrapperRef.current, thumbWidth)}
+        onTouchStart={event => handleThumbTouchStart(event, wrapperRef.current, thumbWidth, callbacks.onGrab)}
       />
     </div>
   );
@@ -69,11 +74,13 @@ function calculateThumbLeft(wrapper:HTMLElement): number {
 }
 
 
-function handleThumbTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thumbWidth:number) {
+function handleThumbTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thumbWidth:number, onGrab:() => void) {
   event.stopPropagation();
   if (event.touches.length > 1)
     return;
   ScrollHandler(wrapper, thumbWidth, true).startThumbDrag(event.touches[0].clientX);
+  if (onGrab)
+    onGrab();
 }
 
 
@@ -90,7 +97,7 @@ function handleTrackMousedown(event:React.MouseEvent, wrapper:HTMLElement, thumb
 }
 
 
-function handleTrackTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thumbWidth:number) {
+function handleTrackTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thumbWidth:number, onGrab:() => void) {
   event.stopPropagation();
   if (event.touches.length > 1)
     return;
@@ -98,6 +105,9 @@ function handleTrackTouchStart(event:React.TouchEvent, wrapper:HTMLElement, thum
   const scrollHandler = ScrollHandler(wrapper, thumbWidth, true);
   scrollHandler.scrollFromTrackClick(startX);
   scrollHandler.startThumbDrag(startX);
+
+  if (onGrab)
+    onGrab();
 }
 
 

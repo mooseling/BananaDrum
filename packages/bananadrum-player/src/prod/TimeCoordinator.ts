@@ -24,7 +24,7 @@ export function createTimeCoordinator(timeParams:TimeParams): TimeCoordinator {
   timeParams.subscribe(handleTimeParamsChange);
   eventEngine.subscribe(handlePlaybackChange)
 
-  return {convertToRealTime, convertToLoopIntervals, convertToAudioTime, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
+  return {convertToRealTime, convertToLoopIntervals, convertToAudioTime, convertToLoopProgress, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
 
 
@@ -83,6 +83,11 @@ export function createTimeCoordinator(timeParams:TimeParams): TimeCoordinator {
   // And return a time relative to time zero
   function convertToAudioTime(realTime:number, loopNumber:number) {
     return realTime + (loopNumber * realTimeLength) - offset;
+  }
+
+  
+  function convertToLoopProgress(realTime:number): RealTime {
+    return ((realTime + offset) % realTimeLength) / realTimeLength;
   }
 
 

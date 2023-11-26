@@ -1,6 +1,7 @@
 import { BananaDrumPlayer } from 'bananadrum-player';
 import ReactDOM from 'react-dom';
 import React from 'react';
+import { getAnimationEngine } from './AnimationEngine.js';
 import { HistoryController } from "./HistoryController.js";
 import { KeyboardHandler } from "./KeyboardHandler.js";
 import { BananaDrumViewer } from "./components/BananaDrumViewer.js";
@@ -11,10 +12,12 @@ export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HT
   HistoryController.init();
   KeyboardHandler.init();
 
+  const animationEngine = getAnimationEngine(bananaDrumPlayer.eventEngine);
+
   ReactDOM.render(
     React.createElement(
       BananaDrumViewer,
-      {arrangementPlayer:bananaDrumPlayer.arrangementPlayer}
+      {arrangementPlayer:bananaDrumPlayer.arrangementPlayer, animationEngine}
     ),
     wrapper
   );

@@ -1,9 +1,16 @@
-import {useState, useEffect, createContext, useContext} from 'react';
+import {useState, useEffect, createContext, useContext, TouchEvent} from 'react';
 import { Track } from 'bananadrum-core';
 import {NoteViewer} from './NoteViewer.js';
 import {Overlay, toggleOverlay} from './Overlay.js';
 import {ArrangementPlayerContext} from './ArrangementViewer.js';
 import { TrackPlayer } from 'bananadrum-player';
+
+
+type TrackViewerCallbacks = {
+  noteLineTouchStart: (event:TouchEvent) => void
+  noteLineTouchMove: (event:TouchEvent) => void
+  noteLineTouchEnd: () => void
+}
 
 
 export const TrackPlayerContext = createContext(null);
@@ -12,7 +19,7 @@ const widthPerNote = 55.5; // 50pt for width, 2 * 2pt for padding, and 1.5pt for
 const smButtonClasses = 'options-button push-button small solo-mute-button';
 
 
-export function TrackViewer({trackPlayer}:{trackPlayer:TrackPlayer}): JSX.Element {
+export function TrackViewer({trackPlayer, callbacks}:{trackPlayer:TrackPlayer, callbacks:TrackViewerCallbacks}): JSX.Element {
   const track = trackPlayer.track;
   const overlayName = 'track_overlay_' + track.id;
 
@@ -39,7 +46,7 @@ export function TrackViewer({trackPlayer}:{trackPlayer:TrackPlayer}): JSX.Elemen
     <TrackPlayerContext.Provider value={trackPlayer}>
       <div className={`track-viewer ${audible ? 'audible' : 'inaudible'}`}>
         <div className="note-line-wrapper overlay-wrapper">
-          <NoteLine track={track}/>
+          <NoteLine track={track} callbacks={callbacks}/>
           <Overlay name={overlayName}>
             <TrackControls track={track} overlayName={overlayName}/>
           </Overlay>
@@ -107,7 +114,7 @@ function SoloMuteButtons(): JSX.Element {
 }
 
 
-function NoteLine({track}:{track:Track}): JSX.Element {
+function NoteLine({track, callbacks}:{track:Track, callbacks:TrackViewerCallbacks}): JSX.Element {
   const [notes, setNotes] = useState([...track.notes]);
 
   const subscription = () => setNotes([...track.notes]);
@@ -119,7 +126,7 @@ function NoteLine({track}:{track:Track}): JSX.Element {
   const width:string = track.notes.length * widthPerNote + 'pt';
 
   return (
-    <div className="note-line" style={{minWidth:width}}>
+    <div className="note-line" style={{minWidth:width}} onTouchStart={callbacks.noteLineTouchStart} onTouchMove={callbacks.noteLineTouchMove} onTouchEnd={callbacks.noteLineTouchEnd}>
       {track.notes.map(note => <NoteViewer note={note} key={note.id}/>)}
     </div>
   );

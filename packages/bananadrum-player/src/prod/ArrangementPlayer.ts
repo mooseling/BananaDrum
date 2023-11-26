@@ -1,4 +1,4 @@
-import { Arrangement, Subscription, Timing } from 'bananadrum-core';
+import { Arrangement, RealTime, Subscription, Timing } from 'bananadrum-core';
 import {createPublisher} from 'bananadrum-core';
 import {createTimeCoordinator} from './TimeCoordinator.js';
 import {createTrackPlayer} from './TrackPlayer.js';
@@ -32,6 +32,9 @@ export function createArrangementPlayer(arrangement:Arrangement): ArrangementPla
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
     get currentTiming() {
       return currentTiming;
+    },
+    convertToLoopProgress(realTime:RealTime) {
+      return timeCoordinator.convertToLoopProgress(realTime);
     },
     currentTimingPublisher: {
       subscribe: currentTimingPublisher.subscribe,

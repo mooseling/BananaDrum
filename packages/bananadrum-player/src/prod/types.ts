@@ -45,6 +45,7 @@ export interface ArrangementPlayer extends EventSource, Subscribable {
   trackPlayers: {[trackId:string]:TrackPlayer}
   get currentTiming(): Timing
   currentTimingPublisher: Subscribable
+  convertToLoopProgress(realTime:RealTime): number
   audibleTrackPlayers: {[trackId:string]:TrackPlayer}
   audibleTrackPlayersPublisher: Subscribable
 }
@@ -70,4 +71,5 @@ export interface TimeCoordinator extends Subscribable {
   convertToRealTime(timing:Timing): RealTime
   convertToLoopIntervals(interval:Interval): LoopInterval[]
   convertToAudioTime(realTime:RealTime, loopNumber:number): RealTime
+  convertToLoopProgress(realTime:RealTime): number //  distance through loop from 0 to 1
 }
