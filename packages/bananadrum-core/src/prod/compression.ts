@@ -45,7 +45,7 @@ export function interpretAsBaseN(input:number[], base:number): bigint {
 
 export function convertToBaseN(input:bigint, base:number): number[] {
   const bigBase = BigInt(base);
-  let output:number[] = [];
+  const output:number[] = [];
 
   do {
     const remainder = input % bigBase;
