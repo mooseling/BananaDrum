@@ -1,7 +1,7 @@
 // Currently this module knows where we keep sound files
 // Later we will probably want to move this to a config file
 const path = 'sounds';
-let ctx: AudioContext = new AudioContext();
+const ctx: AudioContext = new AudioContext();
 
 export async function loadAudio(filename: string): Promise<AudioBuffer> {
   const filepath = `${path}/${filename}`;
