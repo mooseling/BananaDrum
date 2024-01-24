@@ -1,9 +1,47 @@
-import { Arrangement, PackedArrangement, PackedNote, PackedTiming, PackedTrack, Timing, Track } from './types.js';
+import {Arrangement, PackedArrangement, PackedNote, PackedTiming, PackedTrack, Timing, Track} from './types.js';
 import {getLibrary} from './Library.js';
 import {createTimeParams} from './TimeParams.js';
 
+
+
+// ==================================================================
+//                          Public Functions
+// ==================================================================
+
+
+export function getShareLink(arrangement:Arrangement) {
+  const query = urlEncodeArrangement(arrangement);
+  return 'https://bananadrum.net/?a=' + query;
+}
+
+
+export function urlDecodeArrangement(url:string): PackedArrangement {
+  const chunks = url.replaceAll('-', '/').split('.');
+  const timeParams = createTimeParams({
+    timeSignature:chunks[0],
+    tempo:Number(chunks[1]),
+    length:Number(chunks[2]),
+    pulse:chunks[3],
+    stepResolution:Number(chunks[4])
+  });
+  return {
+    timeParams,
+    packedTracks: chunks.slice(5).map(url => createPackedTrack(url, timeParams.timings))
+  };
+}
+
+
+// ==================================================================
+//                        Exported for testing
+// ==================================================================
+
+export const testableFunctions = {
+  urlEncodeNumber, urlDecodeNumber, interpretAsBaseN, convertToBaseN
+};
+
+
 // No negative numbers
-export function urlEncodeNumber(input:bigint): string {
+function urlEncodeNumber(input:bigint): string {
   let output = '';
 
   do {
@@ -18,7 +56,7 @@ export function urlEncodeNumber(input:bigint): string {
 
 
 // No negative numbers
-export function urlDecodeNumber(input:string): bigint {
+function urlDecodeNumber(input:string): bigint {
   let output = 0n;
   while (input.length) {
     output *= conversionBase;
@@ -30,7 +68,7 @@ export function urlDecodeNumber(input:string): bigint {
 }
 
 
-export function interpretAsBaseN(input:number[], base:number): bigint {
+function interpretAsBaseN(input:number[], base:number): bigint {
   let multiplier = 1n;
   let total = 0n;
   const bigBase = BigInt(base);
@@ -43,7 +81,7 @@ export function interpretAsBaseN(input:number[], base:number): bigint {
 }
 
 
-export function convertToBaseN(input:bigint, base:number): number[] {
+function convertToBaseN(input:bigint, base:number): number[] {
   const bigBase = BigInt(base);
   const output:number[] = [];
 
@@ -58,7 +96,7 @@ export function convertToBaseN(input:bigint, base:number): number[] {
 }
 
 
-export function urlEncodeTrack(track:Track): string {
+function urlEncodeTrack(track:Track): string {
   const base:number = Object.keys(track.instrument.noteStyles).length + 1; // + 1 for rests
   const noteStyles:number[] = track.notes.map(note => characterToNumber[note.noteStyle?.id || '0']);
   const musicAsNumber = interpretAsBaseN(noteStyles, base);
@@ -67,7 +105,7 @@ export function urlEncodeTrack(track:Track): string {
 }
 
 
-export function createPackedTrack(urlEncodedTrack:string, timings:Timing[]): PackedTrack {
+function createPackedTrack(urlEncodedTrack:string, timings:Timing[]): PackedTrack {
   const instrumentId = urlEncodedTrack[0];
   const instrumentMeta = getLibrary().instrumentMetas.filter(({id}) => id === instrumentId)[0];
   if (!instrumentMeta)
@@ -98,7 +136,7 @@ function packTiming({bar, step}:Timing): PackedTiming {
 }
 
 
-export function urlEncodeArrangement(arrangement:Arrangement): string {
+function urlEncodeArrangement(arrangement:Arrangement): string {
   const {timeParams:tp} = arrangement;
   let output = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
   output = output.replaceAll('/', '-');
@@ -108,27 +146,6 @@ export function urlEncodeArrangement(arrangement:Arrangement): string {
       output += '.' + urlEncodeTrack(track);
   }
   return output;
-}
-
-export function urlDecodeArrangement(url:string): PackedArrangement {
-  const chunks = url.replaceAll('-', '/').split('.');
-  const timeParams = createTimeParams({
-    timeSignature:chunks[0],
-    tempo:Number(chunks[1]),
-    length:Number(chunks[2]),
-    pulse:chunks[3],
-    stepResolution:Number(chunks[4])
-  });
-  return {
-    timeParams,
-    packedTracks: chunks.slice(5).map(url => createPackedTrack(url, timeParams.timings))
-  };
-}
-
-
-export function getShareLink(arrangement:Arrangement) {
-  const query = urlEncodeArrangement(arrangement);
-  return 'https://bananadrum.net/?a=' + query;
 }
 
 

@@ -1,5 +1,5 @@
 import { createArrangement, unpackArrangement } from "./Arrangement.js";
-import { urlDecodeArrangement } from "./compression.js";
+import { urlDecodeArrangement } from "./serialisation.js";
 import { getLibrary } from "./Library.js";
 import { Arrangement, BananaDrum, PackedInstrument } from "./types.js";
 
