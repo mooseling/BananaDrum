@@ -32,7 +32,7 @@
   },
   "scripts": {
     "pretest": "tsc && npm run build",
-    "test": "mocha \"dist/test.js\"",
+    "test": "mocha \"packages/bananadrum-core/dist/test/index.js\"",
     "babel": "babel packages/bananadrum-core/src --out-dir dist --extensions \".ts,.js,.tsx,.jsx\"",
     "build": "tsc --build && webpack"
   },
