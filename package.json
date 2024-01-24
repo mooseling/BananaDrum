@@ -41,5 +41,8 @@
     "packages/bananadrum-player",
     "packages/bananadrum-ui",
     "packages/bananadrum-webapp"
-  ]
+  ],
+  "dependencies": {
+    "big-integer": "^1.6.52"
+  }
 }

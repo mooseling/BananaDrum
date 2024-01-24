@@ -1,3 +1,4 @@
+import bigInt from 'big-integer';
 import {Arrangement, PackedArrangement, PackedNote, PackedTiming, PackedTrack, Timing, Track} from './types.js';
 import {getLibrary} from './Library.js';
 import {createTimeParams} from './TimeParams.js';
@@ -41,26 +42,25 @@ export const testableFunctions = {
 
 
 // No negative numbers
-function urlEncodeNumber(input:bigint): string {
+function urlEncodeNumber(input:bigInt.BigInteger): string {
   let output = '';
 
   do {
-    const remainder = input % conversionBase;
-    output = numberToCharacter[Number(remainder)] + output;
-    input -= remainder;
-    input /= conversionBase;
-  } while (input);
+    const {quotient, remainder} = input.divmod(conversionBase);
+    output = numberToCharacter[remainder.toJSNumber()] + output;
+    input = quotient;
+  } while (input.greater(bigInt.zero));
 
   return output;
 }
 
 
 // No negative numbers
-function urlDecodeNumber(input:string): bigint {
-  let output = 0n;
+function urlDecodeNumber(input:string): bigInt.BigInteger {
+  let output = bigInt.zero;
   while (input.length) {
-    output *= conversionBase;
-    output += BigInt(characterToNumber[input[0]]);
+    output = output.times(conversionBase);
+    output = output.plus(characterToNumber[input[0]]);
     input = input.substring(1);
   }
 
@@ -68,29 +68,31 @@ function urlDecodeNumber(input:string): bigint {
 }
 
 
-function interpretAsBaseN(input:number[], base:number): bigint {
-  let multiplier = 1n;
-  let total = 0n;
-  const bigBase = BigInt(base);
-  for (let column = input.length - 1; column >= 0; column--) {
-    const digit = BigInt(input[column]);
-    total += digit * multiplier;
-    multiplier *= bigBase;
+// Input array of numbers are notes of a track, so I'd be surprised if they were ever greater than 10
+// Therefore we can use the bigInt[number] feature
+function interpretAsBaseN(inputDigits:number[], base:number): bigInt.BigInteger {
+  let multiplier = bigInt.one;
+  let total = bigInt.zero;
+
+  for (let column = inputDigits.length - 1; column >= 0; column--) {
+    const digit = bigInt[inputDigits[column]];
+    total = total.plus(digit.times(multiplier));
+    multiplier = multiplier.times(base);
   }
+
   return total;
 }
 
 
-function convertToBaseN(input:bigint, base:number): number[] {
-  const bigBase = BigInt(base);
+// Used for converting from a URL to a Track, so the output represents an array of notes
+function convertToBaseN(input:bigInt.BigInteger, base:number): number[] {
   const output:number[] = [];
 
   do {
-    const remainder = input % bigBase;
-    output.unshift(Number(remainder));
-    input -= remainder;
-    input /= bigBase;
-  } while (input);
+    const {quotient, remainder} = input.divmod(base);
+    output.unshift(remainder.toJSNumber());
+    input = quotient;
+  } while (input.greater(bigInt.zero));
 
   return output;
 }
@@ -149,7 +151,7 @@ function urlEncodeArrangement(arrangement:Arrangement): string {
 }
 
 
-const conversionBase = 64n; // 64 characters to safely use in URLs
+const conversionBase = bigInt[64]; // 64 characters to safely use in URLs
 
 const numberToCharacter : {
   [number:number]: string
