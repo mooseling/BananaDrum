@@ -6,7 +6,16 @@ export interface AudioBufferPlayer {
 
 export function createAudioBufferPlayer(audioBuffer:AudioBuffer, audioContext:AudioContext, time:number = 0)
     : AudioBufferPlayer {
-  const sourceNode = new AudioBufferSourceNode(audioContext, {buffer:audioBuffer});
+
+  // Previously, we followed the recommend pattern: new AudioBufferSourceNode(audioContext, {buffer:audioBuffer});
+  // But support for this constructor on iOS is only since 14.5
+  const sourceNode = audioContext.createBufferSource();
+  sourceNode.buffer = audioBuffer;
+
+
+  // When the user halts playback, if we simply stop all audio we will get popping
+  // So instead we use gain, and fade the audio out rapidly
+  // Maybe we should be doing this at the AudioContext level, rather than each sample...
   const gainNode = audioContext.createGain();
   gainNode.connect(audioContext.destination);
   sourceNode.connect(gainNode);
