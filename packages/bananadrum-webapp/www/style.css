@@ -30,6 +30,14 @@
   --a-color-active: var(--lighter-blue);
 }
 
+.hidden {
+  display: none !important;
+}
+
+.display-linebreak {
+  white-space: pre-line;
+}
+
 a {
   text-decoration: none;
   color: var(--a-color);
