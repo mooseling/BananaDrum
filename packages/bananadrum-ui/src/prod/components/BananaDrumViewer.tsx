@@ -34,12 +34,12 @@ function Footer(): JSX.Element {
 
 
 function About(): JSX.Element {
-  const [errorMessage, setErrorMesage] = useState(errorLog.getMessage());
-  const errorButtonVisibilityClass = errorMessage ? '' : 'hidden';
+  const [errorCount, setErrorCount] = useState(errorLog.getEntryCount());
+  const errorButtonVisibilityClass = errorCount ? '' : 'hidden';
 
   const [errorReportIsVisibile, setErrorReportIsVisibile] = useState(false);
 
-  const errorLogSubscription = () => setErrorMesage(errorLog.getMessage);
+  const errorLogSubscription = () => setErrorCount(errorLog.getEntryCount());
 
   useEffect(() => {
     errorLog.subscribe(errorLogSubscription);
@@ -71,14 +71,17 @@ function About(): JSX.Element {
           >There were errors! Click to view error report.</button>
           <br/><br/>
           <div className={`display-linebreak ${errorReportIsVisibile ? '' : 'hidden'}`}>
-            <p>{errorMessage}</p>
+            <p>{errorLog.getMessage()}</p>
             <br/>
           </div>
         </div>
         <button
           id="load-button"
           className="push-button"
-          onClick={() => toggleOverlay('about', 'hide')}
+          onClick={() => {
+            toggleOverlay('about', 'hide');
+            setErrorReportIsVisibile(false);
+          }}
         >Back to my beat!</button>
       </div>
     </div>
