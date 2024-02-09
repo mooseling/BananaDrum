@@ -1,4 +1,3 @@
-/* global document, window, navigator */
 (function() {
   let errorLog = "Sorry to hear you had problems running Banana Drum! Please copy this whole page and send it to James.\nDon't know James? Get in touch with Banana Drum on Facebook: https://facebook.com/bananadrum.net/\n\n\n";
   window.onerror =  function(message, url, lineNumber, columnNumber, error) {
@@ -74,7 +73,7 @@
 
   function loadBananaDrum() {
     const script = document.createElement('script');
-    script.src = '/bundle.js?1.2-autoscrol';
+    script.src = '/bundle.js?1.3';
     document.body.appendChild(script);
   }
 })();
