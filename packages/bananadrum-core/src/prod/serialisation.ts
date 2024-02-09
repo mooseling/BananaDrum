@@ -1,28 +1,66 @@
-import { Arrangement, PackedArrangement, PackedNote, PackedTiming, PackedTrack, Timing, Track } from './types.js';
+import bigInt from 'big-integer';
+import {Arrangement, PackedArrangement, PackedNote, PackedTiming, PackedTrack, Timing, Track} from './types.js';
 import {getLibrary} from './Library.js';
 import {createTimeParams} from './TimeParams.js';
 
+
+
+// ==================================================================
+//                          Public Functions
+// ==================================================================
+
+
+export function getShareLink(arrangement:Arrangement) {
+  const query = urlEncodeArrangement(arrangement);
+  return 'https://bananadrum.net/?a=' + query;
+}
+
+
+export function urlDecodeArrangement(url:string): PackedArrangement {
+  const chunks = url.replaceAll('-', '/').split('.');
+  const timeParams = createTimeParams({
+    timeSignature:chunks[0],
+    tempo:Number(chunks[1]),
+    length:Number(chunks[2]),
+    pulse:chunks[3],
+    stepResolution:Number(chunks[4])
+  });
+  return {
+    timeParams,
+    packedTracks: chunks.slice(5).map(url => createPackedTrack(url, timeParams.timings))
+  };
+}
+
+
+// ==================================================================
+//                        Exported for testing
+// ==================================================================
+
+export const testableFunctions = {
+  urlEncodeNumber, urlDecodeNumber, interpretAsBaseN, convertToBaseN
+};
+
+
 // No negative numbers
-export function urlEncodeNumber(input:bigint): string {
+function urlEncodeNumber(input:bigInt.BigInteger): string {
   let output = '';
 
   do {
-    const remainder = input % conversionBase;
-    output = numberToCharacter[Number(remainder)] + output;
-    input -= remainder;
-    input /= conversionBase;
-  } while (input);
+    const {quotient, remainder} = input.divmod(conversionBase);
+    output = numberToCharacter[remainder.toJSNumber()] + output;
+    input = quotient;
+  } while (input.greater(bigInt.zero));
 
   return output;
 }
 
 
 // No negative numbers
-export function urlDecodeNumber(input:string): bigint {
-  let output = 0n;
+function urlDecodeNumber(input:string): bigInt.BigInteger {
+  let output = bigInt.zero;
   while (input.length) {
-    output *= conversionBase;
-    output += BigInt(characterToNumber[input[0]]);
+    output = output.times(conversionBase);
+    output = output.plus(characterToNumber[input[0]]);
     input = input.substring(1);
   }
 
@@ -30,35 +68,37 @@ export function urlDecodeNumber(input:string): bigint {
 }
 
 
-export function interpretAsBaseN(input:number[], base:number): bigint {
-  let multiplier = 1n;
-  let total = 0n;
-  const bigBase = BigInt(base);
-  for (let column = input.length - 1; column >= 0; column--) {
-    const digit = BigInt(input[column]);
-    total += digit * multiplier;
-    multiplier *= bigBase;
+// Input array of numbers are notes of a track, so I'd be surprised if they were ever greater than 10
+// Therefore we can use the bigInt[number] feature
+function interpretAsBaseN(inputDigits:number[], base:number): bigInt.BigInteger {
+  let multiplier = bigInt.one;
+  let total = bigInt.zero;
+
+  for (let column = inputDigits.length - 1; column >= 0; column--) {
+    const digit = bigInt[inputDigits[column]];
+    total = total.plus(digit.times(multiplier));
+    multiplier = multiplier.times(base);
   }
+
   return total;
 }
 
 
-export function convertToBaseN(input:bigint, base:number): number[] {
-  const bigBase = BigInt(base);
-  let output:number[] = [];
+// Used for converting from a URL to a Track, so the output represents an array of notes
+function convertToBaseN(input:bigInt.BigInteger, base:number): number[] {
+  const output:number[] = [];
 
   do {
-    const remainder = input % bigBase;
-    output.unshift(Number(remainder));
-    input -= remainder;
-    input /= bigBase;
-  } while (input);
+    const {quotient, remainder} = input.divmod(base);
+    output.unshift(remainder.toJSNumber());
+    input = quotient;
+  } while (input.greater(bigInt.zero));
 
   return output;
 }
 
 
-export function urlEncodeTrack(track:Track): string {
+function urlEncodeTrack(track:Track): string {
   const base:number = Object.keys(track.instrument.noteStyles).length + 1; // + 1 for rests
   const noteStyles:number[] = track.notes.map(note => characterToNumber[note.noteStyle?.id || '0']);
   const musicAsNumber = interpretAsBaseN(noteStyles, base);
@@ -67,7 +107,7 @@ export function urlEncodeTrack(track:Track): string {
 }
 
 
-export function createPackedTrack(urlEncodedTrack:string, timings:Timing[]): PackedTrack {
+function createPackedTrack(urlEncodedTrack:string, timings:Timing[]): PackedTrack {
   const instrumentId = urlEncodedTrack[0];
   const instrumentMeta = getLibrary().instrumentMetas.filter(({id}) => id === instrumentId)[0];
   if (!instrumentMeta)
@@ -98,7 +138,7 @@ function packTiming({bar, step}:Timing): PackedTiming {
 }
 
 
-export function urlEncodeArrangement(arrangement:Arrangement): string {
+function urlEncodeArrangement(arrangement:Arrangement): string {
   const {timeParams:tp} = arrangement;
   let output = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
   output = output.replaceAll('/', '-');
@@ -110,29 +150,8 @@ export function urlEncodeArrangement(arrangement:Arrangement): string {
   return output;
 }
 
-export function urlDecodeArrangement(url:string): PackedArrangement {
-  const chunks = url.replaceAll('-', '/').split('.');
-  const timeParams = createTimeParams({
-    timeSignature:chunks[0],
-    tempo:Number(chunks[1]),
-    length:Number(chunks[2]),
-    pulse:chunks[3],
-    stepResolution:Number(chunks[4])
-  });
-  return {
-    timeParams,
-    packedTracks: chunks.slice(5).map(url => createPackedTrack(url, timeParams.timings))
-  };
-}
 
-
-export function getShareLink(arrangement:Arrangement) {
-  const query = urlEncodeArrangement(arrangement);
-  return 'https://bananadrum.net/?a=' + query;
-}
-
-
-const conversionBase = 64n; // 64 characters to safely use in URLs
+const conversionBase = bigInt[64]; // 64 characters to safely use in URLs
 
 const numberToCharacter : {
   [number:number]: string

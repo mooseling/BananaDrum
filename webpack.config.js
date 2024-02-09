@@ -22,7 +22,21 @@ const config = {
       {
         test: /\.js/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        use: {
+          loader: 'babel-loader',
+          options:{
+            presets: [
+              [
+                "@babel/env", //  this is the same as @babel/preset-env
+                {
+                  useBuiltIns: "usage",
+                  corejs: 3,
+                  targets: {"ios":"14.4"} //"> 0.5%, not dead"
+                }
+              ]
+            ]
+          }
+        }
       }
     ]
   },

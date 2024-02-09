@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Allows creating and editing a composition",
   "main": "dist/prod/index.js",
+  "type":"module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mooseling/BananaDrum.git"

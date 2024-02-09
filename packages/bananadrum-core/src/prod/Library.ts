@@ -56,7 +56,7 @@ function createInstrument(packedInstrument:PackedInstrument): Instrument {
 
   let loaded = false;
   const noteStyles:{[id:string]: NoteStyle|null} = {};
-  const unpackPromises:Promise<any>[] = [];
+  const unpackPromises:Promise<AudioBuffer>[] = [];
 
   const instrument = {
     id, noteStyles, displayOrder, displayName, colourGroup,

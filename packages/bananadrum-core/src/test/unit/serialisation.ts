@@ -1,13 +1,19 @@
+import bigInt from 'big-integer';
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
-import {urlEncodeNumber, urlDecodeNumber, interpretAsBaseN, convertToBaseN} from '../prod/compression.js';
+import {testableFunctions} from '../../prod/serialisation.js';
+
+const {urlEncodeNumber, urlDecodeNumber, interpretAsBaseN, convertToBaseN} = testableFunctions;
+
 
 describe('URL encoding numbers', function() {
   it ('decodes up to 100000 back to the same number', () => {
-    for (let i = 0n; i < 100000n; i++) {
-      const encoded = urlEncodeNumber(i);
+    const limit = bigInt(100000);
+
+    for (let integer = bigInt.zero; integer.lesser(limit); integer = integer.plus(1)) {
+      const encoded = urlEncodeNumber(integer);
       const decoded = urlDecodeNumber(encoded);
-      assert(decoded === i, i + ` -> ${encoded} -> ${decoded}`)
+      assert(decoded.equals(integer), integer + ` -> ${encoded} -> ${decoded}`);
     }
   });
 });

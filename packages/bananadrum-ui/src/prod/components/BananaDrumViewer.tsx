@@ -1,8 +1,9 @@
+import {errorLog} from 'bananadrum-core';
 import { ArrangementPlayer } from 'bananadrum-player';
 import {ArrangementViewer} from './ArrangementViewer.js';
 import {Overlay, toggleOverlay} from './Overlay.js';
 import { AnimationEngine } from '../types.js';
-import { createContext } from 'react';
+import { createContext, useEffect, useState } from 'react';
 
 export const AnimationEngineContext = createContext(null);
 
@@ -33,6 +34,21 @@ function Footer(): JSX.Element {
 
 
 function About(): JSX.Element {
+  const [errorCount, setErrorCount] = useState(errorLog.getEntryCount());
+  const errorButtonVisibilityClass = errorCount ? '' : 'hidden';
+
+  const [errorReportIsVisibile, setErrorReportIsVisibile] = useState(false);
+
+  const errorLogSubscription = () => setErrorCount(errorLog.getEntryCount());
+
+  useEffect(() => {
+    errorLog.subscribe(errorLogSubscription);
+
+    return () => {
+      errorLog.unsubscribe(errorLogSubscription);
+    }
+  }, []);
+
   return (
     <div className="viewport-wrapper">
       <div id="about" className="welcome">
@@ -47,10 +63,25 @@ function About(): JSX.Element {
           <br/>
           <a target="_blank" href="https://trello.com/b/f6731Frf/bananadrum">Check on progress</a>
         </p>
+        <div className={errorButtonVisibilityClass}>
+          <button
+            id="report-error"
+            className='push-button'
+            onClick={() => setErrorReportIsVisibile(true)}
+          >There were errors! Click to view error report.</button>
+          <br/><br/>
+          <div className={`display-linebreak ${errorReportIsVisibile ? '' : 'hidden'}`}>
+            <p>{errorLog.getMessage()}</p>
+            <br/>
+          </div>
+        </div>
         <button
           id="load-button"
           className="push-button"
-          onClick={() => toggleOverlay('about', 'hide')}
+          onClick={() => {
+            toggleOverlay('about', 'hide');
+            setErrorReportIsVisibile(false);
+          }}
         >Back to my beat!</button>
       </div>
     </div>
