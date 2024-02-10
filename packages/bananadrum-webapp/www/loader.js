@@ -11,8 +11,10 @@
     else
       displayNoAudioContextMessage();
   }
-  if (window.AudioContext)
+  if (window.AudioContext) {
+    requestPermissionsIfiOS();
     loadBananaDrum();
+  }
 
 
   function reportTopLevelError(message, url, lineNumber, columnNumber, error) {
@@ -75,5 +77,12 @@
     const script = document.createElement('script');
     script.src = '/bundle.js?1.3';
     document.body.appendChild(script);
+  }
+
+  function requestPermissionsIfiOS() {
+    if(/(iPad|iPhone|iPod)/g.test(navigator.userAgent)) {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
+        navigator.mediaDevices.getUserMedia({video:false, audio:true});
+    }
   }
 })();
