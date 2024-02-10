@@ -11,8 +11,11 @@
     else
       displayNoAudioContextMessage();
   }
-  if (window.AudioContext)
-    loadBananaDrum();
+  if (window.AudioContext) {
+    requestPermissionsIfiOS()
+      .then(loadBananaDrum)
+      .catch(displayAudioPermissionsRequiredMessage);
+  }
 
 
   function reportTopLevelError(message, url, lineNumber, columnNumber, error) {
@@ -71,9 +74,27 @@
   }
 
 
+  function displayAudioPermissionsRequiredMessage() {
+    const elementToReplace = document.getElementById('load-button-wrapper');
+    if (elementToReplace) {
+      elementToReplace.innerHTML = "<p>On iOS, Banana Drum needs your permission to play sound, but it may appear to be asking to use the microphone. You'll have to reload the page and grant that permission. Sorry it's a bit weird!</p>";
+    }
+  }
+
+
   function loadBananaDrum() {
     const script = document.createElement('script');
-    script.src = '/bundle.js?1.3';
+    script.src = '/bundle.js?1.3.2';
     document.body.appendChild(script);
+  }
+
+
+  function requestPermissionsIfiOS() {
+    if(/(iPad|iPhone|iPod)/g.test(navigator.userAgent)) {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
+        return navigator.mediaDevices.getUserMedia({video:false, audio:true});
+    }
+
+    return new Promise(resolve => resolve());
   }
 })();
