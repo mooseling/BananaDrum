@@ -79,6 +79,7 @@
     document.body.appendChild(script);
   }
 
+
   function requestPermissionsIfiOS() {
     if(/(iPad|iPhone|iPod)/g.test(navigator.userAgent)) {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
