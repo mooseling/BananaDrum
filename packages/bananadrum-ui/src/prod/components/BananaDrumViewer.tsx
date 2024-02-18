@@ -3,7 +3,8 @@ import { ArrangementPlayer } from 'bananadrum-player';
 import {ArrangementViewer} from './ArrangementViewer.js';
 import {Overlay, toggleOverlay} from './Overlay.js';
 import { AnimationEngine } from '../types.js';
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useState } from 'react';
+import { useSubscription } from '../hooks/useSubscription.js';
 
 export const AnimationEngineContext = createContext(null);
 
@@ -36,18 +37,9 @@ function Footer(): JSX.Element {
 function About(): JSX.Element {
   const [errorCount, setErrorCount] = useState(errorLog.getEntryCount());
   const errorButtonVisibilityClass = errorCount ? '' : 'hidden';
-
   const [errorReportIsVisibile, setErrorReportIsVisibile] = useState(false);
 
-  const errorLogSubscription = () => setErrorCount(errorLog.getEntryCount());
-
-  useEffect(() => {
-    errorLog.subscribe(errorLogSubscription);
-
-    return () => {
-      errorLog.unsubscribe(errorLogSubscription);
-    }
-  }, []);
+  useSubscription(errorLog, () => setErrorCount(errorLog.getEntryCount()));
 
   return (
     <div className="viewport-wrapper">
