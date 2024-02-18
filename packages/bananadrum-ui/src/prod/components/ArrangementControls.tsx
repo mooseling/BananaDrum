@@ -44,7 +44,7 @@ export function ArrangementControlsTop(): JSX.Element {
 
 function TimeControls({arrangement}:{arrangement:Arrangement}): JSX.Element {
   const {timeParams} = arrangement;
-  let [state, update] = useState({arrangement});
+  const [, update] = useState({arrangement});
 
   const subscription = () => update({arrangement});
   useEffect(() => {

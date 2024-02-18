@@ -174,6 +174,6 @@ function ScrollHandler(wrapper:HTMLElement, thumbWidth:number, touch:boolean) : 
 
 
 const fakeScrollHandler:ScrollHandler = {
-  startThumbDrag: (startX:number) => {},
-  scrollFromTrackClick: (startX:number) => {}
+  startThumbDrag: () => {},
+  scrollFromTrackClick: () => {}
 };

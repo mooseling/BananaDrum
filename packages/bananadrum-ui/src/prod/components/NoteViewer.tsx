@@ -60,7 +60,7 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
 
 
 function getClasses(note:Note): string {
-  let classes:string[] = ['note-viewer'];
+  const classes:string[] = ['note-viewer'];
   const {step} = note.timing;
 
   classes.push(getParityClass(note));

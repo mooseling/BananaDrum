@@ -115,7 +115,7 @@ function SoloMuteButtons(): JSX.Element {
 
 
 function NoteLine({track, callbacks}:{track:Track, callbacks:TrackViewerCallbacks}): JSX.Element {
-  const [notes, setNotes] = useState([...track.notes]);
+  const [, setNotes] = useState([...track.notes]);
 
   const subscription = () => setNotes([...track.notes]);
   useEffect(() => {
