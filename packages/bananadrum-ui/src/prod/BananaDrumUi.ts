@@ -1,5 +1,5 @@
 import { BananaDrumPlayer } from 'bananadrum-player';
-import ReactDOM from 'react-dom';
+import {createRoot} from 'react-dom/client';
 import React from 'react';
 import { getAnimationEngine } from './AnimationEngine.js';
 import { HistoryController } from "./HistoryController.js";
@@ -13,13 +13,13 @@ export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HT
   KeyboardHandler.init();
 
   const animationEngine = getAnimationEngine(bananaDrumPlayer.eventEngine);
+  const root = createRoot(wrapper);
 
-  ReactDOM.render(
+  root.render(
     React.createElement(
       BananaDrumViewer,
       {arrangementPlayer:bananaDrumPlayer.arrangementPlayer, animationEngine}
-    ),
-    wrapper
+    )
   );
 
   return {bananaDrumPlayer, wrapper};
