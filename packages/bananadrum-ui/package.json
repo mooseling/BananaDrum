@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/mooseling/BananaDrum/issues"
   },
-  "homepage": "https://github.com/mooseling/BananaDrum"
+  "homepage": "https://github.com/mooseling/BananaDrum",
+  "devDependencies": {
+    "@types/react-dom": "^18.2.22"
+  }
 }
