@@ -1,10 +1,11 @@
 import { Arrangement } from 'bananadrum-core';
-import {useState, useEffect, useContext} from 'react';
+import {useState, useContext} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer.js';
 import {Overlay, toggleOverlay} from './Overlay.js';
 import {ShareButton} from './ShareButton.js';
 import {NumberInput} from './General.js';
 import {getEventEngine} from 'bananadrum-player';
+import { useSubscription } from '../hooks/useSubscription.js';
 
 
 const eventEngine = getEventEngine();
@@ -12,11 +13,7 @@ const eventEngine = getEventEngine();
 
 export function ArrangementControlsTop(): JSX.Element {
   const [playing, setPlaying] = useState(eventEngine.state === 'playing');
-  const eventEngineSubscription = () => setPlaying(eventEngine.state === 'playing');
-  useEffect(() => {
-    eventEngine.subscribe(eventEngineSubscription);
-    return () => eventEngine.unsubscribe(eventEngineSubscription);
-  }, []);
+  useSubscription(eventEngine, () => setPlaying(eventEngine.state === 'playing'));
 
   const arrangement:Arrangement = useContext(ArrangementPlayerContext).arrangement;
   return (
@@ -44,13 +41,9 @@ export function ArrangementControlsTop(): JSX.Element {
 
 function TimeControls({arrangement}:{arrangement:Arrangement}): JSX.Element {
   const {timeParams} = arrangement;
-  let [state, update] = useState({arrangement});
+  const [, update] = useState({arrangement});
 
-  const subscription = () => update({arrangement});
-  useEffect(() => {
-    timeParams.subscribe(subscription);
-    return () => timeParams.unsubscribe(subscription);
-  }, []);
+  useSubscription(timeParams, () => update({arrangement}));
 
   const pluralBars = timeParams.length > 1;
 

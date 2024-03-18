@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
 import { Publisher } from 'bananadrum-core';
+import { useSubscription } from '../hooks/useSubscription';
 
 
 type ScrollbarCallbacks = {
@@ -20,15 +21,15 @@ export function Scrollbar({wrapperRef, contentWidthPublisher, callbacks}:
   };
 
   const resizeObserver = new ResizeObserver(updateAll);
+  useSubscription(contentWidthPublisher, updateAll);
+
 
   useEffect(() => {
     wrapperRef.current.addEventListener('scroll', updateThumbLeft);
     resizeObserver.observe(wrapperRef.current);
-    contentWidthPublisher.subscribe(updateAll);
     return () => {
       wrapperRef.current.removeEventListener('scroll', updateThumbLeft);
       resizeObserver.unobserve(wrapperRef.current);
-      contentWidthPublisher.unsubscribe(updateAll);
     }
   }, []);
 
@@ -174,6 +175,6 @@ function ScrollHandler(wrapper:HTMLElement, thumbWidth:number, touch:boolean) : 
 
 
 const fakeScrollHandler:ScrollHandler = {
-  startThumbDrag: (startX:number) => {},
-  scrollFromTrackClick: (startX:number) => {}
+  startThumbDrag: () => {},
+  scrollFromTrackClick: () => {}
 };

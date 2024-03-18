@@ -1,9 +1,10 @@
-import {useState, useEffect, createContext, useContext, TouchEvent} from 'react';
+import {useState, createContext, useContext, TouchEvent} from 'react';
 import { Track } from 'bananadrum-core';
 import {NoteViewer} from './NoteViewer.js';
 import {Overlay, toggleOverlay} from './Overlay.js';
 import {ArrangementPlayerContext} from './ArrangementViewer.js';
 import { TrackPlayer } from 'bananadrum-player';
+import { useSubscription } from '../hooks/useSubscription.js';
 
 
 type TrackViewerCallbacks = {
@@ -24,20 +25,12 @@ export function TrackViewer({trackPlayer, callbacks}:{trackPlayer:TrackPlayer, c
   const overlayName = 'track_overlay_' + track.id;
 
   const [loaded, setLoaded] = useState(track.instrument.loaded);
-  const instrumentSubscripion = () => setLoaded(track.instrument.loaded);
-  useEffect(() => {
-    track.instrument.subscribe(instrumentSubscripion);
-    return () => track.instrument.unsubscribe(instrumentSubscripion);
-  }, []);
+  useSubscription(track.instrument, () => setLoaded(track.instrument.loaded));
 
   const arrangementPlayer = useContext(ArrangementPlayerContext);
   const {audibleTrackPlayers, audibleTrackPlayersPublisher} = arrangementPlayer;
   const [audible, setAudible] = useState(!!audibleTrackPlayers[track.id]);
-  const arrangementPlayerSubscription = () => setAudible(!!audibleTrackPlayers[track.id]);
-  useEffect(() => {
-    audibleTrackPlayersPublisher.subscribe(arrangementPlayerSubscription);
-    return () => audibleTrackPlayersPublisher.unsubscribe(arrangementPlayerSubscription);
-  }, []);
+  useSubscription(audibleTrackPlayersPublisher, () => setAudible(!!audibleTrackPlayers[track.id]));
 
   if (!loaded)
     return PendingTrackViewer();
@@ -86,14 +79,10 @@ function SoloMuteButtons(): JSX.Element {
   const [soloed, setSoloed] = useState(trackPlayer.soloMute === 'solo');
   const [muted, setMuted] = useState(trackPlayer.soloMute === 'mute');
 
-  const trackPlayerSubscription = () => {
+  useSubscription(trackPlayer, () => {
     setSoloed(trackPlayer.soloMute === 'solo');
     setMuted(trackPlayer.soloMute === 'mute');
-  };
-  useEffect(() => {
-    trackPlayer.subscribe(trackPlayerSubscription);
-    return () => trackPlayer.unsubscribe(trackPlayerSubscription);
-  }, []);
+  })
 
   const solo = () => trackPlayer.soloMute = (trackPlayer.soloMute === 'solo' ? null : 'solo');
   const mute = () => trackPlayer.soloMute = (trackPlayer.soloMute === 'mute' ? null : 'mute');
@@ -115,13 +104,9 @@ function SoloMuteButtons(): JSX.Element {
 
 
 function NoteLine({track, callbacks}:{track:Track, callbacks:TrackViewerCallbacks}): JSX.Element {
-  const [notes, setNotes] = useState([...track.notes]);
+  const [, setNotes] = useState([...track.notes]);
 
-  const subscription = () => setNotes([...track.notes]);
-  useEffect(() => {
-    track.subscribe(subscription);
-    return () => track.unsubscribe(subscription);
-  }, []);
+  useSubscription(track, () => setNotes([...track.notes]));
 
   const width:string = track.notes.length * widthPerNote + 'pt';
 

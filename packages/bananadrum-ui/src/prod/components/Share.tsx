@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import {useState, useContext} from 'react';
 import {getShareLink} from 'bananadrum-core';
 import {toggleOverlay} from './Overlay.js';
@@ -38,7 +39,7 @@ export function Share(): JSX.Element {
                 <button className="push-button shiny-link" onClick={showLink}>generate link!</button>
               </>)
             }
-            <p>Send to your friends, save for yourself, or post it on <a href="https://www.facebook.com/Banana-Drum-108081858593069" target="_blank">Banana Drum's Facebook page</a>!</p>
+            <p>Send to your friends, save for yourself, or post it on <a href="https://www.facebook.com/bananadrum.net" target="_blank" rel="noreferrer">Banana Drum's Facebook page</a>!</p>
           </>
         </div>
         <button

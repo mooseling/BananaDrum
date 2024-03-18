@@ -10,7 +10,7 @@ import {Overlay, toggleOverlay} from './Overlay.js';
 import {useState, useEffect, createContext, useRef, useContext, TouchEvent} from 'react';
 import {AnimationEngineContext} from './BananaDrumViewer.js';
 import { AnimationEngine } from '../types.js';
-
+import { useSubscription } from '../hooks/useSubscription.js';
 
 export const ArrangementPlayerContext = createContext(null);
 
@@ -18,7 +18,6 @@ export const ArrangementPlayerContext = createContext(null);
 export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:ArrangementPlayer}): JSX.Element {
   const {arrangement} = arrangementPlayer;
   const [trackPlayers, setTrackPlayers] = useState({...arrangementPlayer.trackPlayers});
-  const arrangementPlayerSubscription = () => setTrackPlayers({...arrangementPlayer.trackPlayers});
   const animationEngine = useContext(AnimationEngineContext);
 
   // Scroll-shadows over the track-viewers
@@ -32,29 +31,19 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
   const updateScrollShadows = () => setScrollShadowClasses(getScrollShadowClasses(ref.current));
   const resizeObserver = new ResizeObserver(updateScrollShadows);
   const contentWidthPublisher = createPublisher()
-  const timeParamsSubscription = () => setTimeout(() => {
-    updateScrollShadows();
-    contentWidthPublisher.publish();
-  }, 0); // timeout so DOM updates first
-
-
 
   const {trackViewerCallbacks, handleWheel, onScrollbarGrab} = useAutoFollow(animationEngine, arrangementPlayer, ref);
 
-
+  useSubscription(arrangementPlayer, () => setTrackPlayers({...arrangementPlayer.trackPlayers}));
+  useSubscription(arrangement.timeParams, () => setTimeout(() => {
+    updateScrollShadows();
+    contentWidthPublisher.publish();
+  }, 0)); // timeout so DOM updates first)
 
   useEffect(() => {
     setTimeout(updateScrollShadows, 0);
-
-    arrangementPlayer.subscribe(arrangementPlayerSubscription);
-    arrangement.timeParams.subscribe(timeParamsSubscription);
     resizeObserver.observe(ref.current);
-
-    return () => {
-      arrangementPlayer.unsubscribe(arrangementPlayerSubscription);
-      resizeObserver.unobserve(ref.current);
-      arrangement.timeParams.unsubscribe(timeParamsSubscription)
-    }
+    return () => resizeObserver.unobserve(ref.current);
   }, []);
 
   return (
@@ -163,7 +152,6 @@ function useAutoFollow(animationEngine: AnimationEngine, arrangementPlayer: Arra
     return () => animationEngine.unsubscribe(animationEngineSubscription)
   }, [autoFollowIsOn]);
 
-  
   return {
     handleWheel: autoFollowIsOn ? (event:React.WheelEvent<HTMLDivElement>) => event.deltaX > 6 && setAutoFollow(false) : undefined,
     onScrollbarGrab: autoFollowIsOn ? () => setAutoFollow(false) : undefined,
@@ -215,11 +203,11 @@ function useTrackViewerTouchInterpretation(autoFollowIsOn, setAutoFollow) {
       noteLineTouchStart: (event:TouchEvent) => {
         if (event.touches.length != 1)
           return;
-    
+
         lastY.current = event.touches[0].pageY;
         lastX.current = event.touches[0].pageX;
         stopAutoFollowTimeoutId.current = setTimeout(() => setAutoFollow(false), 1000);
-    
+
         setUserMightBeTakingControl(true)
       },
       noteLineTouchMove: undefined,

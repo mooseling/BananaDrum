@@ -1,7 +1,8 @@
-import { Note, NoteStyle, Subscribable, Subscription, isSameTiming } from 'bananadrum-core';
+import { Note, NoteStyle, Subscribable, isSameTiming } from 'bananadrum-core';
 import {getEventEngine, createAudioBufferPlayer} from 'bananadrum-player';
-import {useState, useContext, useEffect} from 'react';
+import {useState, useContext} from 'react';
 import {ArrangementPlayerContext} from './ArrangementViewer.js';
+import { useSubscription } from '../hooks/useSubscription.js';
 
 const audioContext = new AudioContext();
 const eventEngine = getEventEngine();
@@ -13,25 +14,16 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
   const [isCurrent, setIsCurrent] = useState(isSameTiming(arrangementPlayer.currentTiming, note.timing));
   const [playing, setPlaying] = useState(eventEngine.state === 'playing')
 
-  const engineSubscription:Subscription = () => {
+  useSubscription(eventEngine, () => {
     if (eventEngine.state === 'playing'){
       setPlaying(true);
     } else {
       setPlaying(false);
       setIsCurrent(false);
     }
-  };
-  useEffect(() => {
-    eventEngine.subscribe(engineSubscription);
-    return () => eventEngine.unsubscribe(engineSubscription);
-  }, []);
+  });
 
-  const timingSubscription:Subscription =
-    () => setIsCurrent(isSameTiming(arrangementPlayer.currentTiming, note.timing));
-  useEffect(() => {
-    timingPublisher.subscribe(timingSubscription);
-    return () => timingPublisher.unsubscribe(timingSubscription);
-  }, []);
+  useSubscription(timingPublisher, () => setIsCurrent(isSameTiming(arrangementPlayer.currentTiming, note.timing)));
 
   const backgroundColor = (playing && isCurrent) ?
     'var(--light-yellow)'                 // Light up notes as the music plays
@@ -39,11 +31,7 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
     : '';                                 // Inactive notes have no inline background colour
 
   const [noteStyle, setNoteStyle] = useState(note.noteStyle)
-  const noteSubscription:Subscription = () => setNoteStyle(note.noteStyle);
-  useEffect(() => {
-    note.subscribe(noteSubscription);
-    return () => note.unsubscribe(noteSubscription);
-  }, []);
+  useSubscription(note, () => setNoteStyle(note.noteStyle));
 
   return (
     <div
@@ -60,7 +48,7 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
 
 
 function getClasses(note:Note): string {
-  let classes:string[] = ['note-viewer'];
+  const classes:string[] = ['note-viewer'];
   const {step} = note.timing;
 
   classes.push(getParityClass(note));
