@@ -185,7 +185,9 @@ body {
 }
 
 .track-viewers-wrapper:not(.overflowing-left):not(.overflowing-right) .custom-scrollbar {
-  display: none;
+  height:0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .track-viewer {
