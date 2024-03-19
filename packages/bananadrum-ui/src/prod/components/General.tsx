@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import { useState } from 'react';
 
 export function NumberInput(
   {getValue, setValue}:{getValue:() => string, setValue:(newValue:string) => void}

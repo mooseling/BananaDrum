@@ -1,8 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
-import {useState, useContext} from 'react';
-import {getShareLink} from 'bananadrum-core';
-import {toggleOverlay} from './Overlay.js';
-import {ArrangementPlayerContext} from './ArrangementViewer.js';
+import { useState, useContext } from 'react';
+import { getShareLink } from 'bananadrum-core';
+import { toggleOverlay } from './Overlay.js';
+import { ArrangementPlayerContext } from './ArrangementViewer.js';
 
 
 const haveNativeSharing = navigator.share !== undefined;

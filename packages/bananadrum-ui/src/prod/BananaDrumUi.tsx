@@ -1,5 +1,5 @@
 import { BananaDrumPlayer } from 'bananadrum-player';
-import {createRoot} from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 import { StrictMode } from 'react';
 import { getAnimationEngine } from './AnimationEngine.js';
 import { HistoryController } from "./HistoryController.js";

@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { Subscribable } from 'bananadrum-core';
 import { createPublisher } from 'bananadrum-core';
 

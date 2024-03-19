@@ -1,4 +1,4 @@
-import {AnimationEngine} from './types';
+import { AnimationEngine } from './types';
 import { createPublisher } from 'bananadrum-core';
 import { EventEngine, EventEngineState } from 'bananadrum-player';
 

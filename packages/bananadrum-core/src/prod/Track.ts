@@ -1,10 +1,10 @@
 import { Arrangement, Instrument, Note, PackedNote, PackedTiming, PackedTrack, Timing, Track } from './types.js';
-import {getLibrary} from './Library.js';
-import {createNote} from './Note.js';
-import {createPublisher} from './Publisher.js';
-import {TrackClipboard} from './TrackClipboard.js';
-import {getColour} from './colours.js';
-import {isSameTiming} from './utils.js';
+import { getLibrary } from './Library.js';
+import { createNote } from './Note.js';
+import { createPublisher } from './Publisher.js';
+import { TrackClipboard } from './TrackClipboard.js';
+import { getColour } from './colours.js';
+import { isSameTiming } from './utils.js';
 
 export function createTrack(arrangement:Arrangement, instrument:Instrument, packedNotes?:PackedNote[]): Track {
   const id = getNewId();
