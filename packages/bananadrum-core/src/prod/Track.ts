@@ -68,7 +68,6 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, pack
   }
 
 
-  // Return value indicates whether anything changed
   function fillInRests(): void {
     const timingsWithNoNotes = arrangement.timeParams.timings
       .filter(timing => !notes.some(note => isSameTiming(note.timing, timing)));
