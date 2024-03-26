@@ -1,10 +1,10 @@
 import { Arrangement } from 'bananadrum-core';
-import {useState, useContext} from 'react';
-import {ArrangementPlayerContext} from './ArrangementViewer.js';
-import {Overlay, toggleOverlay} from './Overlay.js';
-import {ShareButton} from './ShareButton.js';
-import {NumberInput} from './General.js';
-import {getEventEngine} from 'bananadrum-player';
+import { useState, useContext } from 'react';
+import { ArrangementPlayerContext } from './ArrangementViewer.js';
+import { Overlay, toggleOverlay } from './Overlay.js';
+import { ShareButton } from './ShareButton.js';
+import { NumberInput } from './General.js';
+import { getEventEngine } from 'bananadrum-player';
 import { useSubscription } from '../hooks/useSubscription.js';
 
 

@@ -1,6 +1,6 @@
 import { BananaDrumPlayer } from 'bananadrum-player';
-import {createRoot} from 'react-dom/client';
-import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { StrictMode, createElement } from 'react';
 import { getAnimationEngine } from './AnimationEngine.js';
 import { HistoryController } from "./HistoryController.js";
 import { KeyboardHandler } from "./KeyboardHandler.js";
@@ -16,9 +16,18 @@ export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HT
   const root = createRoot(wrapper);
 
   root.render(
-    <StrictMode>
-      <BananaDrumViewer arrangementPlayer={bananaDrumPlayer.arrangementPlayer} animationEngine={animationEngine} />
-    </StrictMode>
+    createElement(
+      StrictMode,
+      {
+        children: createElement(
+          BananaDrumViewer,
+          {
+            arrangementPlayer: bananaDrumPlayer.arrangementPlayer,
+            animationEngine
+          }
+        )
+      }
+    )
   );
 
   return {bananaDrumPlayer, wrapper};

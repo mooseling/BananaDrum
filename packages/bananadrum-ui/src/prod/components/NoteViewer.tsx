@@ -1,7 +1,7 @@
 import { Note, NoteStyle, Subscribable, isSameTiming } from 'bananadrum-core';
-import {getEventEngine, createAudioBufferPlayer} from 'bananadrum-player';
-import {useState, useContext} from 'react';
-import {ArrangementPlayerContext} from './ArrangementViewer.js';
+import { getEventEngine, createAudioBufferPlayer } from 'bananadrum-player';
+import { useState, useContext } from 'react';
+import { ArrangementPlayerContext } from './ArrangementViewer.js';
 import { useSubscription } from '../hooks/useSubscription.js';
 
 const audioContext = new AudioContext();

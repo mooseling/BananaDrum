@@ -1,5 +1,5 @@
-import {isMobile} from './isMobile.js';
-import {anyOverlaysAreOpen, closeAllOverlays} from './components/Overlay.js';
+import { isMobile } from './isMobile.js';
+import { anyOverlaysAreOpen, closeAllOverlays } from './components/Overlay.js';
 
 export const HistoryController = {
   init() {

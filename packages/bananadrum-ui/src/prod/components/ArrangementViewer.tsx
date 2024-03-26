@@ -1,14 +1,14 @@
 import { RealTime } from 'bananadrum-core';
 import { ArrangementPlayer, TrackPlayer } from 'bananadrum-player';
-import {createPublisher} from 'bananadrum-core';
-import {TrackViewer} from './TrackViewer.js';
-import {ArrangementControlsTop, ArrangementControlsBottom} from './ArrangementControls.js';
-import {Scrollbar} from './Scrollbar.js';
-import {Share} from './Share.js';
-import {InstrumentBrowser} from './InstrumentBrowser.js';
-import {Overlay, toggleOverlay} from './Overlay.js';
-import {useState, useEffect, createContext, useRef, useContext, TouchEvent} from 'react';
-import {AnimationEngineContext} from './BananaDrumViewer.js';
+import { createPublisher } from 'bananadrum-core';
+import { TrackViewer } from './TrackViewer.js';
+import { ArrangementControlsTop, ArrangementControlsBottom } from './ArrangementControls.js';
+import { Scrollbar } from './Scrollbar.js';
+import { Share } from './Share.js';
+import { InstrumentBrowser } from './InstrumentBrowser.js';
+import { Overlay, toggleOverlay } from './Overlay.js';
+import { useState, useEffect, createContext, useRef, useContext, TouchEvent } from 'react';
+import { AnimationEngineContext } from './BananaDrumViewer.js';
 import { AnimationEngine } from '../types.js';
 import { useSubscription } from '../hooks/useSubscription.js';
 

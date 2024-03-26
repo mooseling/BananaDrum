@@ -1,5 +1,5 @@
-import {assert} from 'chai';
-import {getUniqueTiming} from '../lib/getUniqueTiming.js';
+import { assert } from 'chai';
+import { getUniqueTiming } from '../lib/getUniqueTiming.js';
 
 describe('Test lib', function() {
   it('getUniqueTiming creates sequential timings', () => {

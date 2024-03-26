@@ -1,6 +1,6 @@
 import { PackedInstrument, Instrument, NoteStyleBase, NoteStyle, Library, InstrumentMeta } from './types.js';
-import {loadAudio} from './loadAudio.js';
-import {createPublisher} from './Publisher.js';
+import { loadAudio} from './loadAudio.js';
+import { createPublisher } from './Publisher.js';
 
 const packedInstruments:{[id:string]: PackedInstrument} = {};
 const instruments: {[id:string]:Instrument} = {};

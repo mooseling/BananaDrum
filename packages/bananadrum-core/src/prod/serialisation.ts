@@ -1,7 +1,7 @@
 import bigInt from 'big-integer';
-import {Arrangement, PackedArrangement, PackedNote, PackedTiming, PackedTrack, Timing, Track} from './types.js';
-import {getLibrary} from './Library.js';
-import {createTimeParams} from './TimeParams.js';
+import { Arrangement, PackedArrangement, PackedNote, PackedTiming, PackedTrack, Timing, Track } from './types.js';
+import { getLibrary } from './Library.js';
+import { createTimeParams } from './TimeParams.js';
 
 
 

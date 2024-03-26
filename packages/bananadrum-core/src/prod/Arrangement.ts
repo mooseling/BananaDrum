@@ -1,7 +1,7 @@
 import { PackedTimeParams, TimeParams, Arrangement, Track, Instrument, PackedTrack, PackedArrangement } from './types.js';
-import {createTrack, unpackTrack} from './Track.js';
-import {createTimeParams} from './TimeParams.js';
-import {createPublisher} from './Publisher.js';
+import { createTrack, unpackTrack } from './Track.js';
+import { createTimeParams } from './TimeParams.js';
+import { createPublisher } from './Publisher.js';
 
 const defaultTimeParams:PackedTimeParams = {
   timeSignature:'4/4', tempo:120, length:1, pulse:'1/4', stepResolution:16

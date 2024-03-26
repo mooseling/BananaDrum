@@ -1,5 +1,5 @@
 import { Note, NoteStyle, Timing, Track } from './types.js';
-import {createPublisher} from './Publisher.js';
+import { createPublisher } from './Publisher.js';
 
 let noteCount = 0;
 
