@@ -150,6 +150,15 @@ function urlEncodeArrangement(arrangement:Arrangement): string {
   return output;
 }
 
+// ==================================================================
+//                            URL Characters
+// ==================================================================
+
+// RFC3986 does not explicitly list valid characters, but it does highlight some as reserved/unreserved
+// Reserved: general delimiters: :/?#[]@, sub delimeters: !$&'()*+,;=
+// Unreserved:  A-Za-z0-9-._~
+// Elsewhere, the internet tell us there are some "unwise" characters: {}|\^[]`. We aspire to be wise, but may grow dumb later.
+// So we stick with the RFC. We use A-Za-Z0-9_~ for encoding beats, and reserve .- for our own syntax.
 
 const conversionBase = bigInt[64]; // 64 characters to safely use in URLs
 
