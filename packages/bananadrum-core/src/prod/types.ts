@@ -55,7 +55,7 @@ export interface MutingRuleOtherInstrument {
 
 export type MutingRuleSimple = string;
 
-export type Subscription = (...args:any[]) => void
+export type Subscription = (...args:unknown[]) => void
 
 export interface Subscribable {
   subscribe(callback:Subscription): void
