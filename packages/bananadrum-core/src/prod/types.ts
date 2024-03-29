@@ -70,24 +70,15 @@ export interface Arrangement extends Subscribable {
   timeParams: TimeParams
   tracks: {[trackId:string]: Track}
   addTrack(instrument:Instrument): Track
-  unpackTracks(packedTracks:PackedTrack[]): void
   removeTrack(track:Track): void
 }
 
-export interface PackedArrangement {
-  timeParams: PackedTimeParams
-  packedTracks: PackedTrack[]
-}
-
-export interface PackedTimeParams {
+export interface TimeParams extends Subscribable {
   timeSignature: string
   tempo: number
   length: number
   pulse: string
   stepResolution: number
-}
-
-export interface TimeParams extends PackedTimeParams, Subscribable {
   isValid(timing:Timing): boolean
   readonly timings: Timing[]
 }
@@ -108,23 +99,9 @@ export interface Track extends Subscribable {
   clear(): void
 }
 
-export interface PackedTrack {
-  instrumentId: string
-  packedNotes: PackedNote[]
-}
-
-export interface PackedNote {
-  noteStyleId: string
-  timing: PackedTiming
-}
-
-export type PackedTiming = `${number}:${number}` // bar:step
-// We don't use "." because numbers might contain it
-
 export interface Note extends Subscribable {
   id: string
   timing: Timing
   track: Track
   noteStyle: NoteStyle|null // null means this is a rest
 }
-

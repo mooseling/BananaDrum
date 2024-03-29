@@ -1,4 +1,4 @@
-import { PackedTimeParams, RealTime, TimeParams, Timing } from 'bananadrum-core';
+import { RealTime, TimeParams, Timing } from 'bananadrum-core';
 import { createPublisher } from 'bananadrum-core';
 import { getEventEngine } from './EventEngine.js';
 import { Interval, LoopInterval, TimeCoordinator } from './types.js';
@@ -170,7 +170,7 @@ export function createTimeCoordinator(timeParams:TimeParams): TimeCoordinator {
 // ==================================================================
 
 
-function calcNoteTimes({timeSignature, tempo, pulse, stepResolution}:PackedTimeParams) {
+function calcNoteTimes({timeSignature, tempo, pulse, stepResolution}:TimeParams) {
   const [beatsPerBar, beatUnit] = timeSignature.split('/').map(str => Number(str));
   const [pulseFrequency, pulseResolution] = pulse.split('/').map(str => Number(str));
 

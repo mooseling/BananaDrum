@@ -1,27 +1,13 @@
-import { createArrangement, unpackArrangement } from "./Arrangement.js";
-import { urlDecodeArrangement } from "./serialisation.js";
+import { deserialiseArrangement } from "./serialisation.js";
 import { getLibrary } from "./Library.js";
-import { Arrangement, BananaDrum, PackedInstrument } from "./types.js";
+import { BananaDrum, PackedInstrument } from "./types.js";
 
 
-export function createBananaDrum(instrumentCollection?:PackedInstrument[], compressedArrangement?:string): BananaDrum {
-  if (compressedArrangement) {
-    const library = getLibrary();
+export function createBananaDrum(instrumentCollection:PackedInstrument[], serialisedArrangement:string): BananaDrum {
+  const library = getLibrary();
+  library.load(instrumentCollection);
 
-    if (instrumentCollection)
-      library.load(instrumentCollection);
-    
-    const arrangement = getNewArrangement(compressedArrangement);
-    
-    return {library, arrangement};
-  }
-}
+  const arrangement = deserialiseArrangement(serialisedArrangement);
 
-
-function getNewArrangement(compressedArrangement?:string): Arrangement {
-  if (compressedArrangement) {
-    const packedArrangement = urlDecodeArrangement(compressedArrangement);
-    return unpackArrangement(packedArrangement);
-  }
-  return createArrangement();
+  return {library, arrangement};
 }

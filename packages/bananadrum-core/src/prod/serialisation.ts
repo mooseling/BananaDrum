@@ -1,7 +1,8 @@
 import bigInt from 'big-integer';
-import { Arrangement, PackedArrangement, PackedNote, PackedTiming, PackedTrack, Timing, Track } from './types.js';
+import { Arrangement, Track } from './types.js';
 import { getLibrary } from './Library.js';
 import { createTimeParams } from './TimeParams.js';
+import { createArrangement } from './Arrangement.js';
 
 
 
@@ -10,25 +11,27 @@ import { createTimeParams } from './TimeParams.js';
 // ==================================================================
 
 
-export function getShareLink(arrangement:Arrangement) {
-  const query = urlEncodeArrangement(arrangement);
+export function getShareLink(arrangement:Arrangement): string {
+  const query = serilaiseArrangement(arrangement);
   return 'https://bananadrum.net/?a=' + query;
 }
 
 
-export function urlDecodeArrangement(url:string): PackedArrangement {
-  const chunks = url.replaceAll('-', '/').split('.');
-  const timeParams = createTimeParams({
-    timeSignature:chunks[0],
-    tempo:Number(chunks[1]),
-    length:Number(chunks[2]),
-    pulse:chunks[3],
-    stepResolution:Number(chunks[4])
-  });
-  return {
-    timeParams,
-    packedTracks: chunks.slice(5).map(url => createPackedTrack(url, timeParams.timings))
-  };
+export function deserialiseArrangement(serialisedArrangement:string): Arrangement {
+  const chunks = serialisedArrangement.split('.');
+
+  const timeParams = createTimeParams(
+    chunks[0].replace('-', '/'), // time signature
+    Number(chunks[1]),           // tempo
+    Number(chunks[2]),           // length
+    chunks[3].replace('-', '/'), // pulse
+    Number(chunks[4])            // step resolutin
+  );
+  const arrangement = createArrangement(timeParams);
+
+  chunks.slice(5).forEach(serialisedTrack => deserlialiseTrack(serialisedTrack, arrangement));
+
+  return arrangement;
 }
 
 
@@ -98,7 +101,7 @@ function convertToBaseN(input:bigInt.BigInteger, base:number): number[] {
 }
 
 
-function urlEncodeTrack(track:Track): string {
+function serialiseTrack(track:Track): string {
   const base:number = Object.keys(track.instrument.noteStyles).length + 1; // + 1 for rests
   const noteStyles:number[] = track.notes.map(note => characterToNumber[note.noteStyle?.id || '0']);
   const musicAsNumber = interpretAsBaseN(noteStyles, base);
@@ -107,49 +110,53 @@ function urlEncodeTrack(track:Track): string {
 }
 
 
-function createPackedTrack(urlEncodedTrack:string, timings:Timing[]): PackedTrack {
-  const instrumentId = urlEncodedTrack[0];
-  const instrumentMeta = getLibrary().instrumentMetas.filter(({id}) => id === instrumentId)[0];
-  if (!instrumentMeta)
-    throw 'Instrument not found';
-  const musicAsString = urlEncodedTrack.substring(1);
+function deserlialiseTrack(seriliasedTrack:string, arrangement:Arrangement) {
+  const instrumentId = seriliasedTrack[0];
+  const musicAsString = seriliasedTrack.substring(1);
+  const timings = arrangement.timeParams.timings;
+
+  const instrument = getLibrary().getInstrument(instrumentId);
+  if (!instrument)
+    throw new Error('Instrument not found');
+
+  const track = arrangement.addTrack(instrument); // track should have full set of notes, all rests
+
   const musicAsNumber = urlDecodeNumber(musicAsString);
-  const base = Object.keys(instrumentMeta.noteStyles).length + 1; // + 1 for rests
+  const base = Object.keys(instrument.noteStyles).length + 1; // + 1 for rests
   const musicInBaseN = convertToBaseN(musicAsNumber, base);
   while (musicInBaseN.length < timings.length)
     musicInBaseN.unshift(0); // pad number with leading 0s
 
-  const packedNotes:PackedNote[] = [];
   musicInBaseN.forEach((value, column) => {
     if (value) { // Rests will have value 0
-      packedNotes.push({
-        noteStyleId: numberToCharacter[value],
-        timing: packTiming(timings[column])
-      });
+      const noteStyleId = numberToCharacter[value];
+      track.notes[column].noteStyle = instrument.noteStyles[noteStyleId];
     }
   })
-
-  return {instrumentId: instrumentMeta.id, packedNotes};
 }
 
 
-function packTiming({bar, step}:Timing): PackedTiming {
-  return `${bar}:${step}`;
-}
-
-
-function urlEncodeArrangement(arrangement:Arrangement): string {
+function serilaiseArrangement(arrangement:Arrangement): string {
   const {timeParams:tp} = arrangement;
   let output = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
   output = output.replaceAll('/', '-');
   for (const trackId in arrangement.tracks) {
     const track = arrangement.tracks[trackId];
     if (track)
-      output += '.' + urlEncodeTrack(track);
+      output += '.' + serialiseTrack(track);
   }
   return output;
 }
 
+// ==================================================================
+//                            URL Characters
+// ==================================================================
+
+// RFC3986 does not explicitly list valid characters, but it does highlight some as reserved/unreserved
+// Reserved: general delimiters: :/?#[]@, sub delimeters: !$&'()*+,;=
+// Unreserved:  A-Za-z0-9-._~
+// Elsewhere, the internet tell us there are some "unwise" characters: {}|\^[]`. We aspire to be wise, but may grow dumb later.
+// So we stick with the RFC. We use A-Za-Z0-9_~ for encoding beats, and reserve .- for our own syntax.
 
 const conversionBase = bigInt[64]; // 64 characters to safely use in URLs
 

@@ -1,12 +1,11 @@
-import { Arrangement, Instrument, Note, PackedNote, PackedTiming, PackedTrack, Timing, Track } from './types.js';
-import { getLibrary } from './Library.js';
+import { Arrangement, Instrument, Note, Timing, Track } from './types.js';
 import { createNote } from './Note.js';
 import { createPublisher } from './Publisher.js';
 import { TrackClipboard } from './TrackClipboard.js';
 import { getColour } from './colours.js';
 import { isSameTiming } from './utils.js';
 
-export function createTrack(arrangement:Arrangement, instrument:Instrument, packedNotes?:PackedNote[]): Track {
+export function createTrack(arrangement:Arrangement, instrument:Instrument): Track {
   const id = getNewId();
   const publisher = createPublisher();
   const notes:Note[] = [];
@@ -14,10 +13,9 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, pack
   const track:Track = {id, arrangement, instrument, notes, getNoteAt, colour, clear,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
-  if (packedNotes)
-    unpackNotes();
-  fillInRests();
-  notes.sort((a, b) => (a.timing.bar - b.timing.bar) || (a.timing.step - b.timing.step))
+  // Initialise all Notes as rests
+  arrangement.timeParams.timings.forEach(timing => notes.push(createNote(track, timing, null)));
+
   arrangement.timeParams.subscribe(handleTimeParamsChange);
   arrangement.subscribe(destroySelfIfNeeded);
 
@@ -54,18 +52,6 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, pack
   //                          Private Functions
   // ==================================================================
 
-
-  // Only call if packedNotes is defined
-  function unpackNotes(): void {
-    packedNotes.forEach(packedNote => notes.push(unpackNote(packedNote)));
-  }
-
-
-  function unpackNote(packedNote:PackedNote): Note {
-    const {timing:packedTiming, noteStyleId} = packedNote;
-    const timing = unpackTiming(packedTiming);
-    return createNote(track, timing, instrument.noteStyles[noteStyleId] ?? null);
-  }
 
 
   function fillInRests(): void {
@@ -132,13 +118,6 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, pack
 }
 
 
-export function unpackTrack(arrangement:Arrangement, packedTrack:PackedTrack):
-  Track {
-  const instrument = getLibrary().getInstrument(packedTrack.instrumentId);
-  return createTrack(arrangement, instrument, packedTrack.packedNotes);
-}
-
-
 
 
 
@@ -160,11 +139,4 @@ let trackCounter = 0;
 function getNewId(): string {
   trackCounter++;
   return `${trackCounter}`;
-}
-
-
-
-function unpackTiming(packedTiming:PackedTiming): Timing {
-  const [bar, step] = packedTiming.split(':').map(value => Number(value));
-  return {bar, step};
 }
