@@ -6,6 +6,7 @@ export function MockTrack(): Track {
     arrangement: null,
     instrument: null,
     notes: [],
+    polyrhythms: [],
     getNoteAt: timing => null,
     colour: 'blue',
     clear: () => {},
