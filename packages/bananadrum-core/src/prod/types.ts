@@ -94,9 +94,17 @@ export interface Track extends Subscribable {
   arrangement: Arrangement
   instrument: Instrument
   notes: Note[] // Must be kept in order - this is Track's job
+  polyrhythms: Polyrhythm[]
   getNoteAt(timing:Timing): Note
   colour: string // A specific hsl() string
   clear(): void
+}
+
+// Or should the note point to the polyrhythm? That's somewhat easier...
+export interface Polyrhythm {
+  start: Note
+  end: Note
+  notes: Note[]
 }
 
 export interface Note extends Subscribable {

@@ -1,4 +1,4 @@
-import { Arrangement, Instrument, Note, Timing, Track } from './types.js';
+import { Arrangement, Instrument, Note, Polyrhythm, Timing, Track } from './types.js';
 import { createNote } from './Note.js';
 import { createPublisher } from './Publisher.js';
 import { TrackClipboard } from './TrackClipboard.js';
@@ -9,8 +9,9 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
   const id = getNewId();
   const publisher = createPublisher();
   const notes:Note[] = [];
+  const polyrhythms:Polyrhythm[] = [];
   const colour = getColour(instrument.colourGroup);
-  const track:Track = {id, arrangement, instrument, notes, getNoteAt, colour, clear,
+  const track:Track = {id, arrangement, instrument, notes, polyrhythms, getNoteAt, colour, clear,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
   // Initialise all Notes as rests
