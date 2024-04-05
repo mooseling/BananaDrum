@@ -3,9 +3,10 @@ import { createPublisher } from './Publisher.js';
 
 let noteCount = 0;
 
-export function createNote(track:Track, timing:Timing, noteStyle:NoteStyle|null): Note {
+export function createNote(track:Track, timing:Timing): Note {
   const publisher = createPublisher();
   const id = `${++noteCount}`;
+  let noteStyle:NoteStyle|null = null;
 
   return {
     id, timing, track, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,

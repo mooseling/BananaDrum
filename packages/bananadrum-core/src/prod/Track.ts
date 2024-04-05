@@ -15,7 +15,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
   // Initialise all Notes as rests
-  arrangement.timeParams.timings.forEach(timing => notes.push(createNote(track, timing, null)));
+  arrangement.timeParams.timings.forEach(timing => notes.push(createNote(track, timing)));
 
   arrangement.timeParams.subscribe(handleTimeParamsChange);
   arrangement.subscribe(destroySelfIfNeeded);
@@ -48,7 +48,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
   function addPolyrhythm(start:Note, end:Note, length:number) {
     polyrhythms.push({
       start, end,
-      notes: Array.from(Array(length)).map((_, index) => createNote(track, {bar:1, step:index}, null))
+      notes: Array.from(Array(length)).map((_, index) => createNote(track, {bar:1, step:index}))
     });
     publisher.publish();
   }
@@ -72,7 +72,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
     const timingsWithNoNotes = arrangement.timeParams.timings
       .filter(timing => !notes.some(note => isSameTiming(note.timing, timing)));
     if (timingsWithNoNotes.length) {
-      timingsWithNoNotes.forEach(timing => notes.push(createNote(track, timing, null)));
+      timingsWithNoNotes.forEach(timing => notes.push(createNote(track, timing)));
       notes.sort((a, b) => (a.timing.bar - b.timing.bar) || (a.timing.step - b.timing.step));
     }
   }
