@@ -11,7 +11,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
   const notes:Note[] = [];
   const polyrhythms:Polyrhythm[] = [];
   const colour = getColour(instrument.colourGroup);
-  const track:Track = {id, arrangement, instrument, notes, polyrhythms, getNoteAt, colour, clear,
+  const track:Track = {id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm, getNoteAt, colour, clear,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
   // Initialise all Notes as rests
@@ -45,6 +45,19 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
   }
 
 
+  function addPolyrhythm(start:Note, end:Note, length:number) {
+    polyrhythms.push({
+      start, end,
+      notes: Array.from(Array(length)).map((_, index) => createNote(track, {bar:1, step:index}, null))
+    });
+    publisher.publish();
+  }
+
+
+  function removePolyrhythm(polyrhythm:Polyrhythm) {
+    polyrhythms.splice(polyrhythms.indexOf(polyrhythm), 1);
+    publisher.publish();
+  }
 
 
 

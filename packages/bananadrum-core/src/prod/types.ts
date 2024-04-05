@@ -95,6 +95,8 @@ export interface Track extends Subscribable {
   instrument: Instrument
   notes: Note[] // Must be kept in order - this is Track's job
   polyrhythms: Polyrhythm[]
+  addPolyrhythm(start:Note, end:Note, length:number): void
+  removePolyrhythm(polyrhythm:Polyrhythm): void
   getNoteAt(timing:Timing): Note
   colour: string // A specific hsl() string
   clear(): void
