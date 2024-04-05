@@ -8,6 +8,8 @@ export function MockTrack(): Track {
     notes: [],
     polyrhythms: [],
     getNoteAt: timing => null,
+    addPolyrhythm: (start, end, length) => {},
+    removePolyrhythm: (polyrhythm) => {},
     colour: 'blue',
     clear: () => {},
     subscribe: () => {},
