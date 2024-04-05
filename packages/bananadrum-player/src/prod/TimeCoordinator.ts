@@ -24,7 +24,8 @@ export function createTimeCoordinator(timeParams:TimeParams): TimeCoordinator {
   timeParams.subscribe(handleTimeParamsChange);
   eventEngine.subscribe(handlePlaybackChange)
 
-  return {convertToRealTime, convertToLoopIntervals, convertToAudioTime, convertToLoopProgress, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
+  return {convertToRealTime, convertToLoopIntervals, convertToAudioTime, convertToLoopProgress,
+    subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
 
 
