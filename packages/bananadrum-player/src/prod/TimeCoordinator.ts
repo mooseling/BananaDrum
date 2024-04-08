@@ -153,6 +153,8 @@ export function createTimeCoordinator(timeParams:TimeParams): TimeCoordinator {
 
     const newOffsetTime = (loopsFinished * realTimeLength) + targetTimeWithinLoop;
     offset = newOffsetTime - audioTime;
+
+    cachedLength = timeParams.length; // Everything actually worked fine without this line, which suggests there's an optimisation we could make
   }
 
 
