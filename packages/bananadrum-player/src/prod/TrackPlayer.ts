@@ -3,21 +3,19 @@ import { createPublisher } from 'bananadrum-core';
 import { getMuteEvents } from './Muting.js';
 import { Event, Interval, SoloMute, TimeCoordinator, TrackPlayer } from './types.js';
 
-type NoteWithTime = {realTime:RealTime, note:Note};
-type PolyrhythmWithTime = {startTime:RealTime, polyrhythm:Polyrhythm, realTimeNotes:NoteWithTime[]};
 
 export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator): TrackPlayer {
   const publisher = createPublisher();
-  let notesWithTime:NoteWithTime[] = [];
-  let polyrhythmsWithTime:PolyrhythmWithTime[] = [];
+  const noteTimes:Map<Note, RealTime> = new Map();
+  const cachedPolyrhythms:Polyrhythm[] = [];
 
   if (track.instrument.loaded) {
-    fillInRealTimeNotes();
-    addMissingRealTimePolyrhythms();
+    fillInBasicNoteTimes();
+    handleNewPolyrhythms();
   } else {
     const setupNotes = () => {
-      fillInRealTimeNotes();
-      addMissingRealTimePolyrhythms();
+      fillInBasicNoteTimes();
+      handleNewPolyrhythms();
       track.instrument.unsubscribe(setupNotes);
     }
     track.instrument.subscribe(setupNotes);
@@ -58,13 +56,26 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
     if (!track.instrument.loaded)
       return [];
 
-    const notesInInterval = notesWithTime.filter(({realTime}) => realTime >= start && realTime < end);
+    const notesInInterval:Note[] = [];
+
+    const noteIterator = track.getNoteIterator();
+    for (const note of noteIterator) {
+      const time = noteTimes.get(note);
+      if (time > end)
+        break;
+      if (time >= start)
+        notesInInterval.push(note);
+    }
 
     // Can't do this all in one go because TypeScript won't allow the concat
     const events:Event[] = notesInInterval
-      .filter(({note}) => note.noteStyle) // Filter out rests (which have noteStyle: null)
-      .map(({realTime, note}) => ({realTime, note, audioBuffer:note.noteStyle.audioBuffer}));
-    notesInInterval.forEach(({realTime, note}) => events.push(...getMuteEvents(note, realTime)));
+      .filter(note => note.noteStyle) // Filter out rests (which have noteStyle: null)
+      .map(note => ({
+        note,
+        realTime: noteTimes.get(note),
+        audioBuffer:note.noteStyle.audioBuffer
+      }));
+    notesInInterval.forEach(note => events.push(...getMuteEvents(note, noteTimes.get(note))));
 
     return events;
   }
@@ -80,71 +91,72 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
 
 
 
-  function createRealTimeNote(note:Note): NoteWithTime {
-    return {
-      realTime: timeCoordinator.convertToRealTime(note.timing),
-      note
-    };
+  function fillInBasicNoteTimes() {
+    const unmatchedNotes = track.notes.filter(note => !noteTimes.get(note));
+    unmatchedNotes.forEach(note => noteTimes.set(note, timeCoordinator.convertToRealTime(note.timing)));
   }
 
 
-  function fillInRealTimeNotes() {
-    const unmatchedNotes = track.notes.filter(note => !notesWithTime.some(noteWithTime => noteWithTime.note === note));
-    notesWithTime.push(...unmatchedNotes.map(createRealTimeNote));
-  }
-
-
-  function removeExtraRealTimeNotes() {
-    notesWithTime = notesWithTime.filter(({note}) => track.notes.includes(note))
+  function removeNoteTimesOfDroppedNotes() {
+    for (const note of noteTimes.keys()) {
+      if (!track.notes.includes(note))
+        noteTimes.delete(note);
+    }
   }
 
 
   function handleTrackChange() {
     const newNoteCount = track.notes.length;
     if (newNoteCount > lastNoteCount)
-      fillInRealTimeNotes();
+      fillInBasicNoteTimes();
     else if (newNoteCount < lastNoteCount)
-      removeExtraRealTimeNotes();
-    else if (track.polyrhythms.length < lastPolyrhythmCount)
-      addMissingRealTimePolyrhythms();
+      removeNoteTimesOfDroppedNotes();
     else if (track.polyrhythms.length > lastPolyrhythmCount)
-      removeExtraRealTimePolyrhythms();
+      handleNewPolyrhythms();
+    else if (track.polyrhythms.length < lastPolyrhythmCount)
+      handleDroppedPolyrhythms();
 
     lastNoteCount = newNoteCount;
     lastPolyrhythmCount = track.polyrhythms.length;
   }
 
 
-  function addMissingRealTimePolyrhythms() {
+  function handleNewPolyrhythms() {
     track.polyrhythms.forEach(polyrhythm => {
-      if (!polyrhythmsWithTime.some(pwt => pwt.polyrhythm === polyrhythm))
-        addPolyrhythmWithTime(polyrhythm);
+      if (!cachedPolyrhythms.includes(polyrhythm)){
+        addNoteTimesForPolyrhythm(polyrhythm);
+        cachedPolyrhythms.push(polyrhythm);
+      }
     });
   }
 
 
-  function removeExtraRealTimePolyrhythms() {
-    polyrhythmsWithTime = polyrhythmsWithTime.filter(
-      pwt => track.polyrhythms.some(polyrhythm => pwt.polyrhythm === polyrhythm)
-    );
+  function handleDroppedPolyrhythms() {
+    let index = 0;
+    let cachedPolyrhythm = cachedPolyrhythms[0];
+
+    while(cachedPolyrhythm) {
+      if (!track.polyrhythms.includes(cachedPolyrhythm)) {
+        cachedPolyrhythm.notes.forEach(noteTimes.delete);
+        cachedPolyrhythms.splice(index, 1);
+      } else {
+        index++;
+      }
+
+      cachedPolyrhythm = cachedPolyrhythms[index];
+    }
   }
 
 
-  function addPolyrhythmWithTime(polyrhythm:Polyrhythm) {
-    const startTime = timeCoordinator.convertToRealTime(polyrhythm.start.timing);
+  function addNoteTimesForPolyrhythm(polyrhythm:Polyrhythm) {
+    const startTime = noteTimes.get(polyrhythm.start);
     const endTime = timeCoordinator.convertToRealTime({
       bar: polyrhythm.end.timing.bar,
       step: polyrhythm.end.timing.step + 1 // May be an invalid timing, but should calculate just fine
     });
     const realTimeLength = endTime - startTime;
 
-    polyrhythmsWithTime.push({
-      startTime, polyrhythm,
-      realTimeNotes: polyrhythm.notes.map((note, index) => ({
-        note,
-        realTime: (index/polyrhythm.notes.length) * realTimeLength
-      }))
-    });
+    polyrhythm.notes.forEach((note, index) => noteTimes.set(note, startTime + (realTimeLength * index / polyrhythm.notes.length)));
   }
 
 
@@ -155,7 +167,10 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
       return;
     }
 
-    notesWithTime.forEach(noteWithTime => noteWithTime.realTime = timeCoordinator.convertToRealTime(noteWithTime.note.timing));
+    for (const note of noteTimes.keys()) {
+      if (track.notes.includes(note))
+        noteTimes.set(note, timeCoordinator.convertToRealTime(note.timing));
+    }
   }
 
 
