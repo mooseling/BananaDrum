@@ -11,7 +11,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
   const notes:Note[] = [];
   const polyrhythms:Polyrhythm[] = [];
   const colour = getColour(instrument.colourGroup);
-  const track:Track = {id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm, getNoteAt, colour, clear,
+  const track:Track = {id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm, getNoteAt, colour, clear, getNoteIterator,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
   // Initialise all Notes as rests
@@ -57,6 +57,38 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
   function removePolyrhythm(polyrhythm:Polyrhythm) {
     polyrhythms.splice(polyrhythms.indexOf(polyrhythm), 1);
     publisher.publish();
+  }
+
+
+  function *getNoteIterator() {
+    let index = 0;
+    let currentPolyrhythm:Polyrhythm = null;
+    let note = notes[0];
+
+    while (note) {
+      yield note;
+
+      index++;
+
+      if (currentPolyrhythm) {
+        note = currentPolyrhythm.notes[index];
+
+        if (!note) {
+          index = notes.indexOf(currentPolyrhythm.end) + 1;
+          currentPolyrhythm = null;
+          note = notes[index];
+        }
+      } else {
+        note = notes[index];
+
+        const linkedPolyrhythm = polyrhythms.find(polyrhythm => polyrhythm.start === note);
+        if (linkedPolyrhythm) {
+          index = 0;
+          currentPolyrhythm = linkedPolyrhythm;
+          note = currentPolyrhythm.notes[0];
+        }
+      }
+    }
   }
 
 
