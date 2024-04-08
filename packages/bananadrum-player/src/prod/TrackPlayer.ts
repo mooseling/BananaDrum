@@ -1,26 +1,31 @@
-import { RealTime, Note, Track } from 'bananadrum-core';
+import { RealTime, Note, Track, Polyrhythm } from 'bananadrum-core';
 import { createPublisher } from 'bananadrum-core';
 import { getMuteEvents } from './Muting.js';
 import { Event, Interval, SoloMute, TimeCoordinator, TrackPlayer } from './types.js';
 
 type NoteWithTime = {realTime:RealTime, note:Note};
+type PolyrhythmWithTime = {startTime:RealTime, polyrhythm:Polyrhythm, realTimeNotes:NoteWithTime[]};
 
 export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator): TrackPlayer {
   const publisher = createPublisher();
   let notesWithTime:NoteWithTime[] = [];
+  let polyrhythmsWithTime:PolyrhythmWithTime[] = [];
 
   if (track.instrument.loaded) {
     fillInRealTimeNotes();
+    addMissingRealTimePolyrhythms();
   } else {
     const setupNotes = () => {
       fillInRealTimeNotes();
+      addMissingRealTimePolyrhythms();
       track.instrument.unsubscribe(setupNotes);
     }
     track.instrument.subscribe(setupNotes);
   }
 
   let lastNoteCount = track.notes.length;
-  track.subscribe(handleNoteCountChange);
+  let lastPolyrhythmCount = track.polyrhythms.length;
+  track.subscribe(handleTrackChange);
   let lastLength = track.arrangement.timeParams.length;
   timeCoordinator.subscribe(handleTimeChange);
   track.arrangement.subscribe(destroySelfIfNeeded);
@@ -94,13 +99,52 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
   }
 
 
-  function handleNoteCountChange() {
+  function handleTrackChange() {
     const newNoteCount = track.notes.length;
     if (newNoteCount > lastNoteCount)
       fillInRealTimeNotes();
     else if (newNoteCount < lastNoteCount)
       removeExtraRealTimeNotes();
+    else if (track.polyrhythms.length < lastPolyrhythmCount)
+      addMissingRealTimePolyrhythms();
+    else if (track.polyrhythms.length > lastPolyrhythmCount)
+      removeExtraRealTimePolyrhythms();
+
     lastNoteCount = newNoteCount;
+    lastPolyrhythmCount = track.polyrhythms.length;
+  }
+
+
+  function addMissingRealTimePolyrhythms() {
+    track.polyrhythms.forEach(polyrhythm => {
+      if (!polyrhythmsWithTime.some(pwt => pwt.polyrhythm === polyrhythm))
+        addPolyrhythmWithTime(polyrhythm);
+    });
+  }
+
+
+  function removeExtraRealTimePolyrhythms() {
+    polyrhythmsWithTime = polyrhythmsWithTime.filter(
+      pwt => track.polyrhythms.some(polyrhythm => pwt.polyrhythm === polyrhythm)
+    );
+  }
+
+
+  function addPolyrhythmWithTime(polyrhythm:Polyrhythm) {
+    const startTime = timeCoordinator.convertToRealTime(polyrhythm.start.timing);
+    const endTime = timeCoordinator.convertToRealTime({
+      bar: polyrhythm.end.timing.bar,
+      step: polyrhythm.end.timing.step + 1 // May be an invalid timing, but should calculate just fine
+    });
+    const realTimeLength = endTime - startTime;
+
+    polyrhythmsWithTime.push({
+      startTime, polyrhythm,
+      realTimeNotes: polyrhythm.notes.map((note, index) => ({
+        note,
+        realTime: (index/polyrhythm.notes.length) * realTimeLength
+      }))
+    })
   }
 
 
