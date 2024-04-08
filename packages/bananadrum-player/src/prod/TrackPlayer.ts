@@ -144,7 +144,7 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
         note,
         realTime: (index/polyrhythm.notes.length) * realTimeLength
       }))
-    })
+    });
   }
 
 
