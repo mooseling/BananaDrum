@@ -5,6 +5,9 @@ import { TrackClipboard } from './TrackClipboard.js';
 import { getColour } from './colours.js';
 import { isSameTiming } from './utils.js';
 
+let polyrhythmCounter = 0;
+
+
 export function createTrack(arrangement:Arrangement, instrument:Instrument): Track {
   const id = getNewId();
   const publisher = createPublisher();
@@ -51,6 +54,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
   function addPolyrhythm(start:Note, end:Note, length:number) {
     polyrhythms.push({
       start, end,
+      id: `${++polyrhythmCounter}`,
       notes: Array.from(Array(length)).map((_, index) => createNote(track, {bar:1, step:index}))
     });
     publisher.publish();

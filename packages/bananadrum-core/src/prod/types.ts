@@ -105,6 +105,7 @@ export interface Track extends Subscribable {
 
 // Or should the note point to the polyrhythm? That's somewhat easier...
 export interface Polyrhythm {
+  id: string
   start: Note
   end: Note
   notes: Note[]
