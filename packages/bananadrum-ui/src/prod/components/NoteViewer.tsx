@@ -8,7 +8,7 @@ const audioContext = new AudioContext();
 const eventEngine = getEventEngine();
 
 
-export function NoteViewer({note}:{note:Note}): JSX.Element {
+export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolean}): JSX.Element {
   const arrangementPlayer = useContext(ArrangementPlayerContext);
   const timingPublisher:Subscribable = arrangementPlayer.currentTimingPublisher;
   const [isCurrent, setIsCurrent] = useState(isSameTiming(arrangementPlayer.currentTiming, note.timing));
@@ -25,7 +25,7 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
 
   useSubscription(timingPublisher, () => setIsCurrent(isSameTiming(arrangementPlayer.currentTiming, note.timing)));
 
-  const backgroundColor = (playing && isCurrent) ?
+  const backgroundColor = (!inPolyrhythm && playing && isCurrent) ?
     'var(--light-yellow)'                 // Light up notes as the music plays
     : note.noteStyle ? note.track.colour  // Otherwise, give active notes the track colour
     : '';                                 // Inactive notes have no inline background colour
@@ -35,7 +35,8 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
 
   return (
     <div
-      className={getClasses(note)}
+      id={`note-${note.id}`}
+      className={inPolyrhythm ? 'note-viewer' : getClasses(note)}
       onClick={() => cycleNoteStyle(note)}
       style={{backgroundColor}}
       data-timing={`${note.timing.bar}.${note.timing.step}`}
