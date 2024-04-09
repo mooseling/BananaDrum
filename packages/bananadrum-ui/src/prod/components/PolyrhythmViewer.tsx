@@ -1,11 +1,15 @@
 import { Polyrhythm } from "bananadrum-core";
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { MutableRefObject, useContext, useEffect, useRef, useState } from "react";
+import { useSubscription } from "../hooks/useSubscription";
+import { TrackWidthPublisherContext } from "./ArrangementViewer";
 import { NoteViewer } from "./NoteViewer";
 
 export function PolyrhythmViewer({polyrhythm}:{polyrhythm:Polyrhythm}): JSX.Element {
   const divRef: MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>();
   const [left, setLeft] = useState(0);
   const [width, setWidth] = useState(0);
+
+  const trackWidthPublisher = useContext(TrackWidthPublisherContext);
 
   const updatePositioning = () => {
     const startNoteViewer = document.getElementById(`note-${polyrhythm.start.id}`);
@@ -24,6 +28,8 @@ export function PolyrhythmViewer({polyrhythm}:{polyrhythm:Polyrhythm}): JSX.Elem
     resizeObserver.observe(divRef.current.closest('.track-viewers-wrapper'));
     return () => resizeObserver.disconnect();
   }, []);
+
+  useSubscription(trackWidthPublisher, updatePositioning);
 
   const calcedWidth = `calc(${width}px - var(--thick-border-width)`;
 

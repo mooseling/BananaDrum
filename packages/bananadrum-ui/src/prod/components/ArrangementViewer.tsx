@@ -13,6 +13,7 @@ import { AnimationEngine } from '../types.js';
 import { useSubscription } from '../hooks/useSubscription.js';
 
 export const ArrangementPlayerContext = createContext(null);
+export const TrackWidthPublisherContext = createContext(null);
 
 
 export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:ArrangementPlayer}): JSX.Element {
@@ -48,6 +49,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
 
   return (
     <ArrangementPlayerContext.Provider value={arrangementPlayer}>
+    <TrackWidthPublisherContext.Provider value={contentWidthPublisher}>
       <div className="arrangement-viewer overlay-wrapper">
         <div className="arrangement-viewer-head">
           <ArrangementControlsTop />
@@ -83,6 +85,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
           <Share />
         </Overlay>
       </div>
+    </TrackWidthPublisherContext.Provider>
     </ArrangementPlayerContext.Provider>
   );
 }
