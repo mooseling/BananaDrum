@@ -11,8 +11,11 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
   const notes:Note[] = [];
   const polyrhythms:Polyrhythm[] = [];
   const colour = getColour(instrument.colourGroup);
-  const track:Track = {id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm, getNoteAt, colour, clear, getNoteIterator,
-    subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
+  const track:Track = {
+    id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm,
+    getNoteAt, colour, clear, getNoteIterator,
+    subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
+  };
 
   // Initialise all Notes as rests
   arrangement.timeParams.timings.forEach(timing => notes.push(createNote(track, timing)));
