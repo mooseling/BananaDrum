@@ -105,23 +105,23 @@ function SoloMuteButtons(): JSX.Element {
 
 
 function NoteLine({track, callbacks}:{track:Track, callbacks:TrackViewerCallbacks}): JSX.Element {
-  const [, setNotes] = useState([...track.notes]);
-  const [, setPolyrhythms] = useState([...track.polyrhythms]);
+  const [notes, setNotes] = useState([...track.notes]);
+  const [polyrhythms, setPolyrhythms] = useState([...track.polyrhythms]);
 
   useSubscription(track, () => {
     setNotes([...track.notes]);
     setPolyrhythms([...track.polyrhythms]);
   });
 
-  const width:string = track.notes.length * widthPerNote + 'pt';
+  const width:string = notes.length * widthPerNote + 'pt';
 
   return (
     <div className="note-line" style={{minWidth:width}} onTouchStart={callbacks.noteLineTouchStart} onTouchMove={callbacks.noteLineTouchMove} onTouchEnd={callbacks.noteLineTouchEnd}>
       <div className="polyrhythms-wrapper">
-        {track.polyrhythms.map(polyrhythm => <PolyrhythmViewer polyrhythm={polyrhythm} key={polyrhythm.id} />)}
+        {polyrhythms.map(polyrhythm => <PolyrhythmViewer polyrhythm={polyrhythm} key={polyrhythm.id} />)}
       </div>
       <div className="notes-wrapper">
-        {track.notes.map(note => <NoteViewer note={note} key={note.id}/>)}
+        {notes.map(note => <NoteViewer note={note} key={note.id}/>)}
       </div>
     </div>
   );
