@@ -9,7 +9,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
   const id = getNewId();
   const publisher = createPublisher();
   const notes:Note[] = [];
-  const polyrhythms:Polyrhythm[] = [];
+  let polyrhythms:Polyrhythm[] = [];
   const colour = getColour(instrument.colourGroup);
   const track:Track = {
     id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm,
@@ -133,6 +133,8 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
         copyComposition(originalNoteCount);
       publisher.publish();
     }
+
+    removeBrokenPolyrhythms();
   }
 
 
@@ -151,6 +153,19 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
       clipboard.paste({start:pasteStart});
       numNotesCovered += clipboard.length;
     }
+  }
+
+
+  function removeBrokenPolyrhythms() {
+    if (!polyrhythms.length)
+      return;
+
+    const initialPolyrhythmCount = polyrhythms.length;
+
+    polyrhythms = polyrhythms.filter(polyrhythm => notes.includes(polyrhythm.start) && notes.includes(polyrhythm.end));
+
+    if (polyrhythms.length < initialPolyrhythmCount)
+      publisher.publish();
   }
 
 

@@ -7,7 +7,7 @@ import { Event, Interval, SoloMute, TimeCoordinator, TrackPlayer } from './types
 export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator): TrackPlayer {
   const publisher = createPublisher();
   const noteTimes:Map<Note, RealTime> = new Map();
-  const cachedPolyrhythms:Polyrhythm[] = [];
+  let cachedPolyrhythms:Polyrhythm[] = [];
 
   if (track.instrument.loaded) {
     fillInBasicNoteTimes();
@@ -132,19 +132,7 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
 
 
   function handleDroppedPolyrhythms() {
-    let index = 0;
-    let cachedPolyrhythm = cachedPolyrhythms[0];
-
-    while(cachedPolyrhythm) {
-      if (!track.polyrhythms.includes(cachedPolyrhythm)) {
-        cachedPolyrhythm.notes.forEach(noteTimes.delete);
-        cachedPolyrhythms.splice(index, 1);
-      } else {
-        index++;
-      }
-
-      cachedPolyrhythm = cachedPolyrhythms[index];
-    }
+    cachedPolyrhythms = cachedPolyrhythms.filter(cachedPolyrhythm => track.polyrhythms.includes(cachedPolyrhythm) || cachedPolyrhythm.notes.forEach(note => noteTimes.delete(note)))
   }
 
 
@@ -171,6 +159,16 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
       if (track.notes.includes(note))
         noteTimes.set(note, timeCoordinator.convertToRealTime(note.timing));
     }
+
+    // Destroy and recreate polyrhythms for simplicity
+    destroyPolyrhythms();
+    handleNewPolyrhythms();
+  }
+
+
+  function destroyPolyrhythms() {
+    cachedPolyrhythms.forEach(polyrhythm => polyrhythm.notes.forEach(note => noteTimes.delete(note)))
+    cachedPolyrhythms = [];
   }
 
 
