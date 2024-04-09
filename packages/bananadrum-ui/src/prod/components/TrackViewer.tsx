@@ -5,6 +5,7 @@ import { Overlay, toggleOverlay } from './Overlay.js';
 import { ArrangementPlayerContext } from './ArrangementViewer.js';
 import { TrackPlayer } from 'bananadrum-player';
 import { useSubscription } from '../hooks/useSubscription.js';
+import { PolyrhythmViewer } from './PolyrhythmViewer.js';
 
 
 type TrackViewerCallbacks = {
@@ -105,14 +106,23 @@ function SoloMuteButtons(): JSX.Element {
 
 function NoteLine({track, callbacks}:{track:Track, callbacks:TrackViewerCallbacks}): JSX.Element {
   const [, setNotes] = useState([...track.notes]);
+  const [, setPolyrhythms] = useState([...track.polyrhythms]);
 
-  useSubscription(track, () => setNotes([...track.notes]));
+  useSubscription(track, () => {
+    setNotes([...track.notes]);
+    setPolyrhythms([...track.polyrhythms]);
+  });
 
   const width:string = track.notes.length * widthPerNote + 'pt';
 
   return (
     <div className="note-line" style={{minWidth:width}} onTouchStart={callbacks.noteLineTouchStart} onTouchMove={callbacks.noteLineTouchMove} onTouchEnd={callbacks.noteLineTouchEnd}>
-      {track.notes.map(note => <NoteViewer note={note} key={note.id}/>)}
+      <div className="polyrhythms-wrapper">
+        {track.polyrhythms.map(polyrhythm => <PolyrhythmViewer polyrhythm={polyrhythm} key={polyrhythm.id} />)}
+      </div>
+      <div className="notes-wrapper">
+        {track.notes.map(note => <NoteViewer note={note} key={note.id}/>)}
+      </div>
     </div>
   );
 }
