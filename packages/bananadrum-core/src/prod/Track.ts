@@ -12,7 +12,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
   const id = getNewId();
   const publisher = createPublisher();
   const notes:Note[] = [];
-  let polyrhythms:Polyrhythm[] = [];
+  const polyrhythms:Polyrhythm[] = [];
   const colour = getColour(instrument.colourGroup);
   const track:Track = {
     id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm,
@@ -166,7 +166,13 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
 
     const initialPolyrhythmCount = polyrhythms.length;
 
-    polyrhythms = polyrhythms.filter(polyrhythm => notes.includes(polyrhythm.start) && notes.includes(polyrhythm.end));
+    let index = 0;
+    while (index < polyrhythms.length) {
+      if (!notes.includes(polyrhythms[index].start) || !notes.includes(polyrhythms[index].end))
+        polyrhythms.splice(index, 1);
+      else
+        index++;
+    }
 
     if (polyrhythms.length < initialPolyrhythmCount)
       publisher.publish();
