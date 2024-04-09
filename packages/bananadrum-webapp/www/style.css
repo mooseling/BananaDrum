@@ -317,7 +317,17 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 .note-line {
   transition: opacity 0.2s;
+}
+
+.note-line .notes-wrapper {
   display: flex;
+}
+
+.note-line .polyrhythm-viewer {
+  display: flex;
+  position: absolute;
+  z-index: 1;
+  padding-left: var(--thick-border-width);
 }
 
 .track-viewer.inaudible .note-line {
