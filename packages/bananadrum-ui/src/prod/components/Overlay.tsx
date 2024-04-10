@@ -39,7 +39,7 @@ export function Overlay({name, children}:{name:string, children:JSX.Element}): J
   }
 
   return (
-    <div className={className} onTransitionEnd={handleTransitionEnd}>
+    <div className={className} data-overlay-name={name} onTransitionEnd={handleTransitionEnd}>
       {children}
     </div>
   );
