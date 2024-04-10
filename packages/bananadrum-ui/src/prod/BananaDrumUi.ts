@@ -18,15 +18,14 @@ export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HT
   root.render(
     createElement(
       StrictMode,
-      {
-        children: createElement(
-          BananaDrumViewer,
-          {
-            arrangementPlayer: bananaDrumPlayer.arrangementPlayer,
-            animationEngine
-          }
-        )
-      }
+      {},
+      createElement(
+        BananaDrumViewer,
+        {
+          arrangementPlayer: bananaDrumPlayer.arrangementPlayer,
+          animationEngine
+        }
+      )
     )
   );
 
