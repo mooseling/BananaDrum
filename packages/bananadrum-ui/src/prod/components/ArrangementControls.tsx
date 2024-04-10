@@ -6,6 +6,8 @@ import { ShareButton } from './ShareButton.js';
 import { NumberInput } from './General.js';
 import { getEventEngine } from 'bananadrum-player';
 import { useSubscription } from '../hooks/useSubscription.js';
+import { SelectionControls } from './SelectionControls.js';
+import { SelectionManagerContext } from '../BananaDrumUi.js';
 
 
 const eventEngine = getEventEngine();
@@ -16,8 +18,12 @@ export function ArrangementControlsTop(): JSX.Element {
   useSubscription(eventEngine, () => setPlaying(eventEngine.state === 'playing'));
 
   const arrangement:Arrangement = useContext(ArrangementPlayerContext).arrangement;
+
+  const selectionManager = useContext(SelectionManagerContext);
+  useSubscription(selectionManager, () => toggleOverlay('selection_controls', selectionManager.selectedNotes.length ? 'show' : 'hide'));
+
   return (
-    <div className="arrangement-controls arrangement-controls-top">
+    <div className="arrangement-controls arrangement-controls-top overlay-wrapper">
       {
         playing ? (
           <button className="playback-control push-button" onClick={() => eventEngine.stop()}>
@@ -34,6 +40,9 @@ export function ArrangementControlsTop(): JSX.Element {
       <SmallSpacer />
       <ExpandingSpacer />
       <ShareButton />
+      <Overlay name="selection_controls">
+        <SelectionControls />
+      </Overlay>
     </div>
   );
 }

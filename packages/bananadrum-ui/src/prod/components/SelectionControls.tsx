@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { SelectionManagerContext } from "../BananaDrumUi";
 import { NumberInput } from "./General";
-import { closeAllOverlays, toggleOverlay } from "./Overlay";
 
 export function SelectionControls(): JSX.Element {
 
