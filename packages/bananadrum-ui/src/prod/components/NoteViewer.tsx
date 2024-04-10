@@ -2,6 +2,7 @@ import { Note, NoteStyle, Subscribable, isSameTiming } from 'bananadrum-core';
 import { getEventEngine, createAudioBufferPlayer } from 'bananadrum-player';
 import { useState, useContext } from 'react';
 import { ArrangementPlayerContext } from './ArrangementViewer.js';
+import { SelectionManagerContext } from './ArrangementViewer.js';
 import { useSubscription } from '../hooks/useSubscription.js';
 
 const audioContext = new AudioContext();
@@ -10,9 +11,12 @@ const eventEngine = getEventEngine();
 
 export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolean}): JSX.Element {
   const arrangementPlayer = useContext(ArrangementPlayerContext);
+  const selectionManager = useContext(SelectionManagerContext);
   const timingPublisher:Subscribable = arrangementPlayer.currentTimingPublisher;
+
   const [isCurrent, setIsCurrent] = useState(isSameTiming(arrangementPlayer.currentTiming, note.timing));
   const [playing, setPlaying] = useState(eventEngine.state === 'playing')
+  const [selected, setSelected] = useState(selectionManager.selectedNotes.includes(note));
 
   useSubscription(eventEngine, () => {
     if (eventEngine.state === 'playing'){
@@ -24,20 +28,33 @@ export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolea
   });
 
   useSubscription(timingPublisher, () => setIsCurrent(isSameTiming(arrangementPlayer.currentTiming, note.timing)));
+  useSubscription(selectionManager, () => setSelected(selectionManager.selectedNotes.includes(note)));
 
   const backgroundColor = (!inPolyrhythm && playing && isCurrent) ?
-    'var(--light-yellow)'                 // Light up notes as the music plays
-    : note.noteStyle ? note.track.colour  // Otherwise, give active notes the track colour
-    : '';                                 // Inactive notes have no inline background colour
+    'var(--light-yellow)'      // Light up notes as the music plays
+    : selected ?
+      'blue' :
+        note.noteStyle
+          ? note.track.colour  // Otherwise, give active notes the track colour
+          : '';                // Inactive notes have no inline background colour
 
   const [noteStyle, setNoteStyle] = useState(note.noteStyle)
   useSubscription(note, () => setNoteStyle(note.noteStyle));
+
+  const handleClick = (event:React.MouseEvent) => {
+    if (event.shiftKey) {
+      if (!inPolyrhythm)
+        selectionManager.handleClick(note);
+    } else {
+      cycleNoteStyle(note);
+    }
+  }
 
   return (
     <div
       id={`note-${note.id}`}
       className={inPolyrhythm ? 'note-viewer' : getClasses(note)}
-      onClick={() => cycleNoteStyle(note)}
+      onClick={handleClick}
       style={{backgroundColor}}
       data-timing={`${note.timing.bar}.${note.timing.step}`}
     >
