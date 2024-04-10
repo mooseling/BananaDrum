@@ -2,7 +2,7 @@ import { Note, NoteStyle, Subscribable, isSameTiming } from 'bananadrum-core';
 import { getEventEngine, createAudioBufferPlayer } from 'bananadrum-player';
 import { useState, useContext } from 'react';
 import { ArrangementPlayerContext } from './ArrangementViewer.js';
-import { SelectionManagerContext } from './ArrangementViewer.js';
+import { SelectionManagerContext } from '../BananaDrumUi.js';
 import { useSubscription } from '../hooks/useSubscription.js';
 
 const audioContext = new AudioContext();
@@ -47,7 +47,10 @@ export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolea
         selectionManager.handleClick(note);
     } else {
       cycleNoteStyle(note);
+      selectionManager.clearSelection();
     }
+
+    event.stopPropagation();
   }
 
   return (

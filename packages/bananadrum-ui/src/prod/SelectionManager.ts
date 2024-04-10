@@ -11,6 +11,8 @@ export function createSelectionManager(): SelectionManager {
   const selectedNotes:Note[] = [];
   let anchor:Note|null = null;
 
+  window.addEventListener('click', clearSelection);
+
   return {
     handleClick, clearSelection, selectedNotes,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
@@ -95,5 +97,6 @@ export function createSelectionManager(): SelectionManager {
 
   function clearSelection() {
     selectedNotes.splice(0);
+    publisher.publish();
   }
 }

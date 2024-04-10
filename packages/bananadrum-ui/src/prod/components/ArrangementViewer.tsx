@@ -11,11 +11,9 @@ import { useState, useEffect, createContext, useRef, useContext, TouchEvent } fr
 import { AnimationEngineContext } from './BananaDrumViewer.js';
 import { AnimationEngine } from '../types.js';
 import { useSubscription } from '../hooks/useSubscription.js';
-import { createSelectionManager, SelectionManager } from '../SelectionManager.js';
 
 export const ArrangementPlayerContext = createContext<ArrangementPlayer>(null);
 export const TrackWidthPublisherContext = createContext<Publisher>(null);
-export const SelectionManagerContext = createContext<SelectionManager>(null);
 
 
 export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:ArrangementPlayer}): JSX.Element {
@@ -34,7 +32,6 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
   const updateScrollShadows = () => setScrollShadowClasses(getScrollShadowClasses(ref.current));
   const resizeObserver = new ResizeObserver(updateScrollShadows);
   const contentWidthPublisher = createPublisher();
-  const selectionManager = createSelectionManager();
 
   const {trackViewerCallbacks, handleWheel, onScrollbarGrab} = useAutoFollow(animationEngine, arrangementPlayer, ref);
 
@@ -53,7 +50,6 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
   return (
     <ArrangementPlayerContext.Provider value={arrangementPlayer}>
     <TrackWidthPublisherContext.Provider value={contentWidthPublisher}>
-    <SelectionManagerContext.Provider value={selectionManager}>
       <div className="arrangement-viewer overlay-wrapper">
         <div className="arrangement-viewer-head">
           <ArrangementControlsTop />
@@ -89,7 +85,6 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
           <Share />
         </Overlay>
       </div>
-    </SelectionManagerContext.Provider>
     </TrackWidthPublisherContext.Provider>
     </ArrangementPlayerContext.Provider>
   );
