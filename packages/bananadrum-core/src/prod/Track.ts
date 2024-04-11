@@ -67,7 +67,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
   }
 
 
-  function *getNoteIterator() {
+  function *getNoteIterator(polyrhythmsToIgnore:Polyrhythm[] = []) {
     let index = 0;
     let currentPolyrhythm:Polyrhythm = null;
     let note = notes[0];
@@ -89,7 +89,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
         note = notes[index];
 
         const linkedPolyrhythm = polyrhythms.find(polyrhythm => polyrhythm.start === note);
-        if (linkedPolyrhythm) {
+        if (linkedPolyrhythm && !polyrhythmsToIgnore.includes(linkedPolyrhythm)) {
           index = 0;
           currentPolyrhythm = linkedPolyrhythm;
           note = currentPolyrhythm.notes[0];

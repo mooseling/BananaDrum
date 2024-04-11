@@ -100,7 +100,7 @@ export interface Track extends Subscribable {
   getNoteAt(timing:Timing): Note
   colour: string // A specific hsl() string
   clear(): void
-  getNoteIterator(): IterableIterator<Note>
+  getNoteIterator(polyrhythmsToIgnore?:Polyrhythm[]): IterableIterator<Note>
 }
 
 // Or should the note point to the polyrhythm? That's somewhat easier...
