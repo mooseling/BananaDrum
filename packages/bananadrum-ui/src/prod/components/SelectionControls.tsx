@@ -21,11 +21,12 @@ export function SelectionControls(): JSX.Element {
 
   return (
     <div className="overlay-wrapper">
-      New number of notes:
-      <NumberInput
-        getValue={() => '0'}
-        setValue={createPolyrhythm}
-      />
+      <div className="time-control">
+      New number of notes: <NumberInput
+          getValue={() => '0'}
+          setValue={createPolyrhythm}
+        />
+      </div>
     </div>
   );
 }
