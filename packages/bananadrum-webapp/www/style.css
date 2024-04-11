@@ -352,6 +352,7 @@ So we're putting them in each track-viewer, where we can position them with no p
   -webkit-user-select: none;
   user-select: none;
   background-color: white;
+  overflow-x: hidden;
 }
 
 .note-viewer * {
@@ -366,6 +367,10 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 .note-viewer.start-of-bar:not(:first-child) {
     border-left: 5pt solid var(--dark-gray);
+}
+
+.polyrhythm-viewer .note-viewer {
+  flex-shrink: 1;
 }
 
 .note-details-viewer {
