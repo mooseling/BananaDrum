@@ -1,5 +1,5 @@
 import bigInt from 'big-integer';
-import { Arrangement, Track } from './types.js';
+import { Arrangement, Note, Polyrhythm, Track } from './types.js';
 import { getLibrary } from './Library.js';
 import { createTimeParams } from './TimeParams.js';
 import { createArrangement } from './Arrangement.js';
@@ -102,37 +102,142 @@ function convertToBaseN(input:bigInt.BigInteger, base:number): number[] {
 
 
 function serialiseTrack(track:Track): string {
-  const base:number = Object.keys(track.instrument.noteStyles).length + 1; // + 1 for rests
-  const noteStyles:number[] = track.notes.map(note => characterToNumber[note.noteStyle?.id || '0']);
-  const musicAsNumber = interpretAsBaseN(noteStyles, base);
-  const musicAsString = urlEncodeNumber(musicAsNumber);
-  return track.instrument.id + musicAsString;
+  const serialisedNotes = serialiseNotes(track);
+  let serialisedTrack = track.instrument.id + serialisedNotes;
+  if (track.polyrhythms.length)
+    serialisedTrack += '-' + serialisePolyrhythms(track);
+  return serialisedTrack;
 }
 
 
-function deserlialiseTrack(seriliasedTrack:string, arrangement:Arrangement) {
-  const instrumentId = seriliasedTrack[0];
-  const musicAsString = seriliasedTrack.substring(1);
-  const timings = arrangement.timeParams.timings;
+function serialiseNotes(track:Track): string {
+  const noteStyles:number[] = [];
+  const noteIterator = track.getNoteIterator();
+  for (const note of noteIterator) {
+    noteStyles.push(characterToNumber[note.noteStyle?.id || '0'])
+  }
+
+  const base:number = Object.keys(track.instrument.noteStyles).length + 1; // + 1 for rests
+  const notesAsNumber = interpretAsBaseN(noteStyles, base);
+
+  return urlEncodeNumber(notesAsNumber);
+}
+
+
+function serialisePolyrhythms(track:Track): string {
+  const serialisedPolyrhythms = [];
+
+  // We do polyrhythms in reverse order in order to support nested polyrhthms
+  // When we rebuild the polyrhythms one-by-one, the note-iterator is going to change after each one
+  // So when we serialise, we have to mimic that behaviour in reverse
+
+  const polyrhythmsToIgnore:Polyrhythm[] = [];
+  for (let polyrhythmIndex = track.polyrhythms.length - 1; polyrhythmIndex >= 0; polyrhythmIndex--) {
+    const polyrhythm = track.polyrhythms[polyrhythmIndex];
+    polyrhythmsToIgnore.push(polyrhythm);
+    let start:number;
+    let startEndDifference:number;
+
+    const noteIterator = track.getNoteIterator(polyrhythmsToIgnore);
+    let noteIndex = 0;
+    for (const note of noteIterator) {
+      if (note === polyrhythm.start)
+        start = noteIndex;
+      if (note === polyrhythm.end) {
+        startEndDifference = noteIndex - start;
+        break;
+      }
+      noteIndex++;
+    }
+
+    const urlEncodedStart = urlEncodeNumber(bigInt(start));
+    const urlEncodedStartEndDifference = urlEncodeNumber(bigInt(startEndDifference));
+    const urlEncodedPolyrhythmLength = urlEncodeNumber(bigInt(polyrhythm.notes.length));
+
+    serialisedPolyrhythms.unshift(`${urlEncodedStart}-${urlEncodedStartEndDifference}-${urlEncodedPolyrhythmLength}`);
+  }
+
+  return serialisedPolyrhythms.join('-');
+}
+
+
+function deserlialiseTrack(serialisedTrack:string, arrangement:Arrangement) {
+  const instrumentId = serialisedTrack[0];
 
   const instrument = getLibrary().getInstrument(instrumentId);
   if (!instrument)
     throw new Error('Instrument not found');
 
-  const track = arrangement.addTrack(instrument); // track should have full set of notes, all rests
+  const track = arrangement.addTrack(instrument);
 
-  const musicAsNumber = urlDecodeNumber(musicAsString);
-  const base = Object.keys(instrument.noteStyles).length + 1; // + 1 for rests
-  const musicInBaseN = convertToBaseN(musicAsNumber, base);
-  while (musicInBaseN.length < timings.length)
-    musicInBaseN.unshift(0); // pad number with leading 0s
+  let splitterIndex = serialisedTrack.indexOf('-');
+  if (splitterIndex === -1)
+    splitterIndex = serialisedTrack.length;
 
-  musicInBaseN.forEach((value, column) => {
-    if (value) { // Rests will have value 0
-      const noteStyleId = numberToCharacter[value];
-      track.notes[column].noteStyle = instrument.noteStyles[noteStyleId];
+  const serialisedNotes = serialisedTrack.substring(1, splitterIndex);
+  const serialisedPolyrhythms = serialisedTrack.substring(splitterIndex + 1);
+
+  deserialisePolyrhythms(track, serialisedPolyrhythms);
+  deserialiseNotes(track, serialisedNotes);
+}
+
+
+function deserialiseNotes(track:Track, serialisedNotes:string) {
+  const notesAsNumber = urlDecodeNumber(serialisedNotes);
+  const base = Object.keys(track.instrument.noteStyles).length + 1; // + 1 for rests
+  const musicInBaseN = convertToBaseN(notesAsNumber, base);
+
+  const noteIterator = track.getNoteIterator();
+  let fullNoteCount = 0;
+  while (!noteIterator.next().done) {
+    fullNoteCount++;
+  }
+  const leadingZeroesRequired = fullNoteCount - musicInBaseN.length;
+  musicInBaseN.unshift(...Array.from(new Array(leadingZeroesRequired)).map(() => 0));
+
+  let index = 0;
+  for (const note of track.getNoteIterator()) {
+    const noteStyleNumber = musicInBaseN[index];
+    if (noteStyleNumber) { // Rests will have value 0
+      note.noteStyle = track.instrument.noteStyles[numberToCharacter[noteStyleNumber]];
     }
-  })
+
+    index++;
+  }
+}
+
+
+function deserialisePolyrhythms(track:Track, serialisedPolyrhythms:string) {
+  if (serialisedPolyrhythms === '')
+    return;
+
+  const chunks = serialisedPolyrhythms.split('-');
+
+  // Each polyrhythm is encoded in 3 chunks
+  for (let chunkIndex = 0; chunkIndex < chunks.length; chunkIndex += 3) {
+    const startIndex = urlDecodeNumber(chunks[chunkIndex]).toJSNumber();
+    const startEndDifference = urlDecodeNumber(chunks[chunkIndex + 1]).toJSNumber();
+    const polyrhythmLength = urlDecodeNumber(chunks[chunkIndex + 2]).toJSNumber();
+
+    const endIndex = startIndex + startEndDifference;
+
+    let startNote:Note;
+    let endNote:Note;
+
+    let index = 0;
+    for (const note of track.getNoteIterator()) {
+      if (index === startIndex)
+        startNote = note;
+      if (index === endIndex) {
+        endNote = note;
+        break;
+      }
+
+      index++;
+    }
+
+    track.addPolyrhythm(startNote, endNote, polyrhythmLength);
+  }
 }
 
 
