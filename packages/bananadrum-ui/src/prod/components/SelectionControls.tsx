@@ -8,7 +8,7 @@ export function SelectionControls(): JSX.Element {
 
   const createPolyrhythm = (inputValue:string) => {
     const polyrhythmLength = Number(inputValue);
-    if (isNaN(polyrhythmLength))
+    if (!polyrhythmLength)
       return;
 
     const start = selectionManager.getFirst();

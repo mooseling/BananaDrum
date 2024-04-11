@@ -52,6 +52,9 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
 
 
   function addPolyrhythm(start:Note, end:Note, length:number) {
+    if (length < 1)
+      return;
+
     polyrhythms.push({
       start, end,
       id: `${++polyrhythmCounter}`,
