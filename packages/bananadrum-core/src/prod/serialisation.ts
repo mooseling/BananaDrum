@@ -12,7 +12,7 @@ import { createArrangement } from './Arrangement.js';
 
 
 export function getShareLink(arrangement:Arrangement): string {
-  const query = serilaiseArrangement(arrangement);
+  const query = serialiseArrangement(arrangement);
   return 'https://bananadrum.net/?a=' + query;
 }
 
@@ -25,7 +25,7 @@ export function deserialiseArrangement(serialisedArrangement:string): Arrangemen
     Number(chunks[1]),           // tempo
     Number(chunks[2]),           // length
     chunks[3].replace('-', '/'), // pulse
-    Number(chunks[4])            // step resolutin
+    Number(chunks[4])            // step resolution
   );
   const arrangement = createArrangement(timeParams);
 
@@ -136,7 +136,7 @@ function deserlialiseTrack(seriliasedTrack:string, arrangement:Arrangement) {
 }
 
 
-function serilaiseArrangement(arrangement:Arrangement): string {
+function serialiseArrangement(arrangement:Arrangement): string {
   const {timeParams:tp} = arrangement;
   let output = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
   output = output.replaceAll('/', '-');

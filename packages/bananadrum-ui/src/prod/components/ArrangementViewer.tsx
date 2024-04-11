@@ -39,7 +39,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
   useSubscription(arrangement.timeParams, () => setTimeout(() => {
     updateScrollShadows();
     contentWidthPublisher.publish();
-  }, 0)); // timeout so DOM updates first)
+  }, 0)); // timeout so DOM updates first
 
   useEffect(() => {
     setTimeout(updateScrollShadows, 0);
