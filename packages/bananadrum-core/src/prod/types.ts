@@ -99,6 +99,7 @@ export interface Track extends Subscribable {
   removePolyrhythm(polyrhythm:Polyrhythm): void
   getNoteAt(timing:Timing): Note
   colour: string // A specific hsl() string
+  selectColour: string // A complimentary hsl() string
   clear(): void
   getNoteIterator(polyrhythmsToIgnore?:Polyrhythm[]): IterableIterator<Note>
 }
