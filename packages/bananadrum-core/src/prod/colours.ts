@@ -47,7 +47,7 @@ const colours: {[colourName:string]:string[]} = {
   ]
 };
 
-let nextColourIndex = {blue:0, purple:0, green:0, orange:0, yellow:0};
+const nextColourIndex = {blue:0, purple:0, green:0, orange:0, yellow:0};
 
 // Return a hsl() colour value
 export function getColour(colourName:string): string {
