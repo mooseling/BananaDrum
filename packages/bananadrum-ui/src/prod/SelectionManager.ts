@@ -38,11 +38,16 @@ export function createSelectionManager(): SelectionManager {
   }
 
 
+  function startSelection(note:Note) {
+    selectedNotes.push(note);
+    anchor = first = last = note;
+    publisher.publish();
+  }
+
+
   function handleClick(clickedNote:Note) {
     if (!selectedNotes.length) {
-      selectedNotes.push(clickedNote);
-      anchor = first = last = clickedNote;
-      publisher.publish();
+      startSelection(clickedNote);
       return;
     }
 
@@ -52,8 +57,11 @@ export function createSelectionManager(): SelectionManager {
       return;
     }
 
-    if (anchor.track !== clickedNote.track)
+    if (anchor.track !== clickedNote.track) {
+      selectedNotes.splice(0);
+      startSelection(clickedNote);
       return;
+    }
 
     if (!selectedNotes.includes(clickedNote))
       selectedNotes.push(clickedNote);
