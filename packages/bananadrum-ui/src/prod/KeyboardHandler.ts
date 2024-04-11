@@ -1,5 +1,5 @@
 import { EventEngine } from 'bananadrum-player';
-import { anyOverlaysAreOpen, closeAllOverlays } from './components/Overlay.js';
+import { closeAllOverlays } from './components/Overlay.js';
 import { SelectionManager } from './SelectionManager.js';
 
 
@@ -10,10 +10,8 @@ export function createKeyboardHandler(eventEngine:EventEngine, selectionManager:
 
   function handleKeyDown(event:KeyboardEvent): void {
     if (event.key === 'Escape') {
-      if (anyOverlaysAreOpen())
-        closeAllOverlays();
-      else
-        selectionManager.clearSelection();
+      closeAllOverlays();
+      selectionManager.clearSelection();
     } else if (event.key === ' ') {
       if (eventEngine.state === 'stopped')
         eventEngine.play();
