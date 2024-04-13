@@ -116,5 +116,6 @@ export interface Note extends Subscribable {
   id: string
   timing: Timing
   track: Track
+  polyrhythm:Polyrhythm
   noteStyle: NoteStyle|null // null means this is a rest
 }

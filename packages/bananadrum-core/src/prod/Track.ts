@@ -55,11 +55,16 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
     if (length < 1)
       return;
 
-    polyrhythms.push({
+    const polyrhythm = {
       start, end,
       id: `${++polyrhythmCounter}`,
-      notes: Array.from(Array(length)).map((_, index) => createNote(track, {bar:1, step:index}))
-    });
+      notes:[]
+    };
+
+    polyrhythm.notes = Array.from(Array(length))
+      .map((_, index) => createNote(track, {bar:1, step:index}, polyrhythm));
+
+    polyrhythms.push(polyrhythm);
     publisher.publish();
   }
 
