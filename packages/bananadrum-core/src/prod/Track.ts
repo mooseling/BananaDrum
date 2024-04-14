@@ -75,33 +75,32 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
   }
 
 
+  // The note-iterator is what makes polyrhythms work
+  // polyrhythmsToIgnore is for serialising, so we can walk the notes as if the polyrhythm hasn't been crated yet
   function *getNoteIterator(polyrhythmsToIgnore:Polyrhythm[] = []) {
     let index = 0;
-    let currentPolyrhythm:Polyrhythm = null;
-    let note = notes[0];
+    let currentNoteSource = track.notes;
+    let note:Note;
 
-    while (note) {
-      yield note;
+    while (note = currentNoteSource[index], note !== undefined) {
 
-      index++;
-
-      if (currentPolyrhythm) {
-        note = currentPolyrhythm.notes[index];
-
-        if (!note) {
-          index = notes.indexOf(currentPolyrhythm.end) + 1;
-          currentPolyrhythm = null;
-          note = notes[index];
-        }
+      // First, ascend polyrhythms until we reach a visible note
+      // Could speed this up with a map
+      const linkedPolyrhyhmUp = polyrhythms.find(polyrhythm => polyrhythm.start === note);
+      if (linkedPolyrhyhmUp && !polyrhythmsToIgnore.includes(linkedPolyrhyhmUp)) {
+        currentNoteSource = linkedPolyrhyhmUp.notes
+        index = 0;
       } else {
-        note = notes[index];
+        yield note;
 
-        const linkedPolyrhythm = polyrhythms.find(polyrhythm => polyrhythm.start === note);
-        if (linkedPolyrhythm && !polyrhythmsToIgnore.includes(linkedPolyrhythm)) {
-          index = 0;
-          currentPolyrhythm = linkedPolyrhythm;
-          note = currentPolyrhythm.notes[0];
+        // If we're at the end of a polyrhythm, descend until we're not
+        while (note.polyrhythm && !currentNoteSource[index + 1]) {
+          note = note.polyrhythm.end;
+          currentNoteSource = note.polyrhythm?.notes ?? note.track.notes;
+          index = currentNoteSource.indexOf(note);
         }
+
+        index++;
       }
     }
   }
