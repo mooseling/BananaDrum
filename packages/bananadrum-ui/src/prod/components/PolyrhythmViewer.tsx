@@ -15,8 +15,13 @@ export function PolyrhythmViewer({polyrhythm}:{polyrhythm:Polyrhythm}): JSX.Elem
     const startNoteViewer = document.getElementById(`note-${polyrhythm.start.id}`);
     const endNoteViewer = document.getElementById(`note-${polyrhythm.end.id}`);
 
-    const startLeft = startNoteViewer.offsetLeft;
-    const endLeft = endNoteViewer.offsetLeft + endNoteViewer.offsetWidth;
+    let startLeft = startNoteViewer.offsetLeft;
+    if (polyrhythm.start.polyrhythm) // Start note is inside a polyrhythm, so the offset is likely only part of the picture
+      startLeft += (startNoteViewer.closest('.polyrhythm-viewer') as HTMLElement).offsetLeft;
+
+    let endLeft = endNoteViewer.offsetLeft + endNoteViewer.offsetWidth;
+    if (polyrhythm.end.polyrhythm)
+      endLeft += (endNoteViewer.closest('.polyrhythm-viewer') as HTMLElement).offsetLeft;
 
     setLeft(startLeft);
     setWidth(endLeft - startLeft);
