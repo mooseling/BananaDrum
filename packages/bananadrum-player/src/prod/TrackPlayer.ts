@@ -141,9 +141,15 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
 
     const noteIterator = track.getNoteIterator();
     let nextNote:Note;
+    let foundPolyrhythm = false;
     for (const note of noteIterator) {
-      if (note === polyrhythm.end) {
-        nextNote = noteIterator.next()?.value;
+      if (foundPolyrhythm) {
+        if (note.polyrhythm !== polyrhythm) {
+          nextNote = note;
+          break;
+        }
+      } else if (note.polyrhythm === polyrhythm) {
+        foundPolyrhythm = true;
       }
     }
 
@@ -152,8 +158,9 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
       : timeCoordinator.realTimeLength;
 
     const realTimeLength = endTime - startTime;
+    const timePerNote = realTimeLength / polyrhythm.notes.length;
 
-    polyrhythm.notes.forEach((note, index) => noteTimes.set(note, startTime + (realTimeLength * index / polyrhythm.notes.length)));
+    polyrhythm.notes.forEach((note, index) => noteTimes.set(note, startTime + (index * timePerNote)));
   }
 
 
