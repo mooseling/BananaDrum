@@ -138,10 +138,19 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
 
   function addNoteTimesForPolyrhythm(polyrhythm:Polyrhythm) {
     const startTime = noteTimes.get(polyrhythm.start);
-    const endTime = timeCoordinator.convertToRealTime({
-      bar: polyrhythm.end.timing.bar,
-      step: polyrhythm.end.timing.step + 1 // May be an invalid timing, but should calculate just fine
-    });
+
+    const noteIterator = track.getNoteIterator();
+    let nextNote:Note;
+    for (const note of noteIterator) {
+      if (note === polyrhythm.end) {
+        nextNote = noteIterator.next()?.value;
+      }
+    }
+
+    const endTime = nextNote
+      ? noteTimes.get(nextNote)
+      : timeCoordinator.realTimeLength;
+
     const realTimeLength = endTime - startTime;
 
     polyrhythm.notes.forEach((note, index) => noteTimes.set(note, startTime + (realTimeLength * index / polyrhythm.notes.length)));

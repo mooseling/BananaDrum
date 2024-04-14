@@ -68,6 +68,7 @@ export interface LoopInterval extends Interval {
 }
 
 export interface TimeCoordinator extends Subscribable {
+  readonly realTimeLength: RealTime
   convertToRealTime(timing:Timing): RealTime
   convertToLoopIntervals(interval:Interval): LoopInterval[]
   convertToAudioTime(realTime:RealTime, loopNumber:number): RealTime
