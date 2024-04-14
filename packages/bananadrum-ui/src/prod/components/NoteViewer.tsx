@@ -43,8 +43,7 @@ export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolea
 
   const handleClick = (event:React.MouseEvent) => {
     if (event.shiftKey) {
-      if (!inPolyrhythm)
-        selectionManager.handleClick(note);
+      selectionManager.handleClick(note);
     } else {
       cycleNoteStyle(note);
       selectionManager.clearSelection();
