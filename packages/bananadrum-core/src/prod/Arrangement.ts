@@ -8,7 +8,7 @@ export function createArrangement(timeParams:TimeParams, title?:string): Arrange
   const arrangement:Arrangement = {
     timeParams, tracks, addTrack, removeTrack,
     get title() {return title;},
-    set title(newTitle:string) {title = newTitle},
+    set title(newTitle:string) {title = newTitle; publisher.publish();},
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
   };
 
