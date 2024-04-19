@@ -173,16 +173,38 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
 
     const initialPolyrhythmCount = polyrhythms.length;
 
+    // Iterate from earliest polyrhtyhms to latest
+    // Therefore, if we consider a nested polyrhythm, we know its root polyrhythms have already been checked
     let index = 0;
     while (index < polyrhythms.length) {
-      if (!notes.includes(polyrhythms[index].start) || !notes.includes(polyrhythms[index].end))
+      const {start, end} = polyrhythms[index];
+
+      if (start.polyrhythm) {
+        if (!polyrhythms.includes(start.polyrhythm)) {
+          polyrhythms.splice(index, 1);
+          continue;
+        }
+      } else if (!notes.includes(start)) {
         polyrhythms.splice(index, 1);
-      else
-        index++;
+        continue;
+      }
+
+      if (end.polyrhythm) {
+        if (!polyrhythms.includes(end.polyrhythm)) {
+          polyrhythms.splice(index, 1);
+          continue;
+        }
+      } else if (!notes.includes(end)) {
+        polyrhythms.splice(index, 1);
+        continue;
+      }
+
+      index++;
     }
 
     if (polyrhythms.length < initialPolyrhythmCount)
       publisher.publish();
+
   }
 
 
