@@ -1,5 +1,5 @@
 import { Polyrhythm } from "bananadrum-core";
-import { MutableRefObject, useContext, useEffect, useRef, useState } from "react";
+import { MutableRefObject, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useSubscription } from "../hooks/useSubscription";
 import { TrackWidthPublisherContext } from "./ArrangementViewer";
 import { NoteViewer } from "./NoteViewer";
@@ -38,9 +38,23 @@ export function PolyrhythmViewer({polyrhythm}:{polyrhythm:Polyrhythm}): JSX.Elem
 
   const calcedWidth = `calc(${width}px - var(--thick-border-width)`;
 
+
+  const colour = useMemo(() => colours[colourIndex++ % colours.length], []);
+
   return (
-    <div className="polyrhythm-viewer" ref={divRef} style={{left, width:calcedWidth}}>
+    <div className="polyrhythm-viewer" ref={divRef} style={{left, width:calcedWidth, backgroundColor:colour}}>
       {polyrhythm.notes.map(note => <NoteViewer note={note} inPolyrhythm={true} key={note.id}/>)}
     </div>
   );
 }
+
+
+let colourIndex = 0;
+
+const colours = [
+  'hsl(268, 61%, 69%)',
+  'hsl(200, 97%, 51%)',
+  'hsl(182, 63%, 34%)',
+  'hsl(25, 80%, 63%)',
+  'hsl(52, 100%, 70%)'
+];
