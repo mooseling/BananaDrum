@@ -90,7 +90,7 @@ function TimeControls({arrangement}:{arrangement:Arrangement}): JSX.Element {
         timeParams.pulse = '1/4';
         break;
       case '6/8':
-        timeParams.stepResolution = 16;
+        timeParams.stepResolution = 8;
         timeParams.pulse = '3/8';
         break;
       case '5/4':
