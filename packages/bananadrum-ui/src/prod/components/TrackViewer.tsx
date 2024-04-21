@@ -1,8 +1,8 @@
-import { useState, createContext, useContext, TouchEvent } from 'react';
-import { Track } from 'bananadrum-core';
+import { useState, createContext, useContext, TouchEvent, useLayoutEffect, useRef, useEffect } from 'react';
+import { Polyrhythm, Track } from 'bananadrum-core';
 import { NoteViewer } from './NoteViewer.js';
 import { Overlay, toggleOverlay } from './Overlay.js';
-import { ArrangementPlayerContext } from './ArrangementViewer.js';
+import { ArrangementPlayerContext, NoteWidthContext } from './ArrangementViewer.js';
 import { TrackPlayer } from 'bananadrum-player';
 import { useSubscription } from '../hooks/useSubscription.js';
 import { PolyrhythmViewer } from './PolyrhythmViewer.js';
@@ -105,6 +105,7 @@ function SoloMuteButtons(): JSX.Element {
 
 
 function NoteLine({track, callbacks}:{track:Track, callbacks:TrackViewerCallbacks}): JSX.Element {
+  const noteLineRef = useRef<HTMLDivElement>(null);
   const [notes, setNotes] = useState([...track.notes]);
   const [polyrhythms, setPolyrhythms] = useState([...track.polyrhythms]);
 
@@ -113,10 +114,22 @@ function NoteLine({track, callbacks}:{track:Track, callbacks:TrackViewerCallback
     setPolyrhythms([...track.polyrhythms]);
   });
 
-  const width:string = notes.length * widthPerNote + 'pt';
+  const minWidth:string = notes.length * widthPerNote + 'pt';
+
+  // Polyrhythms need to reposition dynamically
+  useLayoutEffect(() => {
+    if (!noteLineRef)
+      return;
+
+    // Adjust polyrhythms in order, since nested polyrhythms will be repositioned based on earlier polyrhythms
+    polyrhythms.forEach(polyrhythm => {
+      const polyrhythmViewer = noteLineRef.current.querySelector(`#polyrhythm-${polyrhythm.id}`) as HTMLDivElement;
+      repositionPolyrhythmViewer(polyrhythm, polyrhythmViewer);
+    });
+  }, [polyrhythms.length, useContext(NoteWidthContext)]);
 
   return (
-    <div className="note-line" style={{minWidth:width}} onTouchStart={callbacks.noteLineTouchStart} onTouchMove={callbacks.noteLineTouchMove} onTouchEnd={callbacks.noteLineTouchEnd}>
+    <div className="note-line" ref={noteLineRef} style={{minWidth:minWidth}} onTouchStart={callbacks.noteLineTouchStart} onTouchMove={callbacks.noteLineTouchMove} onTouchEnd={callbacks.noteLineTouchEnd}>
       <div className="polyrhythms-wrapper">
         {polyrhythms.map(polyrhythm => <PolyrhythmViewer polyrhythm={polyrhythm} key={polyrhythm.id} />)}
       </div>
@@ -125,6 +138,23 @@ function NoteLine({track, callbacks}:{track:Track, callbacks:TrackViewerCallback
       </div>
     </div>
   );
+}
+
+
+function repositionPolyrhythmViewer(polyrhythm:Polyrhythm, polyrhythmViewer:HTMLDivElement) {
+  const startNoteViewer = document.getElementById(`note-${polyrhythm.start.id}`);
+  const endNoteViewer = document.getElementById(`note-${polyrhythm.end.id}`);
+
+  let startLeft = startNoteViewer.offsetLeft;
+  if (polyrhythm.start.polyrhythm) // Start note is inside a polyrhythm, so the offset is likely only part of the picture
+    startLeft += (startNoteViewer.closest('.polyrhythm-viewer') as HTMLElement).offsetLeft;
+
+  let endLeft = endNoteViewer.offsetLeft + endNoteViewer.offsetWidth;
+  if (polyrhythm.end.polyrhythm)
+    endLeft += (endNoteViewer.closest('.polyrhythm-viewer') as HTMLElement).offsetLeft;
+
+  polyrhythmViewer.style.left = `${startLeft}px`;
+  polyrhythmViewer.style.width = `calc(${endLeft - startLeft}px - var(--thick-border-width)`;
 }
 
 

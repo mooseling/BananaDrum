@@ -13,7 +13,7 @@ import { AnimationEngine } from '../types.js';
 import { useSubscription } from '../hooks/useSubscription.js';
 
 export const ArrangementPlayerContext = createContext<ArrangementPlayer>(null);
-export const TrackWidthPublisherContext = createContext<Publisher>(null);
+export const NoteWidthContext = createContext<number>(null);
 
 
 export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:ArrangementPlayer}): JSX.Element {
@@ -29,8 +29,9 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
   // -- Notes are added or removed
   const ref:React.MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>();
   const [scrollShadowClasses, setScrollShadowClasses] = useState('');
+  const [noteWidth, setNoteWidth] = useState(0);
   const updateScrollShadows = () => setScrollShadowClasses(getScrollShadowClasses(ref.current));
-  const resizeObserver = new ResizeObserver(updateScrollShadows);
+  const updateNoteWidth = () => setNoteWidth(getNoteWidth(ref.current));
   const contentWidthPublisher = createPublisher();
 
   const {trackViewerCallbacks, handleWheel, onScrollbarGrab} = useAutoFollow(animationEngine, arrangementPlayer, ref);
@@ -39,17 +40,20 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
   useSubscription(arrangement.timeParams, () => setTimeout(() => {
     updateScrollShadows();
     contentWidthPublisher.publish();
+    updateNoteWidth();
   }, 0)); // timeout so DOM updates first
 
   useEffect(() => {
-    setTimeout(updateScrollShadows, 0);
+    const handleResize = () => (updateScrollShadows(), updateNoteWidth());
+    const resizeObserver = new ResizeObserver(handleResize);
+    setTimeout(handleResize, 0);
     resizeObserver.observe(ref.current);
-    return () => resizeObserver.unobserve(ref.current);
+    return () => resizeObserver.disconnect();
   }, []);
 
   return (
     <ArrangementPlayerContext.Provider value={arrangementPlayer}>
-    <TrackWidthPublisherContext.Provider value={contentWidthPublisher}>
+    <NoteWidthContext.Provider value={noteWidth}>
       <div className="arrangement-viewer overlay-wrapper">
         <div className="arrangement-viewer-head">
           <ArrangementControlsTop />
@@ -85,7 +89,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
           <Share />
         </Overlay>
       </div>
-    </TrackWidthPublisherContext.Provider>
+    </NoteWidthContext.Provider>
     </ArrangementPlayerContext.Provider>
   );
 }
@@ -114,6 +118,15 @@ function getScrollShadowClasses(trackViewersWrapper: HTMLElement): string {
   if (metaRight - noteLineLeft > 2)
     return 'overflowing-left';
   return '';
+}
+
+
+function getNoteWidth(trackViewersWrapper: HTMLElement): number {
+  const noteViewer = trackViewersWrapper?.querySelector('.note-line-wrapper .note-viewer');
+  if (!noteViewer)
+    return 0; // In case there are no tracks
+
+  return noteViewer.clientWidth;
 }
 
 
