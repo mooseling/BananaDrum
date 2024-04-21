@@ -99,7 +99,7 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
 
   function removeNoteTimesOfDroppedNotes() {
     for (const note of noteTimes.keys()) {
-      if (!track.notes.includes(note))
+      if (!note.polyrhythm && !track.notes.includes(note))
         noteTimes.delete(note);
     }
   }
