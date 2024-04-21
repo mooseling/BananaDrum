@@ -122,7 +122,7 @@ function getScrollShadowClasses(trackViewersWrapper: HTMLElement): string {
 
 
 function getNoteWidth(trackViewersWrapper: HTMLElement): number {
-  const noteViewer = trackViewersWrapper?.querySelector('.note-line-wrapper .note-viewer');
+  const noteViewer = trackViewersWrapper?.querySelector('.note-line-wrapper .notes-wrapper .note-viewer');
   if (!noteViewer)
     return 0; // In case there are no tracks
 
