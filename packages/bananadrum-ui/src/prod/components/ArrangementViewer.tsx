@@ -1,4 +1,4 @@
-import { RealTime } from 'bananadrum-core';
+import { Arrangement, RealTime } from 'bananadrum-core';
 import { ArrangementPlayer, TrackPlayer } from 'bananadrum-player';
 import { createPublisher } from 'bananadrum-core';
 import { TrackViewer } from './TrackViewer.js';
@@ -50,6 +50,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
     <ArrangementPlayerContext.Provider value={arrangementPlayer}>
       <div className="arrangement-viewer overlay-wrapper">
         <div className="arrangement-viewer-head">
+          <ArrangementTitle arrangement={arrangement} />
           <ArrangementControlsTop />
         </div>
         <div className="arrangement-viewer-body overlay-wrapper">
@@ -214,4 +215,19 @@ function useTrackViewerTouchInterpretation(autoFollowIsOn, setAutoFollow) {
       noteLineTouchEnd: undefined
     };
   }
+}
+
+
+function ArrangementTitle({arrangement}: {arrangement:Arrangement}): JSX.Element {
+  const [title, setTitle] = useState(arrangement.title);
+
+  useSubscription(arrangement, () => setTitle(arrangement.title));
+
+  const displayTitle = title ?? '';
+
+  return (
+    <div className="arrangement-title" style={{display:title ? 'block' : 'none'}}>
+      <h1>{displayTitle}</h1>
+    </div>
+  )
 }

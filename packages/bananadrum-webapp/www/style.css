@@ -113,6 +113,11 @@ body {
   overflow-wrap: anywhere;
 }
 
+.arrangement-title h1 {
+  text-align: center;
+  margin-bottom: 0;
+}
+
 .arrangement-controls {
   display: flex;
   padding: 20pt;
