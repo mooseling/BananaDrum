@@ -371,7 +371,6 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 .polyrhythm-viewer .note-viewer {
   flex-shrink: 1;
-  background-color: unset;
 }
 
 .note-details-viewer {
