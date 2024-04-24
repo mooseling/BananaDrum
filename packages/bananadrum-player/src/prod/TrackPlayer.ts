@@ -139,7 +139,11 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
   function addNoteTimesForPolyrhythm(polyrhythm:Polyrhythm) {
     const startTime = noteTimes.get(polyrhythm.start);
 
-    const noteIterator = track.getNoteIterator();
+    // We need to find the note just after the polyrhythm ends to work out it's time-length
+    // It's possible the next note is the start of a polyrhythm in an equal-or-higher level, which we don't have times for yet
+    // So we exclude later polyrhythms from the iterator
+    const laterPolyrhythms = track.polyrhythms.slice(track.polyrhythms.indexOf(polyrhythm) + 1);
+    const noteIterator = track.getNoteIterator(laterPolyrhythms);
     let nextNote:Note;
     let foundPolyrhythm = false;
     for (const note of noteIterator) {
