@@ -328,6 +328,19 @@ So we're putting them in each track-viewer, where we can position them with no p
   position: absolute;
   z-index: 1;
   padding-left: var(--thick-border-width);
+  background-color: white;
+}
+
+.polyrhythm-viewer .delete-polyrhythm-wrapper {
+  height: var(--note-height);
+  border: var(--thick-border);
+  /* Apply some negative margins to collapse borders */
+  margin-top: calc(-1 * var(--thick-border-width));
+  margin-bottom: calc(-1 * var(--thick-border-width));
+  margin-left: calc(-1 * var(--thick-border-width));
+  width: 100%;
+  text-align: center;
+  line-height: var(--note-height);
 }
 
 .track-viewer.inaudible .note-line {
