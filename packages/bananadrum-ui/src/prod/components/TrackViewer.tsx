@@ -1,8 +1,8 @@
-import { useState, createContext, useContext, TouchEvent, useLayoutEffect, useRef, useEffect } from 'react';
+import { useState, createContext, useContext, TouchEvent, useLayoutEffect, useRef } from 'react';
 import { Polyrhythm, Track } from 'bananadrum-core';
 import { NoteViewer } from './NoteViewer.js';
 import { Overlay, toggleOverlay } from './Overlay.js';
-import { ArrangementPlayerContext, NoteWidthContext } from './ArrangementViewer.js';
+import { ArrangementPlayerContext, NoteWidthContext } from './arrangement/ArrangementViewer.js';
 import { TrackPlayer } from 'bananadrum-player';
 import { useSubscription } from '../hooks/useSubscription.js';
 import { PolyrhythmViewer } from './PolyrhythmViewer.js';
