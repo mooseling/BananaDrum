@@ -7,16 +7,19 @@ import { createKeyboardHandler } from "./KeyboardHandler.js";
 import { BananaDrumViewer } from "./components/BananaDrumViewer.js";
 import { BananaDrumUi } from './types.js';
 import { createSelectionManager, SelectionManager } from './SelectionManager.js';
+import { createModeManager, ModeManager } from './ModeManager.js';
 
 export const SelectionManagerContext = createContext<SelectionManager>(null);
+export const ModeManagerContext = createContext<ModeManager>(null);
 
 
 export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HTMLElement): BananaDrumUi {
   HistoryController.init();
 
   const selectionManager = createSelectionManager();
+  const modeManager = createModeManager();
 
-  createKeyboardHandler(bananaDrumPlayer.eventEngine, selectionManager);
+  createKeyboardHandler(bananaDrumPlayer.eventEngine, selectionManager, modeManager);
 
   const animationEngine = getAnimationEngine(bananaDrumPlayer.eventEngine);
   const root = createRoot(wrapper);
@@ -24,7 +27,9 @@ export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HT
   root.render(
     createElement(StrictMode, {},
       createElement(SelectionManagerContext.Provider, {value:selectionManager},
-        createElement(BananaDrumViewer, {arrangementPlayer: bananaDrumPlayer.arrangementPlayer, animationEngine})
+        createElement(ModeManagerContext.Provider, {value:modeManager},
+          createElement(BananaDrumViewer, {arrangementPlayer: bananaDrumPlayer.arrangementPlayer, animationEngine})
+        )
       )
     )
   );

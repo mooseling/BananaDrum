@@ -1,11 +1,16 @@
 import { EventEngine } from 'bananadrum-player';
 import { closeAllOverlays } from './components/Overlay.js';
+import { ModeManager } from './ModeManager.js';
 import { SelectionManager } from './SelectionManager.js';
 
 
-export function createKeyboardHandler(eventEngine:EventEngine, selectionManager:SelectionManager) {
+export function createKeyboardHandler(eventEngine:EventEngine, selectionManager:SelectionManager, modeManager:ModeManager) {
   window.addEventListener('keydown', event => {
     handleKeyDown(event);
+  });
+
+  window.addEventListener('keyup', event => {
+    handleKeyUp(event);
   });
 
   function handleKeyDown(event:KeyboardEvent): void {
@@ -18,6 +23,13 @@ export function createKeyboardHandler(eventEngine:EventEngine, selectionManager:
       else
         eventEngine.stop();
       event.preventDefault();
+    } else if (event.key === 'Alt') {
+      modeManager.deletePolyrhythmMode = true;
     }
+  }
+
+  function handleKeyUp(event:KeyboardEvent): void {
+    if (event.key === 'Alt')
+      modeManager.deletePolyrhythmMode = false;
   }
 }
