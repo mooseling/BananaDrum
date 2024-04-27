@@ -5,13 +5,8 @@ import { SelectionManager } from './SelectionManager.js';
 
 
 export function createKeyboardHandler(eventEngine:EventEngine, selectionManager:SelectionManager, modeManager:ModeManager) {
-  window.addEventListener('keydown', event => {
-    handleKeyDown(event);
-  });
-
-  window.addEventListener('keyup', event => {
-    handleKeyUp(event);
-  });
+  window.addEventListener('keydown', event => handleKeyDown(event));
+  window.addEventListener('keyup', event => handleKeyUp(event));
 
   function handleKeyDown(event:KeyboardEvent): void {
     if (event.key === 'Escape') {
