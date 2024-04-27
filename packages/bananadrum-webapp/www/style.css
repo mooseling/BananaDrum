@@ -7,6 +7,7 @@
   --darker-green: #003737;
   --light-green: #0A7B7B;
   --lighter-green: #238B8B;
+  --lightest-green: #62BBBB;
   --blue: #006699;
   --light-blue: #008ED3;
   --lighter-blue: #07ABFB;
@@ -341,6 +342,11 @@ So we're putting them in each track-viewer, where we can position them with no p
   width: 100%;
   text-align: center;
   line-height: var(--note-height);
+  background-color: var(--lightest-green);
+}
+
+.polyrhythm-viewer .delete-polyrhythm-wrapper.shrouded {
+   background-color: var(--light-gray);
 }
 
 .track-viewer.inaudible .note-line {
