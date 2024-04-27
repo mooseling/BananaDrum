@@ -145,6 +145,9 @@ function repositionPolyrhythmViewer(polyrhythm:Polyrhythm, polyrhythmViewer:HTML
   const startNoteViewer = document.getElementById(`note-${polyrhythm.start.id}`);
   const endNoteViewer = document.getElementById(`note-${polyrhythm.end.id}`);
 
+  if (!startNoteViewer || !endNoteViewer)
+    return;
+
   let startLeft = startNoteViewer.offsetLeft;
   if (polyrhythm.start.polyrhythm) // Start note is inside a polyrhythm, so the offset is likely only part of the picture
     startLeft += (startNoteViewer.closest('.polyrhythm-viewer') as HTMLElement).offsetLeft;
