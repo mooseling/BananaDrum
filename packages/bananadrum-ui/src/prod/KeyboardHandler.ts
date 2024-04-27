@@ -25,6 +25,7 @@ export function createKeyboardHandler(eventEngine:EventEngine, selectionManager:
       event.preventDefault();
     } else if (event.key === 'Alt') {
       modeManager.deletePolyrhythmMode = true;
+      event.preventDefault();
     }
   }
 
