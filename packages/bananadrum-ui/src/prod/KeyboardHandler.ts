@@ -12,6 +12,7 @@ export function createKeyboardHandler(eventEngine:EventEngine, selectionManager:
     if (event.key === 'Escape') {
       closeAllOverlays();
       selectionManager.clearSelection();
+      modeManager.deletePolyrhythmMode = false;
     } else if (event.key === ' ') {
       if (eventEngine.state === 'stopped')
         eventEngine.play();
