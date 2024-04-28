@@ -10,62 +10,60 @@ import { OverlayStateContext } from "./Overlay";
 export function SelectionControls(): JSX.Element {
   const selectionManager = useContext(SelectionManagerContext);
   const overlayState = useContext(OverlayStateContext);
-  const polyrhythmInputRef = useRef(null);
+  const polyrhythmInputRef = useRef<HTMLInputElement>(null);
 
   const [addingPolyrhythm, setAddingPolyrhythm] = useState(false);
 
   useSubscription(overlayState, () => {
     if (!overlayState.visible)
       setAddingPolyrhythm(false);
-  })
+  });
+
+  // About to switch to a display:none style thing, rather than actual dom changes
+  // Then we can focus the input just using the ref
 
   return (
-    <div style={{display:'flex', alignItems:'center', height:'100%'}}>
-      {
-        addingPolyrhythm
+    <>
+      <div style={{alignItems:'center', height:'100%', display: addingPolyrhythm ? 'none' : 'flex'}}>
+        <button
+          className="push-button"
+          onClick={() => (setAddingPolyrhythm(true), setTimeout(() => polyrhythmInputRef.current.focus(), 0))}
+        >add polyrhythm</button>
 
-        ? (<>
-          <div className="time-control">
-            New number of notes: <input
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            onKeyPress={event => {
-              if (event.key === 'Enter')
-                createPolyrhythm((event.target as HTMLInputElement).value, selectionManager);
-            }}
-            ref={polyrhythmInputRef}
-            />
-          </div>
+        <ExpandingSpacer />
 
-          <button
-            className="push-button"
-            onClick={() => createPolyrhythm((polyrhythmInputRef.current as HTMLInputElement)?.value, selectionManager)}
-          >go!</button>
+        <button
+          className="push-button"
+          onClick={() => selectionManager.deselectAll()}
+        >Cancel</button>
+      </div>
+      <div style={{alignItems:'center', height:'100%', display: addingPolyrhythm ? 'flex' : 'none'}}>
+        <div className="time-control">
+          New number of notes: <input
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          onKeyPress={event => {
+            if (event.key === 'Enter')
+              createPolyrhythm((event.target as HTMLInputElement).value, selectionManager);
+          }}
+          ref={polyrhythmInputRef}
+          />
+        </div>
 
-          <ExpandingSpacer />
+        <button
+          className="push-button"
+          onClick={() => createPolyrhythm(polyrhythmInputRef.current?.value, selectionManager)}
+        >go!</button>
 
-          <button
-            className="push-button"
-            onClick={() => setAddingPolyrhythm(false)}
-          >Cancel</button>
-        </>)
+        <ExpandingSpacer />
 
-        : (<>
-          <button
-            className="push-button"
-            onClick={() => setAddingPolyrhythm(true)}
-          >add polyrhythm</button>
-
-          <ExpandingSpacer />
-
-          <button
-            className="push-button"
-            onClick={() => selectionManager.deselectAll()}
-          >Cancel</button>
-        </>)
-      }
-    </div>
+        <button
+          className="push-button"
+          onClick={() => setAddingPolyrhythm(false)}
+        >Cancel</button>
+      </div>
+    </>
   );
 }
 
