@@ -15,8 +15,10 @@ export function SelectionControls(): JSX.Element {
   const [addingPolyrhythm, setAddingPolyrhythm] = useState(false);
 
   useSubscription(overlayState, () => {
-    if (!overlayState.visible)
+    if (!overlayState.visible) {
       setAddingPolyrhythm(false);
+      polyrhythmInputRef.current.value = '';
+    }
   });
 
   // About to switch to a display:none style thing, rather than actual dom changes
@@ -60,7 +62,7 @@ export function SelectionControls(): JSX.Element {
 
         <button
           className="push-button"
-          onClick={() => setAddingPolyrhythm(false)}
+          onClick={() => (setAddingPolyrhythm(false), polyrhythmInputRef.current.value = '')}
         >Cancel</button>
       </div>
     </>
