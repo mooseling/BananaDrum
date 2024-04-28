@@ -1,21 +1,59 @@
-import { useContext } from "react";
+import { useContext, useRef, useState } from "react";
 import { SelectionManagerContext } from "../BananaDrumUi";
+import { useSubscription } from "../hooks/useSubscription";
 import { SelectionManager } from "../SelectionManager";
-import { NumberInput } from "./General";
+import { ExpandingSpacer } from "./ExpandingSpacer";
+import { OverlayStateContext } from "./Overlay";
 
 
 
 export function SelectionControls(): JSX.Element {
   const selectionManager = useContext(SelectionManagerContext);
+  const overlayState = useContext(OverlayStateContext);
+  const polyrhythmInputRef = useRef(null);
+
+  const [addingPolyrhythm, setAddingPolyrhythm] = useState(false);
+
+  useSubscription(overlayState, () => {
+    if (!overlayState.visible)
+      setAddingPolyrhythm(false);
+  })
 
   return (
-    <div className="overlay-wrapper">
-      <div className="time-control">
-      New number of notes: <NumberInput
-          getValue={() => '0'}
-          setValue={value => createPolyrhythm(value, selectionManager)}
-        />
-      </div>
+    <div style={{display:'flex', alignItems:'center'}}>
+      {
+        addingPolyrhythm
+        ? (<>
+          <div className="time-control">
+            New number of notes: <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            onKeyPress={event => {
+              if (event.key === 'Enter')
+                createPolyrhythm((event.target as HTMLInputElement).value, selectionManager);
+            }}
+            ref={polyrhythmInputRef}
+            />
+          </div>
+          <button
+            className="push-button"
+            onClick={() => createPolyrhythm((polyrhythmInputRef.current as HTMLInputElement)?.value, selectionManager)}
+          >go!</button>
+          <ExpandingSpacer />
+          <button
+            className="push-button"
+            onClick={() => setAddingPolyrhythm(false)}
+          >Cancel</button>
+        </>)
+        : (<>
+          <button
+            className="push-button"
+            onClick={() => setAddingPolyrhythm(true)}
+          >add polyrhythm</button>
+          <ExpandingSpacer />
+        </>)
+      }
     </div>
   );
 }
