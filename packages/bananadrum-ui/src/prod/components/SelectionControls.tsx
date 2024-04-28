@@ -20,9 +20,10 @@ export function SelectionControls(): JSX.Element {
   })
 
   return (
-    <div style={{display:'flex', alignItems:'center'}}>
+    <div style={{display:'flex', alignItems:'center', height:'100%'}}>
       {
         addingPolyrhythm
+
         ? (<>
           <div className="time-control">
             New number of notes: <input
