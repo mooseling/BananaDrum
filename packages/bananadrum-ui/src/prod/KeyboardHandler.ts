@@ -11,7 +11,7 @@ export function createKeyboardHandler(eventEngine:EventEngine, selectionManager:
   function handleKeyDown(event:KeyboardEvent): void {
     if (event.key === 'Escape') {
       closeAllOverlays();
-      selectionManager.clearSelection();
+      selectionManager.deselectAll();
       modeManager.deletePolyrhythmMode = false;
     } else if (event.key === ' ') {
       if (eventEngine.state === 'stopped')

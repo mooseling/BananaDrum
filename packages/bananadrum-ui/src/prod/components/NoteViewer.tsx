@@ -46,7 +46,7 @@ export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolea
       selectionManager.handleClick(note);
     } else {
       cycleNoteStyle(note);
-      selectionManager.clearSelection();
+      selectionManager.deselectAll();
     }
 
     event.stopPropagation();

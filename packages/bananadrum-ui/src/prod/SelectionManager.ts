@@ -2,7 +2,7 @@ import { createPublisher, Note, Subscribable } from "bananadrum-core";
 
 export interface SelectionManager extends Subscribable {
   handleClick(note:Note): void
-  clearSelection(): void
+  deselectAll(): void
   selectedNotes: Note[]
   getFirst(): Note
   getLast(): Note
@@ -16,7 +16,7 @@ export function createSelectionManager(): SelectionManager {
   let last:Note|null = null;
 
   return {
-    handleClick, clearSelection, selectedNotes, getFirst, getLast,
+    handleClick, deselectAll, selectedNotes, getFirst, getLast,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
   };
 
@@ -45,7 +45,7 @@ export function createSelectionManager(): SelectionManager {
     }
 
     if (clickedNote === anchor) {
-      clearSelection();
+      deselectAll();
       publisher.publish();
       return;
     }
@@ -120,7 +120,7 @@ export function createSelectionManager(): SelectionManager {
   }
 
 
-  function clearSelection() {
+  function deselectAll() {
     selectedNotes.splice(0);
     anchor = first = last = null;
     publisher.publish();

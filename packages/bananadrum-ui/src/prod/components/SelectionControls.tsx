@@ -69,5 +69,5 @@ const createPolyrhythm = (inputValue:string, selectionManager:SelectionManager) 
   const track = start.track;
 
   track.addPolyrhythm(start, end, polyrhythmLength);
-  selectionManager.clearSelection();
+  selectionManager.deselectAll();
 }
