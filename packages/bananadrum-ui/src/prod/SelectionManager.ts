@@ -15,13 +15,6 @@ export function createSelectionManager(): SelectionManager {
   let first:Note|null = null;
   let last:Note|null = null;
 
-  window.addEventListener('click', event => {
-    if (event.target instanceof Element) {
-      if (!event.target.closest('.overlay[data-overlay-name="selection_controls"]'))
-        clearSelection();
-    }
-  });
-
   return {
     handleClick, clearSelection, selectedNotes, getFirst, getLast,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
