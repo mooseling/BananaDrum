@@ -1,7 +1,10 @@
 import { Arrangement, Subscription } from "bananadrum-core";
 import { useEffect } from "react";
+import { useSubscription } from "./useSubscription";
 
-export function useAllTracksSubscription(arrangement:Arrangement, callback:Subscription): void {
+export function useArrangementAndTracksSubscription(arrangement:Arrangement, callback:Subscription): void {
+  useSubscription(arrangement, callback);
+
   useEffect(() => {
     const subscribedTracks:string[] = [];
 
