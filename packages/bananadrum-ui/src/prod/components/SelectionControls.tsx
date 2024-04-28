@@ -36,22 +36,32 @@ export function SelectionControls(): JSX.Element {
             ref={polyrhythmInputRef}
             />
           </div>
+
           <button
             className="push-button"
             onClick={() => createPolyrhythm((polyrhythmInputRef.current as HTMLInputElement)?.value, selectionManager)}
           >go!</button>
+
           <ExpandingSpacer />
+
           <button
             className="push-button"
             onClick={() => setAddingPolyrhythm(false)}
           >Cancel</button>
         </>)
+
         : (<>
           <button
             className="push-button"
             onClick={() => setAddingPolyrhythm(true)}
           >add polyrhythm</button>
+
           <ExpandingSpacer />
+
+          <button
+            className="push-button"
+            onClick={() => selectionManager.deselectAll()}
+          >Cancel</button>
         </>)
       }
     </div>
