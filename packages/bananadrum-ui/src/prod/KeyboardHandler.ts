@@ -9,19 +9,27 @@ export function createKeyboardHandler(eventEngine:EventEngine, selectionManager:
   window.addEventListener('keyup', event => handleKeyUp(event));
 
   function handleKeyDown(event:KeyboardEvent): void {
-    if (event.key === 'Escape') {
-      closeAllOverlays();
-      selectionManager.deselectAll();
-      modeManager.deletePolyrhythmMode = false;
-    } else if (event.key === ' ') {
-      if (eventEngine.state === 'stopped')
-        eventEngine.play();
-      else
-        eventEngine.stop();
-      event.preventDefault();
-    } else if (event.key === 'Alt') {
-      modeManager.deletePolyrhythmMode = true;
-      event.preventDefault();
+    switch (event.key) {
+      case 'Escape':
+        closeAllOverlays();
+        selectionManager.deselectAll();
+        modeManager.deletePolyrhythmMode = false;
+        break;
+      case ' ':
+        if (eventEngine.state === 'stopped')
+          eventEngine.play();
+        else
+          eventEngine.stop();
+        event.preventDefault(); // This is to prevent spaces getting written in number inputs
+        break;
+      case 'Alt':
+        modeManager.deletePolyrhythmMode = true;
+        event.preventDefault();
+        break;
+      case 'Backspace':
+      case 'Delete':
+        selectionManager.selectedNotes.forEach(note => note.noteStyle = null);
+        selectionManager.deselectAll();
     }
   }
 

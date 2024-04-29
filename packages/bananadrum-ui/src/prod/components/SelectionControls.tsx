@@ -45,6 +45,13 @@ export function SelectionControls(): JSX.Element {
 
         <button
           className="push-button"
+          onClick={() => (selectionManager.selectedNotes.forEach(note => note.noteStyle = null), selectionManager.deselectAll())}
+        >Clear</button>
+
+        <ExpandingSpacer />
+
+        <button
+          className="push-button"
           onClick={() => selectionManager.deselectAll()}
         >Cancel</button>
       </div>
