@@ -1,10 +1,13 @@
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { SelectionManagerContext } from "../BananaDrumUi";
 import { useSubscription } from "../hooks/useSubscription";
 import { SelectionManager } from "../SelectionManager";
 import { ExpandingSpacer } from "./ExpandingSpacer";
 import { OverlayStateContext } from "./Overlay";
 
+
+
+const digitMatcher = /^\d$/;
 
 
 export function SelectionControls(): JSX.Element {
@@ -19,6 +22,19 @@ export function SelectionControls(): JSX.Element {
       setAddingPolyrhythm(false);
       polyrhythmInputRef.current.value = '';
     }
+  });
+
+  useEffect(() => {
+    const handleKeypress = (event:KeyboardEvent) => {
+      if (selectionManager.selectedNotes.length && polyrhythmInputRef.current && digitMatcher.test(event.key)) {
+        polyrhythmInputRef.current.value = event.key;
+        setTimeout(() => polyrhythmInputRef.current.focus(), 0);
+        setAddingPolyrhythm(true);
+      }
+    }
+
+    window.addEventListener('keypress', handleKeypress);
+    return () => window.removeEventListener('keypress', handleKeypress);
   });
 
   return (
