@@ -21,9 +21,6 @@ export function SelectionControls(): JSX.Element {
     }
   });
 
-  // About to switch to a display:none style thing, rather than actual dom changes
-  // Then we can focus the input just using the ref
-
   return (
     <>
       <div style={{alignItems:'center', height:'100%', display: addingPolyrhythm ? 'none' : 'flex'}}>
