@@ -91,10 +91,10 @@ const createPolyrhythm = (inputValue:string, selectionManager:SelectionManager) 
   if (!polyrhythmLength)
     return;
 
-  const start = selectionManager.getFirst();
-  const end = selectionManager.getLast();
-  const track = start.track;
+  for (const track of selectionManager.trackRanges.keys()) {
+    const [start, end] = selectionManager.trackRanges.get(track);
+    track.addPolyrhythm(start, end, polyrhythmLength);
+  }
 
-  track.addPolyrhythm(start, end, polyrhythmLength);
   selectionManager.deselectAll();
 }
