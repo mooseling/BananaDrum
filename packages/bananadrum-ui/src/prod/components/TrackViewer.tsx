@@ -30,8 +30,8 @@ export function TrackViewer({trackPlayer, callbacks}:{trackPlayer:TrackPlayer, c
 
   const arrangementPlayer = useContext(ArrangementPlayerContext);
   const {audibleTrackPlayers, audibleTrackPlayersPublisher} = arrangementPlayer;
-  const [audible, setAudible] = useState(!!audibleTrackPlayers[track.id]);
-  useSubscription(audibleTrackPlayersPublisher, () => setAudible(!!audibleTrackPlayers[track.id]));
+  const [audible, setAudible] = useState(!!audibleTrackPlayers.get(track));
+  useSubscription(audibleTrackPlayersPublisher, () => setAudible(!!audibleTrackPlayers.get(track)));
 
   if (!loaded)
     return PendingTrackViewer();

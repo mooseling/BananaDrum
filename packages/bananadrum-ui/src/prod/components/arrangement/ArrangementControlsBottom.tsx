@@ -65,11 +65,7 @@ export function ArrangementControlsBottom(): JSX.Element {
           <ExpandingSpacer />
           <button
             className="push-button"
-            onClick={() => {
-              for (const trackId in arrangement.tracks)
-                arrangement.tracks[trackId].clear();
-              toggleOverlay('clear_tracks', 'hide');
-            }}
+            onClick={() => (arrangement.tracks.forEach(track => track.clear), toggleOverlay('clear_tracks', 'hide'))}
           >Really, clear tracks</button>
           <SmallSpacer />
           <button
@@ -100,8 +96,8 @@ export function ArrangementControlsBottom(): JSX.Element {
 
 
 function hasPolyrhythms(arrangement:Arrangement): boolean {
-  for (const trackId in arrangement.tracks) {
-    if (arrangement.tracks[trackId].polyrhythms.length)
+  for (const track of arrangement.tracks) {
+    if (track.polyrhythms.length)
       return true;
   }
 

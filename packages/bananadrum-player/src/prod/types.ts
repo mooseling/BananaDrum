@@ -42,11 +42,11 @@ export interface EventSource {
 
 export interface ArrangementPlayer extends EventSource, Subscribable {
   arrangement: Arrangement
-  trackPlayers: {[trackId:string]:TrackPlayer}
+  trackPlayers: Map<Track, TrackPlayer>
   get currentTiming(): Timing
   currentTimingPublisher: Subscribable
   convertToLoopProgress(realTime:RealTime): number
-  audibleTrackPlayers: {[trackId:string]:TrackPlayer}
+  audibleTrackPlayers: Map<Track, TrackPlayer>
   audibleTrackPlayersPublisher: Subscribable
 }
 

@@ -21,7 +21,7 @@ export const NoteWidthContext = createContext<number>(null);
 
 export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:ArrangementPlayer}): JSX.Element {
   const {arrangement} = arrangementPlayer;
-  const [trackPlayers, setTrackPlayers] = useState({...arrangementPlayer.trackPlayers});
+  const [trackPlayerCount, setTrackPlayerCount] = useState(arrangementPlayer.trackPlayers.size);
   const animationEngine = useContext(AnimationEngineContext);
 
   // Scroll-shadows over the track-viewers
@@ -39,7 +39,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
 
   const {trackViewerCallbacks, handleWheel, onScrollbarGrab} = useAutoFollow(animationEngine, arrangementPlayer, ref);
 
-  useSubscription(arrangementPlayer, () => setTrackPlayers({...arrangementPlayer.trackPlayers}));
+  useSubscription(arrangementPlayer, () => setTrackPlayerCount(arrangementPlayer.trackPlayers.size));
   useSubscription(arrangement.timeParams, () => setTimeout(() => {
     updateScrollShadows();
     contentWidthPublisher.publish();
@@ -70,13 +70,13 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
               onWheel={handleWheel}
             >
               {
-                Object.keys(trackPlayers)
-                  .sort((a, b) => sortTracks(trackPlayers[a], trackPlayers[b]))
-                  .map(trackId => (
+                arrangement.tracks
+                  .map(track => arrangementPlayer.trackPlayers.get(track))
+                  .map(trackPlayer => (
                     <TrackViewer
-                      trackPlayer={trackPlayers[trackId]}
+                      trackPlayer={trackPlayer}
                       callbacks={trackViewerCallbacks}
-                      key={trackId}
+                      key={trackPlayer.track.id}
                     />
                   ))
               }
@@ -130,18 +130,6 @@ function getNoteWidth(trackViewersWrapper: HTMLElement): number {
     return 0; // In case there are no tracks
 
   return noteViewer.clientWidth;
-}
-
-
-function sortTracks(trackPlayer1:TrackPlayer, trackPlayer2:TrackPlayer): number {
-  const track1 = trackPlayer1.track;
-  const track2 = trackPlayer2.track;
-
-  if (track1.instrument.displayOrder === track2.instrument.displayOrder) {
-    return Number(track1.id) - Number(track2.id);
-  }
-
-  return track1.instrument.displayOrder - track2.instrument.displayOrder;
 }
 
 

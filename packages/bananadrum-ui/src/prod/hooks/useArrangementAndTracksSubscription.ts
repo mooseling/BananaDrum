@@ -1,4 +1,4 @@
-import { Arrangement, Subscription } from "bananadrum-core";
+import { Arrangement, Subscription, Track } from "bananadrum-core";
 import { useEffect } from "react";
 import { useSubscription } from "./useSubscription";
 
@@ -6,29 +6,33 @@ export function useArrangementAndTracksSubscription(arrangement:Arrangement, cal
   useSubscription(arrangement, callback);
 
   useEffect(() => {
-    const subscribedTracks:string[] = [];
+    const subscribedTracks:Set<Track> = new Set();
 
-    for (const trackId in arrangement.tracks) {
-      arrangement.tracks[trackId].subscribe(callback);
-      subscribedTracks.push(trackId);
-    }
+    arrangement.tracks.forEach(track => {
+      track.subscribe(callback);
+      subscribedTracks.add(track);
+    });
 
     const arrangementSubscription = () => {
-      for (const trackId in arrangement.tracks) {
-        if (!subscribedTracks.includes(trackId)) {
-          arrangement.tracks[trackId].subscribe(callback);
-          subscribedTracks.push(trackId);
+      subscribedTracks.forEach(track => {
+        if (!arrangement.tracks.includes(track)) {
+          track.unsubscribe(callback);
+          subscribedTracks.delete(track);
         }
-      }
+      });
+
+      arrangement.tracks.forEach(track => {
+        if (!subscribedTracks.has(track)) {
+          track.subscribe(callback);
+          subscribedTracks.add(track);
+        }
+      });
     };
     arrangement.subscribe(arrangementSubscription);
 
     return () => {
       arrangement.unsubscribe(arrangementSubscription);
-      subscribedTracks.forEach(trackId => {
-        if (arrangement.tracks[trackId])
-          arrangement.tracks[trackId].unsubscribe(callback);
-      })
+      subscribedTracks.forEach(track => track.unsubscribe(callback));
     }
   });
 }

@@ -4,7 +4,7 @@ import { createPublisher } from './Publisher.js';
 
 export function createArrangement(timeParams:TimeParams): Arrangement {
   const publisher = createPublisher();
-  const tracks:{[trackId:string]:Track} = {};
+  const tracks:Track[] = [];
   const arrangement:Arrangement = {timeParams, tracks, addTrack, removeTrack, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
 
   return arrangement;
@@ -19,17 +19,23 @@ export function createArrangement(timeParams:TimeParams): Arrangement {
   // ==================================================================
 
 
+  // We keep tracks in order right here, so the rest of the app doesn't have to fiddle around figuring this out
   function addTrack(instrument:Instrument): Track {
+    const index = tracks.findIndex(track => track.instrument.displayOrder > instrument.displayOrder);
     const track = createTrack(arrangement, instrument);
-    tracks[track.id] = track;
+    if (index === -1)
+      tracks.push(track);
+    else
+      tracks.splice(index, 0, track);
     publisher.publish();
     return track;
   }
 
 
   function removeTrack(trackToRemove:Track) {
-    if (tracks[trackToRemove.id]) {
-      delete tracks[trackToRemove.id];
+    const index = tracks.indexOf(trackToRemove);
+    if (index !== -1) {
+      tracks.splice(index, 1);
       publisher.publish();
       return true;
     } else {

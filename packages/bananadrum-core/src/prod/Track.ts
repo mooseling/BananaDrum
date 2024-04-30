@@ -210,10 +210,9 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
 
   function destroySelfIfNeeded() {
     // Check track still exists
-    for (const trackId in arrangement.tracks) {
-      if (arrangement.tracks[trackId] === track)
-        return;
-    }
+    if (arrangement.tracks.indexOf(track) !== -1)
+      return;
+
     // ... otherwise unsubscribe from everything
     arrangement.timeParams.unsubscribe(handleTimeParamsChange);
     arrangement.unsubscribe(destroySelfIfNeeded);

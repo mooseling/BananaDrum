@@ -193,13 +193,9 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
 
 
   function destroySelfIfNeeded() {
-    // Check track still exists
-    for (const trackId in track.arrangement.tracks) {
-      if (track.arrangement.tracks[trackId] === track)
-        return;
+    if (track.arrangement.tracks.indexOf(track) === -1) {
+      timeCoordinator.unsubscribe(handleTimeChange);
+      track.arrangement.unsubscribe(destroySelfIfNeeded);
     }
-    // ... otherwise unsubscribe from everything
-    timeCoordinator.unsubscribe(handleTimeChange);
-    track.arrangement.unsubscribe(destroySelfIfNeeded);
   }
 }

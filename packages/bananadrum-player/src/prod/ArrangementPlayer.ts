@@ -1,10 +1,9 @@
-import { Arrangement, RealTime, Subscription, Timing } from 'bananadrum-core';
+import { Arrangement, RealTime, Timing, Track } from 'bananadrum-core';
 import { createPublisher } from 'bananadrum-core';
 import { createTimeCoordinator } from './TimeCoordinator.js';
 import { createTrackPlayer } from './TrackPlayer.js';
 import { ArrangementPlayer, CallbackEvent, Event, Interval, LoopInterval, TrackPlayer } from './types.js';
 
-type TrackPlayers = {[trackId:string]: TrackPlayer}
 
 
 export function createArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
@@ -14,11 +13,10 @@ export function createArrangementPlayer(arrangement:Arrangement): ArrangementPla
   const audibleTrackPlayersPublisher = createPublisher();
 
   // We need a TrackPlayer for each Track, and add/remove them when needed
-  const trackPlayers:TrackPlayers = {};
-  const audibleTrackPlayers:TrackPlayers = {};
-  const trackPlayerSubscriptions:{[trackId:string]:Subscription} = {};
+  const trackPlayers:Map<Track, TrackPlayer> = new Map();
+  const audibleTrackPlayers:Map<Track, TrackPlayer> = new Map();
   updateTrackPlayers();
-  updateAudibleTrackPlayers(trackPlayers, audibleTrackPlayers);
+  updateAudibleTrackPlayers();
   arrangement.subscribe(updateTrackPlayers);
 
   // currentTiming updates as we play, and ArrangementPlayer publishes when it does
@@ -66,12 +64,12 @@ export function createArrangementPlayer(arrangement:Arrangement): ArrangementPla
 
     loopIntervals.forEach(loopInterval => {
       const {loopNumber} = loopInterval;
-      for (const trackId in audibleTrackPlayers) {
-        trackPlayers[trackId].getEvents(loopInterval).forEach(event => events.push({
+      audibleTrackPlayers.forEach(trackPlayer => {
+        trackPlayer.getEvents(loopInterval).forEach(event => events.push({
           ...event,
           realTime: timeCoordinator.convertToAudioTime(event.realTime, loopNumber)
         }));
-      }
+      });
     });
 
     events.push(...getCallbackEvents(interval));
@@ -108,43 +106,31 @@ export function createArrangementPlayer(arrangement:Arrangement): ArrangementPla
 
   function updateTrackPlayers(): void {
     let somethingChanged = false;
+
     // First remove trackPlayers for removed tracks
-    for (const trackId in trackPlayers) {
-      if (!arrangement.tracks[trackId]) {
-        trackPlayers[trackId].unsubscribe(trackPlayerSubscriptions[trackId]);
-        delete trackPlayerSubscriptions[trackId];
-        delete trackPlayers[trackId];
-        delete audibleTrackPlayers[trackId];
+    trackPlayers.forEach(trackPlayer => {
+      if (!arrangement.tracks.includes(trackPlayer.track)) {
+        trackPlayer.unsubscribe(updateAudibleTrackPlayers);
+        trackPlayers.delete(trackPlayer.track);
+        audibleTrackPlayers.delete(trackPlayer.track);
         somethingChanged = true;
       }
-    }
+    });
 
     // Then add trackPlayers for new tracks
-    for (const trackId in arrangement.tracks) {
-      const track = arrangement.tracks[trackId];
-      if (!trackPlayers[trackId]) {
-        trackPlayers[trackId] = createTrackPlayer(track, timeCoordinator);
-        trackPlayers[trackId].subscribe(getNewSubscription(trackId));
+    arrangement.tracks.forEach(track => {
+      if (!trackPlayers.get(track)) {
+        const trackPlayer = createTrackPlayer(track, timeCoordinator)
+        trackPlayers.set(track, trackPlayer);
+        trackPlayer.subscribe(updateAudibleTrackPlayers);
         somethingChanged = true;
       }
-    }
+    });
 
-    updateAudibleTrackPlayers(trackPlayers, audibleTrackPlayers);
-
-    if (somethingChanged)
+    if (somethingChanged) {
+      updateAudibleTrackPlayers();
       publisher.publish();
-  }
-
-
-  function getNewSubscription(trackId:string): Subscription {
-    if (trackPlayerSubscriptions[trackId])
-      throw 'Trying to subscribe to a TrackPlayer but already subscribed';
-    const subscription = () => {
-      updateAudibleTrackPlayers(trackPlayers, audibleTrackPlayers);
-      audibleTrackPlayersPublisher.publish();
-    };
-    trackPlayerSubscriptions[trackId] = subscription;
-    return subscription;
+    }
   }
 
 
@@ -158,23 +144,32 @@ export function createArrangementPlayer(arrangement:Arrangement): ArrangementPla
       identifier: timing
     }));
   }
-}
 
 
-export function updateAudibleTrackPlayers(trackPlayers:TrackPlayers, target:TrackPlayers) {
-  const audibleTrackPlayers = getAudibleTrackPlayers(Object.values(trackPlayers));
 
-  for (const trackId in trackPlayers) {
-    const trackPlayer = trackPlayers[trackId];
-    if (audibleTrackPlayers.includes(trackPlayer))
-      target[trackId] = trackPlayer;
-    else if (target[trackId])
-      delete target[trackId];
+
+  function updateAudibleTrackPlayers(): void {
+    const calculatedAudibleTrackPlayers = calculateAudibleTrackPlayers(trackPlayers);
+
+    let somethingChanged = false;
+
+    for (const track of trackPlayers.keys()) {
+      if (calculatedAudibleTrackPlayers.includes(trackPlayers.get(track))) {
+        audibleTrackPlayers.set(track, trackPlayers.get(track));
+        somethingChanged = true;
+      } else {
+        audibleTrackPlayers.delete(track);
+        somethingChanged = true;
+      }
+    }
+
+    if (somethingChanged)
+      audibleTrackPlayersPublisher.publish();
   }
 }
 
 
-function getAudibleTrackPlayers(trackPlayers:TrackPlayer[]): TrackPlayer[] {
+function calculateAudibleTrackPlayers(trackPlayers:Map<Track, TrackPlayer>): TrackPlayer[] {
   const soloedTracksPlayers:TrackPlayer[] = [];
   const unmutedTracksPlayers:TrackPlayer[] = [];
 

@@ -245,11 +245,8 @@ function serialiseArrangement(arrangement:Arrangement): string {
   const {timeParams:tp} = arrangement;
   let output = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
   output = output.replaceAll('/', '-');
-  for (const trackId in arrangement.tracks) {
-    const track = arrangement.tracks[trackId];
-    if (track)
-      output += '.' + serialiseTrack(track);
-  }
+  arrangement.tracks.forEach(track => output += '.' + serialiseTrack(track));
+
   return output;
 }
 

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { SelectionManagerContext } from "../BananaDrumUi";
 import { useKeyboardEvent } from "../hooks/useKeyboardEvent";
 import { useSubscription } from "../hooks/useSubscription";
