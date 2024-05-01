@@ -146,8 +146,8 @@ function handleSelectActionForAnchorTrackButNotClickedTrack(track:Track, selecte
     note => {
       const noteViewer = document.getElementById('note-' + note.id);
       const noteLeft = noteViewer.getBoundingClientRect().x;
-      const noteMiddle = noteLeft + noteViewer.clientWidth;
-      return noteLeft <= clickedNoteLeft && noteMiddle > clickedNoteLeft;
+      const noteRight = noteLeft + noteViewer.clientWidth;
+      return noteLeft <= clickedNoteLeft && noteRight > clickedNoteLeft;
     },
     note => {
       const noteViewer = document.getElementById('note-' + note.id);
@@ -227,11 +227,6 @@ function handleDifferentTrackSelectAction(track:Track, selectedNotesInTrack:Set<
 }
 
 
-// function handleMultiTrackSelectAction(selectedNotes:Note[], trackRanges:Map<Track, [Note, Note]>, anchor:Note, clickedNote:Note) {
-
-// }
-
-
 // Could selectedItems be a set?
 function handleSelectAction<T>(iterator:Iterable<T>, selectedItems:Set<T>,
     matchesAnchorOnLeft:(item:T)=>boolean, matchesAnchorOnRight:(item:T)=>boolean,
@@ -285,11 +280,21 @@ function handleSelectAction<T>(iterator:Iterable<T>, selectedItems:Set<T>,
           selectedItems.add(item); // In the 1-track selection case, the anchor is already in there. But Set is fine with that.
           foundAnchor = true;
           first = item;
+
+          if (matchesClickedItemOnRight(item)) { // It's possible that one note matches up with both anchor and clickedNote
+            foundClickedItem = true;
+            last = item;
+          }
         } else {
           if (matchesClickedItemOnLeft(item)) {
             selectedItems.add(item);
             foundClickedItem = true;
             first = item;
+
+            if (matchesAnchorOnRight(item)) {
+              foundAnchor = true;
+              last = item;
+            }
           } else if (selectedItems.has(item)) {
             selectedItems.delete(item); // Previously selected outside the new region notes get removed
           }
