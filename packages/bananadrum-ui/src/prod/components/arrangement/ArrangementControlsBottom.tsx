@@ -17,8 +17,10 @@ export function ArrangementControlsBottom(): JSX.Element {
   const [arePolyrhythms, setArePolyrhythms] = useState(hasPolyrhythms(arrangement));
   useArrangementAndTracksSubscription(arrangement, () => {
     const arePolyrhythms = hasPolyrhythms(arrangement);
-    if (!arePolyrhythms)
+    if (!arePolyrhythms) {
       toggleOverlay('delete_polyrhythms', 'hide');
+      modeManager.deletePolyrhythmMode = false;
+    }
     setArePolyrhythms(arePolyrhythms);
   });
 
@@ -44,7 +46,7 @@ export function ArrangementControlsBottom(): JSX.Element {
               className="push-button"
               onClick={() => (modeManager.deletePolyrhythmMode = true, toggleOverlay('delete_polyrhythms', 'show'))}
             >Delete polyrhythms...</button>
-            <ExpandingSpacer />
+            <SmallSpacer />
           </>
         )
         : (<></>)
@@ -87,7 +89,6 @@ export function ArrangementControlsBottom(): JSX.Element {
             className="push-button"
             onClick={() => modeManager.deletePolyrhythmMode = false}
           >Done</button>
-          <ExpandingSpacer />
         </div>
       </Overlay>
     </div>

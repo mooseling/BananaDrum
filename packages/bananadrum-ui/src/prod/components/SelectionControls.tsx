@@ -6,6 +6,7 @@ import { useSubscription } from "../hooks/useSubscription";
 import { SelectionManager } from "../SelectionManager";
 import { ExpandingSpacer } from "./ExpandingSpacer";
 import { OverlayStateContext } from "./Overlay";
+import { SmallSpacer } from "./SmallSpacer";
 
 
 
@@ -37,7 +38,7 @@ export function SelectionControls(): JSX.Element {
   // We want clicking anywhere to clear the selection. But not on a selection control button.
   // And also not if the user has started adding a polyrhythm. Then they have to explicitly cancel.
   useMouseEvent(window, 'click', event => {
-    if (selectionManager.selections.size && addingPolyrhythm && !onSelectionButton(event) && !event.shiftKey)
+    if (selectionManager.selections.size && !addingPolyrhythm && !onSelectionButton(event) && !event.shiftKey)
       selectionManager.deselectAll();
   });
 
@@ -49,12 +50,12 @@ export function SelectionControls(): JSX.Element {
           onClick={() => (setAddingPolyrhythm(true), setTimeout(() => polyrhythmInputRef.current.focus(), 0))}
         >add polyrhythm</button>
 
-        <ExpandingSpacer />
+        <SmallSpacer />
 
         <button
           className="push-button"
           onClick={() => (selectionManager.selections.forEach(({selectedNotes}) => selectedNotes.forEach(note => note.noteStyle = null)), selectionManager.deselectAll())}
-        >Clear</button>
+        >Clear sounds</button>
 
         <ExpandingSpacer />
 
