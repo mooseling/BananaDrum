@@ -1,6 +1,7 @@
 import { useContext, useRef, useState } from "react";
 import { SelectionManagerContext } from "../BananaDrumUi";
 import { useKeyboardEvent } from "../hooks/useKeyboardEvent";
+import { useMouseEvent } from "../hooks/useMouseEvent";
 import { useSubscription } from "../hooks/useSubscription";
 import { SelectionManager } from "../SelectionManager";
 import { ExpandingSpacer } from "./ExpandingSpacer";
@@ -26,15 +27,22 @@ export function SelectionControls(): JSX.Element {
   });
 
   useKeyboardEvent(window, 'keypress', event => {
-    if (selectionManager.selectedNotes.length && polyrhythmInputRef.current && digitMatcher.test(event.key)) {
+    if (!(event.target instanceof HTMLInputElement) && selectionManager.selections.size && polyrhythmInputRef.current && digitMatcher.test(event.key)) {
       polyrhythmInputRef.current.value = event.key;
       setTimeout(() => polyrhythmInputRef.current.focus(), 0);
       setAddingPolyrhythm(true);
     }
   });
 
+  // We want clicking anywhere to clear the selection. But not on a selection control button.
+  // And also not if the user has started adding a polyrhythm. Then they have to explicitly cancel.
+  useMouseEvent(window, 'click', event => {
+    if (selectionManager.selections.size && addingPolyrhythm && !onSelectionButton(event) && !event.shiftKey)
+      selectionManager.deselectAll();
+  });
+
   return (
-    <>
+    <div className="selection-controls" style={{width:'100%', height:'100%'}}>
       <div style={{alignItems:'center', height:'100%', display: addingPolyrhythm ? 'none' : 'flex'}}>
         <button
           className="push-button"
@@ -45,7 +53,7 @@ export function SelectionControls(): JSX.Element {
 
         <button
           className="push-button"
-          onClick={() => (selectionManager.selectedNotes.forEach(note => note.noteStyle = null), selectionManager.deselectAll())}
+          onClick={() => (selectionManager.selections.forEach(({selectedNotes}) => selectedNotes.forEach(note => note.noteStyle = null)), selectionManager.deselectAll())}
         >Clear</button>
 
         <ExpandingSpacer />
@@ -81,20 +89,28 @@ export function SelectionControls(): JSX.Element {
           onClick={() => (setAddingPolyrhythm(false), polyrhythmInputRef.current.value = '')}
         >Cancel</button>
       </div>
-    </>
+    </div>
   );
 }
 
 
-const createPolyrhythm = (inputValue:string, selectionManager:SelectionManager) => {
+function createPolyrhythm (inputValue:string, selectionManager:SelectionManager): void {
   const polyrhythmLength = Number(inputValue);
   if (!polyrhythmLength)
     return;
 
-  for (const track of selectionManager.trackRanges.keys()) {
-    const [start, end] = selectionManager.trackRanges.get(track);
-    track.addPolyrhythm(start, end, polyrhythmLength);
-  }
+  selectionManager.selections.forEach(({range}) => {
+    const [start, end] = range;
+    start.track.addPolyrhythm(start, end, polyrhythmLength);
+  });
 
   selectionManager.deselectAll();
+}
+
+
+function onSelectionButton(event:MouseEvent) {
+  if (!(event.target instanceof HTMLButtonElement))
+    return false;
+
+  return event.target.closest('.selection-controls') !== null;
 }

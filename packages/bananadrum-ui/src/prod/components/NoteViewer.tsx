@@ -16,7 +16,7 @@ export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolea
 
   const [isCurrent, setIsCurrent] = useState(isSameTiming(arrangementPlayer.currentTiming, note.timing));
   const [playing, setPlaying] = useState(eventEngine.state === 'playing')
-  const [selected, setSelected] = useState(selectionManager.selectedNotes.includes(note));
+  const [selected, setSelected] = useState(selectionManager.isSelected(note));
 
   useSubscription(eventEngine, () => {
     if (eventEngine.state === 'playing'){
@@ -28,7 +28,7 @@ export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolea
   });
 
   useSubscription(timingPublisher, () => setIsCurrent(isSameTiming(arrangementPlayer.currentTiming, note.timing)));
-  useSubscription(selectionManager, () => setSelected(selectionManager.selectedNotes.includes(note)));
+  useSubscription(selectionManager, () => setSelected(selectionManager.isSelected(note)));
 
   const backgroundColor = (!inPolyrhythm && playing && isCurrent) ?
     'var(--light-yellow)'      // Light up notes as the music plays

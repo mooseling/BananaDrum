@@ -23,7 +23,7 @@ export function ArrangementControlsTop(): JSX.Element {
   const arrangement:Arrangement = useContext(ArrangementPlayerContext).arrangement;
 
   const selectionManager = useContext(SelectionManagerContext);
-  useSubscription(selectionManager, () => toggleOverlay('selection_controls', selectionManager.selectedNotes.length ? 'show' : 'hide'));
+  useSubscription(selectionManager, () => toggleOverlay('selection_controls', selectionManager.selections.size ? 'show' : 'hide'));
 
   return (
     <div className="arrangement-controls arrangement-controls-top overlay-wrapper">
