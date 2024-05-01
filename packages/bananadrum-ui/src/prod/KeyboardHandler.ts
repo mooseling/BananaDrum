@@ -28,8 +28,10 @@ export function createKeyboardHandler(eventEngine:EventEngine, selectionManager:
         break;
       case 'Backspace':
       case 'Delete':
-        selectionManager.selectedNotes.forEach(note => note.noteStyle = null);
-        selectionManager.deselectAll();
+        if (!(event.target instanceof HTMLInputElement)){
+          selectionManager.selections.forEach(({selectedNotes}) => selectedNotes.forEach(note => note.noteStyle = null));
+          selectionManager.deselectAll();
+        }
     }
   }
 
