@@ -53,6 +53,8 @@ export interface ArrangementPlayer extends EventSource, Subscribable {
 export interface TrackPlayer extends EventSource, Subscribable {
   track: Track
   soloMute: SoloMute
+  currentPolyrhythmNotePublisher: Subscribable
+  readonly currentPolyrhythmNote: Note|null
 }
 
 export type SoloMute = null | 'solo' | 'mute'

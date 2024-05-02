@@ -15,7 +15,7 @@ type TrackViewerCallbacks = {
 }
 
 
-export const TrackPlayerContext = createContext(null);
+export const TrackPlayerContext = createContext<TrackPlayer>(null);
 
 const widthPerNote = 55.5; // 50pt for width, 2 * 2pt for padding, and 1.5pt for border
 const smButtonClasses = 'options-button push-button small solo-mute-button';

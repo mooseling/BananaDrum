@@ -1,13 +1,18 @@
 import { RealTime, Note, Track, Polyrhythm } from 'bananadrum-core';
 import { createPublisher } from 'bananadrum-core';
 import { getMuteEvents } from './Muting.js';
-import { Event, Interval, SoloMute, TimeCoordinator, TrackPlayer } from './types.js';
+import { CallbackEvent, Event, Interval, SoloMute, TimeCoordinator, TrackPlayer } from './types.js';
 
 
 export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator): TrackPlayer {
   const publisher = createPublisher();
   const noteTimes:Map<Note, RealTime> = new Map();
   let cachedPolyrhythms:Polyrhythm[] = [];
+
+  // We are going to light up note-viewers in polyrhythms when they play, by simply publishing the playing note
+  // Later we'll investigate whether we use this for all notes. It's pretty simple.
+  const currentPolyrhythmNotePublisher = createPublisher();
+  let currentPolyrhythmNote:Note|null = null; // It would be better to parameterise Publisher, but that's a chunk of work
 
   if (track.instrument.loaded) {
     fillInBasicNoteTimes();
@@ -38,7 +43,9 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
         soloMute = newSoloMute;
         publisher.publish();
       }
-    }
+    },
+    currentPolyrhythmNotePublisher,
+    get currentPolyrhythmNote() {return currentPolyrhythmNote}
   };
 
 
@@ -56,26 +63,21 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
     if (!track.instrument.loaded)
       return [];
 
-    const notesInInterval:Note[] = [];
+    const events:Event[] = [];
 
     const noteIterator = track.getNoteIterator();
     for (const note of noteIterator) {
       const time = noteTimes.get(note);
       if (time > end)
         break;
-      if (time >= start)
-        notesInInterval.push(note);
-    }
 
-    // Can't do this all in one go because TypeScript won't allow the concat
-    const events:Event[] = notesInInterval
-      .filter(note => note.noteStyle) // Filter out rests (which have noteStyle: null)
-      .map(note => ({
-        note,
-        realTime: noteTimes.get(note),
-        audioBuffer:note.noteStyle.audioBuffer
-      }));
-    notesInInterval.forEach(note => events.push(...getMuteEvents(note, noteTimes.get(note))));
+      if (time >= start) {
+        if (note.noteStyle)
+          events.push(getAudioEvent(note, time));
+        events.push(...getMuteEvents(note, time));
+        events.push(getCurrentPolyrhythmNoteEvent(note, time));
+      }
+    }
 
     return events;
   }
@@ -197,5 +199,28 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
       timeCoordinator.unsubscribe(handleTimeChange);
       track.arrangement.unsubscribe(destroySelfIfNeeded);
     }
+  }
+
+
+  function getAudioEvent(note:Note, realTime:RealTime) {
+    return {
+      note, realTime,
+      audioBuffer: note.noteStyle.audioBuffer
+    };
+  }
+
+
+  function getCurrentPolyrhythmNoteEvent(note:Note, realTime:RealTime): CallbackEvent {
+    if (note.polyrhythm) {
+      return {
+        realTime,
+        callback: () => (currentPolyrhythmNote = note, currentPolyrhythmNotePublisher.publish())
+      };
+    }
+
+    return {
+      realTime,
+      callback: () => (currentPolyrhythmNote && (currentPolyrhythmNote = null, currentPolyrhythmNotePublisher.publish()))
+    };
   }
 }

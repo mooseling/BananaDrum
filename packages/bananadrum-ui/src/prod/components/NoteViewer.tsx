@@ -1,9 +1,10 @@
 import { Note, NoteStyle, Subscribable, isSameTiming } from 'bananadrum-core';
-import { getEventEngine, createAudioBufferPlayer } from 'bananadrum-player';
+import { getEventEngine, createAudioBufferPlayer, TrackPlayer, ArrangementPlayer } from 'bananadrum-player';
 import { useState, useContext } from 'react';
 import { ArrangementPlayerContext } from './arrangement/ArrangementViewer.js';
 import { SelectionManagerContext } from '../BananaDrumUi.js';
 import { useSubscription } from '../hooks/useSubscription.js';
+import { TrackPlayerContext } from './TrackViewer.js';
 
 const audioContext = new AudioContext();
 const eventEngine = getEventEngine();
@@ -11,10 +12,13 @@ const eventEngine = getEventEngine();
 
 export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolean}): JSX.Element {
   const arrangementPlayer = useContext(ArrangementPlayerContext);
+  const trackPlayer = useContext(TrackPlayerContext);
   const selectionManager = useContext(SelectionManagerContext);
-  const timingPublisher:Subscribable = arrangementPlayer.currentTimingPublisher;
+  const timingPublisher:Subscribable = note.polyrhythm
+    ? trackPlayer.currentPolyrhythmNotePublisher
+    : arrangementPlayer.currentTimingPublisher;
 
-  const [isCurrent, setIsCurrent] = useState(isSameTiming(arrangementPlayer.currentTiming, note.timing));
+  const [isCurrent, setIsCurrent] = useState(isCurrentlyPlaying(note, arrangementPlayer, trackPlayer));
   const [playing, setPlaying] = useState(eventEngine.state === 'playing')
   const [selected, setSelected] = useState(selectionManager.isSelected(note));
 
@@ -27,10 +31,10 @@ export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolea
     }
   });
 
-  useSubscription(timingPublisher, () => setIsCurrent(isSameTiming(arrangementPlayer.currentTiming, note.timing)));
+  useSubscription(timingPublisher, () => setIsCurrent(isCurrentlyPlaying(note, arrangementPlayer, trackPlayer)));
   useSubscription(selectionManager, () => setSelected(selectionManager.isSelected(note)));
 
-  const backgroundColor = (!inPolyrhythm && playing && isCurrent) ?
+  const backgroundColor = (playing && isCurrent) ?
     'var(--light-yellow)'      // Light up notes as the music plays
     : selected ?
       note.track.selectColour :
@@ -117,6 +121,13 @@ function getParityClass(note:Note): string|null {
     const stepsPerBar = stepsPerBeat * beatsPerBar;
     const stepIsEven = ((bar - 1) * stepsPerBar + step - 1) % 2 === 0;
     return stepIsEven ? 'even-beat' : 'odd-beat';
+}
+
+
+function isCurrentlyPlaying(note:Note, arrangementPlayer:ArrangementPlayer, trackPlayer:TrackPlayer) {
+  if (note.polyrhythm)
+    return trackPlayer.currentPolyrhythmNote === note;
+  return isSameTiming(arrangementPlayer.currentTiming, note.timing);
 }
 
 
