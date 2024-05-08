@@ -2,7 +2,7 @@ import { Arrangement, Instrument, Note, Polyrhythm, Timing, Track } from './type
 import { createNote } from './Note.js';
 import { createPublisher } from './Publisher.js';
 import { TrackClipboard } from './TrackClipboard.js';
-import { getColours } from './colours.js';
+import { getColour } from './colours.js';
 import { isSameTiming } from './utils.js';
 
 let polyrhythmCounter = 0;
@@ -13,10 +13,9 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
   const publisher = createPublisher();
   const notes:Note[] = [];
   const polyrhythms:Polyrhythm[] = [];
-  const colours = getColours(instrument.colourGroup);
+  const colour = getColour(instrument.colourGroup);
   const track:Track = {
-    id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm, getNoteAt, clear, getNoteIterator,
-    colour:colours[0], selectColour:colours[1],
+    id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm, getNoteAt, clear, getNoteIterator, colour,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
   };
 

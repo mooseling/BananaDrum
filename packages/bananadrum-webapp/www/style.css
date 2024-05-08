@@ -29,6 +29,11 @@
   --a-color: var(--darker-blue);
   --a-color-hover: var(--light-blue);
   --a-color-active: var(--lighter-blue);
+  --selected-purple: hsl(94, 51%, 59%);
+  --selected-blue: hsl(20, 97%, 64%);
+  --selected-green: hsl(2, 63%, 55%);
+  --selected-orange: hsl(205, 80%, 53%);
+  --selected-yellow: hsl(232, 100%, 72%);
 }
 
 .hidden {

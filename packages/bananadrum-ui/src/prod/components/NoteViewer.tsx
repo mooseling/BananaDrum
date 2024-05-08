@@ -37,7 +37,7 @@ export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolea
   const backgroundColor = (playing && isCurrent) ?
     'var(--light-yellow)'      // Light up notes as the music plays
     : selected ?
-      note.track.selectColour :
+      `var(--selected-${note.track.instrument.colourGroup})` :
         note.noteStyle
           ? note.track.colour  // Otherwise, give active notes the track colour
           : '';                // Inactive notes have no inline background colour
