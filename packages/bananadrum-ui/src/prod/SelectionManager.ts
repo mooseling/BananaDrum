@@ -7,28 +7,30 @@ export interface SelectionManager extends Subscribable {
   selections: Map<Track, TrackSelection>
 }
 
+
 interface TrackSelection {
   selectedNotes: Set<Note>
   range: [Note, Note]
 }
 
+
 export function createSelectionManager(): SelectionManager {
   const publisher = createPublisher();
-  const selections:Map<Track, TrackSelection> = new Map();
+  const trackSelections:Map<Track, TrackSelection> = new Map();
   let anchor:Note|null = null;
   let lastClickedNote:Note|null = null;
 
   return {
-    isSelected, handleClick, deselectAll, selections,
+    isSelected, handleClick, deselectAll, selections: trackSelections,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
   };
 
 
   function isSelected(note:Note): boolean {
-    if (!selections.has(note.track))
+    if (!trackSelections.has(note.track))
       return false;
 
-    return selections.get(note.track).selectedNotes.has(note);
+    return trackSelections.get(note.track).selectedNotes.has(note);
   }
 
 
@@ -38,277 +40,105 @@ export function createSelectionManager(): SelectionManager {
 
     lastClickedNote = clickedNote;
 
-    if (!selections.size)
-      return startSelection(clickedNote);
-
-    if (clickedNote === anchor)
-      return deselectAll();
+    if (!trackSelections.size || clickedNote === anchor)
+      return restartSelection(clickedNote);
 
     // Step 1: Rejig selection tracks before anything else
-    const selectedTracks = getSelectedTracks(anchor.track.arrangement.tracks, new Set(selections.keys()), anchor, clickedNote);
+    recalcSelectedTracks(clickedNote);
 
-    for (const track of selections.keys()) {
-      if (!selectedTracks.has(track))
-        selections.delete(track);
-    }
+    if (trackSelections.size === 1) {
+      const trackSelection = trackSelections.get(anchor.track);
+      const noteIterator = anchor.track.getNoteIterator();
 
-    selectedTracks.forEach(track => {
-      if (!selections.has(track))
-        selections.set(track, createTrackSelection());
-    });
+      deselectUntilMatch(trackSelection, noteIterator, note => note === anchor || note === clickedNote);
+      selectUntilMatch(trackSelection, noteIterator, note => note === anchor || note === clickedNote);
+      deselectUntilNoMoreSelected(trackSelection, noteIterator);
+    } else {
+      const anchorNoteViewer = document.getElementById('note-' + anchor.id);
+      const clickedNoteViewer = document.getElementById('note-' + clickedNote.id);
+      const {left:anchorLeft, right:anchorRight} = anchorNoteViewer.getBoundingClientRect();
+      const {left:clickedNoteLeft, right:clickedNoteRight} = clickedNoteViewer.getBoundingClientRect();
+      const leftBound = anchorLeft < clickedNoteLeft ? anchorLeft : clickedNoteLeft;
+      const rightBound = anchorRight > clickedNoteRight ? anchorRight : clickedNoteRight;
 
-    // Step 2: Then rejig the selection notes in each track
-    selectedTracks.forEach(track => {
-      const selection = selections.get(track);
+      // In this case, we know no track contains both anchor and clickedNote. Some may not include either.
+      for (const track of trackSelections.keys()) {
+        const trackSelection = trackSelections.get(track);
+        const noteIterator = track.getNoteIterator();
+        const [knownNote, knownNoteIsOnLeftEdge, knownNoteIsOnRightEdge] =
+          anchor.track === track ? [anchor, anchorLeft === leftBound, anchorRight === rightBound]
+          : clickedNote.track === track ? [clickedNote, clickedNoteLeft === leftBound, clickedNoteRight === rightBound]
+          : [null];
 
-      if (track === anchor.track) {
-        if (track === clickedNote.track) {
-          selection.range = handleSameTrackSelectAction(selection.selectedNotes, anchor, clickedNote);
+        if (knownNote) {
+          const leftEdgeTest = knownNoteIsOnLeftEdge
+            ? (note:Note) => note === knownNote
+            : getAboutHalfCoveredTest(leftBound, rightBound);
+          deselectUntilMatch(trackSelection, noteIterator, leftEdgeTest);
+
+          if (knownNoteIsOnRightEdge) {
+            if (!knownNoteIsOnLeftEdge) // If it's both edges, it's already been added
+              selectUntilMatch(trackSelection, noteIterator, note => note === knownNote);
+          } else {
+            selectUntilNoMoreMatches(trackSelection, noteIterator, getAboutHalfCoveredTest(leftBound, rightBound));
+          }
+
+          deselectUntilNoMoreSelected(trackSelection, noteIterator);
         } else {
-          selection.range = handleSelectActionForAnchorTrackButNotClickedTrack(track, selection.selectedNotes, anchor, clickedNote);
-        }
-      } else {
-        if (track === clickedNote.track) {
-          selection.range = handleSelectActionForClickedTrackButNotAnchorTrack(track, selection.selectedNotes, anchor, clickedNote);
-        } else {
-          selection.range = handleDifferentTrackSelectAction(track, selection.selectedNotes, anchor, clickedNote);
+          const inclusionTest = getAboutHalfCoveredTest(leftBound, rightBound);
+
+          deselectUntilMatch(trackSelection, noteIterator, inclusionTest);
+          selectUntilNoMoreMatches(trackSelection, noteIterator, inclusionTest);
+          deselectUntilNoMoreSelected(trackSelection, noteIterator);
         }
       }
-    });
+    }
 
     publisher.publish();
   }
 
 
-  function startSelection(note:Note) {
-      selections.set(note.track, createTrackSelection(note));
-      anchor = note;
-      publisher.publish();
+  function restartSelection(note:Note) {
+    trackSelections.clear();
+    trackSelections.set(note.track, createTrackSelection(note));
+    anchor = note;
+    publisher.publish();
+  }
+
+
+  // We use a simple, inefficient algorithm to recalc selected tracks
+  // This is ok. Note-selection is more optimised because there are many more notes, and selecting notes involves dom-searching
+  function recalcSelectedTracks(clickedNote:Note) {
+    const allTracks = anchor.track.arrangement.tracks;
+    const anchorTrackIndex = allTracks.indexOf(anchor.track);
+    const clickedTrackIndex = allTracks.indexOf(clickedNote.track);
+    const [start, end] = anchorTrackIndex < clickedTrackIndex ? [anchorTrackIndex, clickedTrackIndex] : [clickedTrackIndex, anchorTrackIndex];
+
+    let index = 0;
+    for (; index < start; index++)
+      trackSelections.delete(allTracks[index]);
+    for (; index <= end; index++) {
+      if (!trackSelections.has(allTracks[index]))
+        trackSelections.set(allTracks[index], createTrackSelection());
     }
+    for (; index < allTracks.length; index++)
+      trackSelections.delete(allTracks[index]);
+  }
 
 
   function deselectAll() {
-    if (selections.size) {
+    if (trackSelections.size) {
       anchor = null;
       lastClickedNote = null;
-      selections.clear();
+      trackSelections.clear();
       publisher.publish();
     }
   }
-}
-
-
-// Will update selectedTracks in place, and also return it. Makes sense at the caller.
-function getSelectedTracks(tracks:Track[], selectedTracks:Set<Track>, anchor:Note, clickedNote:Note): Set<Track> {
-  if (anchor.track === clickedNote.track) {
-    selectedTracks.clear();
-    selectedTracks.add(anchor.track);
-    return selectedTracks;
-  }
-
-  handleSelectAction(
-    tracks,
-    selectedTracks,
-    track => track === anchor.track,
-    track => track === anchor.track,
-    track => track === clickedNote.track,
-    track => track === clickedNote.track,
-  );
-
-  return selectedTracks;
-}
-
-
-// Will modify selectedNotes in place, and return [first, last]
-function handleSameTrackSelectAction(selectedNotes:Set<Note>, anchor:Note, clickedNote:Note): [Note, Note] {
-  return handleSelectAction(
-    clickedNote.track.getNoteIterator(),
-    selectedNotes,
-    note => note === anchor,
-    note => note === anchor,
-    note => note === clickedNote,
-    note => note === clickedNote
-  );
-}
-
-
-// Will modify selectedNotes in place, and return [first, last]
-function handleSelectActionForAnchorTrackButNotClickedTrack(track:Track, selectedNotes:Set<Note>, anchor:Note, clickedNote:Note): [Note, Note] {
-  const clickedNoteViewer = document.getElementById('note-' + clickedNote.id);
-  const clickedNoteLeft = clickedNoteViewer.getBoundingClientRect().x;
-  const clickedNoteRight = clickedNoteLeft + clickedNoteViewer.clientWidth;
-
-  return handleSelectAction(
-    track.getNoteIterator(),
-    selectedNotes,
-    note => note === anchor,
-    note => note === anchor,
-    note => {
-      const noteViewer = document.getElementById('note-' + note.id);
-      const noteLeft = noteViewer.getBoundingClientRect().x;
-      const noteRight = noteLeft + noteViewer.clientWidth;
-      return noteLeft <= clickedNoteLeft && noteRight > clickedNoteLeft;
-    },
-    note => {
-      const noteViewer = document.getElementById('note-' + note.id);
-      const noteLeft = noteViewer.getBoundingClientRect().x;
-      const noteRight = noteLeft + noteViewer.clientWidth;
-      return noteLeft < clickedNoteRight && noteRight >= clickedNoteRight;
-    }
-  );
-}
-
-
-// Will modify selectedNotes in place, and return [first, last]
-function handleSelectActionForClickedTrackButNotAnchorTrack(track:Track, selectedNotesInTrack:Set<Note>, anchor:Note, clickedNote:Note) {
-  const anchorNoteViewer = document.getElementById('note-' + anchor.id);
-  const anchorLeft = anchorNoteViewer.getBoundingClientRect().x;
-  const anchorRight = anchorLeft + anchorNoteViewer.clientWidth;
-
-  return handleSelectAction(
-    track.getNoteIterator(),
-    selectedNotesInTrack,
-    note => {
-      const noteViewer = document.getElementById('note-' + note.id);
-      const noteLeft = noteViewer.getBoundingClientRect().x;
-      const noteRight = noteLeft + noteViewer.clientWidth;
-      return noteLeft <= anchorLeft && noteRight > anchorLeft;
-    },
-    note => {
-      const noteViewer = document.getElementById('note-' + note.id);
-      const noteLeft = noteViewer.getBoundingClientRect().x;
-      const noteRight = noteLeft + noteViewer.clientWidth;
-      return noteLeft < anchorRight && noteRight >= anchorRight;
-    },
-    note => note === clickedNote,
-    note => note === clickedNote
-  );
-}
-
-
-function handleDifferentTrackSelectAction(track:Track, selectedNotesInTrack:Set<Note>, anchor:Note, clickedNote:Note) {
-  const anchorNoteViewer = document.getElementById('note-' + anchor.id);
-  const clickedNoteViewer = document.getElementById('note-' + clickedNote.id);
-
-  const anchorLeft = anchorNoteViewer.getBoundingClientRect().x;
-  const anchorRight = anchorLeft + anchorNoteViewer.clientWidth;
-
-  const clickedNoteLeft = clickedNoteViewer.getBoundingClientRect().x;
-  const clickedNoteRight = clickedNoteLeft + clickedNoteViewer.clientWidth;
-
-  return handleSelectAction(
-    track.getNoteIterator(),
-    selectedNotesInTrack,
-    note => {
-      const noteViewer = document.getElementById('note-' + note.id);
-      const noteLeft = noteViewer.getBoundingClientRect().x;
-      const noteRight = noteLeft + noteViewer.clientWidth;
-      return noteLeft <= anchorLeft && noteRight > anchorLeft;
-    },
-    note => {
-      const noteViewer = document.getElementById('note-' + note.id);
-      const noteLeft = noteViewer.getBoundingClientRect().x;
-      const noteRight = noteLeft + noteViewer.clientWidth;
-      return noteLeft < anchorRight && noteRight >= anchorRight;
-    },
-    note => {
-      const noteViewer = document.getElementById('note-' + note.id);
-      const noteLeft = noteViewer.getBoundingClientRect().x;
-      const noteRight = noteLeft + noteViewer.clientWidth;
-      return noteLeft <= clickedNoteLeft && noteRight > clickedNoteLeft;
-    },
-    note => {
-      const noteViewer = document.getElementById('note-' + note.id);
-      const noteLeft = noteViewer.getBoundingClientRect().x;
-      const noteRight = noteLeft + noteViewer.clientWidth;
-      return noteLeft < clickedNoteRight && noteRight >= clickedNoteRight;
-    },
-  );
-}
-
-
-// Could selectedItems be a set?
-function handleSelectAction<T>(iterator:Iterable<T>, selectedItems:Set<T>,
-    matchesAnchorOnLeft:(item:T)=>boolean, matchesAnchorOnRight:(item:T)=>boolean,
-    matchesClickedItemOnLeft:(item:T)=>boolean, matchesClickedItemOnRight:(item:T)=>boolean
-): [T, T] {
-  let first:T, last:T;
-  let foundClickedItem = false;
-  let foundAnchor = false;
-
-  for (const item of iterator) {
-    if (foundClickedItem) {
-      if (foundAnchor) {
-        // We are after the desired region
-
-        if (selectedItems.has(item))
-          selectedItems.delete(item); // Unselect notes that are after the anchor
-        else
-          break; // Once we find unselected notes, we're done. The selection is correct.
-
-      } else {
-        // We are somewhere inside the desired region, looking for the anchor
-
-        if (matchesAnchorOnRight(item)) {
-          selectedItems.add(item); // In the 1-track selection case, the anchor is already in there. But Set is fine with that.
-          foundAnchor = true;
-          last = item;
-        } else {
-          if (selectedItems.has(item))
-            break; // We have found the existing selection, and we've added to it, so now we're done
-          else
-            selectedItems.add(item);
-        }
-
-      }
-    } else {
-      if (foundAnchor) {
-        // We are in the desired region, looking for the clicked-note
-
-        if (matchesClickedItemOnRight(item)) {
-          selectedItems.add(item);
-          foundClickedItem = true;
-          last = item;
-        } else if (!selectedItems.has(item)) {
-          selectedItems.add(item); // Unselected notes get selected
-        }
-
-      } else {
-        // We are before the desired region, looking for the anchor or clicked-note
-
-        if (matchesAnchorOnLeft(item)) {
-          selectedItems.add(item); // In the 1-track selection case, the anchor is already in there. But Set is fine with that.
-          foundAnchor = true;
-          first = item;
-
-          if (matchesClickedItemOnRight(item)) { // It's possible that one note matches up with both anchor and clickedNote
-            foundClickedItem = true;
-            last = item;
-          }
-        } else {
-          if (matchesClickedItemOnLeft(item)) {
-            selectedItems.add(item);
-            foundClickedItem = true;
-            first = item;
-
-            if (matchesAnchorOnRight(item)) {
-              foundAnchor = true;
-              last = item;
-            }
-          } else if (selectedItems.has(item)) {
-            selectedItems.delete(item); // Previously selected outside the new region notes get removed
-          }
-        }
-      }
-    }
-  }
-
-  return [first, last];
 }
 
 
 function createTrackSelection(note?:Note): TrackSelection {
-  if (note){
+  if (note) {
     return {
       selectedNotes: new Set<Note>().add(note),
       range: [note, note]
@@ -319,4 +149,102 @@ function createTrackSelection(note?:Note): TrackSelection {
     selectedNotes: new Set(),
     range: [null, null]
   };
+}
+
+
+function getAboutHalfCoveredTest(leftBound:number, rightBound:number): ((note:Note) => boolean) {
+  const selectionWidth = rightBound - leftBound;
+
+  return (note:Note) => {
+    const testElement = document.getElementById('note-' + note.id);
+    const {left, right, width} = testElement.getBoundingClientRect();
+
+    if (right > rightBound) {
+      if (left > rightBound)
+        return false; // This element is to the right of the selection area, with no overlap
+      if (left > leftBound)
+        return (rightBound - left) / width > 0.4; // This element covers the right edge of the selection area
+      return selectionWidth / width > 0.4; // This element is wider than the selection area, and completely covers it
+    } else {
+      if (right < leftBound)
+        return false; // This element is to the left of the selection area, with no overlap
+      if (left < leftBound)
+        return (right - leftBound) / width > 0.4; // This element covers the left edge of the selection area
+      return true; // This element is completely inside the selection area
+    }
+  }
+}
+
+
+
+/* =============== Selection Recalc Function =============== */
+
+// It's not possible to iterate over the iterator in several small chunks, using for..of and break
+// On break, the iterator does some cleanup and becomes useless. So we use while loops instead.
+
+// First, we are before the new selection, looking for the start-note
+function deselectUntilMatch(trackSelection:TrackSelection, iterator:IterableIterator<Note>, matches:(note:Note)=>boolean) {
+  let note:Note;
+
+  while((note = iterator.next().value)) {
+    // Once we find the start-note, we enter the new selection, so this function is done
+    if (matches(note)) {
+      trackSelection.range[0] = note;
+      trackSelection.range[1] = note; // For cases where there's only one selected note in this track
+      trackSelection.selectedNotes.add(note);
+      return;
+    }
+
+    // ...otherwise, any previously selected notes out here get removed from the selection
+    trackSelection.selectedNotes.delete(note);
+  }
+}
+
+
+// Inside the new selection
+// Case 1: Looking for the end note and we know it's in this track
+function selectUntilMatch(trackSelection:TrackSelection, iterator:IterableIterator<Note>, matches:(note:Note)=>boolean) {
+  let note:Note;
+
+  while ((note = iterator.next().value)) {
+    // Anything in here gets added to the selection
+    trackSelection.selectedNotes.add(note);
+
+    if (matches(note)) {
+      trackSelection.range[1] = note;
+      return;
+    }
+  }
+}
+
+
+// Inside the new selection
+// Case 2: Looking until we find notes outside the selection
+function selectUntilNoMoreMatches(trackSelection:TrackSelection, iterator:IterableIterator<Note>, matches:(note:Note)=>boolean) {
+  let note:Note;
+
+  while ((note = iterator.next().value)) {
+    // Keep adding notes if they match
+    if (matches(note)) {
+      trackSelection.selectedNotes.add(note);
+      trackSelection.range[1] = note;
+    } else {
+      // Otherwise, remove the note from the selection and finish this loop
+      trackSelection.selectedNotes.delete(note);
+      return;
+    }
+  }
+}
+
+
+// And finally we are after the new selection, removing any previously selected notes
+function deselectUntilNoMoreSelected(trackSelection:TrackSelection, iterator:IterableIterator<Note>) {
+  let note:Note;
+
+  while((note = iterator.next().value)) {
+    if (trackSelection.selectedNotes.has(note))
+      trackSelection.selectedNotes.delete(note);
+    else
+      return; // Once we find no more selected notes, we're done
+  }
 }
