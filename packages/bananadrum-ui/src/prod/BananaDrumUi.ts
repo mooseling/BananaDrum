@@ -17,7 +17,7 @@ export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HT
   HistoryController.init();
 
   const selectionManager = createSelectionManager();
-  const modeManager = createModeManager();
+  const modeManager = createModeManager(selectionManager);
 
   createKeyboardHandler(bananaDrumPlayer.eventEngine, selectionManager, modeManager);
 

@@ -1,16 +1,22 @@
 import { createPublisher, Subscribable } from "bananadrum-core";
+import { SelectionManager } from "./SelectionManager";
 
 export interface ModeManager extends Subscribable {
   deletePolyrhythmMode: boolean
 }
 
+// The really useful thing about a mode-manager would be the ability enforce mutual exclusivity of different modes
+// We can avoid UI bugs just by having delete-polyrhythm-mode and select-mode never simultaneous
+// All selection controls would appear/disappear based on mode.
+// There could be a select-mode cleanup function, so if we change mode, we deselect all
+// It introduces a single-source-of-truth problem, as modeManager.selectMode is equivalent to selectionManager.selections.size
+// For now, since there's only two modes, not a priority. We just have to be meticulous about avoioding bugs.
 
-export function createModeManager(): ModeManager {
+export function createModeManager(selectionManager:SelectionManager): ModeManager {
+  const publisher = createPublisher();
   let deletePolyrhythmMode = false;
 
-  const publisher = createPublisher();
-
-  return {
+  const modeManager = {
     get deletePolyrhythmMode() {
       return deletePolyrhythmMode;
     },
@@ -23,4 +29,11 @@ export function createModeManager(): ModeManager {
     subscribe: publisher.subscribe,
     unsubscribe: publisher.unsubscribe
   };
+
+  selectionManager.subscribe(() => {
+    if (selectionManager.selections.size)
+      modeManager.deletePolyrhythmMode = false;
+  });
+
+  return modeManager;
 }
