@@ -36,6 +36,7 @@ export function ArrangementControlsBottom(): JSX.Element {
         onClick={() => toggleOverlay('instrument_browser', 'show')}
       >Add Instrument</button>
 
+      <SmallSpacer />
       <ExpandingSpacer />
 
       {

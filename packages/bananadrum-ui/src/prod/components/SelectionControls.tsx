@@ -58,6 +58,7 @@ export function SelectionControls(): JSX.Element {
         >Clear sounds</button>
 
         <ExpandingSpacer />
+        <SmallSpacer />
 
         <button
           className="push-button"
@@ -84,6 +85,7 @@ export function SelectionControls(): JSX.Element {
         >go!</button>
 
         <ExpandingSpacer />
+        <SmallSpacer />
 
         <button
           className="push-button"
