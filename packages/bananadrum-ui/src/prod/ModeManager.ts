@@ -3,6 +3,7 @@ import { SelectionManager } from "./SelectionManager";
 
 export interface ModeManager extends Subscribable {
   deletePolyrhythmMode: boolean
+  mobileSelectionMode: boolean
 }
 
 // The really useful thing about a mode-manager would be the ability enforce mutual exclusivity of different modes
@@ -15,6 +16,7 @@ export interface ModeManager extends Subscribable {
 export function createModeManager(selectionManager:SelectionManager): ModeManager {
   const publisher = createPublisher();
   let deletePolyrhythmMode = false;
+  let mobileSelectionMode = false;
 
   const modeManager = {
     get deletePolyrhythmMode() {
@@ -26,6 +28,15 @@ export function createModeManager(selectionManager:SelectionManager): ModeManage
         publisher.publish();
       }
     },
+    get mobileSelectionMode() {
+      return mobileSelectionMode;
+    },
+    set mobileSelectionMode(newValue:boolean) {
+      if (newValue !== mobileSelectionMode) {
+        mobileSelectionMode = newValue;
+        publisher.publish();
+      }
+    },
     subscribe: publisher.subscribe,
     unsubscribe: publisher.unsubscribe
   };
@@ -33,6 +44,8 @@ export function createModeManager(selectionManager:SelectionManager): ModeManage
   selectionManager.subscribe(() => {
     if (selectionManager.selections.size)
       modeManager.deletePolyrhythmMode = false;
+    else
+      modeManager.mobileSelectionMode = false;
   });
 
   return modeManager;

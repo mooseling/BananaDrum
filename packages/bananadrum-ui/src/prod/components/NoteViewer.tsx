@@ -1,10 +1,11 @@
 import { Note, NoteStyle, Subscribable, isSameTiming } from 'bananadrum-core';
 import { getEventEngine, createAudioBufferPlayer, TrackPlayer, ArrangementPlayer } from 'bananadrum-player';
-import { useState, useContext } from 'react';
+import { useState, useContext, useCallback } from 'react';
 import { ArrangementPlayerContext } from './arrangement/ArrangementViewer.js';
-import { SelectionManagerContext } from '../BananaDrumUi.js';
+import { ModeManagerContext, SelectionManagerContext } from '../BananaDrumUi.js';
 import { useSubscription } from '../hooks/useSubscription.js';
 import { TrackPlayerContext } from './TrackViewer.js';
+import { TouchHoldDetector } from './TouchHoldDetector.js';
 
 const audioContext = new AudioContext();
 const eventEngine = getEventEngine();
@@ -14,6 +15,7 @@ export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolea
   const arrangementPlayer = useContext(ArrangementPlayerContext);
   const trackPlayer = useContext(TrackPlayerContext);
   const selectionManager = useContext(SelectionManagerContext);
+  const modeManager = useContext(ModeManagerContext);
   const timingPublisher:Subscribable = note.polyrhythm
     ? trackPlayer.currentPolyrhythmNotePublisher
     : arrangementPlayer.currentTimingPublisher;
@@ -45,8 +47,8 @@ export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolea
   const [noteStyle, setNoteStyle] = useState(note.noteStyle)
   useSubscription(note, () => setNoteStyle(note.noteStyle));
 
-  const handleClick = (event:React.MouseEvent) => {
-    if (event.shiftKey) {
+  const handleClick = useCallback((event:React.MouseEvent) => {
+    if (event.shiftKey || modeManager.mobileSelectionMode) {
       selectionManager.handleClick(note);
     } else if (selectionManager.selections.size) {
       selectionManager.deselectAll();
@@ -56,7 +58,12 @@ export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolea
     }
 
     event.stopPropagation();
-  }
+  }, []);
+
+  const handleTouchHold = useCallback(() => {
+    selectionManager.handleClick(note);
+    modeManager.mobileSelectionMode = true;
+  }, []);
 
   return (
     <div
@@ -66,8 +73,15 @@ export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolea
       style={{backgroundColor}}
       data-timing={`${note.timing.bar}.${note.timing.step}`}
     >
-      <div className="note-viewer-background" />
-      <NoteDetailsViewer noteStyle={noteStyle} />
+      <TouchHoldDetector
+          holdLength={500}
+          callback={handleTouchHold}
+        >
+        <>
+          <div className="note-viewer-background" />
+          <NoteDetailsViewer noteStyle={noteStyle} />
+        </>
+      </TouchHoldDetector>
     </div>
   );
 }
