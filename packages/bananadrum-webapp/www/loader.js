@@ -84,7 +84,7 @@
 
   function loadBananaDrum() {
     const script = document.createElement('script');
-    script.src = '/bundle.js?v=1.4.0-snapshot7';
+    script.src = '/bundle.js?v=1.4.0-snapshot9';
     document.body.appendChild(script);
   }
 
