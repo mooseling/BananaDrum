@@ -1,4 +1,6 @@
 (function() {
+  const bananaDrumVersion = '1.4.0-snapshot9';
+
   let errorLog = "Sorry to hear you had problems running Banana Drum! Please copy this whole page and send it to James.\nDon't know James? Get in touch with Banana Drum on Facebook: https://facebook.com/bananadrum.net/\n\n\n";
   window.onerror =  function(message, url, lineNumber, columnNumber, error) {
     reportTopLevelError(message, url, lineNumber, columnNumber, error);
@@ -84,7 +86,7 @@
 
   function loadBananaDrum() {
     const script = document.createElement('script');
-    script.src = '/bundle.js?v=1.4.0-snapshot9';
+    script.src = '/bundle.js?v=' + bananaDrumVersion;
     document.body.appendChild(script);
   }
 
