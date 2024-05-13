@@ -23,7 +23,7 @@ const allColours: {[colourName:string]:string[]} = {
   green: [
     'hsl(182, 63%, 49%)',
     'hsl(178, 62%, 55%)',
-    'hsl(174, 61%, 562%)',
+    'hsl(174, 61%, 62%)',
     'hsl(170, 60%, 69%)',
     'hsl(166, 59%, 75%)',
     'hsl(162, 57%, 82%)'
