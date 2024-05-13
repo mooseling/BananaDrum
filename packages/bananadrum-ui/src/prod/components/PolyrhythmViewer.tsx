@@ -2,7 +2,7 @@ import { Polyrhythm } from "bananadrum-core";
 import { useContext, useState } from "react";
 import { ModeManagerContext } from "../BananaDrumUi";
 import { useSubscription } from "../hooks/useSubscription";
-import { NoteViewer } from "./NoteViewer";
+import { NoteViewer } from "./note/NoteViewer";
 
 export function PolyrhythmViewer({polyrhythm}:{polyrhythm:Polyrhythm}): JSX.Element {
   const track = polyrhythm.start.track;

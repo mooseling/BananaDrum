@@ -1,11 +1,12 @@
 import { Note, NoteStyle, Subscribable, isSameTiming } from 'bananadrum-core';
 import { getEventEngine, createAudioBufferPlayer, TrackPlayer, ArrangementPlayer } from 'bananadrum-player';
 import { useState, useContext, useCallback } from 'react';
-import { ArrangementPlayerContext } from './arrangement/ArrangementViewer.js';
-import { ModeManagerContext, SelectionManagerContext } from '../BananaDrumUi.js';
-import { useSubscription } from '../hooks/useSubscription.js';
-import { TrackPlayerContext } from './TrackViewer.js';
-import { TouchHoldDetector } from './TouchHoldDetector.js';
+import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer.js';
+import { ModeManagerContext, SelectionManagerContext } from '../../BananaDrumUi.js';
+import { useSubscription } from '../../hooks/useSubscription.js';
+import { TrackPlayerContext } from '../TrackViewer.js';
+import { TouchHoldDetector } from '../TouchHoldDetector.js';
+import { NoteDetailsViewer } from './NoteDetailsViewer.js';
 
 const audioContext = new AudioContext();
 const eventEngine = getEventEngine();
@@ -144,29 +145,6 @@ function isCurrentlyPlaying(note:Note, arrangementPlayer:ArrangementPlayer, trac
   if (note.polyrhythm)
     return trackPlayer.currentPolyrhythmNote === note;
   return isSameTiming(arrangementPlayer.currentTiming, note.timing);
-}
-
-
-function NoteDetailsViewer({noteStyle}:{noteStyle:NoteStyle}): JSX.Element {
-  return (
-    <div className="note-details-viewer" >
-      <NoteStyleSymbolViewer noteStyle={noteStyle}/>
-    </div>
-  );
-}
-
-
-function NoteStyleSymbolViewer({noteStyle}:{noteStyle:NoteStyle}): JSX.Element {
-  if (!noteStyle)
-    return null;
-  const {symbol} = noteStyle;
-  if (symbol) {
-    if (symbol.src)
-      return <img className="note-style-symbol" src={symbol.src} alt={symbol.string}/>;
-    if (symbol.string)
-      return <span className="note-style-symbol">{symbol.string}</span>;
-  }
-  return <span className="note-style-symbol">{noteStyle.id}</span>;
 }
 
 
