@@ -8,7 +8,7 @@ import { demoSongString } from './demo-song';
 document.getElementById('load-button').addEventListener('click', function() {
   this.replaceWith(createLoadingMessage());
 
-  const bananaDrum = createBananaDrum(bateriaInstruments, getCompressedArrangement());
+  const bananaDrum = createBananaDrum(bateriaInstruments, getSerialisedArrangement());
   const bananaDrumPlayer = createBananaDrumPlayer(bananaDrum);
   const bananaDrumUi = createBananaDrumUi(bananaDrumPlayer, document.getElementById('wrapper'))
 
@@ -27,17 +27,23 @@ function createLoadingMessage() {
 }
 
 
-function getCompressedArrangement() {
+function getSerialisedArrangement() {
   const searchParams = new URLSearchParams(window.location.search);
-  const sharedArrangement = searchParams.get('a');
 
-  if (sharedArrangement) {
+  const sharedArrangement2 = searchParams.get('a2');
+  if (sharedArrangement2) {
     // Want to prevent people copying the url thinking it encodes their latest changes
     removeSharedArrangementFromUrl();
-    return sharedArrangement;
+    return {serialisedArrangement:sharedArrangement2, version:2};
   }
 
-  return demoSongString;
+  const sharedArrangementV1 = searchParams.get('a');
+  if (sharedArrangementV1) {
+    removeSharedArrangementFromUrl();
+    return {serialisedArrangement:sharedArrangementV1, version:1};
+  }
+
+  return {serialisedArrangement:demoSongString, version:2};
 }
 
 
