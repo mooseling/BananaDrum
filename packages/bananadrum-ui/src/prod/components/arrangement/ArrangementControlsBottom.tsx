@@ -68,7 +68,7 @@ export function ArrangementControlsBottom(): JSX.Element {
           <ExpandingSpacer />
           <button
             className="push-button"
-            onClick={() => (arrangement.tracks.forEach(track => track.clear), toggleOverlay('clear_tracks', 'hide'))}
+            onClick={() => (arrangement.tracks.forEach(track => track.clear()), toggleOverlay('clear_tracks', 'hide'))}
           >Really, clear tracks</button>
           <SmallSpacer />
           <button
