@@ -1,18 +1,18 @@
 import { Note, NoteStyle, Subscribable, isSameTiming } from 'bananadrum-core';
 import { getEventEngine, createAudioBufferPlayer, TrackPlayer, ArrangementPlayer } from 'bananadrum-player';
-import { useState, useContext, useCallback } from 'react';
+import { useState, useContext, useCallback, useMemo } from 'react';
 import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer.js';
 import { ModeManagerContext, SelectionManagerContext } from '../../BananaDrumUi.js';
 import { useSubscription } from '../../hooks/useSubscription.js';
 import { TrackPlayerContext } from '../TrackViewer.js';
 import { TouchHoldDetector } from '../TouchHoldDetector.js';
-import { NoteDetailsViewer } from './NoteDetailsViewer.js';
+import { NoteStyleSymbolViewer } from './NoteStyleSymbolViewer.js';
 
 const audioContext = new AudioContext();
 const eventEngine = getEventEngine();
 
 
-export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolean}): JSX.Element {
+export function NoteViewer({note}:{note:Note}): JSX.Element {
   const arrangementPlayer = useContext(ArrangementPlayerContext);
   const trackPlayer = useContext(TrackPlayerContext);
   const selectionManager = useContext(SelectionManagerContext);
@@ -37,13 +37,7 @@ export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolea
   useSubscription(timingPublisher, () => setIsCurrent(isCurrentlyPlaying(note, arrangementPlayer, trackPlayer)));
   useSubscription(selectionManager, () => setSelected(selectionManager.isSelected(note)));
 
-  const backgroundColor = (playing && isCurrent) ?
-    'var(--light-yellow)'      // Light up notes as the music plays
-    : selected ?
-      getSelectedColour(note.track.instrument.colourGroup) :
-        note.noteStyle
-          ? note.track.colour  // Otherwise, give active notes the track colour
-          : '';                // Inactive notes have no inline background colour
+
 
   const [noteStyle, setNoteStyle] = useState(note.noteStyle)
   useSubscription(note, () => setNoteStyle(note.noteStyle));
@@ -66,55 +60,67 @@ export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolea
     modeManager.mobileSelectionMode = true;
   }, []);
 
+  const idString = useMemo(() => `note-${note.id}`, []);
+  const classString = useClasses(note); // This is a hook because it calls useMemo
+  const backgroundColor = useBackgroundColor(note, playing, isCurrent, selected);
+  const timingString = useMemo(() => `${note.timing.bar}.${note.timing.step}`, []);
+
   return (
     <div
-      id={`note-${note.id}`}
-      className={inPolyrhythm ? 'note-viewer' : getClasses(note)}
+      id={idString}
+      className={classString}
       onClick={handleClick}
       style={{backgroundColor}}
-      data-timing={`${note.timing.bar}.${note.timing.step}`}
+      data-timing={timingString}
     >
       <TouchHoldDetector
           holdLength={500}
           callback={handleTouchHold}
         >
-        <>
-          <div className="note-viewer-background" />
-          <NoteDetailsViewer noteStyle={noteStyle} />
-        </>
+        <div className="note-details-viewer" >
+          <NoteStyleSymbolViewer noteStyle={noteStyle} />
+        </div>
       </TouchHoldDetector>
     </div>
   );
 }
 
 
-function getClasses(note:Note): string {
-  const classes:string[] = ['note-viewer'];
-  const {step} = note.timing;
+function useClasses(note:Note): string {
+  const inPolyrhythm = note.polyrhythm !== undefined;
+  const {bar, step} = note.timing;
+  const {timeSignature, stepResolution} = note.track.arrangement.timeParams;
 
-  classes.push(getParityClass(note));
+  return useMemo(() => {
+    if (inPolyrhythm)
+      return 'note-viewer';
 
-  if (step === 1)
-    classes.push('start-of-bar');
+    const classes:string[] = ['note-viewer'];
+    const {step} = note.timing;
 
-  return classes.join(' ');
+    classes.push(getParityClass(bar, step, timeSignature, stepResolution));
+
+    if (step === 1)
+      classes.push('start-of-bar');
+
+    return classes.join(' ');
+  }, [inPolyrhythm, bar, step, timeSignature, stepResolution]);
 }
 
 
-function getParityClass(note:Note): string|null {
-  const {timeSignature, stepResolution} = note.track.arrangement.timeParams;
-  const {bar, step} = note.timing;
-
+function getParityClass(bar:number, step:number, timeSignature:string, stepResolution:number): string|null {
     if (timeSignature === '4/4' && stepResolution === 16) {
       const beat = Math.floor((step - 1) / 4) + 1;
       const beatIsEven = beat % 2 === 0;
       return beatIsEven ? 'even-beat' : 'odd-beat';
     }
+
     if (timeSignature === '6/8' && stepResolution === 8) {
       const beat = Math.floor((step - 1) / 3) + 1;
       const beatIsEven = beat % 2 === 0;
       return beatIsEven ? 'even-beat' : 'odd-beat';
     }
+
     if (timeSignature === '5/4' && stepResolution === 8) {
       const beat = Math.floor((step - 1) / 2) + 1;
       let beatIsEven = beat % 2 === 0;
@@ -122,9 +128,11 @@ function getParityClass(note:Note): string|null {
         beatIsEven = !beatIsEven; // 5 groups in each bar, so swap every bar
       return beatIsEven ? 'even-beat' : 'odd-beat';
     }
+
     if (timeSignature === '7/8' && stepResolution === 8) {
       return (bar % 2) ? 'even-beat' : 'odd-beat';
     }
+
     const [beatsPerBar, beatUnit] = timeSignature.split('/').map(str => Number(str));
     const stepsPerBeat = stepResolution / beatUnit;
     if (stepsPerBeat > 1) {
@@ -134,10 +142,24 @@ function getParityClass(note:Note): string|null {
         beatIsEven = !beatIsEven; // odd number of groups in each bar, so swap every bar
       return beatIsEven ? 'even-beat' : 'odd-beat';
     }
+
     // If all else fails, we just alternate each note
     const stepsPerBar = stepsPerBeat * beatsPerBar;
     const stepIsEven = ((bar - 1) * stepsPerBar + step - 1) % 2 === 0;
     return stepIsEven ? 'even-beat' : 'odd-beat';
+}
+
+function useBackgroundColor(note:Note, playing:boolean, isCurrent:boolean, selected:boolean) {
+  const selectedColour = useMemo(() => getSelectedColour(note.track.instrument.colourGroup), []);
+
+  // We could memoise this next calculation, but I feel like with the memo dependencies, little or nothing will be gained
+  return (playing && isCurrent)
+    ? 'var(--light-yellow)'    // Light up notes as the music plays
+    : selected
+      ? selectedColour
+      : note.noteStyle
+          ? note.track.colour  // Otherwise, give active notes the track colour
+          : '';                // Inactive notes have no inline background colour
 }
 
 

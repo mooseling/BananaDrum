@@ -36,7 +36,7 @@ export function PolyrhythmViewer({polyrhythm}:{polyrhythm:Polyrhythm}): JSX.Elem
         : (<>
           <div className="polyrhythm-decoration" ></div>
           <div className="polyrhythm-notes-wrapper">
-            {polyrhythm.notes.map(note => <NoteViewer note={note} inPolyrhythm={true} key={note.id}/>)}
+            {polyrhythm.notes.map(note => <NoteViewer note={note} key={note.id}/>)}
           </div>
         </>)
       }
