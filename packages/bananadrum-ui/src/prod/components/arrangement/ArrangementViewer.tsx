@@ -1,12 +1,12 @@
 import { RealTime } from 'bananadrum-core';
-import { ArrangementPlayer, TrackPlayer } from 'bananadrum-player';
+import { ArrangementPlayer } from 'bananadrum-player';
 import { createPublisher } from 'bananadrum-core';
 import { TrackViewer } from '../TrackViewer.js';
 import { Scrollbar } from '../Scrollbar.js';
 import { Share } from '../Share.js';
 import { InstrumentBrowser } from '../InstrumentBrowser.js';
 import { Overlay, toggleOverlay } from '../Overlay.js';
-import { useState, useEffect, createContext, useRef, useContext, TouchEvent } from 'react';
+import { useState, useEffect, createContext, useRef, useContext, TouchEvent, Dispatch, SetStateAction } from 'react';
 import { AnimationEngineContext } from '../BananaDrumViewer.js';
 import { AnimationEngine } from '../../types.js';
 import { useSubscription } from '../../hooks/useSubscription.js';
@@ -21,7 +21,7 @@ export const NoteWidthContext = createContext<number>(null);
 
 export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:ArrangementPlayer}): JSX.Element {
   const {arrangement} = arrangementPlayer;
-  const [trackPlayerCount, setTrackPlayerCount] = useState(arrangementPlayer.trackPlayers.size);
+  const [, setTrackPlayerCount] = useState(arrangementPlayer.trackPlayers.size);
   const animationEngine = useContext(AnimationEngineContext);
 
   // Scroll-shadows over the track-viewers
@@ -148,7 +148,7 @@ function useAutoFollow(animationEngine: AnimationEngine, arrangementPlayer: Arra
   useEffect(() => {
     // If desired, turn on auto-follow like so
     if (autoFollowIsOn) {
-      const autoFollowAnimation = realTime => autoFollow(wrapperRef.current, arrangementPlayer, realTime);
+      const autoFollowAnimation = (realTime:RealTime) => autoFollow(wrapperRef.current, arrangementPlayer, realTime);
       animationEngine.connect(autoFollowAnimation);
       return () => animationEngine.disconnect(autoFollowAnimation);
     }
@@ -167,7 +167,7 @@ function useAutoFollow(animationEngine: AnimationEngine, arrangementPlayer: Arra
 }
 
 
-function useTrackViewerTouchInterpretation(autoFollowIsOn, setAutoFollow) {
+function useTrackViewerTouchInterpretation(autoFollowIsOn:boolean, setAutoFollow:Dispatch<SetStateAction<boolean>>) {
   // Touchscreens:
   // If user touches the tracks while we're auto-following
   // If they are scrolling up or down, we do nothing
