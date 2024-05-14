@@ -63,7 +63,6 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
   const idString = useMemo(() => `note-${note.id}`, []);
   const classString = useClasses(note); // This is a hook because it calls useMemo
   const backgroundColor = useBackgroundColor(note, playing, isCurrent, selected);
-  const timingString = useMemo(() => `${note.timing.bar}.${note.timing.step}`, []);
 
   return (
     <div
@@ -71,7 +70,6 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
       className={classString}
       onClick={handleClick}
       style={{backgroundColor}}
-      data-timing={timingString}
     >
       <TouchHoldDetector
           holdLength={500}
