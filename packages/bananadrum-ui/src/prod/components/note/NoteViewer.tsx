@@ -26,8 +26,6 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
   useSubscription(timingPublisher, () => setIsCurrent(isCurrentlyPlaying(note, arrangementPlayer, trackPlayer)));
   useSubscription(selectionManager, () => setSelected(selectionManager.isSelected(note)));
 
-
-
   const [noteStyle, setNoteStyle] = useState(note.noteStyle)
   useSubscription(note, () => setNoteStyle(note.noteStyle));
 
@@ -44,10 +42,23 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
     event.stopPropagation();
   }, []);
 
+  const handleMouseMove = useCallback((event:React.MouseEvent) => {
+    if (event.buttons === 1) { // Primary button, and no others, is held down
+      selectionManager.addingByDragging = true;
+      selectionManager.handleClick(note);
+    }
+  }, []);
+
+  const handleMouseDown = useCallback((event:React.MouseEvent) => {
+    if (!event.shiftKey)
+      selectionManager.deselectAll();
+  }, []);
+
   const handleTouchHold = useCallback(() => {
     selectionManager.handleClick(note);
     modeManager.mobileSelectionMode = true;
   }, []);
+
 
   const idString = useMemo(() => `note-${note.id}`, []);
   const classString = useClasses(note); // This is a hook because it calls useMemo
@@ -58,6 +69,8 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
       id={idString}
       className={classString}
       onClick={handleClick}
+      onMouseMove={handleMouseMove}
+      onMouseDown={handleMouseDown}
       style={{backgroundColor}}
     >
       <TouchHoldDetector

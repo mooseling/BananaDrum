@@ -417,6 +417,10 @@ So we're putting them in each track-viewer, where we can position them with no p
   user-select: none;
 }
 
+.note-viewer img {
+  pointer-events: none; /* Prevent dragging note-style symbols around when trying to select notes */
+}
+
 .note-viewer.odd-beat {
   background-color: var(--lighter-gray);
 }

@@ -38,6 +38,10 @@ export function SelectionControls(): JSX.Element {
   // We want clicking anywhere to clear the selection. But not on a selection control button.
   // And also not if the user has started adding a polyrhythm. Then they have to explicitly cancel.
   useMouseEvent(window, 'click', event => {
+    if (selectionManager.addingByDragging) {
+      selectionManager.addingByDragging = false;
+      return;
+    }
     if (selectionManager.selections.size && !addingPolyrhythm && !onSelectionButton(event) && !event.shiftKey)
       selectionManager.deselectAll();
   });
