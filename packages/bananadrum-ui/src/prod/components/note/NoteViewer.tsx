@@ -40,7 +40,7 @@ export function NoteViewer({note, inPolyrhythm}:{note:Note, inPolyrhythm?:boolea
   const backgroundColor = (playing && isCurrent) ?
     'var(--light-yellow)'      // Light up notes as the music plays
     : selected ?
-      `var(--selected-${note.track.instrument.colourGroup})` :
+      getSelectedColour(note.track.instrument.colourGroup) :
         note.noteStyle
           ? note.track.colour  // Otherwise, give active notes the track colour
           : '';                // Inactive notes have no inline background colour
@@ -169,4 +169,15 @@ function getNextNoteStyle(note:Note): NoteStyle {
   if (nextNoteStyleId)
     return noteStyles[nextNoteStyleId];
   return null; // Cycle back to rest after all note-styles
+}
+
+
+function getSelectedColour(colourGroup:string) {
+  switch (colourGroup) {
+    case 'yellow': return `var(--secondary-purple)`;
+    case 'orange': return `var(--secondary-blue)`;
+    case 'green': return `var(--secondary-red)`;
+    case 'blue': return `var(--secondary-orange)`;
+    case 'purple': return `var(--secondary-green)`;
+  }
 }

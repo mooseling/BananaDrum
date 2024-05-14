@@ -33,7 +33,12 @@ export function PolyrhythmViewer({polyrhythm}:{polyrhythm:Polyrhythm}): JSX.Elem
           }
           </div>
         )
-        : polyrhythm.notes.map(note => <NoteViewer note={note} inPolyrhythm={true} key={note.id}/>)
+        : (<>
+          <div className="polyrhythm-decoration" ></div>
+          <div className="polyrhythm-notes-wrapper">
+            {polyrhythm.notes.map(note => <NoteViewer note={note} inPolyrhythm={true} key={note.id}/>)}
+          </div>
+        </>)
       }
     </div>
   );

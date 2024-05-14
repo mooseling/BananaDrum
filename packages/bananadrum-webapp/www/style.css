@@ -29,11 +29,12 @@
   --a-color: var(--darker-blue);
   --a-color-hover: var(--light-blue);
   --a-color-active: var(--lighter-blue);
-  --selected-purple: hsl(94, 51%, 59%);
-  --selected-blue: hsl(20, 97%, 64%);
-  --selected-green: hsl(2, 63%, 55%);
-  --selected-orange: hsl(205, 80%, 53%);
-  --selected-yellow: hsl(232, 100%, 72%);
+  --secondary-green: hsl(94, 80%, 59%);
+  --secondary-orange: hsl(20, 97%, 64%);
+  --secondary-yellow: rgb(255, 244, 122);
+  --secondary-red: hsl(2, 63%, 55%);
+  --secondary-blue: hsl(205, 80%, 63%);
+  --secondary-purple: hsl(232, 100%, 72%);
 }
 
 .hidden {
@@ -330,11 +331,43 @@ So we're putting them in each track-viewer, where we can position them with no p
 }
 
 .note-line .polyrhythm-viewer {
-  display: flex;
   position: absolute;
   z-index: 1;
   padding-left: var(--thick-border-width);
   background-color: white;
+}
+
+.polyrhythm-viewer .polyrhythm-decoration {
+  position: absolute;
+  width: calc(100% - 2* var(--thick-border-width));
+  height: var(--note-height);
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.track-viewer[data-colour-group="yellow"] .polyrhythm-decoration {
+  box-shadow: inset 0 0 7pt 2pt var(--secondary-orange);
+}
+
+.track-viewer[data-colour-group="orange"] .polyrhythm-decoration {
+  box-shadow: inset 0 0 7pt 2pt var(--secondary-yellow);
+}
+
+.track-viewer[data-colour-group="green"] .polyrhythm-decoration {
+  box-shadow: inset 0 0 7pt 2pt var(--secondary-yellow);
+}
+
+.track-viewer[data-colour-group="blue"] .polyrhythm-decoration {
+  box-shadow: inset 0 0 7pt 2pt var(--secondary-green);
+}
+
+.track-viewer[data-colour-group="purple"] .polyrhythm-decoration {
+  box-shadow: inset 0 0 7pt 2pt var(--secondary-blue);
+}
+
+.polyrhythm-viewer .polyrhythm-notes-wrapper {
+  display: flex;
+  width: 100%;
 }
 
 .polyrhythm-viewer .delete-polyrhythm-wrapper {
@@ -395,6 +428,10 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 .polyrhythm-viewer .note-viewer {
   flex-shrink: 1;
+}
+
+.polyrhythm-viewer .note-viewer:nth-child(2n) {
+  background-color: var(--lighter-gray);
 }
 
 .note-details-viewer {

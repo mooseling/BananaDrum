@@ -38,7 +38,7 @@ export function TrackViewer({trackPlayer, callbacks}:{trackPlayer:TrackPlayer, c
 
   return (
     <TrackPlayerContext.Provider value={trackPlayer}>
-      <div className={`track-viewer ${audible ? 'audible' : 'inaudible'}`}>
+      <div className={`track-viewer ${audible ? 'audible' : 'inaudible'}`} data-colour-group={track.instrument.colourGroup}>
         <div className="note-line-wrapper overlay-wrapper">
           <NoteLine track={track} callbacks={callbacks}/>
           <Overlay name={overlayName}>
