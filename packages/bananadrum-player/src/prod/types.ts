@@ -38,6 +38,7 @@ export type Event = CallbackEvent|AudioEvent|MuteEvent
 
 export interface EventSource {
   getEvents(interval:Interval): Event[]
+  onStop?:() => void
 }
 
 export interface ArrangementPlayer extends EventSource, Subscribable {

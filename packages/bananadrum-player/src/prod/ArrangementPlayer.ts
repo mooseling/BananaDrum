@@ -20,13 +20,13 @@ export function createArrangementPlayer(arrangement:Arrangement): ArrangementPla
   arrangement.subscribe(updateTrackPlayers);
 
   // currentTiming updates as we play, and ArrangementPlayer publishes when it does
-  let currentTiming:Timing = {bar:1, step:1};
+  let currentTiming:Timing = null;
   let callbackEvents:CallbackEvent[]|null;
   updateCallbackEvents();
   arrangement.timeParams.subscribe(updateCallbackEvents);
 
   return {
-    arrangement, getEvents, trackPlayers,
+    arrangement, getEvents, onStop, trackPlayers,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
     get currentTiming() {
       return currentTiming;
@@ -91,6 +91,12 @@ export function createArrangementPlayer(arrangement:Arrangement): ArrangementPla
     });
 
     return eventsInInterval;
+  }
+
+
+  function onStop() {
+    currentTiming = null;
+    currentTimingPublisher.publish();
   }
 
 

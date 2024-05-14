@@ -87,6 +87,7 @@ const eventEngine:EventEngine = (function(){
       nextIterationId = null;
       timeCovered = 0;
       state = 'stopped';
+      callOnStopCallbacks();
       publisher.publish();
     }
   }
@@ -218,6 +219,11 @@ const eventEngine:EventEngine = (function(){
     scheduledAudioEvents.splice(0);
     scheduledCallbackEvents.splice(0);
     scheduledMuteEvents.splice(0);
+  }
+
+
+  function callOnStopCallbacks() {
+    eventSources.forEach(({onStop}) => (onStop && onStop()));
   }
 
 

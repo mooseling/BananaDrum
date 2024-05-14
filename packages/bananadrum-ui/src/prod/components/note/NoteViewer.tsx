@@ -1,5 +1,5 @@
 import { Note, NoteStyle, Subscribable, isSameTiming } from 'bananadrum-core';
-import { getEventEngine, createAudioBufferPlayer, TrackPlayer, ArrangementPlayer } from 'bananadrum-player';
+import { createAudioBufferPlayer, TrackPlayer, ArrangementPlayer } from 'bananadrum-player';
 import { useState, useContext, useCallback, useMemo } from 'react';
 import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer.js';
 import { ModeManagerContext, SelectionManagerContext } from '../../BananaDrumUi.js';
@@ -9,7 +9,6 @@ import { TouchHoldDetector } from '../TouchHoldDetector.js';
 import { NoteStyleSymbolViewer } from './NoteStyleSymbolViewer.js';
 
 const audioContext = new AudioContext();
-const eventEngine = getEventEngine();
 
 
 export function NoteViewer({note}:{note:Note}): JSX.Element {
@@ -22,17 +21,7 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
     : arrangementPlayer.currentTimingPublisher;
 
   const [isCurrent, setIsCurrent] = useState(isCurrentlyPlaying(note, arrangementPlayer, trackPlayer));
-  const [playing, setPlaying] = useState(eventEngine.state === 'playing')
   const [selected, setSelected] = useState(selectionManager.isSelected(note));
-
-  useSubscription(eventEngine, () => {
-    if (eventEngine.state === 'playing'){
-      setPlaying(true);
-    } else {
-      setPlaying(false);
-      setIsCurrent(false);
-    }
-  });
 
   useSubscription(timingPublisher, () => setIsCurrent(isCurrentlyPlaying(note, arrangementPlayer, trackPlayer)));
   useSubscription(selectionManager, () => setSelected(selectionManager.isSelected(note)));
@@ -62,7 +51,7 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
 
   const idString = useMemo(() => `note-${note.id}`, []);
   const classString = useClasses(note); // This is a hook because it calls useMemo
-  const backgroundColor = useBackgroundColor(note, playing, isCurrent, selected);
+  const backgroundColor = useBackgroundColor(note, isCurrent, selected);
 
   return (
     <div
@@ -147,11 +136,11 @@ function getParityClass(bar:number, step:number, timeSignature:string, stepResol
     return stepIsEven ? 'even-beat' : 'odd-beat';
 }
 
-function useBackgroundColor(note:Note, playing:boolean, isCurrent:boolean, selected:boolean) {
+function useBackgroundColor(note:Note, isCurrent:boolean, selected:boolean) {
   const selectedColour = useMemo(() => getSelectedColour(note.track.instrument.colourGroup), []);
 
   // We could memoise this next calculation, but I feel like with the memo dependencies, little or nothing will be gained
-  return (playing && isCurrent)
+  return isCurrent
     ? 'var(--light-yellow)'    // Light up notes as the music plays
     : selected
       ? selectedColour
@@ -164,6 +153,10 @@ function useBackgroundColor(note:Note, playing:boolean, isCurrent:boolean, selec
 function isCurrentlyPlaying(note:Note, arrangementPlayer:ArrangementPlayer, trackPlayer:TrackPlayer) {
   if (note.polyrhythm)
     return trackPlayer.currentPolyrhythmNote === note;
+
+  if (arrangementPlayer.currentTiming === null)
+    return false;
+
   return isSameTiming(arrangementPlayer.currentTiming, note.timing);
 }
 
