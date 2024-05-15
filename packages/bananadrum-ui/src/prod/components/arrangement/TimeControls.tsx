@@ -51,11 +51,11 @@ export function TimeControls({arrangement}:{arrangement:Arrangement}): JSX.Eleme
         timeParams.pulse = '3/8';
         break;
       case '5/4':
-        timeParams.stepResolution = 16;
+        timeParams.stepResolution = 8;
         timeParams.pulse = '1/2';
         break;
       case '7/8':
-        timeParams.stepResolution = 16;
+        timeParams.stepResolution = 8;
         timeParams.pulse = '1/2';
         break;
     }

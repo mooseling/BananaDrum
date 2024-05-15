@@ -134,7 +134,7 @@ function getParityClass(bar:number, step:number, timeSignature:string, stepResol
     }
 
     if (timeSignature === '7/8' && stepResolution === 8) {
-      return (bar % 2) ? 'even-beat' : 'odd-beat';
+      return (step === 1 || step === 3 || step === 5) ? 'odd-beat' : 'even-beat';
     }
 
     const [beatsPerBar, beatUnit] = timeSignature.split('/').map(str => Number(str));
