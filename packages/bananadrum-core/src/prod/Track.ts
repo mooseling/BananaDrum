@@ -47,6 +47,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
 
   function clear() {
     notes.forEach(note => note.noteStyle = null);
+    polyrhythms.forEach(({notes}) => notes.forEach(note => note.noteStyle = null));
   }
 
 

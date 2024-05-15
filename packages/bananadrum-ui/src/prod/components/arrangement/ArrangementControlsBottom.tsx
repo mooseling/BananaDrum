@@ -56,7 +56,7 @@ export function ArrangementControlsBottom(): JSX.Element {
       <button
         className="push-button"
         onClick={() => toggleOverlay('clear_tracks', 'show')}
-      >Clear all tracks</button>
+      >Clear all sounds</button>
 
       <Overlay name="clear_tracks">
         <div style={{
@@ -69,7 +69,7 @@ export function ArrangementControlsBottom(): JSX.Element {
           <button
             className="push-button"
             onClick={() => (arrangement.tracks.forEach(track => track.clear()), toggleOverlay('clear_tracks', 'hide'))}
-          >Really, clear tracks</button>
+          >Really, clear sounds</button>
           <SmallSpacer />
           <button
             className="push-button"
