@@ -97,6 +97,7 @@ export function createArrangementPlayer(arrangement:Arrangement): ArrangementPla
   function onStop() {
     currentTiming = null;
     currentTimingPublisher.publish();
+    trackPlayers.forEach(trackPlayer => trackPlayer.onStop());
   }
 
 
