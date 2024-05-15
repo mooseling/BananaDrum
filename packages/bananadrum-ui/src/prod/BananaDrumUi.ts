@@ -8,6 +8,7 @@ import { BananaDrumViewer } from "./components/BananaDrumViewer.js";
 import { BananaDrumUi } from './types.js';
 import { createSelectionManager, SelectionManager } from './SelectionManager.js';
 import { createModeManager, ModeManager } from './ModeManager.js';
+import { createMouseHandler } from './MouseHandler.js';
 
 export const SelectionManagerContext = createContext<SelectionManager>(null);
 export const ModeManagerContext = createContext<ModeManager>(null);
@@ -20,6 +21,7 @@ export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HT
   const modeManager = createModeManager(selectionManager);
 
   createKeyboardHandler(bananaDrumPlayer.eventEngine, selectionManager, modeManager);
+  createMouseHandler(modeManager, selectionManager);
 
   const animationEngine = getAnimationEngine(bananaDrumPlayer.eventEngine);
   const root = createRoot(wrapper);

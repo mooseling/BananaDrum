@@ -5,7 +5,6 @@ export interface SelectionManager extends Subscribable {
   handleClick(note:Note): void
   deselectAll(): void
   selections: Map<Track, TrackSelection>
-  addingByDragging: boolean
 }
 
 
@@ -22,7 +21,7 @@ export function createSelectionManager(): SelectionManager {
   let lastClickedNote:Note|null = null;
 
   return {
-    isSelected, handleClick, deselectAll, selections: trackSelections, addingByDragging:false,
+    isSelected, handleClick, deselectAll, selections: trackSelections,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
   };
 

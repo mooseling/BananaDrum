@@ -32,19 +32,23 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
   const handleClick = useCallback((event:React.MouseEvent) => {
     if (event.shiftKey || modeManager.mobileSelectionMode) {
       selectionManager.handleClick(note);
-    } else if (selectionManager.selections.size) {
-      selectionManager.deselectAll();
-    } else {
-      cycleNoteStyle(note);
-      selectionManager.deselectAll();
+    } else if (!modeManager.selectByMouseOverMode) { // We ignore the click event at the end of a select-by-mouseover action
+      if (selectionManager.selections.size) {
+        selectionManager.deselectAll();
+      } else {
+        cycleNoteStyle(note);
+        selectionManager.deselectAll();
+      }
     }
 
     event.stopPropagation();
   }, []);
 
   const handleMouseMove = useCallback((event:React.MouseEvent) => {
-    if (event.buttons === 1) { // Primary button, and no others, is held down
-      selectionManager.addingByDragging = true;
+    if (
+      modeManager.selectByMouseOverMode
+      && event.buttons === 1 // Primary button, and no others, is held down
+    ) {
       selectionManager.handleClick(note);
     }
   }, []);

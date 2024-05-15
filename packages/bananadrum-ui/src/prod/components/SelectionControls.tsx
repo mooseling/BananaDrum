@@ -1,7 +1,6 @@
 import { useContext, useRef, useState } from "react";
 import { SelectionManagerContext } from "../BananaDrumUi";
 import { useKeyboardEvent } from "../hooks/useKeyboardEvent";
-import { useMouseEvent } from "../hooks/useMouseEvent";
 import { useSubscription } from "../hooks/useSubscription";
 import { SelectionManager } from "../SelectionManager";
 import { ExpandingSpacer } from "./ExpandingSpacer";
@@ -35,19 +34,8 @@ export function SelectionControls(): JSX.Element {
     }
   });
 
-  // We want clicking anywhere to clear the selection. But not on a selection control button.
-  // And also not if the user has started adding a polyrhythm. Then they have to explicitly cancel.
-  useMouseEvent(window, 'click', event => {
-    if (selectionManager.addingByDragging) {
-      selectionManager.addingByDragging = false;
-      return;
-    }
-    if (selectionManager.selections.size && !addingPolyrhythm && !onSelectionButton(event) && !event.shiftKey)
-      selectionManager.deselectAll();
-  });
-
   return (
-    <div className="selection-controls" style={{width:'100%', height:'100%'}}>
+    <div className={`selection-controls ${addingPolyrhythm ? 'adding-polyrhythm' : ''}`} style={{width:'100%', height:'100%'}}>
       <div style={{alignItems:'center', height:'100%', display: addingPolyrhythm ? 'none' : 'flex'}}>
         <button
           className="push-button"
@@ -112,12 +100,4 @@ function createPolyrhythm (inputValue:string, selectionManager:SelectionManager)
   });
 
   selectionManager.deselectAll();
-}
-
-
-function onSelectionButton(event:MouseEvent) {
-  if (!(event.target instanceof HTMLButtonElement))
-    return false;
-
-  return event.target.closest('.selection-controls') !== null;
 }
