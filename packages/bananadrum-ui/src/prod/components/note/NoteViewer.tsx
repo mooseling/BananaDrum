@@ -54,7 +54,7 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
   }, []);
 
   const handleMouseDown = useCallback((event:React.MouseEvent) => {
-    if (!event.shiftKey)
+    if (!event.shiftKey && !modeManager.mobileSelectionMode)
       selectionManager.deselectAll();
   }, []);
 

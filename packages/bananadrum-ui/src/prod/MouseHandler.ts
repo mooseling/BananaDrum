@@ -1,7 +1,26 @@
+import { isMobile } from "./isMobile";
 import { ModeManager } from "./ModeManager";
 import { SelectionManager } from "./SelectionManager";
 
 export function createMouseHandler(modeManager:ModeManager, selectionManager:SelectionManager) {
+  if (!isMobile)
+    addSelectByMousemoveEvents(modeManager);
+
+  // We want clicking anywhere to clear the selection, with some extra criteria...
+  window.addEventListener('click', event => {
+    if (
+      selectionManager.selections.size
+      && !modeManager.selectByMouseOverMode // mouseup might be the end of selecting notes, but will fire a click event
+      && !onSelectionButtonsOrPolyrhythmControls(event)
+      && !event.shiftKey
+    ) {
+      selectionManager.deselectAll();
+    }
+  });
+}
+
+
+function addSelectByMousemoveEvents(modeManager:ModeManager) {
   let startX:number = null;
   let startY:number = null;
 
@@ -49,19 +68,6 @@ export function createMouseHandler(modeManager:ModeManager, selectionManager:Sel
       modeManager.selectByMouseOverMode = false;
       startX = null;
       startY = null;
-    }
-  });
-
-  // And now for a separate, but related issue...
-  // We want clicking anywhere to clear the selection, with some extra criteria...
-  window.addEventListener('click', event => {
-    if (
-      selectionManager.selections.size
-      && !modeManager.selectByMouseOverMode // mouseup might be the end of selecting notes, but will fire a click event
-      && !onSelectionButtonsOrPolyrhythmControls(event)
-      && !event.shiftKey
-    ) {
-      selectionManager.deselectAll();
     }
   });
 }
