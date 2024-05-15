@@ -84,7 +84,7 @@ function onSelectionButtonsOrPolyrhythmControls(event:MouseEvent) {
 
   // Any button inside selection controls is ok
   if (event.target instanceof HTMLButtonElement)
-    return false;
+    return true;
 
   // We allow clicking anywhere in the overlay if we're adding a polyrhythm. It just feels right.
   return selectionControlsOverlay.querySelector('.selection-controls.adding-polyrhythm') !== null;
