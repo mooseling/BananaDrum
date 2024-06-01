@@ -122,7 +122,7 @@ const eventEngine:EventEngine = (function(){
 
       // @ts-ignore
       if (audioContext.state !== 'running')
-        throw "Couldn't start the AudioContext";
+        throw new Error("Couldn't start the AudioContext");
     }
   }
 
