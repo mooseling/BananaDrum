@@ -1,12 +1,9 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useState, useContext, useCallback } from 'react';
 import { getShareLink } from 'bananadrum-core';
-import { toggleOverlay } from './Overlay.js';
-import { ArrangementPlayerContext } from './arrangement/ArrangementViewer.js';
-
-
-const haveNativeSharing = navigator.share !== undefined;
-const haveClipboardAccess = navigator.clipboard !== undefined;
+import { toggleOverlay } from '../Overlay.js';
+import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer.js';
+import { ShareOrCopyButton } from './ShareOrCopyButton.js';
 
 
 export function Share(): JSX.Element {
@@ -50,42 +47,4 @@ export function Share(): JSX.Element {
       </div>
     </div>
   );
-}
-
-
-function ShareOrCopyButton({url}:{url:string}): JSX.Element {
-  const [copyText, setCopyText] = useState('copy');
-
-  if (haveNativeSharing) {
-    return (
-      <button
-        className="push-button shiny-link"
-        onClick={() => navigator.share({
-          url,
-          title:'Banana Drum - Samba Rhythms'
-        })}
-      >share</button>
-    );
-  }
-
-  if (haveClipboardAccess) {
-    return (
-      <button
-        className="push-button"
-        onClick={
-          () => {
-            navigator.clipboard.writeText(url).catch(() => {
-              setCopyText("That didn't work :(");
-              setTimeout(() => setCopyText('copy'), 3000);
-            }).then(() => {
-              setCopyText('copied!');
-              setTimeout(() => setCopyText('copy'), 3000);
-            })
-          }
-        }
-      >{copyText}</button>
-    );
-  }
-
-  return null;
 }
