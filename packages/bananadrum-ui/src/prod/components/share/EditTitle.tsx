@@ -21,6 +21,7 @@ export function EditTitle({arrangement}:{arrangement:Arrangement}): JSX.Element 
         Title: <input
           type="text"
           onChange={e => arrangement.title = e.target.value}
+          onKeyDown={e => e.stopPropagation()} // Don't want to trigger global keyboard handlers, like play-on-spacebar
           value={inputValue}
           />
       </>)
