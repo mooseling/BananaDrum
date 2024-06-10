@@ -40,7 +40,6 @@ export function Share(): JSX.Element {
           </>
         </div>
         <button
-          id="load-button"
           className="push-button"
           onClick={close}
         >Back to my beat!</button>
