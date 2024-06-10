@@ -4,6 +4,7 @@ import { getShareLink } from 'bananadrum-core';
 import { toggleOverlay } from '../Overlay.js';
 import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer.js';
 import { ShareOrCopyButton } from './ShareOrCopyButton.js';
+import { EditTitle } from './EditTitle.js';
 
 
 export function Share(): JSX.Element {
@@ -22,22 +23,23 @@ export function Share(): JSX.Element {
     <div className="viewport-wrapper">
       <div id="share" className="welcome">
         <div className="share-content-wrapper">
-          <>
-            { url ?
-              (<>
-                <h2>Here's your beat:</h2>
-                <div className="beat-url">
-                  <p onClick={selectContent}>{url}</p>
-                  <ShareOrCopyButton url={url}/>
-                  </div>
-              </>) :
-              (<>
-                <h2>Ready to share this beat?</h2>
-                <button className="push-button shiny-link" onClick={showLink}>generate link!</button>
-              </>)
-            }
-            <p>Send to your friends, save for yourself, or post it on <a href="https://www.facebook.com/bananadrum.net" target="_blank" rel="noreferrer">Banana Drum's Facebook page</a>!</p>
-          </>
+          { url ?
+            (<>
+              <h2>Here's your beat:</h2>
+              <div className="beat-url">
+                <p onClick={selectContent}>{url}</p>
+                <ShareOrCopyButton url={url}/>
+                </div>
+            </>) :
+            (<>
+              <h2>Ready to share this beat?</h2>
+              <button className="push-button shiny-link" onClick={showLink}>generate link!</button>
+            </>)
+          }
+          <p>Send to your friends, save for yourself, or post it on <a href="https://www.facebook.com/bananadrum.net" target="_blank" rel="noreferrer">Banana Drum's Facebook page</a>!</p>
+          <p>
+            <EditTitle arrangement={arrangement} />
+          </p>
         </div>
         <button
           className="push-button"
