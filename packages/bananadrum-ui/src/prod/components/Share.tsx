@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import { useState, useContext } from 'react';
+import { useState, useContext, useCallback } from 'react';
 import { getShareLink } from 'bananadrum-core';
 import { toggleOverlay } from './Overlay.js';
 import { ArrangementPlayerContext } from './arrangement/ArrangementViewer.js';
@@ -14,12 +14,12 @@ export function Share(): JSX.Element {
   const arrangementPlayer = useContext(ArrangementPlayerContext);
   const arrangement = arrangementPlayer.arrangement;
 
-  const close = () => {
+  const close = useCallback(() => {
     toggleOverlay('share', 'hide');
     setUrl('');
-  }
-
-  const showLink = () => setUrl(getShareLink(arrangement))
+  }, []);
+  const showLink = useCallback(() => setUrl(getShareLink(arrangement)), []);
+  const selectContent = useCallback(event => window.getSelection().selectAllChildren(event.currentTarget), []);
 
   return (
     <div className="viewport-wrapper">
@@ -30,7 +30,7 @@ export function Share(): JSX.Element {
               (<>
                 <h2>Here's your beat:</h2>
                 <div className="beat-url">
-                  <p onClick={event => window.getSelection().selectAllChildren(event.currentTarget)}>{url}</p>
+                  <p onClick={selectContent}>{url}</p>
                   <ShareOrCopyButton url={url}/>
                   </div>
               </>) :
