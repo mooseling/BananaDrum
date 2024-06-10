@@ -56,6 +56,6 @@ describe('Test lib', function() {
 
 
 function compareTimings(timing1, timing2) {
-  assert(timing1.bar = timing2.bar);
-  assert(timing1.step = timing2.step);
+  assert(timing1.bar === timing2.bar);
+  assert(timing1.step === timing2.step);
 }

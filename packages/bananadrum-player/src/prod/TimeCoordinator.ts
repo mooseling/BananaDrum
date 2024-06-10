@@ -24,7 +24,11 @@ export function createTimeCoordinator(timeParams:TimeParams): TimeCoordinator {
   timeParams.subscribe(handleTimeParamsChange);
   eventEngine.subscribe(handlePlaybackChange)
 
-  return {convertToRealTime, convertToLoopIntervals, convertToAudioTime, convertToLoopProgress, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
+  return {
+    get realTimeLength() {return realTimeLength;},
+    convertToRealTime, convertToLoopIntervals, convertToAudioTime, convertToLoopProgress,
+    subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
+  };
 
 
 
@@ -152,6 +156,8 @@ export function createTimeCoordinator(timeParams:TimeParams): TimeCoordinator {
 
     const newOffsetTime = (loopsFinished * realTimeLength) + targetTimeWithinLoop;
     offset = newOffsetTime - audioTime;
+
+    cachedLength = timeParams.length; // Everything actually worked fine without this line, which suggests there's an optimisation we could make
   }
 
 

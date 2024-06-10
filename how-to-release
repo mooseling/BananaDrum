@@ -1,5 +1,4 @@
 1. Temporarily change mode to "production" in webpack.config.js
 2. Run "npm run build" in terminal
-3. cd packages/bananadrum-webapp/www
 3. Update get-flags in index.html and loader.js
-4. Sync remote directory: rsync -avz ./ <username>@bananadrum.net:/path/to/webroot/
+4. Sync remote directory: rsync -avz packages/bananadrum-webapp/www/ <username>@bananadrum.net:/path/to/webroot/

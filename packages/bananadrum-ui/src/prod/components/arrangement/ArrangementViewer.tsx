@@ -1,23 +1,27 @@
 import { Arrangement, RealTime } from 'bananadrum-core';
-import { ArrangementPlayer, TrackPlayer } from 'bananadrum-player';
+import { ArrangementPlayer } from 'bananadrum-player';
 import { createPublisher } from 'bananadrum-core';
-import { TrackViewer } from './TrackViewer.js';
-import { ArrangementControlsTop, ArrangementControlsBottom } from './ArrangementControls.js';
-import { Scrollbar } from './Scrollbar.js';
-import { Share } from './Share.js';
-import { InstrumentBrowser } from './InstrumentBrowser.js';
-import { Overlay, toggleOverlay } from './Overlay.js';
-import { useState, useEffect, createContext, useRef, useContext, TouchEvent } from 'react';
-import { AnimationEngineContext } from './BananaDrumViewer.js';
-import { AnimationEngine } from '../types.js';
-import { useSubscription } from '../hooks/useSubscription.js';
+import { TrackViewer } from '../TrackViewer.js';
+import { Scrollbar } from '../Scrollbar.js';
+import { Share } from '../Share.js';
+import { InstrumentBrowser } from '../InstrumentBrowser.js';
+import { Overlay, toggleOverlay } from '../Overlay.js';
+import { useState, useEffect, createContext, useRef, useContext, TouchEvent, Dispatch, SetStateAction } from 'react';
+import { AnimationEngineContext } from '../BananaDrumViewer.js';
+import { AnimationEngine } from '../../types.js';
+import { useSubscription } from '../../hooks/useSubscription.js';
+import { ArrangementControlsTop } from './ArrangementControlsTop.js';
+import { ArrangementControlsBottom } from './ArrangementControlsBottom.js';
 
-export const ArrangementPlayerContext = createContext(null);
+
+
+export const ArrangementPlayerContext = createContext<ArrangementPlayer>(null);
+export const NoteWidthContext = createContext<number>(null);
 
 
 export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:ArrangementPlayer}): JSX.Element {
   const {arrangement} = arrangementPlayer;
-  const [trackPlayers, setTrackPlayers] = useState({...arrangementPlayer.trackPlayers});
+  const [, setTrackPlayerCount] = useState(arrangementPlayer.trackPlayers.size);
   const animationEngine = useContext(AnimationEngineContext);
 
   // Scroll-shadows over the track-viewers
@@ -28,26 +32,31 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
   // -- Notes are added or removed
   const ref:React.MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>();
   const [scrollShadowClasses, setScrollShadowClasses] = useState('');
+  const [noteWidth, setNoteWidth] = useState(0);
   const updateScrollShadows = () => setScrollShadowClasses(getScrollShadowClasses(ref.current));
-  const resizeObserver = new ResizeObserver(updateScrollShadows);
-  const contentWidthPublisher = createPublisher()
+  const updateNoteWidth = () => setNoteWidth(getNoteWidth(ref.current));
+  const contentWidthPublisher = createPublisher();
 
   const {trackViewerCallbacks, handleWheel, onScrollbarGrab} = useAutoFollow(animationEngine, arrangementPlayer, ref);
 
-  useSubscription(arrangementPlayer, () => setTrackPlayers({...arrangementPlayer.trackPlayers}));
+  useSubscription(arrangementPlayer, () => setTrackPlayerCount(arrangementPlayer.trackPlayers.size));
   useSubscription(arrangement.timeParams, () => setTimeout(() => {
     updateScrollShadows();
     contentWidthPublisher.publish();
-  }, 0)); // timeout so DOM updates first)
+    updateNoteWidth();
+  }, 0)); // timeout so DOM updates first
 
   useEffect(() => {
-    setTimeout(updateScrollShadows, 0);
+    const handleResize = () => (updateScrollShadows(), updateNoteWidth());
+    const resizeObserver = new ResizeObserver(handleResize);
+    setTimeout(handleResize, 0);
     resizeObserver.observe(ref.current);
-    return () => resizeObserver.unobserve(ref.current);
+    return () => resizeObserver.disconnect();
   }, []);
 
   return (
     <ArrangementPlayerContext.Provider value={arrangementPlayer}>
+    <NoteWidthContext.Provider value={noteWidth}>
       <div className="arrangement-viewer overlay-wrapper">
         <div className="arrangement-viewer-head">
           <ArrangementTitle arrangement={arrangement} />
@@ -62,13 +71,13 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
               onWheel={handleWheel}
             >
               {
-                Object.keys(trackPlayers)
-                  .sort((a, b) => sortTracks(trackPlayers[a], trackPlayers[b]))
-                  .map(trackId => (
+                arrangement.tracks
+                  .map(track => arrangementPlayer.trackPlayers.get(track))
+                  .map(trackPlayer => (
                     <TrackViewer
-                      trackPlayer={trackPlayers[trackId]}
+                      trackPlayer={trackPlayer}
                       callbacks={trackViewerCallbacks}
-                      key={trackId}
+                      key={trackPlayer.track.id}
                     />
                   ))
               }
@@ -84,6 +93,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
           <Share />
         </Overlay>
       </div>
+    </NoteWidthContext.Provider>
     </ArrangementPlayerContext.Provider>
   );
 }
@@ -115,15 +125,12 @@ function getScrollShadowClasses(trackViewersWrapper: HTMLElement): string {
 }
 
 
-function sortTracks(trackPlayer1:TrackPlayer, trackPlayer2:TrackPlayer): number {
-  const track1 = trackPlayer1.track;
-  const track2 = trackPlayer2.track;
+function getNoteWidth(trackViewersWrapper: HTMLElement): number {
+  const noteViewer = trackViewersWrapper?.querySelector('.note-line-wrapper .notes-wrapper .note-viewer');
+  if (!noteViewer)
+    return 0; // In case there are no tracks
 
-  if (track1.instrument.displayOrder === track2.instrument.displayOrder) {
-    return Number(track1.id) - Number(track2.id);
-  }
-
-  return track1.instrument.displayOrder - track2.instrument.displayOrder;
+  return noteViewer.clientWidth;
 }
 
 
@@ -142,7 +149,7 @@ function useAutoFollow(animationEngine: AnimationEngine, arrangementPlayer: Arra
   useEffect(() => {
     // If desired, turn on auto-follow like so
     if (autoFollowIsOn) {
-      const autoFollowAnimation = realTime => autoFollow(wrapperRef.current, arrangementPlayer, realTime);
+      const autoFollowAnimation = (realTime:RealTime) => autoFollow(wrapperRef.current, arrangementPlayer, realTime);
       animationEngine.connect(autoFollowAnimation);
       return () => animationEngine.disconnect(autoFollowAnimation);
     }
@@ -161,7 +168,7 @@ function useAutoFollow(animationEngine: AnimationEngine, arrangementPlayer: Arra
 }
 
 
-function useTrackViewerTouchInterpretation(autoFollowIsOn, setAutoFollow) {
+function useTrackViewerTouchInterpretation(autoFollowIsOn:boolean, setAutoFollow:Dispatch<SetStateAction<boolean>>) {
   // Touchscreens:
   // If user touches the tracks while we're auto-following
   // If they are scrolling up or down, we do nothing

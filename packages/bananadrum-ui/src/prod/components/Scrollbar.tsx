@@ -28,8 +28,8 @@ export function Scrollbar({wrapperRef, contentWidthPublisher, callbacks}:
     wrapperRef.current.addEventListener('scroll', updateThumbLeft);
     resizeObserver.observe(wrapperRef.current);
     return () => {
-      wrapperRef.current.removeEventListener('scroll', updateThumbLeft);
-      resizeObserver.unobserve(wrapperRef.current);
+      wrapperRef.current?.removeEventListener('scroll', updateThumbLeft);
+      resizeObserver.disconnect()
     }
   }, []);
 
@@ -50,6 +50,9 @@ export function Scrollbar({wrapperRef, contentWidthPublisher, callbacks}:
 
 
 function calculateThumbWidth(wrapper:HTMLElement): number {
+  if (!wrapper)
+    return 0;
+
   const firstNoteLineWrapper = wrapper.getElementsByClassName('note-line-wrapper')[0];
   if (!firstNoteLineWrapper)
     return 0;
@@ -63,6 +66,9 @@ function calculateThumbWidth(wrapper:HTMLElement): number {
 
 
 function calculateThumbLeft(wrapper:HTMLElement): number {
+  if (!wrapper)
+    return 0;
+
   const scrollLeft = wrapper.scrollLeft;
   const scrollbarWidth = wrapper.getElementsByClassName('custom-scrollbar')[0].clientWidth;
   const firstNoteLineWrapper = wrapper.getElementsByClassName('note-line-wrapper')[0];

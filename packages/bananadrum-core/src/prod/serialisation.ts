@@ -1,5 +1,5 @@
 import bigInt from 'big-integer';
-import { Arrangement, Track } from './types.js';
+import { Arrangement, Note, Polyrhythm, Track } from './types.js';
 import { getLibrary } from './Library.js';
 import { createTimeParams } from './TimeParams.js';
 import { createArrangement } from './Arrangement.js';
@@ -12,12 +12,12 @@ import { createArrangement } from './Arrangement.js';
 
 
 export function getShareLink(arrangement:Arrangement): string {
-  const query = serilaiseArrangement(arrangement);
-  return 'https://bananadrum.net/?a=' + query;
+  const query = serialiseArrangement(arrangement);
+  return 'https://bananadrum.net/?a2=' + query;
 }
 
 
-export function deserialiseArrangement(serialisedArrangement:string): Arrangement {
+export function deserialiseArrangement(serialisedArrangement:string, version:number): Arrangement {
   const chunks = serialisedArrangement.split('.');
 
   const timeParams = createTimeParams(
@@ -25,11 +25,11 @@ export function deserialiseArrangement(serialisedArrangement:string): Arrangemen
     Number(chunks[1]),           // tempo
     Number(chunks[2]),           // length
     chunks[3].replace('-', '/'), // pulse
-    Number(chunks[4])            // step resolutin
+    Number(chunks[4])            // step resolution
   );
   const arrangement = createArrangement(timeParams);
 
-  chunks.slice(5).forEach(serialisedTrack => deserlialiseTrack(serialisedTrack, arrangement));
+  chunks.slice(5).forEach(serialisedTrack => deserlialiseTrack(serialisedTrack, arrangement, version));
 
   return arrangement;
 }
@@ -50,7 +50,7 @@ function urlEncodeNumber(input:bigInt.BigInteger): string {
 
   do {
     const {quotient, remainder} = input.divmod(conversionBase);
-    output = numberToCharacter[remainder.toJSNumber()] + output;
+    output = urlNumberToCharacter[remainder.toJSNumber()] + output;
     input = quotient;
   } while (input.greater(bigInt.zero));
 
@@ -63,7 +63,7 @@ function urlDecodeNumber(input:string): bigInt.BigInteger {
   let output = bigInt.zero;
   while (input.length) {
     output = output.times(conversionBase);
-    output = output.plus(characterToNumber[input[0]]);
+    output = output.plus(urlCharacterToNumber[input[0]]);
     input = input.substring(1);
   }
 
@@ -71,14 +71,12 @@ function urlDecodeNumber(input:string): bigInt.BigInteger {
 }
 
 
-// Input array of numbers are notes of a track, so I'd be surprised if they were ever greater than 10
-// Therefore we can use the bigInt[number] feature
 function interpretAsBaseN(inputDigits:number[], base:number): bigInt.BigInteger {
   let multiplier = bigInt.one;
   let total = bigInt.zero;
 
   for (let column = inputDigits.length - 1; column >= 0; column--) {
-    const digit = bigInt[inputDigits[column]];
+    const digit = bigInt(inputDigits[column]);
     total = total.plus(digit.times(multiplier));
     multiplier = multiplier.times(base);
   }
@@ -102,49 +100,183 @@ function convertToBaseN(input:bigInt.BigInteger, base:number): number[] {
 
 
 function serialiseTrack(track:Track): string {
-  const base:number = Object.keys(track.instrument.noteStyles).length + 1; // + 1 for rests
-  const noteStyles:number[] = track.notes.map(note => characterToNumber[note.noteStyle?.id || '0']);
-  const musicAsNumber = interpretAsBaseN(noteStyles, base);
-  const musicAsString = urlEncodeNumber(musicAsNumber);
-  return track.instrument.id + musicAsString;
+  const serialisedNotes = serialiseNotes(track);
+  let serialisedTrack = track.instrument.id + serialisedNotes;
+  if (track.polyrhythms.length)
+    serialisedTrack += '-' + serialisePolyrhythms(track);
+  return serialisedTrack;
 }
 
 
-function deserlialiseTrack(seriliasedTrack:string, arrangement:Arrangement) {
-  const instrumentId = seriliasedTrack[0];
-  const musicAsString = seriliasedTrack.substring(1);
-  const timings = arrangement.timeParams.timings;
+function serialiseNotes(track:Track): string {
+  const noteStyles:number[] = [];
+  const noteIterator = track.getNoteIterator();
+  for (const note of noteIterator) {
+    noteStyles.push(urlCharacterToNumber[note.noteStyle?.id || '0'])
+  }
+
+  const base:number = Object.keys(track.instrument.noteStyles).length + 1; // + 1 for rests
+  const notesAsNumber = interpretAsBaseN(noteStyles, base);
+
+  return urlEncodeNumber(notesAsNumber);
+}
+
+
+function serialisePolyrhythms(track:Track): string {
+  const serialisedPolyrhythms = [];
+
+  // We do polyrhythms in reverse order in order to support nested polyrhthms
+  // When we rebuild the polyrhythms one-by-one, the note-iterator is going to change after each one
+  // So when we serialise, we have to mimic that behaviour in reverse
+
+  const polyrhythmsToIgnore:Polyrhythm[] = [];
+  for (let polyrhythmIndex = track.polyrhythms.length - 1; polyrhythmIndex >= 0; polyrhythmIndex--) {
+    const polyrhythm = track.polyrhythms[polyrhythmIndex];
+    polyrhythmsToIgnore.push(polyrhythm);
+    let start:number;
+    let startEndDifference:number;
+
+    const noteIterator = track.getNoteIterator(polyrhythmsToIgnore);
+    let noteIndex = 0;
+    for (const note of noteIterator) {
+      if (note === polyrhythm.start)
+        start = noteIndex;
+      if (note === polyrhythm.end) {
+        startEndDifference = noteIndex - start;
+        break;
+      }
+      noteIndex++;
+    }
+
+    serialisedPolyrhythms.unshift(`${start}-${startEndDifference}-${polyrhythm.notes.length}`);
+  }
+
+  const unpackedPolyrhythms = serialisedPolyrhythms.join('-');
+  return packPolyrhythmString(unpackedPolyrhythms);
+}
+
+
+function packPolyrhythmString(polyrhythmString:string): string {
+  const digits:number[] = [];
+
+  for (let index = 0; index < polyrhythmString.length; index++) {
+    const char = polyrhythmString.charAt(index);
+    digits.push(polyrhythmCharacterToNumber[char]);
+  }
+
+  const stringAsNumber = interpretAsBaseN(digits, 11);
+  return urlEncodeNumber(stringAsNumber);
+}
+
+
+function deserlialiseTrack(serialisedTrack:string, arrangement:Arrangement, version:number) {
+  const instrumentId = serialisedTrack[0];
 
   const instrument = getLibrary().getInstrument(instrumentId);
   if (!instrument)
     throw new Error('Instrument not found');
 
-  const track = arrangement.addTrack(instrument); // track should have full set of notes, all rests
+  const track = arrangement.addTrack(instrument);
 
-  const musicAsNumber = urlDecodeNumber(musicAsString);
-  const base = Object.keys(instrument.noteStyles).length + 1; // + 1 for rests
-  const musicInBaseN = convertToBaseN(musicAsNumber, base);
-  while (musicInBaseN.length < timings.length)
-    musicInBaseN.unshift(0); // pad number with leading 0s
+  let splitterIndex = serialisedTrack.indexOf('-');
+  if (splitterIndex === -1)
+    splitterIndex = serialisedTrack.length;
 
-  musicInBaseN.forEach((value, column) => {
-    if (value) { // Rests will have value 0
-      const noteStyleId = numberToCharacter[value];
-      track.notes[column].noteStyle = instrument.noteStyles[noteStyleId];
-    }
-  })
+  const serialisedNotes = serialisedTrack.substring(1, splitterIndex);
+  const serialisedPolyrhythms = serialisedTrack.substring(splitterIndex + 1);
+
+  deserialisePolyrhythms(track, serialisedPolyrhythms, version);
+  deserialiseNotes(track, serialisedNotes);
 }
 
 
-function serilaiseArrangement(arrangement:Arrangement): string {
+function deserialiseNotes(track:Track, serialisedNotes:string) {
+  const notesAsNumber = urlDecodeNumber(serialisedNotes);
+  const base = Object.keys(track.instrument.noteStyles).length + 1; // + 1 for rests
+  const musicInBaseN = convertToBaseN(notesAsNumber, base);
+
+  const noteIterator = track.getNoteIterator();
+  let fullNoteCount = 0;
+  while (!noteIterator.next().done) {
+    fullNoteCount++;
+  }
+  const leadingZeroesRequired = fullNoteCount - musicInBaseN.length;
+  musicInBaseN.unshift(...Array.from(new Array(leadingZeroesRequired)).map(() => 0));
+
+  let index = 0;
+  for (const note of track.getNoteIterator()) {
+    const noteStyleNumber = musicInBaseN[index];
+    if (noteStyleNumber) { // Rests will have value 0
+      note.noteStyle = track.instrument.noteStyles[urlNumberToCharacter[noteStyleNumber]];
+    }
+
+    index++;
+  }
+}
+
+
+function deserialisePolyrhythms(track:Track, serialisedPolyrhythms:string, version:number) {
+  if (serialisedPolyrhythms === '')
+    return;
+
+  if (version >= 2)
+    serialisedPolyrhythms = unpackPolyrhythmString(serialisedPolyrhythms);
+
+  const interpretChunk = version >= 2
+    ? (chunk:string) => Number(chunk)
+    : (chunk:string) => urlDecodeNumber(chunk).toJSNumber();
+
+  const chunks = serialisedPolyrhythms.split('-');
+
+  // Each polyrhythm is encoded in 3 chunks
+  for (let chunkIndex = 0; chunkIndex < chunks.length; chunkIndex += 3) {
+    const startIndex = interpretChunk(chunks[chunkIndex]);
+    const startEndDifference = interpretChunk(chunks[chunkIndex + 1]);
+    const polyrhythmLength = interpretChunk(chunks[chunkIndex + 2]);
+
+    const endIndex = startIndex + startEndDifference;
+
+    let startNote:Note;
+    let endNote:Note;
+
+    let index = 0;
+    for (const note of track.getNoteIterator()) {
+      if (index === startIndex)
+        startNote = note;
+      if (index === endIndex) {
+        endNote = note;
+        break;
+      }
+
+      index++;
+    }
+
+    track.addPolyrhythm(startNote, endNote, polyrhythmLength);
+  }
+}
+
+
+function unpackPolyrhythmString(packedPolyrhythmsString:string): string {
+  const polyrhythmsAsBigInt = urlDecodeNumber(packedPolyrhythmsString);
+  const polyrhythmStringAsNumbers = convertToBaseN(polyrhythmsAsBigInt, 11);
+
+  const unpackedPolyrhythmsString = polyrhythmStringAsNumbers.reduce(
+    (a, b) => a + polyrhythmNumberToCharacter[b],
+    ''
+  );
+
+  if (unpackedPolyrhythmsString.startsWith('-'))
+    return '0' + unpackedPolyrhythmsString;
+  return unpackedPolyrhythmsString;
+}
+
+
+function serialiseArrangement(arrangement:Arrangement): string {
   const {timeParams:tp} = arrangement;
   let output = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
   output = output.replaceAll('/', '-');
-  for (const trackId in arrangement.tracks) {
-    const track = arrangement.tracks[trackId];
-    if (track)
-      output += '.' + serialiseTrack(track);
-  }
+  arrangement.tracks.forEach(track => output += '.' + serialiseTrack(track));
+
   return output;
 }
 
@@ -160,7 +292,7 @@ function serilaiseArrangement(arrangement:Arrangement): string {
 
 const conversionBase = bigInt[64]; // 64 characters to safely use in URLs
 
-const numberToCharacter : {
+const urlNumberToCharacter : {
   [number:number]: string
 } = {
   0: '0',
@@ -229,7 +361,7 @@ const numberToCharacter : {
   63: '_'
 }
 
-const characterToNumber: {
+const urlCharacterToNumber: {
   [char:string]: number
 } = {
   '0': 0,
@@ -297,3 +429,35 @@ const characterToNumber: {
   '~': 62,
   '_': 63
 }
+
+const polyrhythmNumberToCharacter: {
+  [number:number]: string
+} = {
+  0: '0',
+  1: '1',
+  2: '2',
+  3: '3',
+  4: '4',
+  5: '5',
+  6: '6',
+  7: '7',
+  8: '8',
+  9: '9',
+  10: '-'
+};
+
+const polyrhythmCharacterToNumber: {
+  [char:string]: number
+} = {
+  '0': 0,
+  '1': 1,
+  '2': 2,
+  '3': 3,
+  '4': 4,
+  '5': 5,
+  '6': 6,
+  '7': 7,
+  '8': 8,
+  '9': 9,
+  '-': 10
+};

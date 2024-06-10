@@ -1,6 +1,6 @@
 import { Arrangement, InstrumentMeta } from 'bananadrum-core';
 import { getLibrary } from 'bananadrum-core';
-import { ArrangementPlayerContext } from './ArrangementViewer.js';
+import { ArrangementPlayerContext } from './arrangement/ArrangementViewer.js';
 import { useContext } from 'react';
 
 export function InstrumentBrowser({close}:{close:() => void}): JSX.Element {

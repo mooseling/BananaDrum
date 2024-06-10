@@ -69,7 +69,7 @@ export interface Publisher extends Subscribable {
 export interface Arrangement extends Subscribable {
   title: string
   timeParams: TimeParams
-  tracks: {[trackId:string]: Track}
+  tracks: Track[]
   addTrack(instrument:Instrument): Track
   removeTrack(track:Track): void
 }
@@ -95,14 +95,27 @@ export interface Track extends Subscribable {
   arrangement: Arrangement
   instrument: Instrument
   notes: Note[] // Must be kept in order - this is Track's job
+  polyrhythms: Polyrhythm[]
+  addPolyrhythm(start:Note, end:Note, length:number): void
+  removePolyrhythm(polyrhythm:Polyrhythm): void
   getNoteAt(timing:Timing): Note
   colour: string // A specific hsl() string
   clear(): void
+  getNoteIterator(polyrhythmsToIgnore?:Polyrhythm[]): IterableIterator<Note>
+}
+
+// Or should the note point to the polyrhythm? That's somewhat easier...
+export interface Polyrhythm {
+  id: string
+  start: Note
+  end: Note
+  notes: Note[]
 }
 
 export interface Note extends Subscribable {
   id: string
   timing: Timing
   track: Track
+  polyrhythm:Polyrhythm
   noteStyle: NoteStyle|null // null means this is a rest
 }

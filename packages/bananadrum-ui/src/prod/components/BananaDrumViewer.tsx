@@ -1,6 +1,6 @@
 import { errorLog } from 'bananadrum-core';
 import { ArrangementPlayer } from 'bananadrum-player';
-import { ArrangementViewer } from './ArrangementViewer.js';
+import { ArrangementViewer } from './arrangement/ArrangementViewer.js';
 import { Overlay, toggleOverlay } from './Overlay.js';
 import { AnimationEngine } from '../types.js';
 import { createContext, useState } from 'react';

@@ -7,6 +7,7 @@
   --darker-green: #003737;
   --light-green: #0A7B7B;
   --lighter-green: #238B8B;
+  --lightest-green: #62BBBB;
   --blue: #006699;
   --light-blue: #008ED3;
   --lighter-blue: #07ABFB;
@@ -28,6 +29,12 @@
   --a-color: var(--darker-blue);
   --a-color-hover: var(--light-blue);
   --a-color-active: var(--lighter-blue);
+  --secondary-green: hsl(94, 80%, 59%);
+  --secondary-orange: hsl(20, 97%, 64%);
+  --secondary-yellow: rgb(255, 244, 122);
+  --secondary-red: hsl(2, 63%, 55%);
+  --secondary-blue: hsl(205, 80%, 63%);
+  --secondary-purple: hsl(232, 100%, 72%);
 }
 
 .hidden {
@@ -198,6 +205,7 @@ body {
 .track-viewer {
   min-width: 100%;
   display: flex;
+  -webkit-user-select: none; /* On safari, dragging to select notes causes a native selection of lots of stuff. So we prevent it. */
 }
 
 @keyframes loadingPulse {
@@ -322,7 +330,67 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 .note-line {
   transition: opacity 0.2s;
+}
+
+.note-line .notes-wrapper {
   display: flex;
+}
+
+.note-line .polyrhythm-viewer {
+  position: absolute;
+  z-index: 1;
+  padding-left: var(--thick-border-width);
+  background-color: white;
+}
+
+.polyrhythm-viewer .polyrhythm-decoration {
+  position: absolute;
+  width: calc(100% - 2* var(--thick-border-width));
+  height: var(--note-height);
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.track-viewer[data-colour-group="yellow"] .polyrhythm-decoration {
+  box-shadow: inset 0 0 7pt 2pt var(--secondary-orange);
+}
+
+.track-viewer[data-colour-group="orange"] .polyrhythm-decoration {
+  box-shadow: inset 0 0 7pt 2pt var(--secondary-yellow);
+}
+
+.track-viewer[data-colour-group="green"] .polyrhythm-decoration {
+  box-shadow: inset 0 0 7pt 2pt var(--secondary-yellow);
+}
+
+.track-viewer[data-colour-group="blue"] .polyrhythm-decoration {
+  box-shadow: inset 0 0 7pt 2pt var(--secondary-green);
+}
+
+.track-viewer[data-colour-group="purple"] .polyrhythm-decoration {
+  box-shadow: inset 0 0 7pt 2pt var(--secondary-blue);
+}
+
+.polyrhythm-viewer .polyrhythm-notes-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.polyrhythm-viewer .delete-polyrhythm-wrapper {
+  height: var(--note-height);
+  border: var(--thick-border);
+  /* Apply some negative margins to collapse borders */
+  margin-top: calc(-1 * var(--thick-border-width));
+  margin-bottom: calc(-1 * var(--thick-border-width));
+  margin-left: calc(-1 * var(--thick-border-width));
+  width: 100%;
+  text-align: center;
+  line-height: var(--note-height);
+  background-color: var(--lightest-green);
+}
+
+.polyrhythm-viewer .delete-polyrhythm-wrapper.shrouded {
+   background-color: var(--light-gray);
 }
 
 .track-viewer.inaudible .note-line {
@@ -347,11 +415,16 @@ So we're putting them in each track-viewer, where we can position them with no p
   -webkit-user-select: none;
   user-select: none;
   background-color: white;
+  overflow-x: hidden;
 }
 
 .note-viewer * {
   -webkit-user-select: none;
   user-select: none;
+}
+
+.note-viewer img {
+  pointer-events: none; /* Prevent dragging note-style symbols around when trying to select notes */
 }
 
 .note-viewer.odd-beat {
@@ -361,6 +434,14 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 .note-viewer.start-of-bar:not(:first-child) {
     border-left: 5pt solid var(--dark-gray);
+}
+
+.polyrhythm-viewer .note-viewer {
+  flex-shrink: 1;
+}
+
+.polyrhythm-viewer .note-viewer:nth-child(2n) {
+  background-color: var(--lighter-gray);
 }
 
 .note-details-viewer {

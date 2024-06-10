@@ -1,32 +1,38 @@
 import { BananaDrumPlayer } from 'bananadrum-player';
 import { createRoot } from 'react-dom/client';
-import { StrictMode, createElement } from 'react';
+import { StrictMode, createElement, createContext } from 'react';
 import { getAnimationEngine } from './AnimationEngine.js';
 import { HistoryController } from "./HistoryController.js";
-import { KeyboardHandler } from "./KeyboardHandler.js";
+import { createKeyboardHandler } from "./KeyboardHandler.js";
 import { BananaDrumViewer } from "./components/BananaDrumViewer.js";
 import { BananaDrumUi } from './types.js';
+import { createSelectionManager, SelectionManager } from './SelectionManager.js';
+import { createModeManager, ModeManager } from './ModeManager.js';
+import { createMouseHandler } from './MouseHandler.js';
+
+export const SelectionManagerContext = createContext<SelectionManager>(null);
+export const ModeManagerContext = createContext<ModeManager>(null);
 
 
 export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HTMLElement): BananaDrumUi {
   HistoryController.init();
-  KeyboardHandler.init();
+
+  const selectionManager = createSelectionManager();
+  const modeManager = createModeManager(selectionManager);
+
+  createKeyboardHandler(bananaDrumPlayer.eventEngine, selectionManager, modeManager);
+  createMouseHandler(modeManager, selectionManager);
 
   const animationEngine = getAnimationEngine(bananaDrumPlayer.eventEngine);
   const root = createRoot(wrapper);
 
   root.render(
-    createElement(
-      StrictMode,
-      {
-        children: createElement(
-          BananaDrumViewer,
-          {
-            arrangementPlayer: bananaDrumPlayer.arrangementPlayer,
-            animationEngine
-          }
+    createElement(StrictMode, {},
+      createElement(SelectionManagerContext.Provider, {value:selectionManager},
+        createElement(ModeManagerContext.Provider, {value:modeManager},
+          createElement(BananaDrumViewer, {arrangementPlayer: bananaDrumPlayer.arrangementPlayer, animationEngine})
         )
-      }
+      )
     )
   );
 

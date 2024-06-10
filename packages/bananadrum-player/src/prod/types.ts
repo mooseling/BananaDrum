@@ -38,21 +38,24 @@ export type Event = CallbackEvent|AudioEvent|MuteEvent
 
 export interface EventSource {
   getEvents(interval:Interval): Event[]
+  onStop?:() => void
 }
 
 export interface ArrangementPlayer extends EventSource, Subscribable {
   arrangement: Arrangement
-  trackPlayers: {[trackId:string]:TrackPlayer}
+  trackPlayers: Map<Track, TrackPlayer>
   get currentTiming(): Timing
   currentTimingPublisher: Subscribable
   convertToLoopProgress(realTime:RealTime): number
-  audibleTrackPlayers: {[trackId:string]:TrackPlayer}
+  audibleTrackPlayers: Map<Track, TrackPlayer>
   audibleTrackPlayersPublisher: Subscribable
 }
 
 export interface TrackPlayer extends EventSource, Subscribable {
   track: Track
   soloMute: SoloMute
+  currentPolyrhythmNotePublisher: Subscribable
+  readonly currentPolyrhythmNote: Note|null
 }
 
 export type SoloMute = null | 'solo' | 'mute'
@@ -68,6 +71,7 @@ export interface LoopInterval extends Interval {
 }
 
 export interface TimeCoordinator extends Subscribable {
+  readonly realTimeLength: RealTime
   convertToRealTime(timing:Timing): RealTime
   convertToLoopIntervals(interval:Interval): LoopInterval[]
   convertToAudioTime(realTime:RealTime, loopNumber:number): RealTime
