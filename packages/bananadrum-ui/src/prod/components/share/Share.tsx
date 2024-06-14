@@ -1,23 +1,30 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useState, useContext, useCallback } from 'react';
-import { getShareLink } from 'bananadrum-core';
+import { Arrangement, serialiseArrangement } from 'bananadrum-core';
 import { toggleOverlay } from '../Overlay.js';
 import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer.js';
 import { ShareOrCopyButton } from './ShareOrCopyButton.js';
 import { EditTitle } from './EditTitle.js';
+import { useSubscription } from '../../hooks/useSubscription.js';
 
 
 export function Share(): JSX.Element {
-  const [url, setUrl] = useState('');
   const arrangementPlayer = useContext(ArrangementPlayerContext);
   const arrangement = arrangementPlayer.arrangement;
 
+  const [serialisedArrangement, setSerialisedArrangement] = useState('');
+  const [title, setTitle] = useState(arrangement.title);
+
   const close = useCallback(() => {
     toggleOverlay('share', 'hide');
-    setUrl('');
+    setSerialisedArrangement('');
   }, []);
-  const showLink = useCallback(() => setUrl(getShareLink(arrangement)), []);
+  const showLink = useCallback(() => setSerialisedArrangement(serialiseArrangement(arrangement)), []);
   const selectContent = useCallback(event => window.getSelection().selectAllChildren(event.currentTarget), []);
+
+  useSubscription(arrangement, () => setTitle(arrangement.title));
+
+  const url = getFullUrl(title, serialisedArrangement);
 
   return (
     <div className="viewport-wrapper">
@@ -48,4 +55,18 @@ export function Share(): JSX.Element {
       </div>
     </div>
   );
+}
+
+
+const urlStart = 'https://bananadrum.net/?';
+
+
+function getFullUrl(title:string, serialisedArrangement:string): string {
+  if (!serialisedArrangement)
+    return '';
+
+  if (title)
+    return `${urlStart}t=${encodeURI(title)}&a2=${serialisedArrangement}`;
+
+  return `${urlStart}a2=${serialisedArrangement}`;
 }
