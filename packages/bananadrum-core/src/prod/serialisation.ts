@@ -21,7 +21,7 @@ export function serialiseArrangement(arrangement:Arrangement): string {
 }
 
 
-export function deserialiseArrangement(serialisedArrangement:string, version:number, serialisedTitle?:string): Arrangement {
+export function deserialiseArrangement(serialisedArrangement:string, version:number, title?:string): Arrangement {
   const chunks = serialisedArrangement.split('.');
 
   const timeParams = createTimeParams(
@@ -33,8 +33,8 @@ export function deserialiseArrangement(serialisedArrangement:string, version:num
   );
   const arrangement = createArrangement(timeParams);
 
-  if (serialisedTitle)
-    arrangement.title = decodeURI(serialisedTitle);
+  if (title)
+    arrangement.title = title; // Don't need decodeURIComponent, SearchParams already does this
 
   chunks.slice(5).forEach(serialisedTrack => deserlialiseTrack(serialisedTrack, arrangement, version));
 

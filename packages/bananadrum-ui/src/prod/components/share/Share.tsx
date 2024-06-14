@@ -66,7 +66,7 @@ function getFullUrl(title:string, serialisedArrangement:string): string {
     return '';
 
   if (title)
-    return `${urlStart}t=${encodeURI(title)}&a2=${serialisedArrangement}`;
+    return `${urlStart}t=${encodeURIComponent(title)}&a2=${serialisedArrangement}`;
 
   return `${urlStart}a2=${serialisedArrangement}`;
 }
