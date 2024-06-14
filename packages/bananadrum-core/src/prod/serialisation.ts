@@ -11,9 +11,13 @@ import { createArrangement } from './Arrangement.js';
 // ==================================================================
 
 
-export function getShareLink(arrangement:Arrangement): string {
-  const query = serialiseArrangement(arrangement);
-  return 'https://bananadrum.net/?a2=' + query;
+export function serialiseArrangement(arrangement:Arrangement): string {
+  const {timeParams:tp} = arrangement;
+  let output = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
+  output = output.replaceAll('/', '-');
+  arrangement.tracks.forEach(track => output += '.' + serialiseTrack(track));
+
+  return output;
 }
 
 
@@ -268,16 +272,6 @@ function unpackPolyrhythmString(packedPolyrhythmsString:string): string {
   if (unpackedPolyrhythmsString.startsWith('-'))
     return '0' + unpackedPolyrhythmsString;
   return unpackedPolyrhythmsString;
-}
-
-
-function serialiseArrangement(arrangement:Arrangement): string {
-  const {timeParams:tp} = arrangement;
-  let output = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
-  output = output.replaceAll('/', '-');
-  arrangement.tracks.forEach(track => output += '.' + serialiseTrack(track));
-
-  return output;
 }
 
 // ==================================================================
