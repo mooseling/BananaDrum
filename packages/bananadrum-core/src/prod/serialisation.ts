@@ -21,7 +21,7 @@ export function serialiseArrangement(arrangement:Arrangement): string {
 }
 
 
-export function deserialiseArrangement(serialisedArrangement:string, version:number): Arrangement {
+export function deserialiseArrangement(serialisedArrangement:string, version:number, serialisedTitle?:string): Arrangement {
   const chunks = serialisedArrangement.split('.');
 
   const timeParams = createTimeParams(
@@ -32,6 +32,9 @@ export function deserialiseArrangement(serialisedArrangement:string, version:num
     Number(chunks[4])            // step resolution
   );
   const arrangement = createArrangement(timeParams);
+
+  if (serialisedTitle)
+    arrangement.title = decodeURI(serialisedTitle);
 
   chunks.slice(5).forEach(serialisedTrack => deserlialiseTrack(serialisedTrack, arrangement, version));
 
