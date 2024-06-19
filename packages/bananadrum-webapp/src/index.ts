@@ -10,12 +10,17 @@ document.getElementById('load-button').addEventListener('click', function() {
 
   const bananaDrum = createBananaDrum(bateriaInstruments, getSerialisedArrangement());
   const bananaDrumPlayer = createBananaDrumPlayer(bananaDrum);
-  const bananaDrumUi = createBananaDrumUi(bananaDrumPlayer, document.getElementById('wrapper'))
+  const bananaDrumUi = createBananaDrumUi(bananaDrumPlayer, document.getElementById('wrapper'));
 
   // Expose some things for testing:
   const {arrangement, library} = bananaDrum;
   const {arrangementPlayer} = bananaDrumPlayer;
   Object.assign(window, {arrangement, arrangementPlayer, library, bananaDrum, bananaDrumPlayer, bananaDrumUi});
+
+  if (arrangement.title)
+    document.title = arrangement.title + ' - Banana Drum';
+
+  arrangement.subscribe(() => arrangement.title && (document.title = arrangement.title + ' - Banana Drum'));
 });
 
 
