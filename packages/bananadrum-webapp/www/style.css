@@ -153,10 +153,17 @@ body {
   padding: 9.75pt 12pt;
 }
 
-.time-control input, select {
-  width: 40pt;
+input, select {
   height: 25pt;
   box-sizing: border-box;
+}
+
+input.short, select.short {
+    width: 40pt;
+}
+
+input.long, select.long {
+    width: 180pt;
 }
 
 @media only screen and (max-width: 600px) {

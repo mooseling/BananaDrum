@@ -27,6 +27,7 @@ export function NumberInput(
 
   return (
     <input
+    className="short"
     type="text"
     inputMode="numeric"
     pattern="[0-9]*"
