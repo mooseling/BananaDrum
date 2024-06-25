@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useState, useContext, useCallback } from 'react';
-import { Arrangement, serialiseArrangement } from 'bananadrum-core';
+import { serialiseArrangement } from 'bananadrum-core';
 import { toggleOverlay } from '../Overlay.js';
 import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer.js';
 import { ShareOrCopyButton } from './ShareOrCopyButton.js';
