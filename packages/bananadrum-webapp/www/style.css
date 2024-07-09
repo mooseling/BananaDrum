@@ -596,6 +596,13 @@ button.push-button.small {
   line-height: 13pt;
 }
 
+button.push-button.medium {
+  /* These properties are incomplete, because currently we only have use and it has its own particular font-size, etc */
+  padding: 1.5pt 4pt 3pt;
+  font-weight: 400;
+  border-radius: 5pt;
+}
+
 button.push-button.green {
   background-color: var(--green);
 }
