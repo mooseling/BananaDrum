@@ -3,7 +3,7 @@ import { ArrangementPlayer } from 'bananadrum-player';
 import { createPublisher } from 'bananadrum-core';
 import { TrackViewer } from '../TrackViewer.js';
 import { Scrollbar } from '../Scrollbar.js';
-import { Share } from '../share/Share.js';
+import { Share } from '../Share.js';
 import { InstrumentBrowser } from '../InstrumentBrowser.js';
 import { Overlay, toggleOverlay } from '../Overlay.js';
 import { useState, useEffect, createContext, useRef, useContext, TouchEvent, Dispatch, SetStateAction } from 'react';
