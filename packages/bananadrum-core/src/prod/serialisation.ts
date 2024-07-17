@@ -5,10 +5,23 @@ import { createTimeParams } from './TimeParams.js';
 import { createArrangement } from './Arrangement.js';
 
 
+const baseUrl = 'https://bananadrum.net/';
+
+
 
 // ==================================================================
 //                          Public Functions
 // ==================================================================
+
+
+export function getShareLink(arrangement:Arrangement): string {
+  const serialisedArrangement = serialiseArrangement(arrangement);
+
+  if (arrangement.title)
+    return `${baseUrl}?t=${encodeURIComponent(arrangement.title)}&a2=${serialisedArrangement}`;
+
+  return `${baseUrl}?a2=${serialisedArrangement}`;
+}
 
 
 export function serialiseArrangement(arrangement:Arrangement): string {
