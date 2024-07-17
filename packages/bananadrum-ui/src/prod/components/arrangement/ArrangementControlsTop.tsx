@@ -31,15 +31,10 @@ export function ArrangementControlsTop(): JSX.Element {
   const title = useStateSubscription(arrangement, (arrangement:Arrangement) => arrangement.title);
   const titleVisible = title || editingTitle;
 
-  const handleTitleSubmit = useCallback((newTitle: string) => {
-    setEditingTitle(false);
-    arrangement.title = newTitle;
-  }, []);
-
   return (
     <>
       <div className={titleVisible ? '' : 'hidden'}>
-        <ArrangementTitle editMode={editingTitle} onEditEnd={handleTitleSubmit} />
+        <ArrangementTitle editMode={editingTitle} onEditEnd={() => setEditingTitle(false)} />
       </div>
       <div className="arrangement-controls arrangement-controls-top overlay-wrapper">
         {
