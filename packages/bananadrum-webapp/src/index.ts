@@ -20,7 +20,7 @@ document.getElementById('load-button').addEventListener('click', function() {
   if (arrangement.title)
     document.title = arrangement.title + ' - Banana Drum';
 
-  arrangement.subscribe(() => arrangement.title && (document.title = arrangement.title + ' - Banana Drum'));
+  arrangement.subscribe(() => document.title = arrangement.title ? arrangement.title + ' - Banana Drum' : 'Banana Drum');
 });
 
 
