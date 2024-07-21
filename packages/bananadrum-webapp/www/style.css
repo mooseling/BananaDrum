@@ -153,6 +153,10 @@ body {
   padding: 9.75pt 12pt;
 }
 
+#share-button img {
+  display: none;
+}
+
 input, select {
   height: 25pt;
   box-sizing: border-box;
@@ -177,6 +181,14 @@ input.long, select.long {
 
   .time-control input, select {
     height: unset;
+  }
+
+  #share-button span {
+    display: none;
+  }
+
+  #share-button img {
+    display: inline-block;
   }
 }
 
