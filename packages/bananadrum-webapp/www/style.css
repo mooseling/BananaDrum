@@ -120,6 +120,11 @@ body {
   overflow-wrap: anywhere;
 }
 
+.arrangement-title h1 {
+  text-align: center;
+  margin-bottom: 0;
+}
+
 .arrangement-controls {
   display: flex;
   padding: 20pt;
@@ -148,10 +153,21 @@ body {
   padding: 9.75pt 12pt;
 }
 
-.time-control input, select {
-  width: 40pt;
+#share-button img {
+  display: none;
+}
+
+input, select {
   height: 25pt;
   box-sizing: border-box;
+}
+
+input.short, select.short {
+    width: 40pt;
+}
+
+input.long, select.long {
+    width: 180pt;
 }
 
 @media only screen and (max-width: 600px) {
@@ -165,6 +181,14 @@ body {
 
   .time-control input, select {
     height: unset;
+  }
+
+  #share-button span {
+    display: none;
+  }
+
+  #share-button img {
+    display: inline-block;
   }
 }
 
@@ -582,6 +606,13 @@ button.push-button.small {
   font-weight: 400;
   border-radius: 5pt;
   line-height: 13pt;
+}
+
+button.push-button.medium {
+  /* These properties are incomplete, because currently we only have use and it has its own particular font-size, etc */
+  padding: 1.5pt 4pt 3pt;
+  font-weight: 400;
+  border-radius: 5pt;
 }
 
 button.push-button.green {

@@ -67,6 +67,7 @@ export interface Publisher extends Subscribable {
 }
 
 export interface Arrangement extends Subscribable {
+  title: string
   timeParams: TimeParams
   tracks: Track[]
   addTrack(instrument:Instrument): Track

@@ -1,4 +1,4 @@
-import { RealTime } from 'bananadrum-core';
+import { Arrangement, RealTime } from 'bananadrum-core';
 import { ArrangementPlayer } from 'bananadrum-player';
 import { createPublisher } from 'bananadrum-core';
 import { TrackViewer } from '../TrackViewer.js';

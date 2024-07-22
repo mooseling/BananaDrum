@@ -5,6 +5,9 @@ import { createTimeParams } from './TimeParams.js';
 import { createArrangement } from './Arrangement.js';
 
 
+const baseUrl = 'https://bananadrum.net/';
+
+
 
 // ==================================================================
 //                          Public Functions
@@ -12,12 +15,26 @@ import { createArrangement } from './Arrangement.js';
 
 
 export function getShareLink(arrangement:Arrangement): string {
-  const query = serialiseArrangement(arrangement);
-  return 'https://bananadrum.net/?a2=' + query;
+  const serialisedArrangement = serialiseArrangement(arrangement);
+
+  if (arrangement.title)
+    return `${baseUrl}?t=${encodeURIComponent(arrangement.title)}&a2=${serialisedArrangement}`;
+
+  return `${baseUrl}?a2=${serialisedArrangement}`;
 }
 
 
-export function deserialiseArrangement(serialisedArrangement:string, version:number): Arrangement {
+export function serialiseArrangement(arrangement:Arrangement): string {
+  const {timeParams:tp} = arrangement;
+  let output = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
+  output = output.replaceAll('/', '-');
+  arrangement.tracks.forEach(track => output += '.' + serialiseTrack(track));
+
+  return output;
+}
+
+
+export function deserialiseArrangement(serialisedArrangement:string, version:number, title?:string): Arrangement {
   const chunks = serialisedArrangement.split('.');
 
   const timeParams = createTimeParams(
@@ -28,6 +45,9 @@ export function deserialiseArrangement(serialisedArrangement:string, version:num
     Number(chunks[4])            // step resolution
   );
   const arrangement = createArrangement(timeParams);
+
+  if (title)
+    arrangement.title = title; // Don't need decodeURIComponent, SearchParams already does this
 
   chunks.slice(5).forEach(serialisedTrack => deserlialiseTrack(serialisedTrack, arrangement, version));
 
@@ -268,16 +288,6 @@ function unpackPolyrhythmString(packedPolyrhythmsString:string): string {
   if (unpackedPolyrhythmsString.startsWith('-'))
     return '0' + unpackedPolyrhythmsString;
   return unpackedPolyrhythmsString;
-}
-
-
-function serialiseArrangement(arrangement:Arrangement): string {
-  const {timeParams:tp} = arrangement;
-  let output = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
-  output = output.replaceAll('/', '-');
-  arrangement.tracks.forEach(track => output += '.' + serialiseTrack(track));
-
-  return output;
 }
 
 // ==================================================================

@@ -5,7 +5,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 
 const config = {
-  mode: 'production',
+  mode: 'development',
   context: __dirname,
   entry: {
     prod: {

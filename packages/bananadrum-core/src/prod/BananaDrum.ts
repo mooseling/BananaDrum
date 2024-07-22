@@ -4,12 +4,12 @@ import { BananaDrum, PackedInstrument } from "./types.js";
 
 
 export function createBananaDrum(
-  instrumentCollection:PackedInstrument[], toLoad:{serialisedArrangement:string, version:number}
+  instrumentCollection:PackedInstrument[], toLoad:{serialisedArrangement:string, version:number, title?:string}
 ): BananaDrum {
   const library = getLibrary();
   library.load(instrumentCollection);
 
-  const arrangement = deserialiseArrangement(toLoad.serialisedArrangement, toLoad.version);
+  const arrangement = deserialiseArrangement(toLoad.serialisedArrangement, toLoad.version, toLoad.title);
 
   return {library, arrangement};
 }

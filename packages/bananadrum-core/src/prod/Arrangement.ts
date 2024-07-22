@@ -2,10 +2,15 @@ import { TimeParams, Arrangement, Track, Instrument } from './types.js';
 import { createTrack } from './Track.js';
 import { createPublisher } from './Publisher.js';
 
-export function createArrangement(timeParams:TimeParams): Arrangement {
+export function createArrangement(timeParams:TimeParams, title?:string): Arrangement {
   const publisher = createPublisher();
   const tracks:Track[] = [];
-  const arrangement:Arrangement = {timeParams, tracks, addTrack, removeTrack, subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe};
+  const arrangement:Arrangement = {
+    timeParams, tracks, addTrack, removeTrack,
+    get title() {return title;},
+    set title(newTitle:string) {title = newTitle; publisher.publish();},
+    subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
+  };
 
   return arrangement;
 
