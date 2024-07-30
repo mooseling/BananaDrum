@@ -1,6 +1,8 @@
 import { Note } from "bananadrum-core";
+import { LameJS } from "./lamejs.types";
 import { ArrangementPlayer, TrackPlayer } from "./types";
 
+declare const lamejs: LameJS;
 
 type Samples = number;
 
@@ -99,10 +101,10 @@ export function rescaleData(floatArray:Float32Array): Int16Array {
 
 
 export function mp3Encode(leftChannelData:Int16Array, rightChannelData?:Int16Array): BlobPart[] {
-  const encoder = new window['lamejs'].Mp3Encoder(2, 44100, 320); // 128
+  const encoder = lamejs.Mp3Encoder(2, 44100, 320); // 128
   const sampleBlockSize = 1152;
 
-  const mp3Data = [];
+  const mp3Data:BlobPart[] = [];
 
   for (let index = 0; index < leftChannelData.length; index += sampleBlockSize) {
     console.log(`Encoding ${index} to ${index + sampleBlockSize}`);
