@@ -2,7 +2,9 @@ import { createPublisher, Subscribable } from "bananadrum-core";
 import { ArrangementPlayer } from "./types";
 import { createMp3Url, determineChannelCount, determineLength, mixTrack, mp3Encode, rescaleData } from "./download";
 
+
 type ArrangementDownloaderState = 'not started' | 'working' | 'done' | 'failed';
+
 
 interface ArrangementDownloader extends Subscribable {
   start(): void
