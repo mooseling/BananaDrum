@@ -56,6 +56,7 @@ export interface TrackPlayer extends EventSource, Subscribable {
   soloMute: SoloMute
   currentPolyrhythmNotePublisher: Subscribable
   readonly currentPolyrhythmNote: Note|null
+  getNoteTime(note:Note): RealTime
 }
 
 export type SoloMute = null | 'solo' | 'mute'

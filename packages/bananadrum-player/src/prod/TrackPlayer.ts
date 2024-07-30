@@ -35,7 +35,7 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
   let soloMute:SoloMute = null;
 
   return {
-    track, getEvents, onStop,
+    track, getEvents, onStop, getNoteTime,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe,
     get soloMute() {return soloMute;},
     set soloMute(newSoloMute:SoloMute) {
@@ -86,6 +86,11 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
   function onStop() {
     currentPolyrhythmNote = null;
     currentPolyrhythmNotePublisher.publish();
+  }
+
+
+  function getNoteTime(note:Note) {
+    return noteTimes.get(note);
   }
 
 
