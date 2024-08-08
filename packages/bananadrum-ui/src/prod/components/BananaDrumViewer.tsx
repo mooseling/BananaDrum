@@ -14,20 +14,13 @@ export function BananaDrumViewer(
     <div id="banana-drum" className="overlay-wrapper">
       <AnimationEngineContext.Provider value={animationEngine}>
         <ArrangementViewer arrangementPlayer={arrangementPlayer}/>
-        <Footer />
+        <div id="footer">
+          <button className="anchor-button" onClick={() => toggleOverlay('about', 'show')}>About</button>
+        </div>
         <Overlay name="about">
           <About />
         </Overlay>
       </AnimationEngineContext.Provider>
-    </div>
-  );
-}
-
-
-function Footer(): JSX.Element {
-  return (
-    <div id="footer">
-      <button className="anchor-button" onClick={() => toggleOverlay('about', 'show')}>About</button>
     </div>
   );
 }
