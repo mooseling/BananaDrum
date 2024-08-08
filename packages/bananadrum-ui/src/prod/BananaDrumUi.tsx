@@ -4,7 +4,7 @@ import { StrictMode, createElement, createContext } from 'react';
 import { getAnimationEngine } from './AnimationEngine.js';
 import { HistoryController } from "./HistoryController.js";
 import { createKeyboardHandler } from "./KeyboardHandler.js";
-import { BananaDrumViewer } from "./components/BananaDrumViewer.js";
+import { AnimationEngineContext, BananaDrumViewer } from "./components/BananaDrumViewer.js";
 import { BananaDrumUi } from './types.js';
 import { createSelectionManager, SelectionManager } from './SelectionManager.js';
 import { createModeManager, ModeManager } from './ModeManager.js';
@@ -27,13 +27,15 @@ export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HT
   const root = createRoot(wrapper);
 
   root.render(
-    createElement(StrictMode, {},
-      createElement(SelectionManagerContext.Provider, {value:selectionManager},
-        createElement(ModeManagerContext.Provider, {value:modeManager},
-          createElement(BananaDrumViewer, {arrangementPlayer: bananaDrumPlayer.arrangementPlayer, animationEngine})
-        )
-      )
-    )
+    <StrictMode>
+      <SelectionManagerContext.Provider value={selectionManager}>
+      <ModeManagerContext.Provider value={modeManager}>
+      <AnimationEngineContext.Provider value={animationEngine}>
+        <BananaDrumViewer arrangementPlayer={bananaDrumPlayer.arrangementPlayer} />
+      </AnimationEngineContext.Provider>
+      </ModeManagerContext.Provider>
+      </SelectionManagerContext.Provider>
+    </StrictMode>
   );
 
   return {bananaDrumPlayer, wrapper};
