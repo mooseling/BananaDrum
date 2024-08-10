@@ -1,8 +1,7 @@
 import { BananaDrumPlayer } from 'bananadrum-player';
 import { createRoot } from 'react-dom/client';
-import { StrictMode, createElement, createContext } from 'react';
+import { StrictMode, createContext } from 'react';
 import { getAnimationEngine } from './AnimationEngine.js';
-import { HistoryController } from "./HistoryController.js";
 import { createKeyboardHandler } from "./KeyboardHandler.js";
 import { AnimationEngineContext, BananaDrumViewer } from "./components/BananaDrumViewer.js";
 import { BananaDrumUi } from './types.js';
@@ -15,8 +14,6 @@ export const ModeManagerContext = createContext<ModeManager>(null);
 
 
 export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HTMLElement): BananaDrumUi {
-  HistoryController.init();
-
   const selectionManager = createSelectionManager();
   const modeManager = createModeManager(selectionManager);
 
