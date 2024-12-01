@@ -5,7 +5,13 @@ import { bateriaInstruments } from './bateria-instruments';
 import { demoSongString } from './demo-song';
 
 
-document.getElementById('load-button').addEventListener('click', function() {
+// Once this script is loaded, we replace "Loading..." with the load button
+const loadButton = document.createElement('button');
+loadButton.id = 'load-button';
+loadButton.className = 'push-button';
+loadButton.innerText = 'Yes!';
+
+loadButton.addEventListener('click', function() {
   this.replaceWith(createLoadingMessage());
 
   const bananaDrum = createBananaDrum(bateriaInstruments, getSerialisedArrangement());
@@ -22,6 +28,11 @@ document.getElementById('load-button').addEventListener('click', function() {
 
   arrangement.subscribe(() => document.title = arrangement.title ? arrangement.title + ' - Banana Drum' : 'Banana Drum');
 });
+
+const loadButtonWrapper = document.createElement('div');
+loadButtonWrapper.innerHTML = "<p>Ready to make some beats?</p>"
+loadButtonWrapper.append(loadButton);
+document.getElementById('load-button-wrapper').replaceWith(loadButtonWrapper);
 
 
 function createLoadingMessage() {
