@@ -9,3 +9,8 @@ export function isSameTiming(timing1:Timing, timing2:Timing): boolean {
 export function exists<T>(value: T | undefined | null): value is T {
   return value === (value ?? !value);
 }
+
+
+export function rangeArray<T>(itemCount: number, mapIndexToItem: (number)=>T): T[] {
+  return Array.from(Array(itemCount)).map((_, index) => mapIndexToItem(index));
+}
