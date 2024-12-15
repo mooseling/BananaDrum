@@ -324,10 +324,34 @@ So we're putting them in each track-viewer, where we can position them with no p
   width: 8pt;
 }
 
-.note-line-wrapper {
+.note-line-wrapper, .timing-guide-wrapper {
   flex-grow: 1;
   margin-left: var(--track-meta-width);
   border-bottom: var(--thick-border);
+}
+
+.timing-guide-meta {
+  /* border: var(--thick-border); */
+  width: var(--track-meta-width);
+  background-color: #003737;
+  height: 20pt;
+  position: absolute;
+}
+
+.timing-guide {
+  margin-left: var(--track-meta-width);
+  flex-direction: row;
+  height: 20pt;
+}
+
+.bar-guide {
+  flex-grow: 1;
+  margin-left: calc(-1 * var(--thick-border-width)); /* The notes have this margin */
+}
+
+.bar-guide:nth-child(n+2) {
+  border-left: var(--thick-border);
+  border-left-width: 5pt;
 }
 
 .note-line-wrapper .overlay {

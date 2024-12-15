@@ -2,7 +2,7 @@ import { useState, createContext, useContext, TouchEvent, useLayoutEffect, useRe
 import { Polyrhythm, Track } from 'bananadrum-core';
 import { NoteViewer } from './note/NoteViewer.js';
 import { Overlay, toggleOverlay } from './Overlay.js';
-import { ArrangementPlayerContext, NoteWidthContext } from './arrangement/ArrangementViewer.js';
+import { ArrangementPlayerContext, NoteWidthContext, NoteLineMinWidth } from './arrangement/ArrangementViewer.js';
 import { TrackPlayer } from 'bananadrum-player';
 import { useSubscription } from '../hooks/useSubscription.js';
 import { PolyrhythmViewer } from './PolyrhythmViewer.js';
@@ -17,7 +17,6 @@ type TrackViewerCallbacks = {
 
 export const TrackPlayerContext = createContext<TrackPlayer>(null);
 
-const widthPerNote = 55.5; // 50pt for width, 2 * 2pt for padding, and 1.5pt for border
 const smButtonClasses = 'options-button push-button small solo-mute-button';
 
 
@@ -114,7 +113,7 @@ function NoteLine({track, callbacks}:{track:Track, callbacks:TrackViewerCallback
     setPolyrhythms([...track.polyrhythms]);
   });
 
-  const minWidth:string = notes.length * widthPerNote + 'pt';
+  const minWidth = useContext(NoteLineMinWidth);
 
   // Polyrhythms need to reposition dynamically
   useLayoutEffect(() => {
