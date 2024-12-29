@@ -324,34 +324,41 @@ So we're putting them in each track-viewer, where we can position them with no p
   width: 8pt;
 }
 
-.note-line-wrapper, .guiderail-wrapper {
+.guiderail-wrapper {
   flex-grow: 1;
-  margin-left: var(--track-meta-width);
   border-bottom: var(--thick-border);
+  margin-bottom: calc(-1 * var(--thick-border-width));
 }
 
 .guiderail-meta {
-  /* border: var(--thick-border); */
+  border-right: var(--thick-border);
   width: var(--track-meta-width);
-  background-color: #003737;
+  background-color: var(--lighter-gray);
   height: 20pt;
   position: absolute;
 }
 
 .guiderail {
-  margin-left: var(--track-meta-width);
+  margin-left: calc(var(--track-meta-width) + var(--thick-border-width));
   flex-direction: row;
   height: 20pt;
 }
 
-.bar-guide {
-  flex-grow: 1;
-  margin-left: calc(-1 * var(--thick-border-width)); /* The notes have this margin */
+.guiderail-timing {
+  margin-top: calc(-1 * var(--thick-border-width));
+  border-color: white;
+  line-height: 20pt;
 }
 
 .bar-guide:nth-child(n+2) {
   border-left: var(--thick-border);
   border-left-width: 5pt;
+}
+
+.note-line-wrapper {
+  flex-grow: 1;
+  margin-left: calc(var(--track-meta-width) + var(--thick-border-width));
+  border-bottom: var(--thick-border);
 }
 
 .note-line-wrapper .overlay {
@@ -442,15 +449,20 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 /* Effective note-widths must be hard-coded in JS as well */
 /* Update in TrackViewer.tsx if you change note dimensions */
-.note-viewer {
+.note-width {
   flex-basis:var(--note-height);
   flex-grow: 1;
   flex-shrink: 0;
-  border: var(--thick-border);
+  border-width: var(--thick-border-width);
+  border-style: solid;
+  margin-left: calc(-1 * var(--thick-border-width)); /* Collapse borders */
+}
+
+.note-viewer {
   /* Now collapse borders using margin */
+  border-color: var(--dark-gray);
   margin-top: calc(-1 * var(--thick-border-width));
   margin-bottom: calc(-1 * var(--thick-border-width));
-  margin-left: calc(-1 * var(--thick-border-width));
   height: var(--note-height);
   text-align: center;
   line-height: var(--note-height);
@@ -475,7 +487,8 @@ So we're putting them in each track-viewer, where we can position them with no p
 }
 
 
-.note-viewer.start-of-bar:not(:first-child) {
+.note-viewer.start-of-bar:not(:first-child),
+.guiderail-timing.start-of-bar:not(:first-child) {
     border-left: 5pt solid var(--dark-gray);
 }
 

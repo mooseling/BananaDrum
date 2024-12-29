@@ -1,26 +1,25 @@
 import { Arrangement } from 'bananadrum-core';
 import { useStateSubscription } from '../../hooks/useStateSubscription';
-import { rangeArray } from 'bananadrum-core/dist/prod/utils';
-import { useContext } from 'react';
-import { NoteLineMinWidth } from '../arrangement/ArrangementViewer';
+import { TimingViewer } from './TimingViewer';
 
 
 export function Guiderail({arrangement}:{arrangement:Arrangement}): JSX.Element {
-  const noteLineMinWidth = useContext(NoteLineMinWidth) + 'pt';
-  const numBars = useStateSubscription(arrangement.timeParams, timeParams => timeParams.length);
+
+
+  // We don't actual use numNotes, but we know we need to render when it changes
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const numNotes = useStateSubscription(arrangement.timeParams, timeParams => timeParams.timings.length);
+
+  // Because only time-param can change at a time, we know numBars only ever changes if numNotes also changes
+  const numBars = arrangement.timeParams.length;
   const display = numBars > 1 ? 'flex' : 'none';
 
   return (
-    <div className='time-guide-wrapper'>
-      <div className='timing-guide-meta'></div>
-      <div className='timing-guide' style={{display, minWidth:noteLineMinWidth}}>
-        {rangeArray(numBars, index => <BarGuide key={index + 1} barNumber={index + 1} />)}
+    <div className='guiderail-wrapper'>
+      <div className='guiderail-meta'></div>
+      <div className='guiderail' style={{display}}>
+        {arrangement.timeParams.timings.map(timing => <TimingViewer timing={timing} key={`${timing.bar}.${timing.step}`}/>)}
       </div>
     </div>
   );
-}
-
-
-function BarGuide({barNumber}:{barNumber:number}): JSX.Element {
-  return (<div className='bar-guide'><span className='bar-number'>{barNumber}</span></div>);
 }
