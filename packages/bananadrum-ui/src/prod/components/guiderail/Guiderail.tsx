@@ -1,11 +1,11 @@
 import { Arrangement } from 'bananadrum-core';
-import { useStateSubscription } from '../hooks/useStateSubscription';
+import { useStateSubscription } from '../../hooks/useStateSubscription';
 import { rangeArray } from 'bananadrum-core/dist/prod/utils';
 import { useContext } from 'react';
-import { NoteLineMinWidth } from './arrangement/ArrangementViewer';
+import { NoteLineMinWidth } from '../arrangement/ArrangementViewer';
 
 
-export function TimingGuide({arrangement}:{arrangement:Arrangement}): JSX.Element {
+export function Guiderail({arrangement}:{arrangement:Arrangement}): JSX.Element {
   const noteLineMinWidth = useContext(NoteLineMinWidth) + 'pt';
   const numBars = useStateSubscription(arrangement.timeParams, timeParams => timeParams.length);
   const display = numBars > 1 ? 'flex' : 'none';

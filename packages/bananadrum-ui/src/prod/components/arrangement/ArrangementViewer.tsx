@@ -12,7 +12,7 @@ import { AnimationEngine } from '../../types.js';
 import { useSubscription } from '../../hooks/useSubscription.js';
 import { ArrangementControlsTop } from './ArrangementControlsTop.js';
 import { ArrangementControlsBottom } from './ArrangementControlsBottom.js';
-import { TimingGuide } from '../TimingGuide.js';
+import { Guiderail } from '../guiderail/Guiderail.js';
 import { useStateSubscription } from '../../hooks/useStateSubscription.js';
 
 
@@ -76,7 +76,7 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
               onScroll={updateScrollShadows}
               onWheel={handleWheel}
             >
-              <TimingGuide arrangement={arrangement} />
+              <Guiderail arrangement={arrangement} />
               {
                 arrangement.tracks
                   .map(track => arrangementPlayer.trackPlayers.get(track))
