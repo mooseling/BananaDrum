@@ -16,15 +16,15 @@ export function Guiderail({arrangement}:{arrangement:Arrangement}): JSX.Element 
 
   // Because only time-param can change at a time, we know numBars only ever changes if numNotes also changes
   const numBars = arrangement.timeParams.length;
-  const display = numBars > 1 ? 'flex' : 'none';
+  const display = numBars > 1 ? 'block' : 'none';
 
   const barDivisibility = useStateSubscription(arrangement.timeParams, getBarDivisibility);
 
   return (
     <BarDivisibilityContext.Provider value={barDivisibility}>
-    <div className='guiderail-wrapper'>
+    <div className='guiderail-wrapper' style={{display}}>
       <div className='guiderail-meta'></div>
-      <div className='guiderail' style={{display}}>
+      <div className='guiderail'>
         {arrangement.timeParams.timings.map(timing => <TimingViewer timing={timing} key={`${timing.bar}.${timing.step}`}/>)}
       </div>
       <div className="scrollshadow left-scrollshadow" />
