@@ -347,11 +347,15 @@ So we're putting them in each track-viewer, where we can position them with no p
 .guiderail-timing {
   margin-top: calc(-1 * var(--thick-border-width));
   border-color: white;
-  line-height: 20pt;
 }
 
 .guiderail-timing:last-child {
   border-right: var(--thick-border)
+}
+
+.guiderail-timing-content {
+  line-height: 19pt;
+  padding-left: 5pt;
 }
 
 .note-line-wrapper {
