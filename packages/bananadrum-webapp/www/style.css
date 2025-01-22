@@ -66,7 +66,7 @@ a:visited {
 body {
   margin: 0;
   font-family: sans-serif;
-  width: 100vw;
+  /* width: 100vw; */ /* 100vw causes the content to sit under the vert scrollbar, causing a zont one to appear */
   height: 100vh;
 }
 
@@ -350,9 +350,8 @@ So we're putting them in each track-viewer, where we can position them with no p
   line-height: 20pt;
 }
 
-.bar-guide:nth-child(n+2) {
-  border-left: var(--thick-border);
-  border-left-width: 5pt;
+.guiderail-timing:last-child {
+  border-right: var(--thick-border)
 }
 
 .note-line-wrapper {
