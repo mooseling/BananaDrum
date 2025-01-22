@@ -358,6 +358,13 @@ So we're putting them in each track-viewer, where we can position them with no p
   padding-left: 5pt;
 }
 
+@media only screen and (min-width: 1000px) {
+  /* We label the bar numbers always. On smaller screens only, we show the sub-bar labels too */
+  .guiderail-timing:not(.start-of-bar) .guiderail-timing-content {
+    display: none;
+  }
+}
+
 .note-line-wrapper {
   flex-grow: 1;
   margin-left: calc(var(--track-meta-width) + var(--thick-border-width));
