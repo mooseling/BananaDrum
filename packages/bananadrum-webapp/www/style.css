@@ -336,6 +336,7 @@ So we're putting them in each track-viewer, where we can position them with no p
   background-color: var(--lighter-gray);
   height: 20pt;
   position: absolute;
+  z-index: 100;
 }
 
 .guiderail {
@@ -363,6 +364,12 @@ So we're putting them in each track-viewer, where we can position them with no p
   .guiderail-timing:not(.start-of-bar) .guiderail-timing-content {
     display: none;
   }
+}
+
+/* Scrollshadow positioning is super weird. In track-viewers, we have to NOT specify top, but that doesn't work here.*/
+.guiderail-wrapper .scrollshadow {
+  top: 0; /* Only works because the guiderail is at the top of the wrapper */
+  height: 20pt;
 }
 
 .note-line-wrapper {

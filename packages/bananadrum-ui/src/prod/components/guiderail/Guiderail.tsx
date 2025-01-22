@@ -27,6 +27,8 @@ export function Guiderail({arrangement}:{arrangement:Arrangement}): JSX.Element 
       <div className='guiderail' style={{display}}>
         {arrangement.timeParams.timings.map(timing => <TimingViewer timing={timing} key={`${timing.bar}.${timing.step}`}/>)}
       </div>
+      <div className="scrollshadow left-scrollshadow" />
+      <div className="scrollshadow right-scrollshadow" />
     </div>
     </BarDivisibilityContext.Provider>
   );
