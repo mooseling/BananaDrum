@@ -109,11 +109,12 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
 
 // We need scroll shadows if the note-lines are out of site to either the left or the right
 function getScrollShadowClasses(trackViewersWrapper: HTMLElement): string {
-  const noteLine = trackViewersWrapper?.querySelector('.note-line-wrapper');
-  if (!noteLine)
+  const notesWrapper = trackViewersWrapper?.querySelector('.notes-wrapper');
+  if (!notesWrapper)
     return ''; // In case there are no tracks
 
-  const {left: noteLineLeft, right: noteLineRight} = noteLine.getBoundingClientRect();
+  const {left: notesWrapperLeft} = notesWrapper.getBoundingClientRect();
+  const notesWrapperRight = notesWrapperLeft + notesWrapper.scrollWidth;
 
   // On the left side, the boundary is the right side of the track-metas
   const {right: metaRight} = trackViewersWrapper.querySelector('.track-meta').getBoundingClientRect();
@@ -122,12 +123,12 @@ function getScrollShadowClasses(trackViewersWrapper: HTMLElement): string {
   const {right: wrapperRight} = trackViewersWrapper.getBoundingClientRect();
 
   // This works much better with a little bit of tolerance, so we do a little subtraction
-  if (noteLineRight - wrapperRight > 2) {
-    if (metaRight - noteLineLeft > 2)
+  if (notesWrapperRight - wrapperRight > 2) {
+    if (metaRight - notesWrapperLeft > 2)
       return 'overflowing-left overflowing-right';
     return 'overflowing-right';
   }
-  if (metaRight - noteLineLeft > 2)
+  if (metaRight - notesWrapperLeft > 2)
     return 'overflowing-left';
   return '';
 }
