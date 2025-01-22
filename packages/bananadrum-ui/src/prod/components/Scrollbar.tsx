@@ -50,34 +50,24 @@ export function Scrollbar({wrapperRef, contentWidthPublisher, callbacks}:
 
 
 function calculateThumbWidth(wrapper:HTMLElement): number {
-  if (!wrapper)
+  if (!wrapper || !wrapper.scrollWidth)
     return 0;
 
-  const firstNoteLineWrapper = wrapper.getElementsByClassName('note-line-wrapper')[0];
-  if (!firstNoteLineWrapper)
-    return 0;
-
-  const scrollableWidth =
-    firstNoteLineWrapper.clientWidth + 113; // hard-coded note-meta width for performance
-  const ratio = wrapper.offsetWidth / scrollableWidth;
-  const scrollbar = wrapper.getElementsByClassName('custom-scrollbar')[0];
+  // offsetWidth includes borders, clientWidth does not. Not important in this case anyway.
+  const ratio = wrapper.offsetWidth / wrapper.scrollWidth; // Not accounting for track-meta but maybe that's fine?
+  const scrollbar = wrapper.getElementsByClassName('custom-scrollbar')[0]; // Let's pass this directly if possible
   return ratio * scrollbar.clientWidth;
 }
 
 
 function calculateThumbLeft(wrapper:HTMLElement): number {
-  if (!wrapper)
+  if (!wrapper || !wrapper.scrollWidth)
     return 0;
 
   const scrollLeft = wrapper.scrollLeft;
   const scrollbarWidth = wrapper.getElementsByClassName('custom-scrollbar')[0].clientWidth;
-  const firstNoteLineWrapper = wrapper.getElementsByClassName('note-line-wrapper')[0];
-  if (!firstNoteLineWrapper)
-    return 0;
 
-  const scrollableWidth =
-    firstNoteLineWrapper.clientWidth + 113; // hard-coded note-meta width for performance
-  return (scrollLeft * scrollbarWidth) / scrollableWidth;
+  return (scrollLeft * scrollbarWidth) / wrapper.scrollWidth;
 }
 
 
