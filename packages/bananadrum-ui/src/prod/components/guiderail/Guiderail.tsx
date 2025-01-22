@@ -1,10 +1,14 @@
-import { Arrangement } from 'bananadrum-core';
+import { Arrangement, TimeParams } from 'bananadrum-core';
 import { useStateSubscription } from '../../hooks/useStateSubscription';
 import { TimingViewer } from './TimingViewer';
+import { createContext } from 'react';
+
+
+export type BarDivisibility = 1 | 2 | 4;
+export const BarDivisibilityContext = createContext<BarDivisibility>(null);
 
 
 export function Guiderail({arrangement}:{arrangement:Arrangement}): JSX.Element {
-
 
   // We don't actual use numNotes, but we know we need to render when it changes
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -14,12 +18,26 @@ export function Guiderail({arrangement}:{arrangement:Arrangement}): JSX.Element 
   const numBars = arrangement.timeParams.length;
   const display = numBars > 1 ? 'flex' : 'none';
 
+  const barDivisibility = useStateSubscription(arrangement.timeParams, getBarDivisibility);
+
   return (
+    <BarDivisibilityContext.Provider value={barDivisibility}>
     <div className='guiderail-wrapper'>
       <div className='guiderail-meta'></div>
       <div className='guiderail' style={{display}}>
         {arrangement.timeParams.timings.map(timing => <TimingViewer timing={timing} key={`${timing.bar}.${timing.step}`}/>)}
       </div>
     </div>
+    </BarDivisibilityContext.Provider>
   );
+}
+
+
+function getBarDivisibility(timeParams:TimeParams): BarDivisibility {
+  const beatsPerBar = Number(timeParams.timeSignature.split('/')[0]);
+  if (beatsPerBar % 4 === 0)
+    return 4;
+  if (beatsPerBar % 2 === 0)
+    return 2;
+  return 1;
 }
