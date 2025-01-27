@@ -68,6 +68,7 @@ body {
   font-family: sans-serif;
   /* width: 100vw; */ /* 100vw causes the content to sit under the vert scrollbar, causing a zont one to appear */
   height: 100vh;
+  color: var(--darkest-gray);
 }
 
 .welcome {
