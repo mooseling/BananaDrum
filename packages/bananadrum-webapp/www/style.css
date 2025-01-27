@@ -326,8 +326,6 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 .guiderail-wrapper {
   flex-grow: 1;
-  border-bottom: var(--thick-border);
-  margin-bottom: calc(-1 * var(--thick-border-width));
 }
 
 .guiderail-meta {
@@ -356,7 +354,7 @@ So we're putting them in each track-viewer, where we can position them with no p
 }
 
 .guiderail-timing-content {
-  line-height: 19pt;
+  line-height: 20pt;
   text-align: center;
 }
 
@@ -369,7 +367,7 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 /* Scrollshadow positioning is super weird. In track-viewers, we have to NOT specify top, but that doesn't work here.*/
 .guiderail-wrapper .scrollshadow {
-  top: 0; /* Only works because the guiderail is at the top of the wrapper */
+  top: 1px; /* Only works because the guiderail is at the top of the wrapper */
   height: 20pt;
 }
 
