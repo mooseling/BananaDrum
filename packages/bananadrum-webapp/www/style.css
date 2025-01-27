@@ -348,7 +348,7 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 .guiderail-timing {
   margin-top: calc(-1 * var(--thick-border-width));
-  border-color: white;
+  border-color: var(--lighter-gray);
 }
 
 .guiderail-timing:last-child {
@@ -357,7 +357,7 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 .guiderail-timing-content {
   line-height: 19pt;
-  padding-left: 5pt;
+  text-align: center;
 }
 
 @media only screen and (min-width: 1000px) {
