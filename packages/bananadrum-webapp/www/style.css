@@ -349,6 +349,10 @@ So we're putting them in each track-viewer, where we can position them with no p
   border-color: var(--lighter-gray);
 }
 
+.guiderail-timing.odd-beat {
+  background-color: var(--lightest-gray);
+}
+
 .guiderail-timing:last-child {
   border-right: var(--thick-border)
 }

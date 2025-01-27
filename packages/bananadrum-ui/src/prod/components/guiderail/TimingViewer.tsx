@@ -1,58 +1,75 @@
 import { Timing } from 'bananadrum-core';
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import { BarDivisibilityContext } from './Guiderail';
 import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer';
+import { getParityClass } from '../note/NoteViewer';
 
 
 export function TimingViewer({timing}:{timing:Timing}): JSX.Element {
   const isStartOfBar = timing.step === 1;
 
-  if (isStartOfBar){
-    return (<div className={'guiderail-timing note-width start-of-bar'}>
-      <div className='guiderail-timing-content'>
-        {timing.bar}
-      </div>
-    </div>);
-  }
+  const classes = useClasses(timing, isStartOfBar);
+  const timingLabel = useTimingLabel(timing, isStartOfBar);
 
-  return (<div className={'guiderail-timing note-width'}>
+  return (<div className={classes}>
     <div className='guiderail-timing-content'>
-      {getTimingLabel(timing)}
+      {timingLabel}
     </div>
   </div>);
 }
 
 
-function getTimingLabel(timing:Timing): string {
+function useClasses(timing:Timing, isStartOfBar:boolean): string {
+  const {bar, step} = timing;
+  const {timeSignature, stepResolution} = useContext(ArrangementPlayerContext).arrangement.timeParams;
+
+  return useMemo(
+    () => `guiderail-timing note-width ${getParityClass(bar, step, timeSignature, stepResolution)} ${isStartOfBar ? 'start-of-bar' : ''}`,
+    [bar, step, timeSignature, stepResolution, isStartOfBar]
+  );
+}
+
+
+function useTimingLabel(timing:Timing, isStartOfBar:boolean): string {
   const barDivisibility = useContext(BarDivisibilityContext);
   const {arrangement} = useContext(ArrangementPlayerContext);
+  const {timeSignature, stepResolution} = arrangement.timeParams;
 
-  if (barDivisibility === 1)
-    return '';
+  const {bar, step} = timing;
 
-  const stepFromZero = timing.step - 1; // Steps count from 1, but we need to do math starting from 0 below
+  return useMemo(() => {
+      if (isStartOfBar)
+        return bar.toString();
 
-  if (barDivisibility === 2) {
-    const [beatsPerBar, beatUnit] = arrangement.timeParams.timeSignature.split('/').map(value => Number(value));
-    const stepsPerBeat = arrangement.timeParams.stepResolution / beatUnit;
-    const stepsPerBar = stepsPerBeat * beatsPerBar;
+      if (barDivisibility === 1)
+        return '';
 
-    if ((stepFromZero % stepsPerBar) / stepsPerBar === 0.5)
-      return timing.bar + '.2';
-  }
+      const stepFromZero = step - 1; // Steps count from 1, but we need to do math starting from 0 below
 
-  if (barDivisibility === 4) {
-    const [beatsPerBar, beatUnit] = arrangement.timeParams.timeSignature.split('/').map(value => Number(value));
-    const stepsPerBeat = arrangement.timeParams.stepResolution / beatUnit;
-    const stepsPerBar = stepsPerBeat * beatsPerBar;
+      if (barDivisibility === 2) {
+        const [beatsPerBar, beatUnit] = timeSignature.split('/').map(value => Number(value));
+        const stepsPerBeat = stepResolution / beatUnit;
+        const stepsPerBar = stepsPerBeat * beatsPerBar;
 
-    if ((stepFromZero % stepsPerBar) / stepsPerBar === 0.25)
-      return timing.bar + '.2';
-    if ((stepFromZero % stepsPerBar) / stepsPerBar === 0.5)
-      return timing.bar + '.3';
-    if ((stepFromZero % stepsPerBar) / stepsPerBar === 0.75)
-      return timing.bar + '.4';
-  }
+        if ((stepFromZero % stepsPerBar) / stepsPerBar === 0.5)
+          return bar + '.2';
+      }
 
-  return '';
+      if (barDivisibility === 4) {
+        const [beatsPerBar, beatUnit] = timeSignature.split('/').map(value => Number(value));
+        const stepsPerBeat = stepResolution / beatUnit;
+        const stepsPerBar = stepsPerBeat * beatsPerBar;
+
+        if ((stepFromZero % stepsPerBar) / stepsPerBar === 0.25)
+          return bar + '.2';
+        if ((stepFromZero % stepsPerBar) / stepsPerBar === 0.5)
+          return bar + '.3';
+        if ((stepFromZero % stepsPerBar) / stepsPerBar === 0.75)
+          return bar + '.4';
+      }
+
+      return '';
+    },
+    [barDivisibility, bar, step, isStartOfBar, timeSignature, stepResolution]
+  );
 }

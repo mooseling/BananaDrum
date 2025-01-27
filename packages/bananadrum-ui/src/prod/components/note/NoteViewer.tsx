@@ -113,7 +113,7 @@ function useClasses(note:Note): string {
 }
 
 
-function getParityClass(bar:number, step:number, timeSignature:string, stepResolution:number): string|null {
+export function getParityClass(bar:number, step:number, timeSignature:string, stepResolution:number): string|null {
     if (timeSignature === '4/4' && stepResolution === 16) {
       const beat = Math.floor((step - 1) / 4) + 1;
       const beatIsEven = beat % 2 === 0;
