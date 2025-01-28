@@ -89,6 +89,7 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
   );
 }
 
+const baseNoteClasses = 'note-viewer note-width';
 
 function useClasses(note:Note): string {
   const inPolyrhythm = note.polyrhythm !== undefined;
@@ -97,9 +98,9 @@ function useClasses(note:Note): string {
 
   return useMemo(() => {
     if (inPolyrhythm)
-      return 'note-viewer';
+      return baseNoteClasses;
 
-    const classes:string[] = ['note-viewer'];
+    const classes:string[] = [baseNoteClasses];
     const {step} = note.timing;
 
     classes.push(getParityClass(bar, step, timeSignature, stepResolution));
@@ -112,7 +113,7 @@ function useClasses(note:Note): string {
 }
 
 
-function getParityClass(bar:number, step:number, timeSignature:string, stepResolution:number): string|null {
+export function getParityClass(bar:number, step:number, timeSignature:string, stepResolution:number): string|null {
     if (timeSignature === '4/4' && stepResolution === 16) {
       const beat = Math.floor((step - 1) / 4) + 1;
       const beatIsEven = beat % 2 === 0;

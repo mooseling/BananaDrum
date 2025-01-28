@@ -66,8 +66,9 @@ a:visited {
 body {
   margin: 0;
   font-family: sans-serif;
-  width: 100vw;
+  /* width: 100vw; */ /* 100vw causes the content to sit under the vert scrollbar, causing a zont one to appear */
   height: 100vh;
+  color: var(--darkest-gray);
 }
 
 .welcome {
@@ -324,9 +325,60 @@ So we're putting them in each track-viewer, where we can position them with no p
   width: 8pt;
 }
 
+.guiderail-wrapper {
+  flex-grow: 1;
+}
+
+.guiderail-meta {
+  border-right: var(--thick-border);
+  width: var(--track-meta-width);
+  background-color: var(--lighter-gray);
+  height: 20pt;
+  position: absolute;
+  z-index: 100;
+}
+
+.guiderail {
+  display: flex;
+  margin-left: calc(var(--track-meta-width) + var(--thick-border-width));
+  flex-direction: row;
+  height: 20pt;
+}
+
+.guiderail-timing {
+  margin-top: calc(-1 * var(--thick-border-width));
+  border-color: var(--lighter-gray);
+}
+
+.guiderail-timing.odd-beat {
+  background-color: var(--lightest-gray);
+}
+
+.guiderail-timing:last-child {
+  border-right: var(--thick-border)
+}
+
+.guiderail-timing-content {
+  line-height: 20pt;
+  text-align: center;
+}
+
+@media only screen and (min-width: 1000px) {
+  /* We label the bar numbers always. On smaller screens only, we show the sub-bar labels too */
+  .guiderail-timing:not(.start-of-bar) .guiderail-timing-content {
+    display: none;
+  }
+}
+
+/* Scrollshadow positioning is super weird. In track-viewers, we have to NOT specify top, but that doesn't work here.*/
+.guiderail-wrapper .scrollshadow {
+  top: 1px; /* Only works because the guiderail is at the top of the wrapper */
+  height: 20pt;
+}
+
 .note-line-wrapper {
   flex-grow: 1;
-  margin-left: var(--track-meta-width);
+  margin-left: calc(var(--track-meta-width) + var(--thick-border-width));
   border-bottom: var(--thick-border);
 }
 
@@ -418,15 +470,20 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 /* Effective note-widths must be hard-coded in JS as well */
 /* Update in TrackViewer.tsx if you change note dimensions */
-.note-viewer {
+.note-width {
   flex-basis:var(--note-height);
   flex-grow: 1;
   flex-shrink: 0;
-  border: var(--thick-border);
+  border-width: var(--thick-border-width);
+  border-style: solid;
+  margin-left: calc(-1 * var(--thick-border-width)); /* Collapse borders */
+}
+
+.note-viewer {
   /* Now collapse borders using margin */
+  border-color: var(--dark-gray);
   margin-top: calc(-1 * var(--thick-border-width));
   margin-bottom: calc(-1 * var(--thick-border-width));
-  margin-left: calc(-1 * var(--thick-border-width));
   height: var(--note-height);
   text-align: center;
   line-height: var(--note-height);
@@ -451,7 +508,8 @@ So we're putting them in each track-viewer, where we can position them with no p
 }
 
 
-.note-viewer.start-of-bar:not(:first-child) {
+.note-viewer.start-of-bar:not(:first-child),
+.guiderail-timing.start-of-bar:not(:first-child) {
     border-left: 5pt solid var(--dark-gray);
 }
 
