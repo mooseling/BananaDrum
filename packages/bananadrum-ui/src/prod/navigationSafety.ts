@@ -6,8 +6,18 @@ export function initNavigationSafety(getWrapper: () => HTMLElement): ()=>void {
   const wrapper = getWrapper();
 
   const attachHandlers = () => {
-    initBackButtonHandler();
-    initUnloadHandler();
+    // On mobile, the back button is used for closing overlays, so we need to set that up
+    if (isMobile) {
+      window.history.pushState({}, ''); // Add a history entry. The back button pops this, triggering an event
+      window.addEventListener('popstate', handlePopState);
+    }
+
+    // Trigger a confirmation box on refresh (No support on Safari)
+    window.onbeforeunload = event => {
+      event.preventDefault();
+      event.returnValue = true; // Legacy support
+      return true; // Legacy support
+    };
   };
 
   // We wait until the user has made an edit before adding navigation listeners
@@ -20,32 +30,13 @@ export function initNavigationSafety(getWrapper: () => HTMLElement): ()=>void {
 }
 
 
-// On mobile, the back button is used for closing overlays, so we need to set that up
-function initBackButtonHandler() {
-  if (isMobile) {
-    addBufferHistoryState(); // Add a history entry. The back button pops this, triggering an event
-    window.addEventListener('popstate', handlePopState);
-  }
-}
-
-
-function addBufferHistoryState() {
-  window.history.pushState({}, '');
-}
-
-
 // Popstate event happens after a history state has been popped
 function handlePopState() {
   if (anyOverlaysAreOpen()) {
     closeAllOverlays();
-    addBufferHistoryState(); // Add back the buffer history entry that the back button just popped
+    window.history.pushState({}, ''); // Add back the buffer history entry that the back button just popped
   } else {
     window.history.back(); // This will trigger the beforeunload event, which we handle separately
-    addBufferHistoryState(); // If we've gotten this far, the user cancelled navigating back
+    window.history.pushState({}, ''); // If we've gotten this far, the user cancelled navigating back
   }
-}
-
-
-function initUnloadHandler() {
-  window.addEventListener('beforeunload', event => event.preventDefault());
 }
