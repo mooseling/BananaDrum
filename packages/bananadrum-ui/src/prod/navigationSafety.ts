@@ -14,11 +14,8 @@ function attachHandlers() {
         closeAllOverlays();
         window.history.pushState({}, ''); // Add back the buffer history entry that the back button just popped
       } else {
-        if (!confirm("Leave Banana Drum?")) {
-          window.history.pushState({}, '');
-        }
-        // handlingPopState = true;
-        // window.history.back(); // This will trigger the beforeunload event, which we handle asynchronously
+        handlingPopState = true;
+        window.history.back(); // This will trigger the beforeunload event, which we handle asynchronously
       }
     });
   }
