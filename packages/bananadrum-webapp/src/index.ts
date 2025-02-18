@@ -3,6 +3,8 @@ import { createBananaDrumPlayer } from 'bananadrum-player';
 import { createBananaDrumUi } from 'bananadrum-ui';
 import { bateriaInstruments } from './bateria-instruments';
 import { demoSongString } from './demo-song';
+import { initTabHistoryTracking, getLastHistoryEntry } from './TabHistory';
+
 
 
 // Once this script is loaded, we replace "Loading..." with the load button
@@ -27,6 +29,7 @@ loadButton.addEventListener('click', function() {
     document.title = arrangement.title + ' - Banana Drum';
 
   arrangement.subscribe(() => document.title = arrangement.title ? arrangement.title + ' - Banana Drum' : 'Banana Drum');
+  initTabHistoryTracking(bananaDrum);
 });
 
 const loadButtonWrapper = document.createElement('div');
@@ -45,6 +48,10 @@ function createLoadingMessage() {
 
 function getSerialisedArrangement() {
   const searchParams = new URLSearchParams(window.location.search);
+
+  const lastHistoryEntry = getLastHistoryEntry();
+  if (lastHistoryEntry)
+    return {serialisedArrangement:lastHistoryEntry, version:2, title:''};
 
   const title = searchParams.get('t') || undefined; // SearchParams.get can return null, but we prefer undefined
 
