@@ -1,5 +1,4 @@
-import { serialiseArrangement } from 'bananadrum-core/src/prod/serialisation.js';
-import { BananaDrum } from 'bananadrum-core/src/prod/types.js';
+import { BananaDrum, serialiseArrangement } from 'bananadrum-core';
 
 
 const SESSION_STATE_KEY = 'banana_last_state';
