@@ -9,6 +9,12 @@ export function initTabHistoryTracking(bananaDrum:BananaDrum): void {
     if (document.visibilityState === 'hidden')
       sessionStorage[SESSION_STATE_KEY] = serialiseArrangement(bananaDrum.arrangement);
   });
+
+  // The visibility listener above covers most cases, meaning this next listener is usually pointless work
+  // However, it solves the "close/reopen tab" case on Firefox
+  window.addEventListener('beforeunload',() => {
+    sessionStorage[SESSION_STATE_KEY] = serialiseArrangement(bananaDrum.arrangement);
+  });
 }
 
 
