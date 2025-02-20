@@ -1,6 +1,6 @@
 import { createBananaDrum } from 'bananadrum-core';
 import { createBananaDrumPlayer } from 'bananadrum-player';
-import { createBananaDrumUi } from 'bananadrum-ui';
+import { createBananaDrumUi, initMobileSupport } from 'bananadrum-ui';
 import { bateriaInstruments } from './bateria-instruments';
 import { demoSongString } from './demo-song';
 import { initTabHistoryTracking, getLastHistoryEntry } from './TabHistory';
@@ -30,6 +30,7 @@ loadButton.addEventListener('click', function() {
 
   arrangement.subscribe(() => document.title = arrangement.title ? arrangement.title + ' - Banana Drum' : 'Banana Drum');
   initTabHistoryTracking(bananaDrum);
+  initMobileSupport();
 });
 
 const loadButtonWrapper = document.createElement('div');
