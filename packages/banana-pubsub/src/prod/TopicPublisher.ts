@@ -1,7 +1,7 @@
 import { TopicPublisher } from './types';
 
 
-export function createTopicalPublisher(): TopicPublisher {
+export function createTopicPublisher(): TopicPublisher {
   return {
     topics: {},
     unsubscribeAll(): void {
