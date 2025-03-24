@@ -16,6 +16,9 @@ export function createPublisher<T>(): Publisher<T> {
         }
       });
     },
+    unsubscribeAll() {
+      subscriptions.splice(0);
+    },
     publish(value: T) {
       subscriptions.forEach(callback => callback && callback(value));
     }
