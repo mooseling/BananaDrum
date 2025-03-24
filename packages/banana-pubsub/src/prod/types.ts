@@ -11,3 +11,15 @@ export interface Subscribable<T> {
 export interface Publisher<T> extends Subscribable<T> {
   publish(value:T): void
 }
+
+
+export interface TopicSubscribable {
+  topics: {
+    [topicName:string]: Subscribable<unknown>
+  }
+}
+
+
+export interface TopicPublisher extends TopicSubscribable {
+  unsubscribeAll(): void
+}
