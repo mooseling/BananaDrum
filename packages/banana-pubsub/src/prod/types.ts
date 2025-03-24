@@ -1,10 +1,12 @@
-export type Subscription = (...args:unknown[]) => void
+export type Subscription<T> = (value?:T) => void
 
-export interface Subscribable {
-  subscribe(callback:Subscription): void
-  unsubscribe(callback:Subscription): void
+
+export interface Subscribable<T> {
+  subscribe(callback:Subscription<T>): void
+  unsubscribe(callback:Subscription<T>): void
 }
 
-export interface Publisher extends Subscribable {
-  publish(): void
+
+export interface Publisher<T> extends Subscribable<T> {
+  publish(value:T): void
 }

@@ -1,13 +1,14 @@
 import { Publisher, Subscription } from './types.js';
 
-export function createPublisher(): Publisher {
-  const subscriptions: Subscription[] = [];
+
+export function createPublisher<T>(): Publisher<T> {
+  const subscriptions: Subscription<T>[] = [];
 
   return {
-    subscribe: function(callback: Subscription) {
+    subscribe(callback: Subscription<T>) {
       subscriptions.push(callback);
     },
-    unsubscribe: function(callbackToRemove: Subscription) {
+    unsubscribe(callbackToRemove: Subscription<T>) {
       subscriptions.some((subscription, index) => {
         if (callbackToRemove === subscription) {
           subscriptions[index] = null;
@@ -15,8 +16,8 @@ export function createPublisher(): Publisher {
         }
       });
     },
-    publish: function() {
-      subscriptions.forEach(callback => callback && callback());
+    publish(value: T) {
+      subscriptions.forEach(callback => callback && callback(value));
     }
   }
 }
