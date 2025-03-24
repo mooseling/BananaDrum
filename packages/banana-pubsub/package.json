@@ -1,0 +1,17 @@
+{
+  "name": "banana-pubsub",
+  "version": "1.0.0",
+  "description": "Simple pubsub package for Banana Drum",
+  "main": "dist/prod/index.js",
+  "type":"module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mooseling/BananaDrum.git"
+  },
+  "author": "James Stevenson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mooseling/BananaDrum/issues"
+  },
+  "homepage": "https://github.com/mooseling/BananaDrum"
+}
