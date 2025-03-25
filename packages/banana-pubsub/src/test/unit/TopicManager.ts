@@ -7,8 +7,7 @@ import { assert } from 'chai';
 
 // A lot of this test is not about running code, but instead running tsc
 // We are really constructing an example case of how we're going to use TopicManager in Banana Drum
-// And we need to make sure it passes type checks, and also provides the type-safety we want
-// I will comment each block below to explain how it corresponds to Banana Drum
+// We need to make sure it passes type checks, and also provides the type-safety we want
 
 
 // We will subscribe to a mixture of topics on different objects in Banana Drum
