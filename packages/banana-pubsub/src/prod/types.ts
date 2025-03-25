@@ -13,14 +13,7 @@ export interface Publisher<T> extends Subscribable<T> {
 }
 
 
-export interface TopicSubscribable {
-  topics: {
-    [topicName:string]: Subscribable<unknown>
-  }
-}
-
-
-export interface TopicPublisher extends TopicSubscribable {
+export interface TopicManager {
   topics: {
     [topicName:string]: Publisher<unknown>
   }

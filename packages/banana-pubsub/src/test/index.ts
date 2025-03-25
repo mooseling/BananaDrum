@@ -1,2 +1,2 @@
 import './unit/Publisher.js';
-import './unit/TopicPublisher.js';
+import './unit/TopicManager.js';
