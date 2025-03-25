@@ -21,5 +21,8 @@ export interface TopicSubscribable {
 
 
 export interface TopicPublisher extends TopicSubscribable {
+  topics: {
+    [topicName:string]: Publisher<unknown>
+  }
   unsubscribeAll(): void
 }
