@@ -35,21 +35,21 @@ function createMixedTopicPublisher(): MixedTopicPublisher {
 
 describe('Publisher', function() {
   it('Works with the type system', function() {
-    const numberStringTopicPublisher = createMixedTopicPublisher();
+    const mixedTopicPublisher = createMixedTopicPublisher();
 
     let numberToUpdate = 1;
     let stringToUpdate = 'borp';
     const numberSubscription = (value:number) => numberToUpdate = value;
     const stringSubscription = (value:string) => stringToUpdate = value;
-    numberStringTopicPublisher.topics.numberTopic.subscribe(numberSubscription);
-    numberStringTopicPublisher.topics.stringTopic.subscribe(stringSubscription);
+    mixedTopicPublisher.topics.numberTopic.subscribe(numberSubscription);
+    mixedTopicPublisher.topics.stringTopic.subscribe(stringSubscription);
 
     // Importantly, the following lines would fail type checks:
-    // numberStringTopicPublisher.topics.numberTopic.subscribe(stringSubscription);
-    // numberStringTopicPublisher.topics.stringTopic.subscribe(numberSubscription);
+    // mixedTopicPublisher.topics.numberTopic.subscribe(stringSubscription);
+    // mixedTopicPublisher.topics.stringTopic.subscribe(numberSubscription);
 
-    numberStringTopicPublisher.topics.numberTopic.publish(12);
-    numberStringTopicPublisher.topics.stringTopic.publish('sporp');
+    mixedTopicPublisher.topics.numberTopic.publish(12);
+    mixedTopicPublisher.topics.stringTopic.publish('sporp');
 
     assert.equal(numberToUpdate, 12);
     assert.equal(stringToUpdate, 'sporp');
