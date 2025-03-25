@@ -33,7 +33,7 @@ function createTypedTopicManager(): TypedTopicManager {
 }
 
 
-describe('Publisher', function() {
+describe('TopicManager', function() {
   it('Works with the type system', function() {
     const typedTopicManager = createTypedTopicManager();
 
