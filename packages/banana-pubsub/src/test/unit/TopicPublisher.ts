@@ -54,4 +54,29 @@ describe('Publisher', function() {
     assert.equal(numberToUpdate, 12);
     assert.equal(stringToUpdate, 'sporp');
   });
+
+  it('Allows bulk unsubscribe', function() {
+    const mixedTopicPublisher = createMixedTopicPublisher();
+
+    let numberToUpdate = 1;
+    let stringToUpdate = 'borp';
+    const numberSubscription = (value:number) => numberToUpdate = value;
+    const stringSubscription = (value:string) => stringToUpdate = value;
+    mixedTopicPublisher.topics.numberTopic.subscribe(numberSubscription);
+    mixedTopicPublisher.topics.stringTopic.subscribe(stringSubscription);
+
+    mixedTopicPublisher.topics.numberTopic.publish(12);
+    mixedTopicPublisher.topics.stringTopic.publish('sporp');
+
+    assert.equal(numberToUpdate, 12);
+    assert.equal(stringToUpdate, 'sporp');
+
+    mixedTopicPublisher.unsubscribeAll();
+
+    mixedTopicPublisher.topics.numberTopic.publish(1_000_000_000);
+    mixedTopicPublisher.topics.stringTopic.publish('fwoop');
+
+    assert.equal(numberToUpdate, 12);
+    assert.equal(stringToUpdate, 'sporp');
+  });
 });
