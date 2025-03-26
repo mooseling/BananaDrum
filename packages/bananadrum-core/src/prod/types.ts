@@ -1,3 +1,5 @@
+import { Subscribable } from 'banana-pubsub';
+
 export interface BananaDrum {
   library: Library
   arrangement: Arrangement
@@ -21,9 +23,12 @@ export interface PackedInstrument extends InstrumentMeta {
   packedNoteStyles: PackedNoteStyle[]
 }
 
-export interface Instrument extends InstrumentMeta, Subscribable {
+export interface Instrument extends InstrumentMeta {
   readonly loaded: boolean
   noteStyles: {[id: string]: NoteStyle}
+  topics: {
+    loaded: Subscribable<boolean>
+  }
 }
 
 export interface NoteStyleBase {
@@ -55,26 +60,19 @@ export interface MutingRuleOtherInstrument {
 
 export type MutingRuleSimple = string;
 
-export type Subscription = (...args:unknown[]) => void
-
-export interface Subscribable {
-  subscribe(callback:Subscription): void
-  unsubscribe(callback:Subscription): void
-}
-
-export interface Publisher extends Subscribable {
-  publish(): void
-}
-
-export interface Arrangement extends Subscribable {
+export interface Arrangement {
   title: string
   timeParams: TimeParams
   tracks: Track[]
   addTrack(instrument:Instrument): Track
   removeTrack(track:Track): void
+  topics: {
+    trackCount: Subscribable<number>
+    title: Subscribable<string>
+  }
 }
 
-export interface TimeParams extends Subscribable {
+export interface TimeParams {
   timeSignature: string
   tempo: number
   length: number
@@ -82,6 +80,13 @@ export interface TimeParams extends Subscribable {
   stepResolution: number
   isValid(timing:Timing): boolean
   readonly timings: Timing[]
+  topics: {
+    timeSignature: Subscribable<string>
+    tempo: Subscribable<number>
+    length: Subscribable<number>
+    pulse: Subscribable<string>
+    stepResolution: Subscribable<number>
+  }
 }
 
 // steps are currently always sixteenths
@@ -90,7 +95,7 @@ export interface TimeParams extends Subscribable {
 export type Timing = {readonly bar:number, readonly step:number}
 export type RealTime = number
 
-export interface Track extends Subscribable {
+export interface Track {
   id: string;
   arrangement: Arrangement
   instrument: Instrument
@@ -102,6 +107,10 @@ export interface Track extends Subscribable {
   colour: string // A specific hsl() string
   clear(): void
   getNoteIterator(polyrhythmsToIgnore?:Polyrhythm[]): IterableIterator<Note>
+  topics: {
+    polyrhythmCount: Subscribable<number>
+    noteCount: Subscribable<number>
+  }
 }
 
 // Or should the note point to the polyrhythm? That's somewhat easier...
@@ -112,10 +121,13 @@ export interface Polyrhythm {
   notes: Note[]
 }
 
-export interface Note extends Subscribable {
+export interface Note {
   id: string
   timing: Timing
   track: Track
   polyrhythm:Polyrhythm
   noteStyle: NoteStyle|null // null means this is a rest
+  topics: {
+    noteStyle: Subscribable<NoteStyle|null>
+  }
 }
