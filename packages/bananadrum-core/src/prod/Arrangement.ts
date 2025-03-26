@@ -1,15 +1,25 @@
 import { TimeParams, Arrangement, Track, Instrument } from './types.js';
 import { createTrack } from './Track.js';
-import { createPublisher } from './Publisher.js';
+import { createPublisher } from 'banana-pubsub';
 
 export function createArrangement(timeParams:TimeParams, title?:string): Arrangement {
-  const publisher = createPublisher();
+  const trackCountPublisher = createPublisher<number>();
+  const titlePublisher = createPublisher<string>();
   const tracks:Track[] = [];
+
   const arrangement:Arrangement = {
     timeParams, tracks, addTrack, removeTrack,
     get title() {return title;},
-    set title(newTitle:string) {title = newTitle; publisher.publish();},
-    subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
+    set title(newTitle:string) {
+      if (newTitle !== title) {
+        title = newTitle;
+        titlePublisher.publish(newTitle);
+      }
+    },
+    topics: {
+      trackCount: trackCountPublisher,
+      title: titlePublisher
+    }
   };
 
   return arrangement;
@@ -32,7 +42,7 @@ export function createArrangement(timeParams:TimeParams, title?:string): Arrange
       tracks.push(track);
     else
       tracks.splice(index, 0, track);
-    publisher.publish();
+    trackCountPublisher.publish(tracks.length);
     return track;
   }
 
@@ -41,7 +51,7 @@ export function createArrangement(timeParams:TimeParams, title?:string): Arrange
     const index = tracks.indexOf(trackToRemove);
     if (index !== -1) {
       tracks.splice(index, 1);
-      publisher.publish();
+      trackCountPublisher.publish(tracks.length);
       return true;
     } else {
       console.warn("Tried to remove a track but no reference to it. id: " + trackToRemove.id);
