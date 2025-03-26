@@ -32,11 +32,12 @@
   },
   "scripts": {
     "pretest": "tsc && npm run build",
-    "test": "mocha \"packages/bananadrum-core/dist/test/index.js\"",
+    "test": "mocha \"packages/bananadrum-core/dist/test/index.js\" && mocha \"packages/banana-pubsub/dist/test/index.js\"",
     "babel": "babel packages/bananadrum-core/src --out-dir dist --extensions \".ts,.js,.tsx,.jsx\"",
     "build": "tsc --build && webpack"
   },
   "workspaces": [
+    "packages/banana-pubsub",
     "packages/bananadrum-core",
     "packages/bananadrum-player",
     "packages/bananadrum-ui",

@@ -13,5 +13,8 @@
   "bugs": {
     "url": "https://github.com/mooseling/BananaDrum/issues"
   },
-  "homepage": "https://github.com/mooseling/BananaDrum"
+  "homepage": "https://github.com/mooseling/BananaDrum",
+  "dependencies": {
+    "banana-pubsub": "^1.0.0"
+  }
 }

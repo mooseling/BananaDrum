@@ -10,6 +10,7 @@
     "noEmit": true
   },
   "references": [
+    { "path": "packages/banana-pubsub" },
     { "path": "packages/bananadrum-core" },
     { "path": "packages/bananadrum-player" },
     { "path": "packages/bananadrum-ui" },
