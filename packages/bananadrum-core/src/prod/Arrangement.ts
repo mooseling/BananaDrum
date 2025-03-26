@@ -1,6 +1,6 @@
 import { TimeParams, Arrangement, Track, Instrument } from './types.js';
 import { createTrack } from './Track.js';
-import { createPublisher } from 'banana-pubsub';
+import { createPublisher, extractSubscribable } from 'banana-pubsub';
 
 export function createArrangement(timeParams:TimeParams, title?:string): Arrangement {
   const trackCountPublisher = createPublisher<number>();
@@ -17,8 +17,8 @@ export function createArrangement(timeParams:TimeParams, title?:string): Arrange
       }
     },
     topics: {
-      trackCount: trackCountPublisher,
-      title: titlePublisher
+      trackCount: extractSubscribable(trackCountPublisher),
+      title: extractSubscribable(titlePublisher)
     }
   };
 
