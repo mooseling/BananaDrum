@@ -1,5 +1,5 @@
 import bigInt from 'big-integer';
-import { Arrangement, Note, Polyrhythm, Track } from './types.js';
+import { Arrangement, ArrangementView, Note, Polyrhythm, Track, TrackView } from './types.js';
 import { getLibrary } from './Library.js';
 import { createTimeParams } from './TimeParams.js';
 import { createArrangement } from './Arrangement.js';
@@ -14,7 +14,7 @@ const baseUrl = 'https://bananadrum.net/';
 // ==================================================================
 
 
-export function getShareLink(arrangement:Arrangement): string {
+export function getShareLink(arrangement:ArrangementView): string {
   const serialisedArrangement = serialiseArrangement(arrangement);
 
   if (arrangement.title)
@@ -24,7 +24,7 @@ export function getShareLink(arrangement:Arrangement): string {
 }
 
 
-export function serialiseArrangement(arrangement:Arrangement): string {
+export function serialiseArrangement(arrangement:ArrangementView): string {
   const {timeParams:tp} = arrangement;
   let output = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
   output = output.replaceAll('/', '-');
@@ -34,7 +34,7 @@ export function serialiseArrangement(arrangement:Arrangement): string {
 }
 
 
-export function deserialiseArrangement(serialisedArrangement:string, version:number, title?:string): Arrangement {
+export function deserialiseArrangement(serialisedArrangement:string, version:number, title?:string): ArrangementView {
   const chunks = serialisedArrangement.split('.');
 
   const timeParams = createTimeParams(
@@ -119,7 +119,7 @@ function convertToBaseN(input:bigInt.BigInteger, base:number): number[] {
 }
 
 
-function serialiseTrack(track:Track): string {
+function serialiseTrack(track:TrackView): string {
   const serialisedNotes = serialiseNotes(track);
   let serialisedTrack = track.instrument.id + serialisedNotes;
   if (track.polyrhythms.length)
@@ -128,7 +128,7 @@ function serialiseTrack(track:Track): string {
 }
 
 
-function serialiseNotes(track:Track): string {
+function serialiseNotes(track:TrackView): string {
   const noteStyles:number[] = [];
   const noteIterator = track.getNoteIterator();
   for (const note of noteIterator) {
@@ -142,7 +142,7 @@ function serialiseNotes(track:Track): string {
 }
 
 
-function serialisePolyrhythms(track:Track): string {
+function serialisePolyrhythms(track:TrackView): string {
   const serialisedPolyrhythms = [];
 
   // We do polyrhythms in reverse order in order to support nested polyrhthms
