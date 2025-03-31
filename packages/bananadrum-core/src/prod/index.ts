@@ -6,4 +6,4 @@ export { createPublisher } from './Publisher.js';
 export { exists, isSameTiming } from './utils.js';
 export { errorLog } from './ErrorLog.js';
 
-export * from './types.js';
+export { BananaDrum, ArrangementView, TrackView, NoteView, NoteStyle, Polyrhythm, InstrumentMeta, RealTime, Timing, TimeParamsView, Publisher, Subscribable, Subscription, MutingRule, MutingRuleOtherInstrument, PackedInstrument } from './types.js';
