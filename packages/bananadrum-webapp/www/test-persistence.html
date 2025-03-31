@@ -1,0 +1,41 @@
+<html>
+<head>
+  <title>Persistence Test Page</title>
+</head>
+<body>
+  <div style="width:100vw;text-align: center;font-size: 40pt;top:50%;transform:translateY(-50%);position:relative">
+    history.length: <span id="history-length"></span>
+    <br>
+    Loaded state:
+    <br>
+    <span id="history-state"></span>
+  </div>
+</body>
+<script>
+  let count = 0;
+
+  document.getElementById('history-length').innerText = history.length;
+  if (history.state) {
+    count = history.state.count ?? 0;
+    document.getElementById('history-state').innerText = JSON.stringify(history.state);
+  }
+
+  saveState('Manually push initial state');
+
+  // How are we currently trying to save the state
+  function saveState(message) {
+    history.pushState({count: count + 1, message}, null, null);
+  }
+
+
+  // Set listeners that we know work (lol they didn't work)
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden')
+      saveState('visibilitychange');
+  });
+
+  window.addEventListener('beforeunload',() => {
+    saveState('beforeunload');
+  });
+</script>
+</html>
