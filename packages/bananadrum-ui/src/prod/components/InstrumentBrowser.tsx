@@ -1,4 +1,4 @@
-import { Arrangement, InstrumentMeta } from 'bananadrum-core';
+import { ArrangementView, InstrumentMeta } from 'bananadrum-core';
 import { getLibrary } from 'bananadrum-core';
 import { ArrangementPlayerContext } from './arrangement/ArrangementViewer.js';
 import { useContext } from 'react';
@@ -19,7 +19,7 @@ export function InstrumentBrowser({close}:{close:() => void}): JSX.Element {
 
 function InstrumentChooser({instrumentMeta, close}:{instrumentMeta:InstrumentMeta, close:() => void}): JSX.Element {
   const {id, displayName} = instrumentMeta;
-  const arrangement:Arrangement = useContext(ArrangementPlayerContext).arrangement;
+  const arrangement:ArrangementView = useContext(ArrangementPlayerContext).arrangement;
   return (
     <button className="instrument-chooser push-button" onClick={() => {choose(id, arrangement); close();}}>
       {displayName}
@@ -28,6 +28,6 @@ function InstrumentChooser({instrumentMeta, close}:{instrumentMeta:InstrumentMet
 }
 
 
-function choose(id:string, arrangement:Arrangement) {
+function choose(id:string, arrangement:ArrangementView) {
   arrangement.addTrack(getLibrary().getInstrument(id));
 }

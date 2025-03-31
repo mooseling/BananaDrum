@@ -1,9 +1,9 @@
-import { Arrangement } from "bananadrum-core";
+import { ArrangementView } from "bananadrum-core";
 import { useCallback, useState } from "react";
 import { useOverlayState } from "../../hooks/useOverlayState";
 import { useSubscription } from "../../hooks/useSubscription";
 
-export function EditTitle({arrangement}:{arrangement:Arrangement}): JSX.Element {
+export function EditTitle({arrangement}:{arrangement:ArrangementView}): JSX.Element {
   const [inputIsVisible, setInputIsVisible] = useState(!!arrangement.title);
 
   const revealInput = useCallback(() => setInputIsVisible(true), []);

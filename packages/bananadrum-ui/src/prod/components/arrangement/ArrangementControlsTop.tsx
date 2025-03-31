@@ -1,4 +1,4 @@
-import { Arrangement } from "bananadrum-core";
+import { ArrangementView } from "bananadrum-core";
 import { getEventEngine } from "bananadrum-player";
 import { useCallback, useContext, useRef, useState } from "react";
 import { SelectionManagerContext } from "../../BananaDrumUi";
@@ -22,13 +22,13 @@ export function ArrangementControlsTop(): JSX.Element {
   const [playing, setPlaying] = useState(eventEngine.state === 'playing');
   useSubscription(eventEngine, () => setPlaying(eventEngine.state === 'playing'));
 
-  const arrangement:Arrangement = useContext(ArrangementPlayerContext).arrangement;
+  const arrangement:ArrangementView = useContext(ArrangementPlayerContext).arrangement;
 
   const selectionManager = useContext(SelectionManagerContext);
   useSubscription(selectionManager, () => toggleOverlay('selection_controls', selectionManager.selections.size ? 'show' : 'hide'));
 
   const [editingTitle, setEditingTitle] = useState(false);
-  const title = useStateSubscription(arrangement, (arrangement:Arrangement) => arrangement.title);
+  const title = useStateSubscription(arrangement, (arrangement:ArrangementView) => arrangement.title);
   const titleVisible = title || editingTitle;
 
   const justFinishedEditingTitle = useRef(false);

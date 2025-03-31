@@ -1,4 +1,4 @@
-import { RealTime, TimeParams } from 'bananadrum-core';
+import { RealTime, TimeParamsView } from 'bananadrum-core';
 import { ArrangementPlayer } from 'bananadrum-player';
 import { createPublisher } from 'bananadrum-core';
 import { TrackViewer } from '../TrackViewer.js';
@@ -235,7 +235,7 @@ function useTrackViewerTouchInterpretation(autoFollowIsOn:boolean, setAutoFollow
 
 
 // Returns width in pt
-function getNoteLineMinWidth(timeParams:TimeParams): number {
+function getNoteLineMinWidth(timeParams:TimeParamsView): number {
   const widthFromNotes = baseNoteWidth * timeParams.timings.length;
   const extraWidthBetweenBars = (timeParams.length - 1) * 4;
   return widthFromNotes + extraWidthBetweenBars;

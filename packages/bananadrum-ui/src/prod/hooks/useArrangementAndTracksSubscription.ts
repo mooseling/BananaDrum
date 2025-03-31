@@ -1,12 +1,12 @@
-import { Arrangement, Subscription, Track } from "bananadrum-core";
+import { ArrangementView, Subscription, TrackView } from "bananadrum-core";
 import { useEffect } from "react";
 import { useSubscription } from "./useSubscription";
 
-export function useArrangementAndTracksSubscription(arrangement:Arrangement, callback:Subscription): void {
+export function useArrangementAndTracksSubscription(arrangement:ArrangementView, callback:Subscription): void {
   useSubscription(arrangement, callback);
 
   useEffect(() => {
-    const subscribedTracks:Set<Track> = new Set();
+    const subscribedTracks:Set<TrackView> = new Set();
 
     arrangement.tracks.forEach(track => {
       track.subscribe(callback);

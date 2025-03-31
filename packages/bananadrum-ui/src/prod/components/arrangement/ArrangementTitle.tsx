@@ -1,14 +1,14 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ArrangementPlayerContext } from "./ArrangementViewer";
 import { useStateSubscription } from "../../hooks/useStateSubscription";
-import { Arrangement } from "bananadrum-core";
+import { ArrangementView } from "bananadrum-core";
 import { useSubscription } from "../../hooks/useSubscription";
 
 
 
 export function ArrangementTitle({editMode, onEditEnd}:{editMode:boolean, onEditEnd:()=>void}): JSX.Element {
   const arrangement = useContext(ArrangementPlayerContext).arrangement;
-  const title = useStateSubscription(arrangement, (arrangement:Arrangement) => arrangement.title);
+  const title = useStateSubscription(arrangement, (arrangement:ArrangementView) => arrangement.title);
 
   const inputRef = useRef<HTMLInputElement>(null);
 

@@ -1,4 +1,4 @@
-import { Arrangement } from 'bananadrum-core';
+import { ArrangementView } from 'bananadrum-core';
 import { useContext, useState } from 'react';
 import { ArrangementPlayerContext } from './ArrangementViewer.js';
 import { Overlay, toggleOverlay } from '../Overlay.js';
@@ -11,7 +11,7 @@ import { ModeManagerContext } from '../../BananaDrumUi.js';
 
 
 export function ArrangementControlsBottom(): JSX.Element {
-  const arrangement:Arrangement = useContext(ArrangementPlayerContext).arrangement;
+  const arrangement:ArrangementView = useContext(ArrangementPlayerContext).arrangement;
   const modeManager = useContext(ModeManagerContext);
 
   const [arePolyrhythms, setArePolyrhythms] = useState(hasPolyrhythms(arrangement));
@@ -97,7 +97,7 @@ export function ArrangementControlsBottom(): JSX.Element {
 }
 
 
-function hasPolyrhythms(arrangement:Arrangement): boolean {
+function hasPolyrhythms(arrangement:ArrangementView): boolean {
   for (const track of arrangement.tracks) {
     if (track.polyrhythms.length)
       return true;

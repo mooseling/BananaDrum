@@ -1,5 +1,5 @@
 import { useState, createContext, useContext, TouchEvent, useLayoutEffect, useRef } from 'react';
-import { Polyrhythm, Track } from 'bananadrum-core';
+import { Polyrhythm, TrackView } from 'bananadrum-core';
 import { NoteViewer } from './note/NoteViewer.js';
 import { Overlay, toggleOverlay } from './Overlay.js';
 import { ArrangementPlayerContext, NoteWidthContext, NoteLineMinWidth } from './arrangement/ArrangementViewer.js';
@@ -54,7 +54,7 @@ export function TrackViewer({trackPlayer, callbacks}:{trackPlayer:TrackPlayer, c
 
 
 function TrackMeta({track, toggleControls}
-  : {track:Track, toggleControls:() => void}
+  : {track:TrackView, toggleControls:() => void}
 ): JSX.Element {
   const instrumentName = track.instrument.displayName;
   return (
@@ -103,7 +103,7 @@ function SoloMuteButtons(): JSX.Element {
 }
 
 
-function NoteLine({track, callbacks}:{track:Track, callbacks:TrackViewerCallbacks}): JSX.Element {
+function NoteLine({track, callbacks}:{track:TrackView, callbacks:TrackViewerCallbacks}): JSX.Element {
   const noteLineRef = useRef<HTMLDivElement>(null);
   const [notes, setNotes] = useState([...track.notes]);
   const [polyrhythms, setPolyrhythms] = useState([...track.polyrhythms]);
@@ -161,7 +161,7 @@ function repositionPolyrhythmViewer(polyrhythm:Polyrhythm, polyrhythmViewer:HTML
 
 
 function TrackControls(
-  {track, overlayName}:{track:Track, overlayName:string}): JSX.Element {
+  {track, overlayName}:{track:TrackView, overlayName:string}): JSX.Element {
   return (
     <div className="track-controls">
       <button className="push-button gray"

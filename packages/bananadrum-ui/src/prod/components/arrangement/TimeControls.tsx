@@ -1,11 +1,11 @@
-import { Arrangement } from "bananadrum-core";
+import { ArrangementView } from "bananadrum-core";
 import { useState } from "react";
 import { useSubscription } from "../../hooks/useSubscription";
 import { NumberInput } from "../General";
 
 
 
-export function TimeControls({arrangement}:{arrangement:Arrangement}): JSX.Element {
+export function TimeControls({arrangement}:{arrangement:ArrangementView}): JSX.Element {
   const {timeParams} = arrangement;
   const [, update] = useState({arrangement});
 

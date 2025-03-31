@@ -1,24 +1,24 @@
-import { createPublisher, Note, Subscribable, Track } from "bananadrum-core";
+import { createPublisher, NoteView, Subscribable, TrackView } from "bananadrum-core";
 
 export interface SelectionManager extends Subscribable {
-  isSelected(note:Note): boolean
-  handleClick(note:Note): void
+  isSelected(note:NoteView): boolean
+  handleClick(note:NoteView): void
   deselectAll(): void
-  selections: Map<Track, TrackSelection>
+  selections: Map<TrackView, TrackSelection>
 }
 
 
 interface TrackSelection {
-  selectedNotes: Set<Note>
-  range: [Note, Note]
+  selectedNotes: Set<NoteView>
+  range: [NoteView, NoteView]
 }
 
 
 export function createSelectionManager(): SelectionManager {
   const publisher = createPublisher();
-  const trackSelections:Map<Track, TrackSelection> = new Map();
-  let anchor:Note|null = null;
-  let lastClickedNote:Note|null = null;
+  const trackSelections:Map<TrackView, TrackSelection> = new Map();
+  let anchor:NoteView|null = null;
+  let lastClickedNote:NoteView|null = null;
 
   return {
     isSelected, handleClick, deselectAll, selections: trackSelections,
@@ -26,7 +26,7 @@ export function createSelectionManager(): SelectionManager {
   };
 
 
-  function isSelected(note:Note): boolean {
+  function isSelected(note:NoteView): boolean {
     if (!trackSelections.has(note.track))
       return false;
 
@@ -34,7 +34,7 @@ export function createSelectionManager(): SelectionManager {
   }
 
 
-  function handleClick(clickedNote:Note) {
+  function handleClick(clickedNote:NoteView) {
     if (clickedNote === lastClickedNote)
       return;
 
@@ -72,7 +72,7 @@ export function createSelectionManager(): SelectionManager {
 
         if (knownNote) {
           const leftEdgeTest = knownNoteIsOnLeftEdge
-            ? (note:Note) => note === knownNote
+            ? (note:NoteView) => note === knownNote
             : getAboutHalfCoveredTest(leftBound, rightBound);
           deselectUntilMatch(trackSelection, noteIterator, leftEdgeTest);
 
@@ -98,7 +98,7 @@ export function createSelectionManager(): SelectionManager {
   }
 
 
-  function restartSelection(note:Note) {
+  function restartSelection(note:NoteView) {
     trackSelections.clear();
     trackSelections.set(note.track, createTrackSelection(note));
     anchor = note;
@@ -108,7 +108,7 @@ export function createSelectionManager(): SelectionManager {
 
   // We use a simple, inefficient algorithm to recalc selected tracks
   // This is ok. Note-selection is more optimised because there are many more notes, and selecting notes involves dom-searching
-  function recalcSelectedTracks(clickedNote:Note) {
+  function recalcSelectedTracks(clickedNote:NoteView) {
     const allTracks = anchor.track.arrangement.tracks;
     const anchorTrackIndex = allTracks.indexOf(anchor.track);
     const clickedTrackIndex = allTracks.indexOf(clickedNote.track);
@@ -137,10 +137,10 @@ export function createSelectionManager(): SelectionManager {
 }
 
 
-function createTrackSelection(note?:Note): TrackSelection {
+function createTrackSelection(note?:NoteView): TrackSelection {
   if (note) {
     return {
-      selectedNotes: new Set<Note>().add(note),
+      selectedNotes: new Set<NoteView>().add(note),
       range: [note, note]
     };
   }
@@ -152,10 +152,10 @@ function createTrackSelection(note?:Note): TrackSelection {
 }
 
 
-function getAboutHalfCoveredTest(leftBound:number, rightBound:number): ((note:Note) => boolean) {
+function getAboutHalfCoveredTest(leftBound:number, rightBound:number): ((note:NoteView) => boolean) {
   const selectionWidth = rightBound - leftBound;
 
-  return (note:Note) => {
+  return (note:NoteView) => {
     const testElement = document.getElementById('note-' + note.id);
     const {left, right, width} = testElement.getBoundingClientRect();
 
@@ -183,8 +183,8 @@ function getAboutHalfCoveredTest(leftBound:number, rightBound:number): ((note:No
 // On break, the iterator does some cleanup and becomes useless. So we use while loops instead.
 
 // First, we are before the new selection, looking for the start-note
-function deselectUntilMatch(trackSelection:TrackSelection, iterator:IterableIterator<Note>, matches:(note:Note)=>boolean) {
-  let note:Note;
+function deselectUntilMatch(trackSelection:TrackSelection, iterator:IterableIterator<NoteView>, matches:(note:NoteView)=>boolean) {
+  let note:NoteView;
 
   while((note = iterator.next().value)) {
     // Once we find the start-note, we enter the new selection, so this function is done
@@ -203,8 +203,8 @@ function deselectUntilMatch(trackSelection:TrackSelection, iterator:IterableIter
 
 // Inside the new selection
 // Case 1: Looking for the end note and we know it's in this track
-function selectUntilMatch(trackSelection:TrackSelection, iterator:IterableIterator<Note>, matches:(note:Note)=>boolean) {
-  let note:Note;
+function selectUntilMatch(trackSelection:TrackSelection, iterator:IterableIterator<NoteView>, matches:(note:NoteView)=>boolean) {
+  let note:NoteView;
 
   while ((note = iterator.next().value)) {
     // Anything in here gets added to the selection
@@ -220,8 +220,8 @@ function selectUntilMatch(trackSelection:TrackSelection, iterator:IterableIterat
 
 // Inside the new selection
 // Case 2: Looking until we find notes outside the selection
-function selectUntilNoMoreMatches(trackSelection:TrackSelection, iterator:IterableIterator<Note>, matches:(note:Note)=>boolean) {
-  let note:Note;
+function selectUntilNoMoreMatches(trackSelection:TrackSelection, iterator:IterableIterator<NoteView>, matches:(note:NoteView)=>boolean) {
+  let note:NoteView;
 
   while ((note = iterator.next().value)) {
     // Keep adding notes if they match
@@ -238,8 +238,8 @@ function selectUntilNoMoreMatches(trackSelection:TrackSelection, iterator:Iterab
 
 
 // And finally we are after the new selection, removing any previously selected notes
-function deselectUntilNoMoreSelected(trackSelection:TrackSelection, iterator:IterableIterator<Note>) {
-  let note:Note;
+function deselectUntilNoMoreSelected(trackSelection:TrackSelection, iterator:IterableIterator<NoteView>) {
+  let note:NoteView;
 
   while((note = iterator.next().value)) {
     if (trackSelection.selectedNotes.has(note))
