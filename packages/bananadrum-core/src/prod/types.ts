@@ -1,6 +1,6 @@
 export interface BananaDrum {
   library: Library
-  arrangement: Arrangement
+  arrangement: ArrangementView
 }
 
 export interface Library {
@@ -66,22 +66,36 @@ export interface Publisher extends Subscribable {
   publish(): void
 }
 
-export interface Arrangement extends Subscribable {
+export interface ArrangementView extends Subscribable {
+  readonly title: string
+  timeParams: TimeParamsView
+  tracks: TrackView[]
+}
+
+export interface Arrangement extends ArrangementView {
   title: string
-  timeParams: TimeParams
   tracks: Track[]
   addTrack(instrument:Instrument): Track
   removeTrack(track:Track): void
 }
 
-export interface TimeParams extends Subscribable {
+export interface TimeParamsView extends Subscribable {
+  readonly timeSignature: string
+  readonly tempo: number
+  readonly length: number
+  readonly pulse: string
+  readonly stepResolution: number
+  isValid(timing:Timing): boolean
+  readonly timings: Timing[]
+
+}
+
+export interface TimeParams extends TimeParamsView {
   timeSignature: string
   tempo: number
   length: number
   pulse: string
   stepResolution: number
-  isValid(timing:Timing): boolean
-  readonly timings: Timing[]
 }
 
 // steps are currently always sixteenths
@@ -90,18 +104,25 @@ export interface TimeParams extends Subscribable {
 export type Timing = {readonly bar:number, readonly step:number}
 export type RealTime = number
 
-export interface Track extends Subscribable {
+export interface TrackView extends Subscribable {
   id: string;
-  arrangement: Arrangement
+  arrangement: ArrangementView
   instrument: Instrument
-  notes: Note[] // Must be kept in order - this is Track's job
+  notes: NoteView[] // Must be kept in order - this is Track's job
   polyrhythms: Polyrhythm[]
+  colour: string // A specific hsl() string
+  getNoteAt(timing:Timing): NoteView
+  getNoteIterator(polyrhythmsToIgnore?:Polyrhythm[]): IterableIterator<NoteView>
+}
+
+export interface Track extends TrackView {
+  arrangement: Arrangement
+  notes: Note[]
+  getNoteAt(timing:Timing): Note
+  getNoteIterator(polyrhythmsToIgnore?:Polyrhythm[]): IterableIterator<Note>
   addPolyrhythm(start:Note, end:Note, length:number): void
   removePolyrhythm(polyrhythm:Polyrhythm): void
-  getNoteAt(timing:Timing): Note
-  colour: string // A specific hsl() string
   clear(): void
-  getNoteIterator(polyrhythmsToIgnore?:Polyrhythm[]): IterableIterator<Note>
 }
 
 // Or should the note point to the polyrhythm? That's somewhat easier...
@@ -112,10 +133,15 @@ export interface Polyrhythm {
   notes: Note[]
 }
 
-export interface Note extends Subscribable {
+export interface NoteView extends Subscribable {
   id: string
   timing: Timing
-  track: Track
-  polyrhythm:Polyrhythm
+  track: TrackView
+  polyrhythm: Polyrhythm
+  readonly noteStyle: NoteStyle|null // null means this is a rest
+}
+
+export interface Note extends NoteView {
+  readonly track: Track
   noteStyle: NoteStyle|null // null means this is a rest
 }
