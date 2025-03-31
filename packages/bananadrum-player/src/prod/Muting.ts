@@ -1,16 +1,16 @@
-import { MutingRule, MutingRuleOtherInstrument, Note, RealTime } from 'bananadrum-core';
+import { MutingRule, MutingRuleOtherInstrument, NoteView, RealTime } from 'bananadrum-core';
 import { isSameTiming, exists } from 'bananadrum-core';
 import { AudioEvent, MuteEvent, MuteFilter } from './types';
 
 
-export function getMuteEvents(note:Note, realTime:RealTime): MuteEvent[] {
+export function getMuteEvents(note:NoteView, realTime:RealTime): MuteEvent[] {
   const muteFilters:MuteFilter[] = getMuteFilters(note);
 
   return muteFilters.map(muteFilter => ({muteFilter, realTime}));
 }
 
 
-function getMuteFilters(note:Note): MuteFilter[] {
+function getMuteFilters(note:NoteView): MuteFilter[] {
   const muting = note.noteStyle?.muting;
   if (!muting)
     return [];
@@ -21,7 +21,7 @@ function getMuteFilters(note:Note): MuteFilter[] {
 }
 
 
-function getMuteFilter(note:Note, muting:MutingRule): MuteFilter|undefined {
+function getMuteFilter(note:NoteView, muting:MutingRule): MuteFilter|undefined {
   const ruleName = typeof muting === 'string' ? muting : muting.name;
   switch (ruleName) {
     case 'sameTrack':
@@ -32,7 +32,7 @@ function getMuteFilter(note:Note, muting:MutingRule): MuteFilter|undefined {
 }
 
 
-function getSameTrackMuteFilter(note:Note): MuteFilter|undefined {
+function getSameTrackMuteFilter(note:NoteView): MuteFilter|undefined {
   const noteStyle = note.noteStyle;
   if (noteStyle === null)
     return;
@@ -45,7 +45,7 @@ function getSameTrackMuteFilter(note:Note): MuteFilter|undefined {
 }
 
 
-function getOtherInstrumentMuteFilter(note:Note, muting:MutingRuleOtherInstrument)
+function getOtherInstrumentMuteFilter(note:NoteView, muting:MutingRuleOtherInstrument)
     : MuteFilter|undefined {
   const noteStyle = note.noteStyle;
   if (noteStyle === null)

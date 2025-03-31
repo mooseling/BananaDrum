@@ -1,4 +1,4 @@
-import { Arrangement, RealTime, Timing, Track } from 'bananadrum-core';
+import { ArrangementView, RealTime, Timing, TrackView } from 'bananadrum-core';
 import { createPublisher } from 'bananadrum-core';
 import { createTimeCoordinator } from './TimeCoordinator.js';
 import { createTrackPlayer } from './TrackPlayer.js';
@@ -6,15 +6,15 @@ import { ArrangementPlayer, CallbackEvent, Event, Interval, LoopInterval, TrackP
 
 
 
-export function createArrangementPlayer(arrangement:Arrangement): ArrangementPlayer {
+export function createArrangementPlayer(arrangement:ArrangementView): ArrangementPlayer {
   const timeCoordinator = createTimeCoordinator(arrangement.timeParams);
   const publisher = createPublisher();
   const currentTimingPublisher = createPublisher();
   const audibleTrackPlayersPublisher = createPublisher();
 
   // We need a TrackPlayer for each Track, and add/remove them when needed
-  const trackPlayers:Map<Track, TrackPlayer> = new Map();
-  const audibleTrackPlayers:Map<Track, TrackPlayer> = new Map();
+  const trackPlayers:Map<TrackView, TrackPlayer> = new Map();
+  const audibleTrackPlayers:Map<TrackView, TrackPlayer> = new Map();
   updateTrackPlayers();
   updateAudibleTrackPlayers();
   arrangement.subscribe(updateTrackPlayers);
@@ -176,7 +176,7 @@ export function createArrangementPlayer(arrangement:Arrangement): ArrangementPla
 }
 
 
-function calculateAudibleTrackPlayers(trackPlayers:Map<Track, TrackPlayer>): TrackPlayer[] {
+function calculateAudibleTrackPlayers(trackPlayers:Map<TrackView, TrackPlayer>): TrackPlayer[] {
   const soloedTracksPlayers:TrackPlayer[] = [];
   const unmutedTracksPlayers:TrackPlayer[] = [];
 

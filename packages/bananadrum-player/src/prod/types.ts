@@ -1,4 +1,4 @@
-import { Arrangement, BananaDrum, Note, RealTime, Subscribable, Timing, Track } from 'bananadrum-core'
+import { ArrangementView, BananaDrum, NoteView, RealTime, Subscribable, Timing, TrackView } from 'bananadrum-core'
 
 export interface BananaDrumPlayer {
   bananaDrum: BananaDrum
@@ -22,7 +22,7 @@ export interface EventDetails {
 
 export interface AudioEvent extends EventDetails {
   audioBuffer: AudioBuffer
-  note: Note // In the future, this could be a more general "source" property
+  note: NoteView // In the future, this could be a more general "source" property
 }
 
 export interface CallbackEvent extends EventDetails {
@@ -42,20 +42,20 @@ export interface EventSource {
 }
 
 export interface ArrangementPlayer extends EventSource, Subscribable {
-  arrangement: Arrangement
-  trackPlayers: Map<Track, TrackPlayer>
+  arrangement: ArrangementView
+  trackPlayers: Map<TrackView, TrackPlayer>
   get currentTiming(): Timing
   currentTimingPublisher: Subscribable
   convertToLoopProgress(realTime:RealTime): number
-  audibleTrackPlayers: Map<Track, TrackPlayer>
+  audibleTrackPlayers: Map<TrackView, TrackPlayer>
   audibleTrackPlayersPublisher: Subscribable
 }
 
 export interface TrackPlayer extends EventSource, Subscribable {
-  track: Track
+  track: TrackView
   soloMute: SoloMute
   currentPolyrhythmNotePublisher: Subscribable
-  readonly currentPolyrhythmNote: Note|null
+  readonly currentPolyrhythmNote: NoteView|null
 }
 
 export type SoloMute = null | 'solo' | 'mute'

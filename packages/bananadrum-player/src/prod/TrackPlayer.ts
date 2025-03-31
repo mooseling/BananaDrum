@@ -1,18 +1,18 @@
-import { RealTime, Note, Track, Polyrhythm } from 'bananadrum-core';
+import { RealTime, NoteView, TrackView, Polyrhythm } from 'bananadrum-core';
 import { createPublisher } from 'bananadrum-core';
 import { getMuteEvents } from './Muting.js';
 import { CallbackEvent, Event, Interval, SoloMute, TimeCoordinator, TrackPlayer } from './types.js';
 
 
-export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator): TrackPlayer {
+export function createTrackPlayer(track:TrackView, timeCoordinator:TimeCoordinator): TrackPlayer {
   const publisher = createPublisher();
-  const noteTimes:Map<Note, RealTime> = new Map();
+  const noteTimes:Map<NoteView, RealTime> = new Map();
   let cachedPolyrhythms:Polyrhythm[] = [];
 
   // We are going to light up note-viewers in polyrhythms when they play, by simply publishing the playing note
   // Later we'll investigate whether we use this for all notes. It's pretty simple.
   const currentPolyrhythmNotePublisher = createPublisher();
-  let currentPolyrhythmNote:Note|null = null; // It would be better to parameterise Publisher, but that's a chunk of work
+  let currentPolyrhythmNote:NoteView|null = null; // It would be better to parameterise Publisher, but that's a chunk of work
 
   if (track.instrument.loaded) {
     fillInBasicNoteTimes();
@@ -152,7 +152,7 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
     // So we exclude later polyrhythms from the iterator
     const laterPolyrhythms = track.polyrhythms.slice(track.polyrhythms.indexOf(polyrhythm) + 1);
     const noteIterator = track.getNoteIterator(laterPolyrhythms);
-    let nextNote:Note;
+    let nextNote:NoteView;
     let foundPolyrhythm = false;
     for (const note of noteIterator) {
       if (foundPolyrhythm) {
@@ -208,7 +208,7 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
   }
 
 
-  function getAudioEvent(note:Note, realTime:RealTime) {
+  function getAudioEvent(note:NoteView, realTime:RealTime) {
     return {
       note, realTime,
       audioBuffer: note.noteStyle.audioBuffer
@@ -216,7 +216,7 @@ export function createTrackPlayer(track:Track, timeCoordinator:TimeCoordinator):
   }
 
 
-  function getCurrentPolyrhythmNoteEvent(note:Note, realTime:RealTime): CallbackEvent {
+  function getCurrentPolyrhythmNoteEvent(note:NoteView, realTime:RealTime): CallbackEvent {
     if (note.polyrhythm) {
       return {
         realTime,

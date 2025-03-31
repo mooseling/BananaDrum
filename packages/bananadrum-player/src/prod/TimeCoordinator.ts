@@ -1,4 +1,4 @@
-import { RealTime, TimeParams, Timing } from 'bananadrum-core';
+import { RealTime, TimeParamsView, Timing } from 'bananadrum-core';
 import { createPublisher } from 'bananadrum-core';
 import { getEventEngine } from './EventEngine.js';
 import { Interval, LoopInterval, TimeCoordinator } from './types.js';
@@ -11,7 +11,7 @@ const eventEngine = getEventEngine();
 // In the EventEngine, time always marches forward (except when paused)
 // In music-related objects, times are always between 0 and the length of the section
 // A TimeCoordinator adjust times from the EventEngine to make sense to music objects
-export function createTimeCoordinator(timeParams:TimeParams): TimeCoordinator {
+export function createTimeCoordinator(timeParams:TimeParamsView): TimeCoordinator {
   const publisher = createPublisher();
   let secondsPerBar:RealTime, secondsPerStep:RealTime, realTimeLength:RealTime;
   setInternalParams(); // Sets the variables above
@@ -176,7 +176,7 @@ export function createTimeCoordinator(timeParams:TimeParams): TimeCoordinator {
 // ==================================================================
 
 
-function calcNoteTimes({timeSignature, tempo, pulse, stepResolution}:TimeParams) {
+function calcNoteTimes({timeSignature, tempo, pulse, stepResolution}:TimeParamsView) {
   const [beatsPerBar, beatUnit] = timeSignature.split('/').map(str => Number(str));
   const [pulseFrequency, pulseResolution] = pulse.split('/').map(str => Number(str));
 
