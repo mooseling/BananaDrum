@@ -9,9 +9,11 @@ import { BananaDrumUi } from './types.js';
 import { createSelectionManager, SelectionManager } from './SelectionManager.js';
 import { createModeManager, ModeManager } from './ModeManager.js';
 import { createMouseHandler } from './MouseHandler.js';
+import { BananaDrum } from 'bananadrum-core';
 
 export const SelectionManagerContext = createContext<SelectionManager>(null);
 export const ModeManagerContext = createContext<ModeManager>(null);
+export const BananaDrumContext = createContext<BananaDrum>(null);
 
 
 export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HTMLElement): BananaDrumUi {
@@ -20,7 +22,7 @@ export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HT
   const selectionManager = createSelectionManager();
   const modeManager = createModeManager(selectionManager);
 
-  createKeyboardHandler(bananaDrumPlayer.eventEngine, selectionManager, modeManager);
+  createKeyboardHandler(bananaDrumPlayer.eventEngine, bananaDrumPlayer.bananaDrum, selectionManager, modeManager);
   createMouseHandler(modeManager, selectionManager);
 
   const animationEngine = getAnimationEngine(bananaDrumPlayer.eventEngine);
@@ -28,9 +30,11 @@ export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HT
 
   root.render(
     createElement(StrictMode, {},
-      createElement(SelectionManagerContext.Provider, {value:selectionManager},
-        createElement(ModeManagerContext.Provider, {value:modeManager},
-          createElement(BananaDrumViewer, {arrangementPlayer: bananaDrumPlayer.arrangementPlayer, animationEngine})
+      createElement(BananaDrumContext.Provider, {value:bananaDrumPlayer.bananaDrum},
+        createElement(SelectionManagerContext.Provider, {value:selectionManager},
+          createElement(ModeManagerContext.Provider, {value:modeManager},
+            createElement(BananaDrumViewer, {arrangementPlayer: bananaDrumPlayer.arrangementPlayer, animationEngine})
+          )
         )
       )
     )
