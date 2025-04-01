@@ -1,6 +1,9 @@
+import { EditCommand } from './edit_commands'
+
 export interface BananaDrum {
   library: Library
   arrangement: ArrangementView
+  edit(command:EditCommand): void
 }
 
 export interface Library {
