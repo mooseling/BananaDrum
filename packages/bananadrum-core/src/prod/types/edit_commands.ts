@@ -1,24 +1,29 @@
 import { ArrangementView, InstrumentMeta, NoteStyle, NoteView, Polyrhythm, TimeParamsView, TrackView } from './types'
 
 
-export interface EditCommand_ArrangementChangeTitle {
+export interface EditCommand_ArrangementTitle {
   arrangement: ArrangementView
   newTitle: string
 }
 
-export interface EditCommand_ArrangementChangeAddTrack {
+export interface EditCommand_ArrangementAddTrack {
   arrangement: ArrangementView
   addTrack: InstrumentMeta
 }
 
-export interface EditCommand_ArrangementChangeRemoveTrack {
+export interface EditCommand_ArrangementRemoveTrack {
   arrangement: ArrangementView
   removeTrack: TrackView
 }
 
-export interface EditCommand_ArrangementChangeClear {
+export interface EditCommand_ArrangementClear {
   arrangement: ArrangementView
   command: 'clear all tracks'
+}
+
+export interface EditCommand_ArrangementClearSelection {
+  arrangement: ArrangementView
+  clearSelection: Map<TrackView, {selectedNotes: Set<NoteView>}>
 }
 
 export interface EditCommand_TrackAddPolyrhythm {
@@ -67,11 +72,17 @@ export interface EditCommand_TimeParamsLength {
   length: number
 }
 
+// We would really like to use "exclusive or" in the union types below, but TypeScript doesn't currently support this
+// Support may come, so rather than try to enforce it, we're keeping things simple for now
+// Possible approach: https://effectivetypescript.com/2021/11/11/optional-never/
+// Or libraries: ts-xor, ts-essentials
+
 export type EditCommand_Arrangement =
-  EditCommand_ArrangementChangeTitle
-  | EditCommand_ArrangementChangeAddTrack
-  | EditCommand_ArrangementChangeRemoveTrack
-  | EditCommand_ArrangementChangeClear
+  EditCommand_ArrangementTitle
+  | EditCommand_ArrangementAddTrack
+  | EditCommand_ArrangementRemoveTrack
+  | EditCommand_ArrangementClear
+  | EditCommand_ArrangementClearSelection
 
 export type EditCommand_Track =
   EditCommand_TrackAddPolyrhythm
@@ -89,3 +100,4 @@ export type EditCommand =
   | EditCommand_Track
   | EditCommand_Note
   | EditCommand_TimeParams
+  
