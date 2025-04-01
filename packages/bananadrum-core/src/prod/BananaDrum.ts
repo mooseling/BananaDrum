@@ -1,6 +1,6 @@
 import { deserialiseArrangement } from "./serialisation.js";
 import { getLibrary } from "./Library.js";
-import { BananaDrum, PackedInstrument } from "./types.js";
+import { BananaDrum, PackedInstrument } from "./types/types.js";
 
 
 export function createBananaDrum(

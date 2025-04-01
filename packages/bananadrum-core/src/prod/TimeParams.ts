@@ -1,4 +1,4 @@
-import { TimeParams, Timing } from './types.js';
+import { TimeParams, Timing } from './types/types.js';
 import { createPublisher } from './Publisher.js';
 
 export function createTimeParams(

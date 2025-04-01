@@ -1,5 +1,5 @@
 import bigInt from 'big-integer';
-import { Arrangement, ArrangementView, Note, Polyrhythm, Track, TrackView } from './types.js';
+import { Arrangement, ArrangementView, Note, Polyrhythm, Track, TrackView } from './types/types.js';
 import { getLibrary } from './Library.js';
 import { createTimeParams } from './TimeParams.js';
 import { createArrangement } from './Arrangement.js';

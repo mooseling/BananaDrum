@@ -1,4 +1,4 @@
-import { TimeParams, Arrangement, Track, Instrument } from './types.js';
+import { TimeParams, Arrangement, Track, Instrument } from './types/types.js';
 import { createTrack } from './Track.js';
 import { createPublisher } from './Publisher.js';
 

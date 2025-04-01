@@ -1,4 +1,4 @@
-import { Publisher, Subscription } from './types.js';
+import { Publisher, Subscription } from './types/types.js';
 
 export function createPublisher(): Publisher {
   const subscriptions: Subscription[] = [];

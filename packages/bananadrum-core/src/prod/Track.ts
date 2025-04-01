@@ -1,4 +1,4 @@
-import { Arrangement, Instrument, Note, Polyrhythm, Timing, Track } from './types.js';
+import { Arrangement, Instrument, Note, Polyrhythm, Timing, Track } from './types/types.js';
 import { createNote } from './Note.js';
 import { createPublisher } from './Publisher.js';
 import { TrackClipboard } from './TrackClipboard.js';
