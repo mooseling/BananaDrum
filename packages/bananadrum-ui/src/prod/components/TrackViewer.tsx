@@ -6,6 +6,7 @@ import { ArrangementPlayerContext, NoteWidthContext, NoteLineMinWidth } from './
 import { TrackPlayer } from 'bananadrum-player';
 import { useSubscription } from '../hooks/useSubscription.js';
 import { PolyrhythmViewer } from './PolyrhythmViewer.js';
+import { useEditCommand } from '../hooks/useEditCommand.js';
 
 
 type TrackViewerCallbacks = {
@@ -162,14 +163,17 @@ function repositionPolyrhythmViewer(polyrhythm:Polyrhythm, polyrhythmViewer:HTML
 
 function TrackControls(
   {track, overlayName}:{track:TrackView, overlayName:string}): JSX.Element {
+    const arrangement = track.arrangement;
+    const edit = useEditCommand();
+
   return (
     <div className="track-controls">
       <button className="push-button gray"
-        onClick={() => track.arrangement.removeTrack(track)}
+        onClick={() => edit({arrangement, removeTrack:track})}
       >Remove track</button>
       <button className="push-button gray"
         onClick={() => {
-          track.clear();
+          edit({track, command:'clear'})
           toggleOverlay(overlayName, 'hide');
         }}
       >Clear track</button>

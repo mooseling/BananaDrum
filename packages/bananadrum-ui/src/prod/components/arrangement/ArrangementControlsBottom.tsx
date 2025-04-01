@@ -7,12 +7,14 @@ import { SmallSpacer } from '../SmallSpacer.js';
 import { useSubscription } from '../../hooks/useSubscription.js'
 import { useArrangementAndTracksSubscription } from '../../hooks/useArrangementAndTracksSubscription.js'
 import { ModeManagerContext } from '../../BananaDrumUi.js';
+import { useEditCommand } from '../../hooks/useEditCommand.js';
 
 
 
 export function ArrangementControlsBottom(): JSX.Element {
   const arrangement:ArrangementView = useContext(ArrangementPlayerContext).arrangement;
   const modeManager = useContext(ModeManagerContext);
+  const edit = useEditCommand();
 
   const [arePolyrhythms, setArePolyrhythms] = useState(hasPolyrhythms(arrangement));
   useArrangementAndTracksSubscription(arrangement, () => {
@@ -68,7 +70,7 @@ export function ArrangementControlsBottom(): JSX.Element {
           <ExpandingSpacer />
           <button
             className="push-button"
-            onClick={() => (arrangement.tracks.forEach(track => track.clear()), toggleOverlay('clear_tracks', 'hide'))}
+            onClick={() => (edit({arrangement, command:'clear all tracks'}), toggleOverlay('clear_tracks', 'hide'))}
           >Really, clear sounds</button>
           <SmallSpacer />
           <button

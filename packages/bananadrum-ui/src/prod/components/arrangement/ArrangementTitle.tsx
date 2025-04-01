@@ -3,12 +3,14 @@ import { ArrangementPlayerContext } from "./ArrangementViewer";
 import { useStateSubscription } from "../../hooks/useStateSubscription";
 import { ArrangementView } from "bananadrum-core";
 import { useSubscription } from "../../hooks/useSubscription";
+import { useEditCommand } from '../../hooks/useEditCommand';
 
 
 
 export function ArrangementTitle({editMode, onEditEnd}:{editMode:boolean, onEditEnd:()=>void}): JSX.Element {
   const arrangement = useContext(ArrangementPlayerContext).arrangement;
   const title = useStateSubscription(arrangement, (arrangement:ArrangementView) => arrangement.title);
+  const edit = useEditCommand();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -19,7 +21,7 @@ export function ArrangementTitle({editMode, onEditEnd}:{editMode:boolean, onEdit
 
   const keyUpHandler = useCallback((event: React.KeyboardEvent) => {
     if (event.key === 'Enter') { // Enter means submit the changes and stop editing
-      arrangement.title = (event.target as HTMLInputElement).value;
+      edit({arrangement, newTitle: (event.target as HTMLInputElement).value});
       onEditEnd();
     }
 
@@ -31,7 +33,7 @@ export function ArrangementTitle({editMode, onEditEnd}:{editMode:boolean, onEdit
 
   // Click out of the input means submit the changes and stop editing
   const blurHandler = useCallback((event: React.FocusEvent) => {
-    arrangement.title = (event.target as HTMLInputElement).value
+    edit({arrangement, newTitle: (event.target as HTMLInputElement).value});
     onEditEnd();
   }, []);
 

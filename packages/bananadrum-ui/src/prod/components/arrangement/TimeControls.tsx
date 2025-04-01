@@ -1,17 +1,44 @@
-import { ArrangementView } from "bananadrum-core";
-import { useState } from "react";
+import { ArrangementView, EditCommand_TimeParamsTimeSignature } from "bananadrum-core";
+import { useCallback, useState } from "react";
 import { useSubscription } from "../../hooks/useSubscription";
 import { NumberInput } from "../General";
+import { useEditCommand } from '../../hooks/useEditCommand';
 
 
 
 export function TimeControls({arrangement}:{arrangement:ArrangementView}): JSX.Element {
   const {timeParams} = arrangement;
   const [, update] = useState({arrangement});
+  const edit = useEditCommand();
 
   useSubscription(timeParams, () => update({arrangement}));
 
   const pluralBars = timeParams.length > 1;
+
+  const changeTimeSignature = useCallback((event:React.ChangeEvent<HTMLSelectElement>) => {
+    const command: Partial<EditCommand_TimeParamsTimeSignature> = {timeParams};
+    command.timeSignature = event.target.value;
+    switch (event.target.value) {
+      case '4/4':
+        command.stepResolution = 16;
+        command.pulse = '1/4';
+        break;
+      case '6/8':
+        command.stepResolution = 8;
+        command.pulse = '3/8';
+        break;
+      case '5/4':
+        command.stepResolution = 8;
+        command.pulse = '1/2';
+        break;
+      case '7/8':
+        command.stepResolution = 8;
+        command.pulse = '1/2';
+        break;
+    }
+
+    edit(command as EditCommand_TimeParamsTimeSignature);
+  }, []);
 
   return (
     <div className="time-controls-wrapper">
@@ -26,38 +53,15 @@ export function TimeControls({arrangement}:{arrangement:ArrangementView}): JSX.E
       <div className="time-control">
         <NumberInput
           getValue={() => String(timeParams.tempo)}
-          setValue={(newValue:string) => timeParams.tempo = Number(newValue)}
+          setValue={(newValue:string) => edit({timeParams, tempo:Number(newValue)})}
         /> bpm
       </div>
       <div className="time-control">
         <NumberInput
           getValue={() => String(timeParams.length)}
-          setValue={(newValue:string) => timeParams.length = Number(newValue)}
+          setValue={(newValue:string) => edit({timeParams, length:Number(newValue)})}
         /> {pluralBars ? 'bars' : 'bar'}
       </div>
     </div>
   );
-
-
-  function changeTimeSignature(event:React.ChangeEvent<HTMLSelectElement>) {
-    timeParams.timeSignature = event.target.value;
-    switch (event.target.value) {
-      case '4/4':
-        timeParams.stepResolution = 16;
-        timeParams.pulse = '1/4';
-        break;
-      case '6/8':
-        timeParams.stepResolution = 8;
-        timeParams.pulse = '3/8';
-        break;
-      case '5/4':
-        timeParams.stepResolution = 8;
-        timeParams.pulse = '1/2';
-        break;
-      case '7/8':
-        timeParams.stepResolution = 8;
-        timeParams.pulse = '1/2';
-        break;
-    }
-  }
 }

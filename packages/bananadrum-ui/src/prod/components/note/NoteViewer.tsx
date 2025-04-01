@@ -1,4 +1,4 @@
-import { NoteView, NoteStyle, Subscribable, isSameTiming } from 'bananadrum-core';
+import { NoteView, NoteStyle, Subscribable, isSameTiming, EditCommand } from 'bananadrum-core';
 import { createAudioBufferPlayer, TrackPlayer, ArrangementPlayer } from 'bananadrum-player';
 import { useState, useContext, useCallback, useMemo } from 'react';
 import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer.js';
@@ -7,6 +7,7 @@ import { useSubscription } from '../../hooks/useSubscription.js';
 import { TrackPlayerContext } from '../TrackViewer.js';
 import { TouchHoldDetector } from '../TouchHoldDetector.js';
 import { NoteStyleSymbolViewer } from './NoteStyleSymbolViewer.js';
+import { useEditCommand } from '../../hooks/useEditCommand.js';
 
 const audioContext = new AudioContext();
 
@@ -19,6 +20,7 @@ export function NoteViewer({note}:{note:NoteView}): JSX.Element {
   const timingPublisher:Subscribable = note.polyrhythm
     ? trackPlayer.currentPolyrhythmNotePublisher
     : arrangementPlayer.currentTimingPublisher;
+  const edit = useEditCommand();
 
   const [isCurrent, setIsCurrent] = useState(isCurrentlyPlaying(note, arrangementPlayer, trackPlayer));
   const [selected, setSelected] = useState(selectionManager.isSelected(note));
@@ -36,7 +38,7 @@ export function NoteViewer({note}:{note:NoteView}): JSX.Element {
       if (selectionManager.selections.size) {
         selectionManager.deselectAll();
       } else {
-        cycleNoteStyle(note);
+        cycleNoteStyle(note, edit);
         selectionManager.deselectAll();
       }
     }
@@ -179,9 +181,9 @@ function isCurrentlyPlaying(note:NoteView, arrangementPlayer:ArrangementPlayer, 
 }
 
 
-function cycleNoteStyle(note:NoteView) {
+function cycleNoteStyle(note:NoteView, edit:(command:EditCommand) => void) {
   const noteStyle:NoteStyle|null = getNextNoteStyle(note);
-  note.noteStyle = noteStyle;
+  edit({note, noteStyle});
   if (noteStyle && noteStyle.audioBuffer) {
     createAudioBufferPlayer(noteStyle.audioBuffer, audioContext);
     audioContext.resume();
