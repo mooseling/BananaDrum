@@ -69,7 +69,7 @@ export function SelectionControls(): JSX.Element {
           pattern="[0-9]*"
           onKeyPress={event => {
             if (event.key === 'Enter')
-              createPolyrhythm((event.target as HTMLInputElement).value, selectionManager);
+              createPolyrhythm((event.target as HTMLInputElement).value, selectionManager, arrangement, edit);
           }}
           ref={polyrhythmInputRef}
           />
@@ -77,7 +77,7 @@ export function SelectionControls(): JSX.Element {
 
         <button
           className="push-button"
-          onClick={() => createPolyrhythm(polyrhythmInputRef.current?.value, selectionManager)}
+          onClick={() => createPolyrhythm(polyrhythmInputRef.current?.value, selectionManager, arrangement, edit)}
         >go!</button>
 
         <ExpandingSpacer />
@@ -93,15 +93,12 @@ export function SelectionControls(): JSX.Element {
 }
 
 
-function createPolyrhythm (inputValue:string, selectionManager:SelectionManager): void {
-  const polyrhythmLength = Number(inputValue);
-  if (!polyrhythmLength)
+function createPolyrhythm(inputValue:string, selectionManager:SelectionManager, arrangement, edit:EditFunction): void {
+  const length = Number(inputValue);
+  if (!length)
     return;
 
-  selectionManager.selections.forEach(({range}) => {
-    const [start, end] = range;
-    start.track.addPolyrhythm(start, end, polyrhythmLength);
-  });
+  edit({arrangement, addPolyrhythms:{length, selection:selectionManager.selections}})
 
   selectionManager.deselectAll();
 }
