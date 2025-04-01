@@ -26,12 +26,11 @@ export interface EditCommand_ArrangementClearSelection {
   clearSelection: Map<TrackView, {selectedNotes: Set<NoteView>}>
 }
 
-export interface EditCommand_TrackAddPolyrhythm {
-  track: TrackView
-  addPolyrhythm: {
-    start: NoteView
-    end: NoteView
+export interface EditCommand_ArrangementAddPolyrhythms {
+  arrangement: ArrangementView
+  addPolyrhythms: {
     length: number
+    selection: Map<TrackView, {range:[NoteView, NoteView]}>
   }
 }
 
@@ -79,14 +78,14 @@ export interface EditCommand_TimeParamsLength {
 
 export type EditCommand_Arrangement =
   EditCommand_ArrangementTitle
+  | EditCommand_ArrangementAddPolyrhythms
   | EditCommand_ArrangementAddTrack
   | EditCommand_ArrangementRemoveTrack
   | EditCommand_ArrangementClear
   | EditCommand_ArrangementClearSelection
 
 export type EditCommand_Track =
-  EditCommand_TrackAddPolyrhythm
-  | EditCommand_TrackRemovePolyrhythm
+  EditCommand_TrackRemovePolyrhythm
   | EditCommand_TrackClear
 
 export type EditCommand_TimeParams =
@@ -100,4 +99,3 @@ export type EditCommand =
   | EditCommand_Track
   | EditCommand_Note
   | EditCommand_TimeParams
-  
