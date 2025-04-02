@@ -1,4 +1,4 @@
-import { EditCommand, EditCommand_Arrangement, EditCommand_ArrangementAddPolyrhythms, EditCommand_ArrangementAddTrack, EditCommand_ArrangementClear, EditCommand_ArrangementClearSelection, EditCommand_ArrangementRemoveTrack, EditCommand_ArrangementTitle, EditCommand_Note, EditCommand_TimeParams, EditCommand_Track, EditCommand_TrackClear, EditCommand_TrackRemovePolyrhythm } from './types/edit_commands';
+import { EditCommand, EditCommand_Arrangement, EditCommand_ArrangementAddPolyrhythms, EditCommand_ArrangementAddTrack, EditCommand_ArrangementClear, EditCommand_ArrangementClearSelection, EditCommand_ArrangementRemoveTrack, EditCommand_ArrangementTitle, EditCommand_Note, EditCommand_TimeParams, EditCommand_TimeParamsLength, EditCommand_TimeParamsTempo, EditCommand_TimeParamsTimeSignature, EditCommand_Track, EditCommand_TrackClear, EditCommand_TrackRemovePolyrhythm } from './types/edit_commands';
 import { Arrangement, Note, TimeParams, Track } from './types/types';
 
 
@@ -61,6 +61,22 @@ function editTrack(command:EditCommand_Track): unknown {
 
 function editTimeParams(command:EditCommand_TimeParams) {
   const timeParams = command.timeParams as TimeParams;
+
+  const {timeSignature, pulse, stepResolution} = ((command as EditCommand_TimeParamsTimeSignature));
+  if (timeSignature) {
+    timeParams.timeSignature = timeSignature;
+    timeParams.pulse = pulse;
+    timeParams.stepResolution = stepResolution;
+    return;
+  }
+
+  const tempo = (command as EditCommand_TimeParamsTempo).tempo;
+  if (tempo)
+    return timeParams.tempo = tempo;
+
+  const length = (command as EditCommand_TimeParamsLength).length;
+  if (length)
+    return timeParams.length = length;
 }
 
 
