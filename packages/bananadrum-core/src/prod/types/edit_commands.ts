@@ -49,10 +49,6 @@ export interface EditCommand_Note {
   noteStyle: NoteStyle
 }
 
-export interface EditCommand_TimeParamsTempoChange {
-  timeParams: TimeParamsView
-}
-
 export interface EditCommand_TimeParamsTimeSignature {
   timeParams: TimeParamsView
   timeSignature: string
