@@ -1,5 +1,5 @@
 import { useState, createContext, useContext, TouchEvent, useLayoutEffect, useRef } from 'react';
-import { Polyrhythm, TrackView } from 'bananadrum-core';
+import { PolyrhythmView, TrackView } from 'bananadrum-core';
 import { NoteViewer } from './note/NoteViewer.js';
 import { Overlay, toggleOverlay } from './Overlay.js';
 import { ArrangementPlayerContext, NoteWidthContext, NoteLineMinWidth } from './arrangement/ArrangementViewer.js';
@@ -141,7 +141,7 @@ function NoteLine({track, callbacks}:{track:TrackView, callbacks:TrackViewerCall
 }
 
 
-function repositionPolyrhythmViewer(polyrhythm:Polyrhythm, polyrhythmViewer:HTMLDivElement) {
+function repositionPolyrhythmViewer(polyrhythm:PolyrhythmView, polyrhythmViewer:HTMLDivElement) {
   const startNoteViewer = document.getElementById(`note-${polyrhythm.start.id}`);
   const endNoteViewer = document.getElementById(`note-${polyrhythm.end.id}`);
 

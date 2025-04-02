@@ -1,12 +1,14 @@
-import { Polyrhythm } from "bananadrum-core";
+import { PolyrhythmView } from "bananadrum-core";
 import { useContext, useState } from "react";
 import { ModeManagerContext } from "../BananaDrumUi";
 import { useSubscription } from "../hooks/useSubscription";
 import { NoteViewer } from "./note/NoteViewer";
+import { useEditCommand } from '../hooks/useEditCommand';
 
-export function PolyrhythmViewer({polyrhythm}:{polyrhythm:Polyrhythm}): JSX.Element {
+export function PolyrhythmViewer({polyrhythm}:{polyrhythm:PolyrhythmView}): JSX.Element {
   const track = polyrhythm.start.track;
   const modeManager = useContext(ModeManagerContext);
+  const edit = useEditCommand();
 
   const [deleteMode, setDeleteMode] = useState(modeManager.deletePolyrhythmMode);
   useSubscription(modeManager, () => setDeleteMode(modeManager.deletePolyrhythmMode));
@@ -27,7 +29,7 @@ export function PolyrhythmViewer({polyrhythm}:{polyrhythm:Polyrhythm}): JSX.Elem
               <button
                 disabled={isShrouded}
                 className="push-button"
-                onClick={() => track.removePolyrhythm(polyrhythm)}
+                onClick={() => edit({track, removePolyrhythm:polyrhythm})}
               >Delete</button>
             )
           }
@@ -45,7 +47,7 @@ export function PolyrhythmViewer({polyrhythm}:{polyrhythm:Polyrhythm}): JSX.Elem
 }
 
 
-function checkShrouded(polyrhythm:Polyrhythm) {
+function checkShrouded(polyrhythm:PolyrhythmView) {
   const track = polyrhythm.start.track;
   for (const otherPolyrhythm of track.polyrhythms) {
     if (otherPolyrhythm !== polyrhythm) {
