@@ -1,5 +1,5 @@
 import bigInt from 'big-integer';
-import { Arrangement, ArrangementView, Note, Polyrhythm, Track, TrackView } from './types/types.js';
+import { Arrangement, ArrangementView, Note, PolyrhythmView, Track, TrackView } from './types/types.js';
 import { getLibrary } from './Library.js';
 import { createTimeParams } from './TimeParams.js';
 import { createArrangement } from './Arrangement.js';
@@ -149,7 +149,7 @@ function serialisePolyrhythms(track:TrackView): string {
   // When we rebuild the polyrhythms one-by-one, the note-iterator is going to change after each one
   // So when we serialise, we have to mimic that behaviour in reverse
 
-  const polyrhythmsToIgnore:Polyrhythm[] = [];
+  const polyrhythmsToIgnore:PolyrhythmView[] = [];
   for (let polyrhythmIndex = track.polyrhythms.length - 1; polyrhythmIndex >= 0; polyrhythmIndex--) {
     const polyrhythm = track.polyrhythms[polyrhythmIndex];
     polyrhythmsToIgnore.push(polyrhythm);

@@ -112,25 +112,31 @@ export interface TrackView extends Subscribable {
   arrangement: ArrangementView
   instrument: Instrument
   notes: NoteView[] // Must be kept in order - this is Track's job
-  polyrhythms: Polyrhythm[]
+  polyrhythms: PolyrhythmView[]
   colour: string // A specific hsl() string
   getNoteAt(timing:Timing): NoteView
-  getNoteIterator(polyrhythmsToIgnore?:Polyrhythm[]): IterableIterator<NoteView>
+  getNoteIterator(polyrhythmsToIgnore?:PolyrhythmView[]): IterableIterator<NoteView>
 }
 
 export interface Track extends TrackView {
   arrangement: Arrangement
   notes: Note[]
+  polyrhythms: Polyrhythm[]
   getNoteAt(timing:Timing): Note
-  getNoteIterator(polyrhythmsToIgnore?:Polyrhythm[]): IterableIterator<Note>
+  getNoteIterator(polyrhythmsToIgnore?:PolyrhythmView[]): IterableIterator<Note>
   addPolyrhythm(start:Note, end:Note, length:number): void
-  removePolyrhythm(polyrhythm:Polyrhythm): void
+  removePolyrhythm(polyrhythm:PolyrhythmView): void
   clear(): void
 }
 
-// Or should the note point to the polyrhythm? That's somewhat easier...
-export interface Polyrhythm {
+export interface PolyrhythmView {
   id: string
+  start: NoteView
+  end: NoteView
+  notes: NoteView[]
+}
+
+export interface Polyrhythm extends PolyrhythmView {
   start: Note
   end: Note
   notes: Note[]
@@ -140,11 +146,12 @@ export interface NoteView extends Subscribable {
   id: string
   timing: Timing
   track: TrackView
-  polyrhythm: Polyrhythm
+  polyrhythm: PolyrhythmView
   readonly noteStyle: NoteStyle|null // null means this is a rest
 }
 
 export interface Note extends NoteView {
   readonly track: Track
+  polyrhythm: Polyrhythm
   noteStyle: NoteStyle|null // null means this is a rest
 }
