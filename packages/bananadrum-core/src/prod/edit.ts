@@ -82,4 +82,5 @@ function editTimeParams(command:EditCommand_TimeParams) {
 
 function editNote(command:EditCommand_Note) {
   const note = command.note as Note;
+  note.noteStyle = command.noteStyle;
 }
