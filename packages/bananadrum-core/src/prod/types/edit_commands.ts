@@ -84,8 +84,7 @@ export type EditCommand_Track =
   | EditCommand_TrackClear
 
 export type EditCommand_TimeParams =
-  EditCommand_TimeParamsTempoChange
-  | EditCommand_TimeParamsTimeSignature
+  EditCommand_TimeParamsTimeSignature
   | EditCommand_TimeParamsTempo
   | EditCommand_TimeParamsLength
 
