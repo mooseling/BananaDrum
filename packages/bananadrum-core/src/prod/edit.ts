@@ -1,4 +1,4 @@
-import { EditCommand, EditCommand_Arrangement, EditCommand_ArrangementAddPolyrhythms, EditCommand_ArrangementAddTrack, EditCommand_ArrangementClear, EditCommand_ArrangementClearSelection, EditCommand_ArrangementRemoveTrack, EditCommand_ArrangementTitle, EditCommand_Note, EditCommand_TimeParams, EditCommand_Track } from './types/edit_commands';
+import { EditCommand, EditCommand_Arrangement, EditCommand_ArrangementAddPolyrhythms, EditCommand_ArrangementAddTrack, EditCommand_ArrangementClear, EditCommand_ArrangementClearSelection, EditCommand_ArrangementRemoveTrack, EditCommand_ArrangementTitle, EditCommand_Note, EditCommand_TimeParams, EditCommand_Track, EditCommand_TrackClear, EditCommand_TrackRemovePolyrhythm } from './types/edit_commands';
 import { Arrangement, Note, TimeParams, Track } from './types/types';
 
 
@@ -47,13 +47,20 @@ function editArrangement(command:EditCommand_Arrangement) {
 }
 
 
-function editTimeParams(command:EditCommand_TimeParams) {
-  const timeParams = command.timeParams as TimeParams;
+function editTrack(command:EditCommand_Track): unknown {
+  const track = command.track as Track;
+
+  const removePolyrhythm = (command as EditCommand_TrackRemovePolyrhythm).removePolyrhythm;
+  if (removePolyrhythm) 
+    return track.removePolyrhythm(removePolyrhythm);
+
+  if ((command as EditCommand_TrackClear).command === 'clear')
+    return track.clear();
 }
 
 
-function editTrack(command:EditCommand_Track) {
-  const track = command.track as Track;
+function editTimeParams(command:EditCommand_TimeParams) {
+  const timeParams = command.timeParams as TimeParams;
 }
 
 
