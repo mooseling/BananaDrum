@@ -1,8 +1,8 @@
-import { EditCommand, EditCommand_Arrangement, EditCommand_ArrangementTitle, EditCommand_Note, EditCommand_TimeParams, EditCommand_Track } from './types/edit_commands';
-import { Arrangement, TimeParams, Track } from './types/types';
+import { EditCommand, EditCommand_Arrangement, EditCommand_ArrangementAddPolyrhythms, EditCommand_ArrangementAddTrack, EditCommand_ArrangementClear, EditCommand_ArrangementClearSelection, EditCommand_ArrangementRemoveTrack, EditCommand_ArrangementTitle, EditCommand_Note, EditCommand_TimeParams, EditCommand_Track } from './types/edit_commands';
+import { Arrangement, Note, TimeParams, Track } from './types/types';
 
 
-export function edit(command:EditCommand): void {
+export function edit(command:EditCommand): unknown {
   if ((command as EditCommand_Arrangement).arrangement)
     return editArrangement(command as EditCommand_Arrangement);
   if ((command as EditCommand_TimeParams).timeParams)
@@ -17,9 +17,32 @@ export function edit(command:EditCommand): void {
 function editArrangement(command:EditCommand_Arrangement) {
   const arrangement = command.arrangement as Arrangement;
 
-  if (typeof (command as EditCommand_ArrangementTitle).newTitle === 'string') {
-    const newTitle = (command as EditCommand_ArrangementTitle).newTitle;
-    arrangement.title = newTitle;
+  const newTitle = (command as EditCommand_ArrangementTitle).newTitle;
+  if (typeof newTitle === 'string')
+    return arrangement.title = newTitle;
+
+  const instrument = (command as EditCommand_ArrangementAddTrack).addTrack;
+  if (instrument)
+    return arrangement.addTrack(instrument);
+
+  const track = (command as EditCommand_ArrangementRemoveTrack).removeTrack as Track;
+  if (track)
+    return arrangement.removeTrack(track);
+
+  if ((command as EditCommand_ArrangementClear).command === 'clear all tracks')
+    return arrangement.tracks.forEach(track => track.clear());
+
+  const clearSelection = (command as EditCommand_ArrangementClearSelection).clearSelection;
+  if (clearSelection)
+    return clearSelection.forEach(trackSelection => trackSelection.selectedNotes.forEach(note => (note as Note).noteStyle = null))
+
+  const addPolyrhythms = (command as EditCommand_ArrangementAddPolyrhythms).addPolyrhythms;
+  if (addPolyrhythms) {
+    return addPolyrhythms.selection.forEach(({range}) => {
+      const [start, end] = (range as [Note, Note]);
+      const track = start.track;
+      track.addPolyrhythm(start, end, addPolyrhythms.length);
+    });
   }
 }
 
