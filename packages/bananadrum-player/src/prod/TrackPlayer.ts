@@ -1,4 +1,4 @@
-import { RealTime, NoteView, TrackView, Polyrhythm } from 'bananadrum-core';
+import { RealTime, NoteView, TrackView, PolyrhythmView } from 'bananadrum-core';
 import { createPublisher } from 'bananadrum-core';
 import { getMuteEvents } from './Muting.js';
 import { CallbackEvent, Event, Interval, SoloMute, TimeCoordinator, TrackPlayer } from './types.js';
@@ -7,7 +7,7 @@ import { CallbackEvent, Event, Interval, SoloMute, TimeCoordinator, TrackPlayer 
 export function createTrackPlayer(track:TrackView, timeCoordinator:TimeCoordinator): TrackPlayer {
   const publisher = createPublisher();
   const noteTimes:Map<NoteView, RealTime> = new Map();
-  let cachedPolyrhythms:Polyrhythm[] = [];
+  let cachedPolyrhythms:PolyrhythmView[] = [];
 
   // We are going to light up note-viewers in polyrhythms when they play, by simply publishing the playing note
   // Later we'll investigate whether we use this for all notes. It's pretty simple.
@@ -144,7 +144,7 @@ export function createTrackPlayer(track:TrackView, timeCoordinator:TimeCoordinat
   }
 
 
-  function addNoteTimesForPolyrhythm(polyrhythm:Polyrhythm) {
+  function addNoteTimesForPolyrhythm(polyrhythm:PolyrhythmView) {
     const startTime = noteTimes.get(polyrhythm.start);
 
     // We need to find the note just after the polyrhythm ends to work out it's time-length
