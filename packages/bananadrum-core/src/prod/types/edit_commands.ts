@@ -1,4 +1,4 @@
-import { ArrangementView, Instrument, NoteStyle, NoteView, Polyrhythm, TimeParamsView, TrackView } from './types'
+import { ArrangementView, Instrument, NoteStyle, NoteView, PolyrhythmView, TimeParamsView, TrackView } from './types'
 
 
 export interface EditCommand_ArrangementTitle {
@@ -36,7 +36,7 @@ export interface EditCommand_ArrangementAddPolyrhythms {
 
 export interface EditCommand_TrackRemovePolyrhythm {
   track: TrackView
-  removePolyrhythm: Polyrhythm
+  removePolyrhythm: PolyrhythmView
 }
 
 export interface EditCommand_TrackClear {
