@@ -8,6 +8,26 @@ import { createArrangement } from './Arrangement.js';
 const baseUrl = 'https://bananadrum.net/';
 
 
+export interface ArrangementState {
+  title: string
+  timeParams: TimeParamsState
+  tracks: TrackState[]
+}
+
+interface TrackState {
+  id: string
+  serialisedTrack: string
+}
+
+interface TimeParamsState {
+  timeSignature: string,
+  tempo: number,
+  length: number,
+  pulse: string,
+  stepResolution: number
+}
+
+
 
 // ==================================================================
 //                          Public Functions
@@ -25,12 +45,27 @@ export function getShareLink(arrangement:ArrangementView): string {
 
 
 export function serialiseArrangement(arrangement:ArrangementView): string {
-  const {timeParams:tp} = arrangement;
+  const arrangementState = getArrangementState(arrangement);
+
+  const tp = arrangementState.timeParams;
   let output = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
   output = output.replaceAll('/', '-');
-  arrangement.tracks.forEach(track => output += '.' + serialiseTrack(track));
+  arrangementState.tracks.forEach(trackState => output += '.' + trackState.serialisedTrack);
 
   return output;
+}
+
+
+export function getArrangementState(arrangement:ArrangementView): ArrangementState {
+  const {timeSignature, tempo, length, pulse, stepResolution} = arrangement.timeParams;
+  return {
+    title: arrangement.title,
+    timeParams: {timeSignature, tempo, length, pulse, stepResolution},
+    tracks: arrangement.tracks.map(track => ({
+      id:track.id,
+      serialisedTrack:serialiseTrack(track)
+    }))
+  };
 }
 
 
