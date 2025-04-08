@@ -12,6 +12,7 @@ import { ArrangementPlayerContext } from "./ArrangementViewer";
 import { TimeControls } from "./TimeControls";
 import { ArrangementTitle } from "./ArrangementTitle";
 import { useStateSubscription } from "../../hooks/useStateSubscription";
+import { UndoRedo } from './UndoRedo';
 
 
 
@@ -76,6 +77,7 @@ export function ArrangementControlsTop(): JSX.Element {
           T&nbsp;<img src="images/icons/pencil_white.svg" style={{height:'0.78em'}} />
         </button>
         <SmallSpacer />
+        <UndoRedo />
         <ExpandingSpacer />
         <ShareButton />
         <Overlay name="selection_controls">
