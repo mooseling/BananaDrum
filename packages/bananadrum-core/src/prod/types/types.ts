@@ -3,7 +3,15 @@ import { EditCommand } from './edit_commands'
 export interface BananaDrum {
   library: Library
   arrangement: ArrangementView
+  canUndo: boolean
+  canRedo: boolean
   edit(command:EditCommand): void
+  undo(): void
+  redo(): void
+  topics: {
+    canUndo: Subscribable
+    canRedo: Subscribable
+  }
 }
 
 export interface Library {
@@ -77,6 +85,7 @@ export interface ArrangementView extends Subscribable {
 
 export interface Arrangement extends ArrangementView {
   title: string
+  timeParams: TimeParams
   tracks: Track[]
   addTrack(instrument:Instrument): Track
   removeTrack(track:Track): void

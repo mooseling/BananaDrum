@@ -233,6 +233,11 @@ function deserlialiseTrack(serialisedTrack:string, arrangement:Arrangement, vers
 
   const track = arrangement.addTrack(instrument);
 
+  applySerialisedRhythmToTrack(serialisedTrack, track, version);
+}
+
+
+export function applySerialisedRhythmToTrack(serialisedTrack:string, track:Track, version:number): void {
   let splitterIndex = serialisedTrack.indexOf('-');
   if (splitterIndex === -1)
     splitterIndex = serialisedTrack.length;
@@ -261,9 +266,11 @@ function deserialiseNotes(track:Track, serialisedNotes:string) {
   let index = 0;
   for (const note of track.getNoteIterator()) {
     const noteStyleNumber = musicInBaseN[index];
-    if (noteStyleNumber) { // Rests will have value 0
+
+    if (noteStyleNumber) // Rests will have value 0
       note.noteStyle = track.instrument.noteStyles[urlNumberToCharacter[noteStyleNumber]];
-    }
+    else
+      note.noteStyle = null;
 
     index++;
   }
@@ -271,6 +278,12 @@ function deserialiseNotes(track:Track, serialisedNotes:string) {
 
 
 function deserialisePolyrhythms(track:Track, serialisedPolyrhythms:string, version:number) {
+  // We may be applying this to an existing Track as part of undo/redo, so we have to remove existing polyrhythms
+  while (track.polyrhythms.length) {
+    // Iterate backwards to remove polyrhythms safely. Might not matter.
+    track.removePolyrhythm(track.polyrhythms[track.polyrhythms.length - 1]);
+  }
+
   if (serialisedPolyrhythms === '')
     return;
 
