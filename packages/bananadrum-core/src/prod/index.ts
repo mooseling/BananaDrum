@@ -1,6 +1,6 @@
 export { createBananaDrum } from './BananaDrum.js';
 export { getLibrary } from './Library.js';
-export { getShareLink } from './serialisation.js';
+export { getShareLink } from './serialisation/serialisation.js';
 
 export { createPublisher } from './Publisher.js';
 export { exists, isSameTiming } from './utils.js';

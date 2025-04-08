@@ -1,7 +1,7 @@
 import bigInt from 'big-integer';
 import { assert } from 'chai';
 import { describe, it } from 'mocha';
-import { testableFunctions } from '../../prod/serialisation.js';
+import { testableFunctions } from '../../prod/serialisation/serialisation.js';
 
 const {urlEncodeNumber, urlDecodeNumber, interpretAsBaseN, convertToBaseN} = testableFunctions;
 

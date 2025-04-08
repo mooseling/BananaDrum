@@ -1,8 +1,8 @@
 import bigInt from 'big-integer';
-import { Arrangement, ArrangementView, Note, PolyrhythmView, Track, TrackView } from './types/types.js';
-import { getLibrary } from './Library.js';
-import { createTimeParams } from './TimeParams.js';
-import { createArrangement } from './Arrangement.js';
+import { Arrangement, ArrangementView, Note, PolyrhythmView, Track, TrackView } from '../types/types.js';
+import { getLibrary } from '../Library.js';
+import { createTimeParams } from '../TimeParams.js';
+import { createArrangement } from '../Arrangement.js';
 
 
 const baseUrl = 'https://bananadrum.net/';

@@ -1,4 +1,4 @@
-import { applySerialisedRhythmToTrack, ArrangementSnapshot, deserialiseArrangement } from "./serialisation.js";
+import { applySerialisedRhythmToTrack, ArrangementSnapshot, deserialiseArrangement } from "./serialisation/serialisation.js";
 import { getLibrary } from "./Library.js";
 import { Arrangement, BananaDrum, PackedInstrument } from "./types/types.js";
 import { edit } from './edit.js';

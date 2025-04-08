@@ -1,5 +1,5 @@
 import { createPublisher } from './Publisher.js'
-import { ArrangementSnapshot, getArrangementState } from './serialisation.js'
+import { ArrangementSnapshot, getArrangementState } from './serialisation/serialisation.js'
 import { ArrangementView, Subscribable } from './types/types'
 
 
