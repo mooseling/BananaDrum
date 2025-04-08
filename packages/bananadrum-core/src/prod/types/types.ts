@@ -117,7 +117,7 @@ export type Timing = {readonly bar:number, readonly step:number}
 export type RealTime = number
 
 export interface TrackView extends Subscribable {
-  id: string;
+  id: number;
   arrangement: ArrangementView
   instrument: Instrument
   notes: NoteView[] // Must be kept in order - this is Track's job
@@ -139,7 +139,7 @@ export interface Track extends TrackView {
 }
 
 export interface PolyrhythmView {
-  id: string
+  id: number
   start: NoteView
   end: NoteView
   notes: NoteView[]

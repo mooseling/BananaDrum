@@ -14,3 +14,10 @@ export function exists<T>(value: T | undefined | null): value is T {
 export function rangeArray<T>(itemCount: number, mapIndexToItem: (number)=>T): T[] {
   return Array.from(Array(itemCount)).map((_, index) => mapIndexToItem(index));
 }
+
+
+let id = 0;
+export function getNewId(): number {
+  id++;
+  return id;
+}

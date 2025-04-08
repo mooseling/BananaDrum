@@ -3,9 +3,7 @@ import { createNote } from './Note.js';
 import { createPublisher } from './Publisher.js';
 import { TrackClipboard } from './TrackClipboard.js';
 import { getColour } from './colours.js';
-import { isSameTiming } from './utils.js';
-
-let polyrhythmCounter = 0;
+import { getNewId, isSameTiming } from './utils.js';
 
 
 export function createTrack(arrangement:Arrangement, instrument:Instrument): Track {
@@ -57,7 +55,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
 
     const polyrhythm = {
       start, end,
-      id: `${++polyrhythmCounter}`,
+      id: getNewId(),
       notes:[]
     };
 
@@ -217,28 +215,4 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
     arrangement.timeParams.unsubscribe(handleTimeParamsChange);
     arrangement.unsubscribe(destroySelfIfNeeded);
   }
-}
-
-
-
-
-
-
-// ==================================================================
-//                       Private Static Functions
-// ==================================================================
-
-
-
-
-// Track-ids need to be unique, so we simply bung a globally increasing counter on them
-let trackCounter = 0;
-// We need unique identifiers for tracks, even if their instrument is the same
-// This needs to work even if instruments have been deleted
-
-// Even though these are strings, ArrangementViewer relies on them being numbers!
-// Bad, I know...
-function getNewId(): string {
-  trackCounter++;
-  return `${trackCounter}`;
 }

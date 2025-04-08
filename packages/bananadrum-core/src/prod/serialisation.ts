@@ -15,7 +15,7 @@ export interface ArrangementState {
 }
 
 interface TrackState {
-  id: string
+  id: number
   serialisedTrack: string
 }
 
