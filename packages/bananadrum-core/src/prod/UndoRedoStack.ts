@@ -42,6 +42,11 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
     past.push(present);
     present = getArrangementState(arrangement);
 
+    if (future.length) {
+      future.splice(0);
+      canRedoPublisher.publish();
+    }
+
     if (past.length === 1)
       canUndoPublisher.publish();
   }
