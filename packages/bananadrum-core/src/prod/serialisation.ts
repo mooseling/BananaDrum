@@ -8,18 +8,18 @@ import { createArrangement } from './Arrangement.js';
 const baseUrl = 'https://bananadrum.net/';
 
 
-export interface ArrangementState {
+export interface ArrangementSnapshot {
   title: string
-  timeParams: TimeParamsState
-  tracks: TrackState[]
+  timeParams: TimeParamsSnapshot
+  tracks: TrackSnapshot[]
 }
 
-interface TrackState {
+interface TrackSnapshot {
   id: number
   serialisedTrack: string
 }
 
-interface TimeParamsState {
+interface TimeParamsSnapshot {
   timeSignature: string,
   tempo: number,
   length: number,
@@ -56,7 +56,7 @@ export function serialiseArrangement(arrangement:ArrangementView): string {
 }
 
 
-export function getArrangementState(arrangement:ArrangementView): ArrangementState {
+export function getArrangementState(arrangement:ArrangementView): ArrangementSnapshot {
   const {timeSignature, tempo, length, pulse, stepResolution} = arrangement.timeParams;
   return {
     title: arrangement.title,

@@ -1,4 +1,4 @@
-import { applySerialisedRhythmToTrack, ArrangementState, deserialiseArrangement } from "./serialisation.js";
+import { applySerialisedRhythmToTrack, ArrangementSnapshot, deserialiseArrangement } from "./serialisation.js";
 import { getLibrary } from "./Library.js";
 import { Arrangement, BananaDrum, PackedInstrument } from "./types/types.js";
 import { edit } from './edit.js';
@@ -55,7 +55,7 @@ export function createBananaDrum(
 }
 
 
-function applyStateChange(arrangement:Arrangement, currentState:ArrangementState, targetState:ArrangementState) {
+function applyStateChange(arrangement:Arrangement, currentState:ArrangementSnapshot, targetState:ArrangementSnapshot) {
   // Apply all timeParams without checking if they've changed. It will only publish if they actually change.
   arrangement.timeParams.timeSignature = targetState.timeParams.timeSignature;
   arrangement.timeParams.tempo = targetState.timeParams.tempo;

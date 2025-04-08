@@ -1,12 +1,12 @@
 import { createPublisher } from './Publisher.js'
-import { ArrangementState, getArrangementState } from './serialisation.js'
+import { ArrangementSnapshot, getArrangementState } from './serialisation.js'
 import { ArrangementView, Subscribable } from './types/types'
 
 
 interface UndoRedoStack {
   canUndo: boolean
   canRedo: boolean
-  currentState: ArrangementState
+  currentState: ArrangementSnapshot
   handleEdit(): void
   goBack(): void
   goForward(): void
@@ -23,8 +23,8 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
 
   let present = getArrangementState(arrangement);
 
-  const past: ArrangementState[] = [];
-  const future: ArrangementState[] = [];
+  const past: ArrangementSnapshot[] = [];
+  const future: ArrangementSnapshot[] = [];
 
   return {
     get canUndo() {return past.length > 0},
