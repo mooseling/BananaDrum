@@ -1,5 +1,6 @@
 import { createPublisher } from './Publisher.js'
-import { ArrangementSnapshot, getArrangementState } from './serialisation/serialisation.js'
+import { getArrangementSnapshot } from './serialisation/snapshots.js'
+import { ArrangementSnapshot } from './types/snapshots.js'
 import { ArrangementView, Subscribable } from './types/types'
 
 
@@ -21,7 +22,7 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
   const canUndoPublisher = createPublisher();
   const canRedoPublisher = createPublisher();
 
-  let present = getArrangementState(arrangement);
+  let present = getArrangementSnapshot(arrangement);
 
   const past: ArrangementSnapshot[] = [];
   const future: ArrangementSnapshot[] = [];
@@ -40,7 +41,7 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
 
   function handleEdit() {
     past.push(present);
-    present = getArrangementState(arrangement);
+    present = getArrangementSnapshot(arrangement);
 
     if (future.length) {
       future.splice(0);
