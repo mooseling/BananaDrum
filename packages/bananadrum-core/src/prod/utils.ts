@@ -21,3 +21,10 @@ export function getNewId(): number {
   id++;
   return id;
 }
+
+
+export function calculateStepsPerBar(timeSignature:string, stepResolution:number): number {
+  const [beatsPerBar, beatNoteValue] = timeSignature.split('/').map((value: string) => Number(value));
+  const stepsPerBeat = stepResolution / beatNoteValue;
+  return stepsPerBeat * beatsPerBar;
+}
