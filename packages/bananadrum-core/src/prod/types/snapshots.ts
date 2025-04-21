@@ -10,6 +10,7 @@ export interface ArrangementSnapshot {
 
 export interface TrackSnapshot {
   id: number
+  instrumentId: string
   notes: string[]
   polyrhythms: PolyrhythmSnapshot[]
 }
