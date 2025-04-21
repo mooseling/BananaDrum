@@ -1,6 +1,7 @@
 import bigInt from 'big-integer';
 
 export const baseUrl = 'https://bananadrum.net/';
+export const serialisationVersion = 2;
 
 // ==================================================================
 //                            URL Characters

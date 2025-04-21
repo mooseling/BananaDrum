@@ -1,6 +1,6 @@
 import { getLibrary } from '../Library';
 import { ArrangementSnapshot, TrackSnapshot } from '../types/snapshots';
-import { polyrhythmCharacterToNumber, urlCharacterToNumber } from './constants';
+import { polyrhythmCharacterToNumber, serialisationVersion, urlCharacterToNumber } from './constants';
 import { interpretAsBaseN, urlEncodeNumber } from './numeric_functions';
 
 
@@ -23,7 +23,7 @@ export function serialiseArrangementSnapshot(arrangementSnapshot:ArrangementSnap
   return {
     title: arrangementSnapshot.title,
     composition: serialisedArrangement,
-    version: 2 // TODO: Put this in a constant
+    version: serialisationVersion
   };
 }
 
