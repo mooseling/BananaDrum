@@ -1,8 +1,8 @@
-import { createArrangement } from '../Arrangement';
-import { getLibrary } from '../Library';
-import { createTimeParams } from '../TimeParams';
-import { ArrangementSnapshot, PolyrhythmSnapshot, TimeParamsSnapshot, TrackSnapshot } from '../types/snapshots';
-import { Arrangement, Note, TimeParams, Track } from '../types/types';
+import { createArrangement } from '../Arrangement.js';
+import { getLibrary } from '../Library.js';
+import { createTimeParams } from '../TimeParams.js';
+import { ArrangementSnapshot, PolyrhythmSnapshot, TimeParamsSnapshot, TrackSnapshot } from '../types/snapshots.js';
+import { Arrangement, Note, TimeParams, Track } from '../types/types.js';
 
 
 

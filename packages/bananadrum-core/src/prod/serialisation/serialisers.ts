@@ -1,7 +1,7 @@
-import { getLibrary } from '../Library';
-import { ArrangementSnapshot, TrackSnapshot } from '../types/snapshots';
-import { polyrhythmCharacterToNumber, serialisationVersion, urlCharacterToNumber } from './constants';
-import { interpretAsBaseN, urlEncodeNumber } from './numeric_functions';
+import { getLibrary } from '../Library.js';
+import { ArrangementSnapshot, TrackSnapshot } from '../types/snapshots.js';
+import { polyrhythmCharacterToNumber, serialisationVersion, urlCharacterToNumber } from './constants.js';
+import { interpretAsBaseN, urlEncodeNumber } from './numeric_functions.js';
 
 
 

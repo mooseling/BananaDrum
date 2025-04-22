@@ -1,9 +1,9 @@
-import { getLibrary } from '../Library';
-import { ArrangementSnapshot, PolyrhythmSnapshot, TrackSnapshot } from '../types/snapshots';
-import { calculateStepsPerBar, getNewId } from '../utils';
-import { polyrhythmNumberToCharacter, urlNumberToCharacter } from './constants';
-import { convertToBaseN, urlDecodeNumber } from './numeric_functions';
-import { SerialisedArrangement } from './serialisers';
+import { getLibrary } from '../Library.js';
+import { ArrangementSnapshot, PolyrhythmSnapshot, TrackSnapshot } from '../types/snapshots.js';
+import { calculateStepsPerBar, getNewId } from '../utils.js';
+import { polyrhythmNumberToCharacter, urlNumberToCharacter } from './constants.js';
+import { convertToBaseN, urlDecodeNumber } from './numeric_functions.js';
+import { SerialisedArrangement } from './serialisers.js';
 
 export function deserialiseArrangement(serialisedArrangement:SerialisedArrangement): ArrangementSnapshot {
   const {title, composition} = serialisedArrangement;

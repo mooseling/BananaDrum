@@ -1,5 +1,5 @@
 import bigInt from 'big-integer';
-import { conversionBase, urlCharacterToNumber, urlNumberToCharacter } from './constants';
+import { conversionBase, urlCharacterToNumber, urlNumberToCharacter } from './constants.js';
 
 // No negative numbers
 export function urlEncodeNumber(input:bigInt.BigInteger): string {
