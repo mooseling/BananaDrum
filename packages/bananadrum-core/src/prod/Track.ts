@@ -3,11 +3,10 @@ import { createNote } from './Note.js';
 import { createPublisher } from './Publisher.js';
 import { TrackClipboard } from './TrackClipboard.js';
 import { getColour } from './colours.js';
-import { getNewId, isSameTiming } from './utils.js';
+import { exists, getNewId, isSameTiming } from './utils.js';
 
 
-export function createTrack(arrangement:Arrangement, instrument:Instrument): Track {
-  const id = getNewId();
+export function createTrack(arrangement:Arrangement, instrument:Instrument, id:number = getNewId()): Track {
   const publisher = createPublisher();
   const notes:Note[] = [];
   const polyrhythms:Polyrhythm[] = [];
@@ -49,20 +48,20 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
   }
 
 
-  function addPolyrhythm(start:Note, end:Note, length:number) {
+  function addPolyrhythm(start:Note, end:Note, length:number, id:number = getNewId(), index?:number) {
     if (length < 1)
       return;
 
-    const polyrhythm = {
-      start, end,
-      id: getNewId(),
-      notes:[]
-    };
+    const polyrhythm = {start, end, id, notes:[]};
 
     polyrhythm.notes = Array.from(Array(length))
       .map((_, index) => createNote(track, {bar:1, step:index}, polyrhythm));
 
-    polyrhythms.push(polyrhythm);
+    if (exists(index))
+      polyrhythms.splice(index, 0, polyrhythm);
+    else
+      polyrhythms.push(polyrhythm);
+
     publisher.publish();
   }
 

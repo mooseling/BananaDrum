@@ -6,6 +6,7 @@ export function isSameTiming(timing1:Timing, timing2:Timing): boolean {
 }
 
 
+// Returns false for null, undefined
 export function exists<T>(value: T | undefined | null): value is T {
   return value === (value ?? !value);
 }

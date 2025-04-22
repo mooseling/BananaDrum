@@ -87,7 +87,7 @@ export interface Arrangement extends ArrangementView {
   title: string
   timeParams: TimeParams
   tracks: Track[]
-  addTrack(instrument:Instrument): Track
+  addTrack(instrument:Instrument, id?:number): Track
   removeTrack(track:Track): void
 }
 
@@ -133,7 +133,7 @@ export interface Track extends TrackView {
   polyrhythms: Polyrhythm[]
   getNoteAt(timing:Timing): Note
   getNoteIterator(polyrhythmsToIgnore?:PolyrhythmView[]): IterableIterator<Note>
-  addPolyrhythm(start:Note, end:Note, length:number): void
+  addPolyrhythm(start:Note, end:Note, length:number, id?:number, index?:number): void
   removePolyrhythm(polyrhythm:PolyrhythmView): void
   clear(): void
 }
