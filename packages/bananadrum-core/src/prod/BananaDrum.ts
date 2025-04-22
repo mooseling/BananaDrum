@@ -1,18 +1,19 @@
-import { applySerialisedRhythmToTrack, ArrangementSnapshot, deserialiseArrangement } from "./serialisation/serialisation.js";
 import { getLibrary } from "./Library.js";
 import { BananaDrum, PackedInstrument } from "./types/types.js";
 import { edit } from './edit.js';
 import { EditCommand } from './types/edit_commands.js';
 import { createUndoRedoStack } from './UndoRedoStack.js';
+import { deserialiseArrangement } from './serialisation/deserialisers.js';
+import { SerialisedArrangement } from './serialisation/serialisers.js';
+import { createArrangementFromSnapshot } from './serialisation/snapshot_appliers.js';
 
 
-export function createBananaDrum(
-  instrumentCollection:PackedInstrument[], toLoad:{serialisedArrangement:string, version:number, title?:string}
-): BananaDrum {
+export function createBananaDrum(instrumentCollection:PackedInstrument[], toLoad:SerialisedArrangement): BananaDrum {
   const library = getLibrary();
   library.load(instrumentCollection);
 
-  const arrangement = deserialiseArrangement(toLoad.serialisedArrangement, toLoad.version, toLoad.title) as Arrangement;
+  const arrangementSnapshot = deserialiseArrangement(toLoad)
+  const arrangement = createArrangementFromSnapshot(arrangementSnapshot);
   const undoRedoStack = createUndoRedoStack(arrangement);
 
   return {
