@@ -7,12 +7,12 @@ import { serialiseArrangementSnapshot, SerialisedArrangement } from './serialise
 // We generate a share link from a snapshot so we can generate it from the undo-redo stack
 export function getShareLink(arrangementSnapshot:ArrangementSnapshot): string {
   const serialisedArrangement = serialiseArrangementSnapshot(arrangementSnapshot);
-  const compositionTag = 'a' + serialisedArrangement.version;
+  const compositionParam = `a${serialisedArrangement.version}=${serialisedArrangement.composition}`;
 
   if (serialisedArrangement.title)
-    return `${baseUrl}?t=${encodeURIComponent(serialisedArrangement.title)}&${compositionTag}=${serialisedArrangement.composition}`;
+    return `${baseUrl}?t=${encodeURIComponent(serialisedArrangement.title)}&${compositionParam}`;
 
-  return `${baseUrl}?${compositionTag}=${serialisedArrangement}`;
+  return `${baseUrl}?${compositionParam}`;
 }
 
 

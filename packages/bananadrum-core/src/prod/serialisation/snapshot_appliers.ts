@@ -67,7 +67,8 @@ function applyTrackSnapshot(track:Track, trackSnapshot:TrackSnapshot): void {
 
   // Then we add missing polyrhythms, being careful to specify ID and index
   trackSnapshot.polyrhythms.forEach((polyrhythmSnapshot, polyrhythmIndex) => {
-    if (polyrhythmSnapshot.id !== track.polyrhythms[polyrhythmIndex].id) {
+    const polyrhythmAtIndex = track.polyrhythms[polyrhythmIndex];
+    if (!polyrhythmAtIndex || polyrhythmSnapshot.id !== polyrhythmAtIndex.id) {
       const [start, end] = getStartAndEndNotes(track, polyrhythmSnapshot, polyrhythmIndex);
       track.addPolyrhythm(start, end, polyrhythmSnapshot.length, polyrhythmSnapshot.id, polyrhythmIndex);
     }
