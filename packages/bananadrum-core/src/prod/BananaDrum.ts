@@ -5,7 +5,7 @@ import { EditCommand } from './types/edit_commands.js';
 import { createUndoRedoStack } from './UndoRedoStack.js';
 import { deserialiseArrangement } from './serialisation/deserialisers.js';
 import { SerialisedArrangement } from './serialisation/serialisers.js';
-import { createArrangementFromSnapshot } from './serialisation/snapshot_appliers.js';
+import { applyArrangementSnapshot, createArrangementFromSnapshot } from './serialisation/snapshot_appliers.js';
 
 
 export function createBananaDrum(instrumentCollection:PackedInstrument[], toLoad:SerialisedArrangement): BananaDrum {
@@ -35,21 +35,15 @@ export function createBananaDrum(instrumentCollection:PackedInstrument[], toLoad
       if (!undoRedoStack.canUndo)
         return;
 
-      // const currentState = undoRedoStack.currentState;
-      // undoRedoStack.goBack();
-      // const targetState = undoRedoStack.currentState;
-
-      // applyStateChange(arrangement, currentState, targetState);
+      undoRedoStack.goBack();
+      applyArrangementSnapshot(arrangement, undoRedoStack.currentState);
     },
     redo() {
       if (!undoRedoStack.canRedo)
         return;
 
-      // const currentState = undoRedoStack.currentState;
-      // undoRedoStack.goForward();
-      // const targetState = undoRedoStack.currentState;
-
-      // applyStateChange(arrangement, currentState, targetState);
+      undoRedoStack.goForward();
+      applyArrangementSnapshot(arrangement, undoRedoStack.currentState);
     },
     topics: {
       canUndo: undoRedoStack.topics.canUndo,
