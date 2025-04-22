@@ -35,7 +35,7 @@ export function applyArrangementSnapshot(arrangement:Arrangement, arrangementSna
     let track = arrangement.tracks.find(track => track.id === trackSnapshot.id);
 
     if (!track)
-      track = arrangement.addTrack(library.getInstrument(trackSnapshot.instrumentId));
+      track = arrangement.addTrack(library.getInstrument(trackSnapshot.instrumentId), trackSnapshot.id);
 
     applyTrackSnapshot(track, trackSnapshot);
   });
