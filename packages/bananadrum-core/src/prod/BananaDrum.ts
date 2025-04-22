@@ -18,6 +18,9 @@ export function createBananaDrum(instrumentCollection:PackedInstrument[], toLoad
 
   return {
     library, arrangement,
+    get currentState() {
+      return undoRedoStack.currentState;
+    },
     get canUndo() {
       return undoRedoStack.canUndo;
     },

@@ -1,8 +1,10 @@
 import { EditCommand } from './edit_commands'
+import { ArrangementSnapshot } from './snapshots'
 
 export interface BananaDrum {
   library: Library
   arrangement: ArrangementView
+  currentState: ArrangementSnapshot
   canUndo: boolean
   canRedo: boolean
   edit(command:EditCommand): void
