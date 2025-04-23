@@ -45,6 +45,7 @@ export function createArrangement(timeParams:TimeParams, title?:string): Arrange
       return true;
     } else {
       console.warn("Tried to remove a track but no reference to it. id: " + trackToRemove.id);
+      throw new Error();
     }
   }
 }
