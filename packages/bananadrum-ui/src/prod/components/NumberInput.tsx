@@ -23,6 +23,9 @@ export function NumberInput(
 
   // Try to set the model value, which may fail due to validation
   function attemptSet() {
+    if (visibleValue === getValue())
+      return;
+
     try {
       setValue(visibleValue);
     } catch(e) {
