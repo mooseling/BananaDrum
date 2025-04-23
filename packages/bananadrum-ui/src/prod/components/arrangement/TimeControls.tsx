@@ -54,12 +54,14 @@ export function TimeControls({arrangement}:{arrangement:ArrangementView}): JSX.E
         <NumberInput
           getValue={() => String(timeParams.tempo)}
           setValue={(newValue:string) => edit({timeParams, tempo:Number(newValue)})}
+          subscribable={timeParams}
         /> bpm
       </div>
       <div className="time-control">
         <NumberInput
           getValue={() => String(timeParams.length)}
           setValue={(newValue:string) => edit({timeParams, length:Number(newValue)})}
+          subscribable={timeParams}
         /> {pluralBars ? 'bars' : 'bar'}
       </div>
     </div>
