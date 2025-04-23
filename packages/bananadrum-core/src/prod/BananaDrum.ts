@@ -28,8 +28,9 @@ export function createBananaDrum(instrumentCollection:PackedInstrument[], toLoad
       return undoRedoStack.canRedo;
     },
     edit(command:EditCommand) {
-      edit(command);
-      undoRedoStack.handleEdit();
+      const anythingHasChanged = edit(command);
+      if (anythingHasChanged)
+        undoRedoStack.handleEdit();
     },
     undo() {
       if (!undoRedoStack.canUndo)
