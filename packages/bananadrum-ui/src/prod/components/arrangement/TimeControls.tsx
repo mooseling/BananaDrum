@@ -1,7 +1,7 @@
 import { ArrangementView, EditCommand_TimeParamsTimeSignature } from "bananadrum-core";
 import { useCallback, useState } from "react";
 import { useSubscription } from "../../hooks/useSubscription";
-import { NumberInput } from "../General";
+import { NumberInput } from "../NumberInput";
 import { useEditCommand } from '../../hooks/useEditCommand';
 
 
