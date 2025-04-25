@@ -33,6 +33,26 @@ export function createKeyboardHandler(eventEngine:EventEngine, bananaDrum:Banana
           bananaDrum.edit({arrangement:bananaDrum.arrangement, clearSelection:selectionManager.selections});
           selectionManager.deselectAll();
         }
+        break;
+
+      // Undo/Redo: We have different conventions between Mac and Windows
+      // Windows: ctrl+z / ctrl+y
+      // Mac: command+z / command+shift+z
+      // We allow overlap for maximum cross-browser consistency, except where it actually causes confusion
+      case 'z':
+        if (event.ctrlKey || event.metaKey) {
+          if (event.shiftKey)
+            bananaDrum.redo(); // Standard redo on Mac, and no problem to allow it on Windows
+          else
+            bananaDrum.undo(); // With ctrl, this doesn't even trigger on Mac. Seems harmless to include it anyway.
+        }
+        break;
+      case 'y':
+        // We do not allow command+y to redo on Mac
+        // On Chrome, Firefox, and Safari, it triggers browser things, and so is very confusing to also redo
+        if (event.ctrlKey)
+          bananaDrum.redo();
+        break;
     }
   }
 
