@@ -63,21 +63,18 @@ export function ArrangementControlsTop(): JSX.Element {
         }
         <SmallSpacer />
         <TimeControls arrangement={arrangement} />
-        <button
-          className="push-button medium gray"
-          style={{
-            marginLeft:'12pt',
-            fontSize: '20.5pt',
-            fontFamily: 'serif',
-            textTransform: 'capitalize', // .push-button normally lower-cases contents
-            lineHeight: '1em'
-          }}
-          onClick={onClickEditTitle}
-          >
-          T&nbsp;<img src="images/icons/pencil_white.svg" style={{height:'0.78em'}} />
-        </button>
         <SmallSpacer />
-        <UndoRedo />
+        <div className='other-controls-wrapper'>
+          <button
+            className="push-button medium gray edit-title-button"
+            onClick={onClickEditTitle}
+            >
+            T&nbsp;<img src="images/icons/pencil_white.svg" style={{height:'0.78em'}} />
+          </button>
+          <SmallSpacer />
+          <UndoRedo />
+        </div>
+        <SmallSpacer />
         <ExpandingSpacer />
         <ShareButton />
         <Overlay name="selection_controls">
