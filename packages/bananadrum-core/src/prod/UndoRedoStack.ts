@@ -1,5 +1,6 @@
 import { createPublisher } from './Publisher.js'
 import { getArrangementSnapshot } from './serialisation/snapshots.js'
+import { EditCommand } from './types/edit_commands.js'
 import { ArrangementSnapshot } from './types/snapshots.js'
 import { ArrangementView, Subscribable } from './types/types'
 
@@ -8,7 +9,7 @@ interface UndoRedoStack {
   canUndo: boolean
   canRedo: boolean
   currentState: ArrangementSnapshot
-  handleEdit(): void
+  handleEdit(command:EditCommand): void
   goBack(): void
   goForward(): void
   topics: {
@@ -18,19 +19,26 @@ interface UndoRedoStack {
 }
 
 
+interface HistoryState {
+  arrangementSnapshot: ArrangementSnapshot
+  lastCommand: EditCommand | null
+  timestamp: number
+}
+
+
 export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack {
   const canUndoPublisher = createPublisher();
   const canRedoPublisher = createPublisher();
 
-  let present = getArrangementSnapshot(arrangement);
+  let present:HistoryState = getNewHistoryState(null);
 
-  const past: ArrangementSnapshot[] = [];
-  const future: ArrangementSnapshot[] = [];
+  const past: HistoryState[] = [];
+  const future: HistoryState[] = [];
 
   return {
     get canUndo() {return past.length > 0},
     get canRedo() {return future.length > 0},
-    get currentState() {return present},
+    get currentState() {return present.arrangementSnapshot},
     handleEdit, goBack, goForward,
     topics: {
       canUndo: canUndoPublisher,
@@ -39,9 +47,8 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
   };
 
 
-  function handleEdit() {
-    past.push(present);
-    present = getArrangementSnapshot(arrangement);
+  function handleEdit(command:EditCommand) {
+    present = getNewHistoryState(command);
 
     if (future.length) {
       future.splice(0);
@@ -78,5 +85,14 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
       canUndoPublisher.publish();
     if (future.length === 0)
       canRedoPublisher.publish();
+  }
+
+
+  function getNewHistoryState(lastCommand:EditCommand): HistoryState {
+    return {
+      arrangementSnapshot: getArrangementSnapshot(arrangement),
+      lastCommand,
+      timestamp: Date.now()
+    };
   }
 }

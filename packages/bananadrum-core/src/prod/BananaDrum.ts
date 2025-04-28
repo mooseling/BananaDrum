@@ -30,7 +30,7 @@ export function createBananaDrum(instrumentCollection:PackedInstrument[], toLoad
     edit(command:EditCommand) {
       const anythingHasChanged = edit(command);
       if (anythingHasChanged)
-        undoRedoStack.handleEdit();
+        undoRedoStack.handleEdit(command);
     },
     undo() {
       if (!undoRedoStack.canUndo)
