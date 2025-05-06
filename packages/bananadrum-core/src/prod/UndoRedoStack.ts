@@ -29,16 +29,13 @@ interface HistoryState {
 export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack {
   const canUndoPublisher = createPublisher();
   const canRedoPublisher = createPublisher();
-
-  let present:HistoryState = getNewHistoryState(null);
-
-  const past: HistoryState[] = [];
+  const past = [getNewHistoryState(null)]; // Past must always contain at least one element, which is the present state
   const future: HistoryState[] = [];
 
   return {
-    get canUndo() {return past.length > 0},
+    get canUndo() {return past.length > 1},
     get canRedo() {return future.length > 0},
-    get currentState() {return present.arrangementSnapshot},
+    get currentState() {return past[past.length - 1].arrangementSnapshot},
     handleEdit, goBack, goForward,
     topics: {
       canUndo: canUndoPublisher,
@@ -48,27 +45,25 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
 
 
   function handleEdit(command:EditCommand) {
-    past.push(present);
-    present = getNewHistoryState(command);
+    past.push(getNewHistoryState(command));
 
     if (future.length) {
       future.splice(0);
       canRedoPublisher.publish();
     }
 
-    if (past.length === 1)
+    if (past.length === 2)
       canUndoPublisher.publish();
   }
 
 
   function goBack() {
-    if (past.length === 0)
+    if (past.length < 2)
       return;
 
-    future.push(present);
-    present = past.pop();
+    future.push(past.pop());
 
-    if (past.length === 0)
+    if (past.length === 1)
       canUndoPublisher.publish();
     if (future.length === 1)
       canRedoPublisher.publish();
@@ -79,10 +74,9 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
     if (future.length === 0)
       return;
 
-    past.push(present);
-    present = future.pop();
+    past.push(future.pop());
 
-    if (past.length === 1)
+    if (past.length === 2)
       canUndoPublisher.publish();
     if (future.length === 0)
       canRedoPublisher.publish();
