@@ -48,6 +48,7 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
 
 
   function handleEdit(command:EditCommand) {
+    past.push(present);
     present = getNewHistoryState(command);
 
     if (future.length) {
