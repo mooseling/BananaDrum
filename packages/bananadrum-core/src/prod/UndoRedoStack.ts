@@ -19,7 +19,7 @@ interface UndoRedoStack {
 }
 
 
-interface HistoryState {
+export interface HistoryState {
   arrangementSnapshot: ArrangementSnapshot
   lastCommand: EditCommand | null
   timestamp: number
