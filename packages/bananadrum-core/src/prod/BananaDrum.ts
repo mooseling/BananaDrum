@@ -6,6 +6,7 @@ import { createUndoRedoStack } from './UndoRedoStack.js';
 import { deserialiseArrangement } from './serialisation/deserialisers.js';
 import { SerialisedArrangement } from './serialisation/serialisers.js';
 import { applyArrangementSnapshot, createArrangementFromSnapshot } from './serialisation/snapshot_appliers.js';
+import { extractOldValue } from './undo-redo-utils.js';
 
 
 export function createBananaDrum(instrumentCollection:PackedInstrument[], toLoad:SerialisedArrangement): BananaDrum {
@@ -28,9 +29,10 @@ export function createBananaDrum(instrumentCollection:PackedInstrument[], toLoad
       return undoRedoStack.canRedo;
     },
     edit(command:EditCommand) {
+      const oldValue = extractOldValue(command);
       const anythingHasChanged = edit(command);
       if (anythingHasChanged)
-        undoRedoStack.handleEdit(command);
+        undoRedoStack.handleEdit(command, oldValue);
     },
     undo() {
       if (!undoRedoStack.canUndo)

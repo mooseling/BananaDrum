@@ -2,14 +2,14 @@ import { createPublisher } from './Publisher.js'
 import { getArrangementSnapshot } from './serialisation/snapshots.js'
 import { EditCommand } from './types/edit_commands.js'
 import { ArrangementSnapshot } from './types/snapshots.js'
-import { ArrangementView, Subscribable } from './types/types'
+import { ArrangementView, NoteStyle, Subscribable } from './types/types'
 
 
 interface UndoRedoStack {
   canUndo: boolean
   canRedo: boolean
   currentState: ArrangementSnapshot
-  handleEdit(command:EditCommand): void
+  handleEdit(command:EditCommand, oldValue:NoteStyle|null): void
   goBack(): void
   goForward(): void
   topics: {
@@ -22,6 +22,7 @@ interface UndoRedoStack {
 export interface HistoryState {
   arrangementSnapshot: ArrangementSnapshot
   lastCommand: EditCommand | null
+  oldValue: NoteStyle|null
   timestamp: number
 }
 
@@ -29,7 +30,7 @@ export interface HistoryState {
 export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack {
   const canUndoPublisher = createPublisher();
   const canRedoPublisher = createPublisher();
-  const past = [getNewHistoryState(null)]; // Past must always contain at least one element, which is the present state
+  const past = [getNewHistoryState(null, null)]; // Past must always contain at least one element, which is the present state
   const future: HistoryState[] = [];
 
   return {
@@ -44,8 +45,8 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
   };
 
 
-  function handleEdit(command:EditCommand) {
-    past.push(getNewHistoryState(command));
+  function handleEdit(command:EditCommand, oldValue:NoteStyle|null) {
+    past.push(getNewHistoryState(command, oldValue));
 
     if (future.length) {
       future.splice(0);
@@ -83,10 +84,11 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
   }
 
 
-  function getNewHistoryState(lastCommand:EditCommand): HistoryState {
+  function getNewHistoryState(lastCommand:EditCommand|null, oldValue:NoteStyle|null): HistoryState {
     return {
       arrangementSnapshot: getArrangementSnapshot(arrangement),
       lastCommand,
+      oldValue,
       timestamp: Date.now()
     };
   }
