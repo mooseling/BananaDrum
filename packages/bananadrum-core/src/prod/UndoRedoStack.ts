@@ -3,6 +3,7 @@ import { getArrangementSnapshot } from './serialisation/snapshots.js'
 import { EditCommand } from './types/edit_commands.js'
 import { ArrangementSnapshot } from './types/snapshots.js'
 import { ArrangementView, NoteStyle, Subscribable } from './types/types'
+import { squashRecentNoteCycling } from './undo-redo-utils.js'
 
 
 interface UndoRedoStack {
@@ -32,6 +33,7 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
   const canRedoPublisher = createPublisher();
   const past = [getNewHistoryState(null, null)]; // Past must always contain at least one element, which is the present state
   const future: HistoryState[] = [];
+  let queuedSquashTimeout = 0;
 
   return {
     get canUndo() {return past.length > 1},
@@ -55,6 +57,8 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
 
     if (past.length === 2)
       canUndoPublisher.publish();
+
+    queueStackSquash();
   }
 
 
@@ -91,5 +95,11 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
       oldValue,
       timestamp: Date.now()
     };
+  }
+
+
+  function queueStackSquash(): void {
+    clearTimeout(queuedSquashTimeout);
+    queuedSquashTimeout = setTimeout(() => squashRecentNoteCycling(past), 10_000);
   }
 }
