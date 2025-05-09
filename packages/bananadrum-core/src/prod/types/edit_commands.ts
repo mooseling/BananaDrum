@@ -66,6 +66,9 @@ export interface EditCommand_TimeParamsLength {
   length: number
 }
 
+// This command is never sent to edit(), but we save it in the first history state
+export interface EditCommand_LoadPage {}
+
 // We would really like to use "exclusive or" in the union types below, but TypeScript doesn't currently support this
 // Support may come, so rather than try to enforce it, we're keeping things simple for now
 // Possible approach: https://effectivetypescript.com/2021/11/11/optional-never/
@@ -93,3 +96,4 @@ export type EditCommand =
   | EditCommand_Track
   | EditCommand_Note
   | EditCommand_TimeParams
+  | EditCommand_LoadPage

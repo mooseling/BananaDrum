@@ -22,7 +22,7 @@ interface UndoRedoStack {
 
 export interface HistoryState {
   arrangementSnapshot: ArrangementSnapshot
-  lastCommand: EditCommand | null
+  lastCommand: EditCommand
   oldValue: NoteStyle|null
   timestamp: number
 }
@@ -31,8 +31,12 @@ export interface HistoryState {
 export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack {
   const canUndoPublisher = createPublisher();
   const canRedoPublisher = createPublisher();
-  const past = [getNewHistoryState(null, null)]; // Past must always contain at least one element, which is the present state
+
+  // Past must always contain at least one element, which is the present state
+  // We initialise it with edit-command {}, which is meant as an EditCommand_LoadPage
+  const past = [getNewHistoryState({}, null)];
   const future: HistoryState[] = [];
+
   let queuedSquashTimeout = 0;
 
   return {
