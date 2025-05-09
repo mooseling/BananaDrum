@@ -57,7 +57,7 @@ function findRecentNoteCycleStacks(history:HistoryState[]): NoteCycleStack[] {
       // We may have found the top of a stack, now we search for the bottom
       const start = findBottomOfStack(history, historyIndex);
       const distance = historyIndex - start;
-      if (distance > 1) // We want at least two clicks to consider this for squashing
+      if (distance > 0) // We want at least two clicks to consider this for squashing
         noteCycleStacks.push({start, distance});
       historyIndex = start - 1;
     } else {
@@ -99,5 +99,8 @@ function noteCycleStackCausedChange(history:HistoryState[], stack:NoteCycleStack
 
 
 function squashFromIndex(history:HistoryState[], stack:NoteCycleStack, startOffset:number): void {
-  history.splice(stack.start + startOffset, stack.distance + 1 - startOffset);
+  history.splice(
+    stack.start + startOffset, // Delete from (startOffset allows us to leave the first element alone (or more))
+    stack.distance - startOffset // Delete count (We don't add 1 because we never delete the last element)
+  );
 }
