@@ -24,14 +24,19 @@ export function extractOldValue(command:EditCommand): NoteStyle|null {
 }
 
 
+// We look back into recent history, and "squash" any sequences of commands where the user was just cycling a single note
+// We only do this after a reasonable delay, so the user probably doesn't want to undo all those clicks
+// They want to undo the entire change to that note
+// There are some subtleties:
+// If the note-cycle-stack didn't actually cause any changes, we remove it entirely from history...
+// ...unless it's at the beginning of history, in which, removing it would cause the undo button to turn off
+// It's a bit random what we do in this case, so we just don't squash it at all. Do nothing.
 export function squashRecentNoteCycling(history:HistoryState[]): void {
   for (const stack of findRecentNoteCycleStacks(history)) {
-    // We have to check if a stack actually ended up changing the NoteStyle
-    // If not, when we squash it we'll end up with an undo-click that doesn't change anything
     if (noteCycleStackCausedChange(history, stack))
-      squashFromIndex(history, stack, 0); // Squash down to just last command
-    else
-      squashFromIndex(history, stack, 1); // Squash to first and last command
+      squash(history, stack, 'leave last element');
+    else if (stack.start !== 1) // Nothing changed, but it's the first thing in history
+      squash(history, stack, 'obliterate');
   }
 }
 
@@ -97,10 +102,13 @@ function noteCycleStackCausedChange(history:HistoryState[], stack:NoteCycleStack
   return startNoteStyle !== endNoteStyle;
 }
 
-
-function squashFromIndex(history:HistoryState[], stack:NoteCycleStack, startOffset:number): void {
-  history.splice(
-    stack.start + startOffset, // Delete from (startOffset allows us to leave the first element alone (or more))
-    stack.distance - startOffset // Delete count (We don't add 1 because we never delete the last element)
-  );
+type SquashMode = 'leave last element' | 'obliterate';
+function squash(history:HistoryState[], stack:NoteCycleStack, mode:SquashMode): void {
+  switch (mode) {
+    case 'leave last element':
+      history.splice(stack.start, stack.distance);
+      break;
+    case 'obliterate':
+      history.splice(stack.start, stack.distance + 1);
+  }
 }
