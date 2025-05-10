@@ -1,9 +1,10 @@
 import { createPublisher } from './Publisher.js'
 import { getArrangementSnapshot } from './serialisation/snapshots.js'
-import { EditCommand } from './types/edit_commands.js'
+import { EditCommand, EditCommand_ArrangementTitle } from './types/edit_commands.js'
 import { ArrangementSnapshot } from './types/snapshots.js'
 import { ArrangementView, NoteStyle, Subscribable } from './types/types'
 import { squashRecentNoteCycling } from './undo-redo-utils.js'
+import { exists } from './utils.js'
 
 
 interface UndoRedoStack {
@@ -42,7 +43,12 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
   return {
     get canUndo() {return past.length > 1},
     get canRedo() {return future.length > 0},
-    get currentState() {return past[past.length - 1].arrangementSnapshot},
+    get currentState() {
+      return {
+        ...past[past.length - 1].arrangementSnapshot,
+        title: arrangement.title // We ignore title in undo/redo
+      }
+    },
     handleEdit, goBack, goForward,
     topics: {
       canUndo: canUndoPublisher,
@@ -52,6 +58,9 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
 
 
   function handleEdit(command:EditCommand, oldValue:NoteStyle|null) {
+    if (exists((command as EditCommand_ArrangementTitle).newTitle))
+      return; // We ignore title in undo/redo
+
     past.push(getNewHistoryState(command, oldValue));
 
     if (future.length) {
