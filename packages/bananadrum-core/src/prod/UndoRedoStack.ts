@@ -39,6 +39,7 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
   const future: HistoryState[] = [];
 
   let queuedSquashTimeout = 0;
+  let squashIsQueued = false;
 
   return {
     get canUndo() {return past.length > 1},
@@ -85,6 +86,11 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
       canUndoPublisher.publish();
     if (future.length === 1)
       canRedoPublisher.publish();
+
+    // We don't want to simplify history in the middle of undoing some stuff
+    // So if a squash is queued, we push it back. But if not, we wouldn't want to queue it for no reason
+    if (squashIsQueued)
+      queueStackSquash();
   }
 
 
@@ -98,6 +104,9 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
       canUndoPublisher.publish();
     if (future.length === 0)
       canRedoPublisher.publish();
+
+    // We may have hit undo a bunch before squashing
+    queueStackSquash();
   }
 
 
@@ -113,6 +122,10 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
 
   function queueStackSquash(): void {
     clearTimeout(queuedSquashTimeout);
-    queuedSquashTimeout = setTimeout(() => squashRecentNoteCycling(past), 5_000);
+    queuedSquashTimeout = setTimeout(() => {
+      squashRecentNoteCycling(past);
+      squashIsQueued = false;
+    }, 5_000);
+    squashIsQueued = true;
   }
 }
