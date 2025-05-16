@@ -66,11 +66,11 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
 
     if (future.length) {
       future.splice(0);
-      canRedoPublisher.publish();
+      canRedoPublisher.publish(); // No longer anything to redo, the future has been deleted
     }
 
     if (past.length === 2)
-      canUndoPublisher.publish();
+      canUndoPublisher.publish(); // Used to be 1, so now we have a past to return to
 
     queueStackSquash();
   }
@@ -83,9 +83,9 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
     future.push(past.pop());
 
     if (past.length === 1)
-      canUndoPublisher.publish();
+      canUndoPublisher.publish(); // Reached the beginning of history, so can't go back any more
     if (future.length === 1)
-      canRedoPublisher.publish();
+      canRedoPublisher.publish(); // Didn't used to have a future, now we do
 
     // We don't want to simplify history in the middle of undoing some stuff
     // So if a squash is queued, we push it back. But if not, we wouldn't want to queue it for no reason
@@ -101,9 +101,9 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
     past.push(future.pop());
 
     if (past.length === 2)
-      canUndoPublisher.publish();
+      canUndoPublisher.publish(); // Used to be 1, so now we have a past to return to
     if (future.length === 0)
-      canRedoPublisher.publish();
+      canRedoPublisher.publish(); // We've reached the end of the future
 
     // We may have hit undo a bunch before squashing
     queueStackSquash();
