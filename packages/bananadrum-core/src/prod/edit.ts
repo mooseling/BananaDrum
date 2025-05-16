@@ -83,7 +83,6 @@ function editArrangement(command:EditCommand_Arrangement): boolean {
       const track = start.track;
       track.addPolyrhythm(start, end, addPolyrhythms.length);
     });
-
     return true;
   }
 }
@@ -98,6 +97,7 @@ function editTrack(command:EditCommand_Track): boolean {
       track.removePolyrhythm(removePolyrhythm);
       return true;
     }
+    return false;
   }
 
   if ((command as EditCommand_TrackClear).command === 'clear') {
@@ -107,7 +107,6 @@ function editTrack(command:EditCommand_Track): boolean {
         return true;
       }
     }
-
     return false;
   }
 }
@@ -142,8 +141,7 @@ function editTimeParams(command:EditCommand_TimeParams): boolean {
       timeParams.length = length;
       return true;
     }
-
-    return true;
+    return false;
   }
 }
 
