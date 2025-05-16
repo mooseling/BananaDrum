@@ -47,7 +47,7 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
     get currentState() {
       return {
         ...past[past.length - 1].arrangementSnapshot,
-        title: arrangement.title // We ignore title in undo/redo
+        title: arrangement.title // Title is ignored in undo/redo, so we just pull the current title
       }
     },
     handleEdit, goBack, goForward,
@@ -60,7 +60,7 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
 
   function handleEdit(command:EditCommand, oldValue:NoteStyle|null) {
     if (exists((command as EditCommand_ArrangementTitle).newTitle))
-      return; // We ignore title in undo/redo
+      return; // Title is ignored in undo/redo, so we don't react to it changing at all
 
     past.push(getNewHistoryState(command, oldValue));
 
