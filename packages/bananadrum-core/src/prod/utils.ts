@@ -1,4 +1,4 @@
-import { Timing } from "./types/types.js";
+import { Timing } from "./types/general.js";
 
 // Comparing timings is easy, but long winded and mistake-prone
 export function isSameTiming(timing1:Timing, timing2:Timing): boolean {

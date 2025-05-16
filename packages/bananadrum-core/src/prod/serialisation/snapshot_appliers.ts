@@ -2,7 +2,7 @@ import { createArrangement } from '../Arrangement.js';
 import { getLibrary } from '../Library.js';
 import { createTimeParams } from '../TimeParams.js';
 import { ArrangementSnapshot, PolyrhythmSnapshot, TimeParamsSnapshot, TrackSnapshot } from '../types/snapshots.js';
-import { Arrangement, Note, TimeParams, Track } from '../types/types.js';
+import { Arrangement, Note, TimeParams, Track } from '../types/general.js';
 
 
 

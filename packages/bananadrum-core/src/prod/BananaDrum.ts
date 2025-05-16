@@ -1,5 +1,5 @@
 import { getLibrary } from "./Library.js";
-import { BananaDrum, PackedInstrument } from "./types/types.js";
+import { BananaDrum, PackedInstrument } from "./types/general.js";
 import { edit } from './edit.js';
 import { EditCommand } from './types/edit_commands.js';
 import { createUndoRedoStack } from './UndoRedoStack.js';

@@ -1,5 +1,5 @@
 import { EditCommand, EditCommand_Arrangement, EditCommand_ArrangementAddPolyrhythms, EditCommand_ArrangementAddTrack, EditCommand_ArrangementClear, EditCommand_ArrangementClearSelection, EditCommand_ArrangementRemoveTrack, EditCommand_ArrangementTitle, EditCommand_Note, EditCommand_TimeParams, EditCommand_TimeParamsLength, EditCommand_TimeParamsTempo, EditCommand_TimeParamsTimeSignature, EditCommand_Track, EditCommand_TrackClear, EditCommand_TrackRemovePolyrhythm } from './types/edit_commands';
-import { Arrangement, Note, TimeParams, Track } from './types/types';
+import { Arrangement, Note, TimeParams, Track } from './types/general';
 
 
 

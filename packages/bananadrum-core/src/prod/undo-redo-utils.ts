@@ -1,5 +1,5 @@
 import { EditCommand, EditCommand_Note } from './types/edit_commands.js';
-import { NoteStyle } from './types/types.js';
+import { NoteStyle } from './types/general.js';
 import { HistoryState } from './UndoRedoStack.js';
 
 

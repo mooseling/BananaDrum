@@ -1,4 +1,4 @@
-import { Timing } from "../../prod/types/types.js";
+import { Timing } from "../../prod/types/general.js";
 
 // This is just going to sequentially return timings
 // 1:1, 1:2, ..., 1:16, 2:1, 2:2, ...

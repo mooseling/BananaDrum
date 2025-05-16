@@ -1,5 +1,5 @@
 import { createPublisher } from "./Publisher.js";
-import { Publisher, Subscribable } from "./types/types.js";
+import { Publisher, Subscribable } from "./types/general.js";
 
 // It's been very difficult to solve compatibility problems, since they are usually on an iPhone belonging to Nick
 // Guesswork has only gotten me so far, it's time to start trying to catch errors and make them reportable
