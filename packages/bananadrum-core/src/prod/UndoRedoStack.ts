@@ -35,7 +35,7 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
 
   // Past must always contain at least one element, which is the present state
   // We initialise it with edit-command {}, which is meant as an EditCommand_LoadPage
-  const past = [getNewHistoryState({}, null)];
+  const past = [getNewHistoryState(arrangement, {}, null)];
   const future: HistoryState[] = [];
 
   let queuedSquashTimeout = 0;
@@ -62,7 +62,7 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
     if (exists((command as EditCommand_ArrangementTitle).newTitle))
       return; // Title is ignored in undo/redo, so we don't react to it changing at all
 
-    past.push(getNewHistoryState(command, oldValue));
+    past.push(getNewHistoryState(arrangement, command, oldValue));
 
     if (future.length) {
       future.splice(0);
@@ -110,16 +110,6 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
   }
 
 
-  function getNewHistoryState(lastCommand:EditCommand|null, oldValue:NoteStyle|null): HistoryState {
-    return {
-      arrangementSnapshot: getArrangementSnapshot(arrangement),
-      lastCommand,
-      oldValue,
-      timestamp: Date.now()
-    };
-  }
-
-
   function queueStackSquash(): void {
     clearTimeout(queuedSquashTimeout);
     queuedSquashTimeout = setTimeout(() => {
@@ -128,4 +118,14 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
     }, 5_000);
     squashIsQueued = true;
   }
+}
+
+
+function getNewHistoryState(arrangement:ArrangementView, lastCommand:EditCommand|null, oldValue:NoteStyle|null): HistoryState {
+  return {
+    arrangementSnapshot: getArrangementSnapshot(arrangement),
+    lastCommand,
+    oldValue,
+    timestamp: Date.now()
+  };
 }
