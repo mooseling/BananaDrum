@@ -4,7 +4,7 @@ import { useState, useContext, useCallback, useMemo } from 'react';
 import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer.js';
 import { ModeManagerContext, SelectionManagerContext } from '../../BananaDrumUi.js';
 import { useSubscription } from '../../hooks/useSubscription.js';
-import { TrackPlayerContext } from '../TrackViewer.js';
+import { TrackPlayerContext } from '../track/TrackViewer.js';
 import { TouchHoldDetector } from '../TouchHoldDetector.js';
 import { NoteStyleSymbolViewer } from './NoteStyleSymbolViewer.js';
 import { useEditCommand } from '../../hooks/useEditCommand.js';

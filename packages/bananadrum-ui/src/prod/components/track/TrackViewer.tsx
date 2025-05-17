@@ -1,12 +1,13 @@
 import { useState, createContext, useContext, TouchEvent, useLayoutEffect, useRef } from 'react';
 import { PolyrhythmView, TrackView } from 'bananadrum-core';
-import { NoteViewer } from './note/NoteViewer.js';
-import { Overlay, toggleOverlay } from './Overlay.js';
-import { ArrangementPlayerContext, NoteWidthContext, NoteLineMinWidth } from './arrangement/ArrangementViewer.js';
+import { NoteViewer } from '../note/NoteViewer.js';
+import { Overlay, toggleOverlay } from '../Overlay.js';
+import { ArrangementPlayerContext, NoteWidthContext, NoteLineMinWidth } from '../arrangement/ArrangementViewer.js';
 import { TrackPlayer } from 'bananadrum-player';
-import { useSubscription } from '../hooks/useSubscription.js';
-import { PolyrhythmViewer } from './PolyrhythmViewer.js';
-import { useEditCommand } from '../hooks/useEditCommand.js';
+import { useSubscription } from '../../hooks/useSubscription.js';
+import { PolyrhythmViewer } from '../PolyrhythmViewer.js';
+import { TrackMeta } from './TrackMeta.js';
+import { TrackControls } from './TrackControls.js';
 
 
 type TrackViewerCallbacks = {
@@ -17,8 +18,6 @@ type TrackViewerCallbacks = {
 
 
 export const TrackPlayerContext = createContext<TrackPlayer>(null);
-
-const smButtonClasses = 'options-button push-button small solo-mute-button';
 
 
 export function TrackViewer({trackPlayer, callbacks}:{trackPlayer:TrackPlayer, callbacks:TrackViewerCallbacks}): JSX.Element {
@@ -50,56 +49,6 @@ export function TrackViewer({trackPlayer, callbacks}:{trackPlayer:TrackPlayer, c
         <TrackMeta track={track} toggleControls={() => toggleOverlay(overlayName)}/>
       </div>
     </TrackPlayerContext.Provider>
-  );
-}
-
-
-function TrackMeta({track, toggleControls}
-  : {track:TrackView, toggleControls:() => void}
-): JSX.Element {
-  const instrumentName = track.instrument.displayName;
-  return (
-    <div
-      className="track-meta"
-      style={{backgroundColor:track.colour}}
-    >
-      {instrumentName}
-      <div className="buttons-wrapper">
-        <SoloMuteButtons />
-        <button className="options-button push-button small gray" onClick={toggleControls}>
-          <img src="images/icons/wrench.svg" alt="options"/>
-        </button>
-      </div>
-    </div>
-  );
-}
-
-
-function SoloMuteButtons(): JSX.Element {
-  const trackPlayer = useContext(TrackPlayerContext);
-  const [soloed, setSoloed] = useState(trackPlayer.soloMute === 'solo');
-  const [muted, setMuted] = useState(trackPlayer.soloMute === 'mute');
-
-  useSubscription(trackPlayer, () => {
-    setSoloed(trackPlayer.soloMute === 'solo');
-    setMuted(trackPlayer.soloMute === 'mute');
-  })
-
-  const solo = () => trackPlayer.soloMute = (trackPlayer.soloMute === 'solo' ? null : 'solo');
-  const mute = () => trackPlayer.soloMute = (trackPlayer.soloMute === 'mute' ? null : 'mute');
-  const soloButtonColour = soloed ? 'lighter-green' : 'gray';
-  const muteButtonColour = muted ? 'dark-blue' : 'gray';
-
-
-  return (
-    <>
-      <button className={`${smButtonClasses} ${soloButtonColour}`} onClick={solo}>
-        S
-      </button>
-      <button className={`${smButtonClasses} ${muteButtonColour}`} onClick={mute}>
-        M
-      </button>
-    </>
   );
 }
 
@@ -158,30 +107,6 @@ function repositionPolyrhythmViewer(polyrhythm:PolyrhythmView, polyrhythmViewer:
 
   polyrhythmViewer.style.left = `${startLeft}px`;
   polyrhythmViewer.style.width = `calc(${endLeft - startLeft}px - var(--thick-border-width)`;
-}
-
-
-function TrackControls(
-  {track, overlayName}:{track:TrackView, overlayName:string}): JSX.Element {
-    const arrangement = track.arrangement;
-    const edit = useEditCommand();
-
-  return (
-    <div className="track-controls">
-      <button className="push-button gray"
-        onClick={() => edit({arrangement, removeTrack:track})}
-      >Remove track</button>
-      <button className="push-button gray"
-        onClick={() => {
-          edit({track, command:'clear'})
-          toggleOverlay(overlayName, 'hide');
-        }}
-      >Clear track</button>
-      <button className="push-button gray"
-        onClick={() => toggleOverlay(overlayName, 'hide')}
-      >Cancel</button>
-    </div>
-  );
 }
 
 
