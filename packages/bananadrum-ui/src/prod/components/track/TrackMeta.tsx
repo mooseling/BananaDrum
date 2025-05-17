@@ -1,5 +1,6 @@
 import { TrackView } from 'bananadrum-core';
 import { SoloMuteButtons } from './SoloMuteButtons.js';
+import { getTrackColour } from '../../track-colour.js';
 
 
 export function TrackMeta({track, toggleControls}
@@ -9,7 +10,7 @@ export function TrackMeta({track, toggleControls}
   return (
     <div
       className="track-meta"
-      style={{backgroundColor:track.colour}}
+      style={{backgroundColor:getTrackColour(track)}}
     >
       {instrumentName}
       <div className="buttons-wrapper">

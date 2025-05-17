@@ -1,3 +1,22 @@
+import { TrackView } from 'bananadrum-core';
+
+
+const colourCount = {blue:0, purple:0, green:0, orange:0, yellow:0};
+const trackColourMap:{[trackId:number]:string} = {};
+
+
+// Return a hsl() colour value
+export function getTrackColour(track:TrackView): string {
+  if (!trackColourMap[track.id]) {
+    const colourGroup = track.instrument.colourGroup;
+    trackColourMap[track.id] = allColours[colourGroup][colourCount[colourGroup] % allColours[colourGroup].length];
+    colourCount[colourGroup]++;
+  }
+
+  return trackColourMap[track.id];
+}
+
+
 // We have certain color categories that instruments fall into
 // And an inverted colour for selections
 const allColours: {[colourName:string]:string[]} = {
@@ -48,12 +67,3 @@ const allColours: {[colourName:string]:string[]} = {
   ]
 };
 
-const nextColourIndex = {blue:0, purple:0, green:0, orange:0, yellow:0};
-
-// Return a hsl() colour value
-export function getColour(colourName:string): string {
-  const index = nextColourIndex[colourName];
-  const trackColours = allColours[colourName][index];
-  nextColourIndex[colourName] = (index + 1) % allColours[colourName].length;
-  return trackColours;
-}

@@ -8,6 +8,7 @@ import { TrackPlayerContext } from '../track/TrackViewer.js';
 import { TouchHoldDetector } from '../TouchHoldDetector.js';
 import { NoteStyleSymbolViewer } from './NoteStyleSymbolViewer.js';
 import { useEditCommand } from '../../hooks/useEditCommand.js';
+import { getTrackColour } from '../../track-colour.js';
 
 const audioContext = new AudioContext();
 
@@ -165,8 +166,8 @@ function useBackgroundColor(note:NoteView, isCurrent:boolean, selected:boolean) 
     : selected
       ? selectedColour
       : note.noteStyle
-          ? note.track.colour  // Otherwise, give active notes the track colour
-          : '';                // Inactive notes have no inline background colour
+          ? getTrackColour(note.track)  // Otherwise, give active notes the track colour
+          : '';                         // Inactive notes have no inline background colour
 }
 
 

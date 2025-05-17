@@ -124,7 +124,6 @@ export interface TrackView extends Subscribable {
   instrument: Instrument
   notes: NoteView[] // Must be kept in order - this is Track's job
   polyrhythms: PolyrhythmView[]
-  colour: string // A specific hsl() string
   getNoteAt(timing:Timing): NoteView
   getNoteIterator(polyrhythmsToIgnore?:PolyrhythmView[]): IterableIterator<NoteView>
 }
