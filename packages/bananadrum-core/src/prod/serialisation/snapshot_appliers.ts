@@ -21,15 +21,21 @@ function createTimeParamsFromSnapshot(tps:TimeParamsSnapshot): TimeParams {
 }
 
 
+// Used when loading Banana Drum, or when using Undo/Redo
 export function applyArrangementSnapshot(arrangement:Arrangement, arrangementSnapshot:ArrangementSnapshot): void {
+
+  // applyTimeParams is redundant when loading Banana Drum, since we just created the Arrangement with the same TPs
+  // However, applying the full snapshot is required for Undo/Redo
   applyTimeParams(arrangement, arrangementSnapshot);
   arrangement.title = arrangementSnapshot.title;
-  
+
+  // Remove tracks that aren't in the snapshot
   arrangement.tracks.forEach(track => {
     if (!arrangementSnapshot.tracks.some(trackSnapshot => trackSnapshot.id === track.id))
       arrangement.removeTrack(track);
   })
-  
+
+  // Add missing tracks
   const library = getLibrary();
   arrangementSnapshot.tracks.forEach(trackSnapshot => {
     let track = arrangement.tracks.find(track => track.id === trackSnapshot.id);
@@ -42,7 +48,7 @@ export function applyArrangementSnapshot(arrangement:Arrangement, arrangementSna
 }
 
 
-// Apply all timeParams without checking if they've changed. It will only publish if they actually change.
+// Apply all timeParams without checking if they've changed. TP does this check and won't publish redundantly
 function applyTimeParams(arrangement:Arrangement, arrangementSnapshot:ArrangementSnapshot): void {
   arrangement.timeParams.timeSignature = arrangementSnapshot.timeParams.timeSignature;
   arrangement.timeParams.tempo = arrangementSnapshot.timeParams.tempo;
