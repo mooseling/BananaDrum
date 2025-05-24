@@ -1,9 +1,14 @@
+import { Subscribable } from 'bananadrum-core';
 import { useState } from 'react';
+import { useSubscription } from '../hooks/useSubscription.js';
 
 export function NumberInput(
-  {getValue, setValue}:{getValue:() => string, setValue:(newValue:string) => void}
+  {getValue, setValue, subscribable}:{getValue:() => string, setValue:(newValue:string) => void, subscribable:Subscribable}
 ): JSX.Element {
   const [visibleValue, setVisibleValue] = useState(getValue());
+
+  // If the model pushes a change to this value for some other reason, we'd better update
+  useSubscription(subscribable, () => setVisibleValue(getValue()));
 
   // To update the input as you type, but not update the model
   function attemptSetVisibleValue(inputValue:string) {
@@ -18,6 +23,9 @@ export function NumberInput(
 
   // Try to set the model value, which may fail due to validation
   function attemptSet() {
+    if (visibleValue === getValue())
+      return;
+
     try {
       setValue(visibleValue);
     } catch(e) {

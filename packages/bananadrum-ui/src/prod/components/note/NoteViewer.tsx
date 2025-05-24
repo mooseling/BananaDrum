@@ -1,17 +1,19 @@
-import { Note, NoteStyle, Subscribable, isSameTiming } from 'bananadrum-core';
+import { NoteView, NoteStyle, Subscribable, isSameTiming, EditCommand } from 'bananadrum-core';
 import { createAudioBufferPlayer, TrackPlayer, ArrangementPlayer } from 'bananadrum-player';
 import { useState, useContext, useCallback, useMemo } from 'react';
 import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer.js';
 import { ModeManagerContext, SelectionManagerContext } from '../../BananaDrumUi.js';
 import { useSubscription } from '../../hooks/useSubscription.js';
-import { TrackPlayerContext } from '../TrackViewer.js';
+import { TrackPlayerContext } from '../track/TrackViewer.js';
 import { TouchHoldDetector } from '../TouchHoldDetector.js';
 import { NoteStyleSymbolViewer } from './NoteStyleSymbolViewer.js';
+import { useEditCommand } from '../../hooks/useEditCommand.js';
+import { getTrackColour } from '../../track-colour.js';
 
 const audioContext = new AudioContext();
 
 
-export function NoteViewer({note}:{note:Note}): JSX.Element {
+export function NoteViewer({note}:{note:NoteView}): JSX.Element {
   const arrangementPlayer = useContext(ArrangementPlayerContext);
   const trackPlayer = useContext(TrackPlayerContext);
   const selectionManager = useContext(SelectionManagerContext);
@@ -19,6 +21,7 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
   const timingPublisher:Subscribable = note.polyrhythm
     ? trackPlayer.currentPolyrhythmNotePublisher
     : arrangementPlayer.currentTimingPublisher;
+  const edit = useEditCommand();
 
   const [isCurrent, setIsCurrent] = useState(isCurrentlyPlaying(note, arrangementPlayer, trackPlayer));
   const [selected, setSelected] = useState(selectionManager.isSelected(note));
@@ -36,7 +39,7 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
       if (selectionManager.selections.size) {
         selectionManager.deselectAll();
       } else {
-        cycleNoteStyle(note);
+        cycleNoteStyle(note, edit);
         selectionManager.deselectAll();
       }
     }
@@ -91,7 +94,7 @@ export function NoteViewer({note}:{note:Note}): JSX.Element {
 
 const baseNoteClasses = 'note-viewer note-width';
 
-function useClasses(note:Note): string {
+function useClasses(note:NoteView): string {
   const inPolyrhythm = note.polyrhythm !== undefined;
   const {bar, step} = note.timing;
   const {timeSignature, stepResolution} = note.track.arrangement.timeParams;
@@ -154,7 +157,7 @@ export function getParityClass(bar:number, step:number, timeSignature:string, st
     return stepIsEven ? 'even-beat' : 'odd-beat';
 }
 
-function useBackgroundColor(note:Note, isCurrent:boolean, selected:boolean) {
+function useBackgroundColor(note:NoteView, isCurrent:boolean, selected:boolean) {
   const selectedColour = useMemo(() => getSelectedColour(note.track.instrument.colourGroup), []);
 
   // We could memoise this next calculation, but I feel like with the memo dependencies, little or nothing will be gained
@@ -163,12 +166,12 @@ function useBackgroundColor(note:Note, isCurrent:boolean, selected:boolean) {
     : selected
       ? selectedColour
       : note.noteStyle
-          ? note.track.colour  // Otherwise, give active notes the track colour
-          : '';                // Inactive notes have no inline background colour
+          ? getTrackColour(note.track)  // Otherwise, give active notes the track colour
+          : '';                         // Inactive notes have no inline background colour
 }
 
 
-function isCurrentlyPlaying(note:Note, arrangementPlayer:ArrangementPlayer, trackPlayer:TrackPlayer) {
+function isCurrentlyPlaying(note:NoteView, arrangementPlayer:ArrangementPlayer, trackPlayer:TrackPlayer) {
   if (note.polyrhythm)
     return trackPlayer.currentPolyrhythmNote === note;
 
@@ -179,9 +182,9 @@ function isCurrentlyPlaying(note:Note, arrangementPlayer:ArrangementPlayer, trac
 }
 
 
-function cycleNoteStyle(note:Note) {
+function cycleNoteStyle(note:NoteView, edit:(command:EditCommand) => void) {
   const noteStyle:NoteStyle|null = getNextNoteStyle(note);
-  note.noteStyle = noteStyle;
+  edit({note, noteStyle});
   if (noteStyle && noteStyle.audioBuffer) {
     createAudioBufferPlayer(noteStyle.audioBuffer, audioContext);
     audioContext.resume();
@@ -189,7 +192,7 @@ function cycleNoteStyle(note:Note) {
 }
 
 
-function getNextNoteStyle(note:Note): NoteStyle {
+function getNextNoteStyle(note:NoteView): NoteStyle {
   const noteStyles = note.track.instrument.noteStyles;
   const noteStyleIds = Object.keys(noteStyles);
   if (!note.noteStyle) // This happens when the note-style is null, meaning a rest

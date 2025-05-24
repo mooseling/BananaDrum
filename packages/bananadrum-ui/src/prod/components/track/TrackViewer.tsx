@@ -1,11 +1,13 @@
 import { useState, createContext, useContext, TouchEvent, useLayoutEffect, useRef } from 'react';
-import { Polyrhythm, Track } from 'bananadrum-core';
-import { NoteViewer } from './note/NoteViewer.js';
-import { Overlay, toggleOverlay } from './Overlay.js';
-import { ArrangementPlayerContext, NoteWidthContext, NoteLineMinWidth } from './arrangement/ArrangementViewer.js';
+import { PolyrhythmView, TrackView } from 'bananadrum-core';
+import { NoteViewer } from '../note/NoteViewer.js';
+import { Overlay, toggleOverlay } from '../Overlay.js';
+import { ArrangementPlayerContext, NoteWidthContext, NoteLineMinWidth } from '../arrangement/ArrangementViewer.js';
 import { TrackPlayer } from 'bananadrum-player';
-import { useSubscription } from '../hooks/useSubscription.js';
-import { PolyrhythmViewer } from './PolyrhythmViewer.js';
+import { useSubscription } from '../../hooks/useSubscription.js';
+import { PolyrhythmViewer } from '../PolyrhythmViewer.js';
+import { TrackMeta } from './TrackMeta.js';
+import { TrackControls } from './TrackControls.js';
 
 
 type TrackViewerCallbacks = {
@@ -16,8 +18,6 @@ type TrackViewerCallbacks = {
 
 
 export const TrackPlayerContext = createContext<TrackPlayer>(null);
-
-const smButtonClasses = 'options-button push-button small solo-mute-button';
 
 
 export function TrackViewer({trackPlayer, callbacks}:{trackPlayer:TrackPlayer, callbacks:TrackViewerCallbacks}): JSX.Element {
@@ -53,57 +53,7 @@ export function TrackViewer({trackPlayer, callbacks}:{trackPlayer:TrackPlayer, c
 }
 
 
-function TrackMeta({track, toggleControls}
-  : {track:Track, toggleControls:() => void}
-): JSX.Element {
-  const instrumentName = track.instrument.displayName;
-  return (
-    <div
-      className="track-meta"
-      style={{backgroundColor:track.colour}}
-    >
-      {instrumentName}
-      <div className="buttons-wrapper">
-        <SoloMuteButtons />
-        <button className="options-button push-button small gray" onClick={toggleControls}>
-          <img src="images/icons/wrench.svg" alt="options"/>
-        </button>
-      </div>
-    </div>
-  );
-}
-
-
-function SoloMuteButtons(): JSX.Element {
-  const trackPlayer = useContext(TrackPlayerContext);
-  const [soloed, setSoloed] = useState(trackPlayer.soloMute === 'solo');
-  const [muted, setMuted] = useState(trackPlayer.soloMute === 'mute');
-
-  useSubscription(trackPlayer, () => {
-    setSoloed(trackPlayer.soloMute === 'solo');
-    setMuted(trackPlayer.soloMute === 'mute');
-  })
-
-  const solo = () => trackPlayer.soloMute = (trackPlayer.soloMute === 'solo' ? null : 'solo');
-  const mute = () => trackPlayer.soloMute = (trackPlayer.soloMute === 'mute' ? null : 'mute');
-  const soloButtonColour = soloed ? 'lighter-green' : 'gray';
-  const muteButtonColour = muted ? 'dark-blue' : 'gray';
-
-
-  return (
-    <>
-      <button className={`${smButtonClasses} ${soloButtonColour}`} onClick={solo}>
-        S
-      </button>
-      <button className={`${smButtonClasses} ${muteButtonColour}`} onClick={mute}>
-        M
-      </button>
-    </>
-  );
-}
-
-
-function NoteLine({track, callbacks}:{track:Track, callbacks:TrackViewerCallbacks}): JSX.Element {
+function NoteLine({track, callbacks}:{track:TrackView, callbacks:TrackViewerCallbacks}): JSX.Element {
   const noteLineRef = useRef<HTMLDivElement>(null);
   const [notes, setNotes] = useState([...track.notes]);
   const [polyrhythms, setPolyrhythms] = useState([...track.polyrhythms]);
@@ -140,7 +90,7 @@ function NoteLine({track, callbacks}:{track:Track, callbacks:TrackViewerCallback
 }
 
 
-function repositionPolyrhythmViewer(polyrhythm:Polyrhythm, polyrhythmViewer:HTMLDivElement) {
+function repositionPolyrhythmViewer(polyrhythm:PolyrhythmView, polyrhythmViewer:HTMLDivElement) {
   const startNoteViewer = document.getElementById(`note-${polyrhythm.start.id}`);
   const endNoteViewer = document.getElementById(`note-${polyrhythm.end.id}`);
 
@@ -157,27 +107,6 @@ function repositionPolyrhythmViewer(polyrhythm:Polyrhythm, polyrhythmViewer:HTML
 
   polyrhythmViewer.style.left = `${startLeft}px`;
   polyrhythmViewer.style.width = `calc(${endLeft - startLeft}px - var(--thick-border-width)`;
-}
-
-
-function TrackControls(
-  {track, overlayName}:{track:Track, overlayName:string}): JSX.Element {
-  return (
-    <div className="track-controls">
-      <button className="push-button gray"
-        onClick={() => track.arrangement.removeTrack(track)}
-      >Remove track</button>
-      <button className="push-button gray"
-        onClick={() => {
-          track.clear();
-          toggleOverlay(overlayName, 'hide');
-        }}
-      >Clear track</button>
-      <button className="push-button gray"
-        onClick={() => toggleOverlay(overlayName, 'hide')}
-      >Cancel</button>
-    </div>
-  );
 }
 
 

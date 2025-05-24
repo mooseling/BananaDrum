@@ -1,5 +1,6 @@
-import { TimeParams, Timing } from './types.js';
+import { TimeParams, Timing } from './types/general.js';
 import { createPublisher } from './Publisher.js';
+import { calculateStepsPerBar } from './utils.js';
 
 export function createTimeParams(
     timeSignature: string, tempo: number, length: number, pulse: string, stepResolution: number): TimeParams {
@@ -85,9 +86,8 @@ export function createTimeParams(
   // Whenever any params change, we generate the list of timings from scratch again
   function regenerateTimings() {
     timings.length = 0;
-    const [beatsPerBar, beatNoteValue] = timeSignature.split('/').map((value: string) => Number(value));
-    const stepsPerBeat = stepResolution / beatNoteValue;
-    const stepsPerBar = stepsPerBeat * beatsPerBar;
+    const stepsPerBar = calculateStepsPerBar(timeSignature, stepResolution);
+
     for (let bar = 1; bar <= length; bar++) {
       for (let step = 1; step <= stepsPerBar; step++)
         timings.push({bar, step});

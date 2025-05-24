@@ -6,6 +6,9 @@ import { SelectionManager } from "../SelectionManager";
 import { ExpandingSpacer } from "./ExpandingSpacer";
 import { OverlayStateContext } from "./Overlay";
 import { SmallSpacer } from "./SmallSpacer";
+import { useEditCommand, EditFunction } from '../hooks/useEditCommand';
+import { ArrangementPlayerContext } from './arrangement/ArrangementViewer';
+import { ArrangementView } from 'bananadrum-core';
 
 
 
@@ -13,9 +16,11 @@ const digitMatcher = /^\d$/;
 
 
 export function SelectionControls(): JSX.Element {
+  const arrangement = useContext(ArrangementPlayerContext).arrangement;
   const selectionManager = useContext(SelectionManagerContext);
   const overlayState = useContext(OverlayStateContext);
   const polyrhythmInputRef = useRef<HTMLInputElement>(null);
+  const edit = useEditCommand();
 
   const [addingPolyrhythm, setAddingPolyrhythm] = useState(false);
 
@@ -46,7 +51,7 @@ export function SelectionControls(): JSX.Element {
 
         <button
           className="push-button"
-          onClick={() => (selectionManager.selections.forEach(({selectedNotes}) => selectedNotes.forEach(note => note.noteStyle = null)), selectionManager.deselectAll())}
+          onClick={() => (edit({arrangement, clearSelection:selectionManager.selections}), selectionManager.deselectAll())}
         >Clear sounds</button>
 
         <ExpandingSpacer />
@@ -65,7 +70,7 @@ export function SelectionControls(): JSX.Element {
           pattern="[0-9]*"
           onKeyPress={event => {
             if (event.key === 'Enter')
-              createPolyrhythm((event.target as HTMLInputElement).value, selectionManager);
+              createPolyrhythm((event.target as HTMLInputElement).value, selectionManager, arrangement, edit);
           }}
           ref={polyrhythmInputRef}
           />
@@ -73,7 +78,7 @@ export function SelectionControls(): JSX.Element {
 
         <button
           className="push-button"
-          onClick={() => createPolyrhythm(polyrhythmInputRef.current?.value, selectionManager)}
+          onClick={() => createPolyrhythm(polyrhythmInputRef.current?.value, selectionManager, arrangement, edit)}
         >go!</button>
 
         <ExpandingSpacer />
@@ -89,15 +94,12 @@ export function SelectionControls(): JSX.Element {
 }
 
 
-function createPolyrhythm (inputValue:string, selectionManager:SelectionManager): void {
-  const polyrhythmLength = Number(inputValue);
-  if (!polyrhythmLength)
+function createPolyrhythm(inputValue:string, selectionManager:SelectionManager, arrangement:ArrangementView, edit:EditFunction): void {
+  const length = Number(inputValue);
+  if (!length)
     return;
 
-  selectionManager.selections.forEach(({range}) => {
-    const [start, end] = range;
-    start.track.addPolyrhythm(start, end, polyrhythmLength);
-  });
+  edit({arrangement, addPolyrhythms:{length, selection:selectionManager.selections}})
 
   selectionManager.deselectAll();
 }

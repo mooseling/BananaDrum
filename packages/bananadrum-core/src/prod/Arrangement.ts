@@ -1,4 +1,4 @@
-import { TimeParams, Arrangement, Track, Instrument } from './types.js';
+import { TimeParams, Arrangement, Track, Instrument } from './types/general.js';
 import { createTrack } from './Track.js';
 import { createPublisher } from './Publisher.js';
 
@@ -25,9 +25,9 @@ export function createArrangement(timeParams:TimeParams, title?:string): Arrange
 
 
   // We keep tracks in order right here, so the rest of the app doesn't have to fiddle around figuring this out
-  function addTrack(instrument:Instrument): Track {
+  function addTrack(instrument:Instrument, id?:number): Track {
     const index = tracks.findIndex(track => track.instrument.displayOrder > instrument.displayOrder);
-    const track = createTrack(arrangement, instrument);
+    const track = createTrack(arrangement, instrument, id);
     if (index === -1)
       tracks.push(track);
     else
@@ -45,6 +45,7 @@ export function createArrangement(timeParams:TimeParams, title?:string): Arrange
       return true;
     } else {
       console.warn("Tried to remove a track but no reference to it. id: " + trackToRemove.id);
+      throw new Error();
     }
   }
 }

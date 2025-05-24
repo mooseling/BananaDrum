@@ -1,21 +1,16 @@
-import { Arrangement, Instrument, Note, Polyrhythm, Timing, Track } from './types.js';
+import { Arrangement, Instrument, Note, Polyrhythm, Timing, Track } from './types/general.js';
 import { createNote } from './Note.js';
 import { createPublisher } from './Publisher.js';
 import { TrackClipboard } from './TrackClipboard.js';
-import { getColour } from './colours.js';
-import { isSameTiming } from './utils.js';
-
-let polyrhythmCounter = 0;
+import { exists, getNewId, isSameTiming } from './utils.js';
 
 
-export function createTrack(arrangement:Arrangement, instrument:Instrument): Track {
-  const id = getNewId();
+export function createTrack(arrangement:Arrangement, instrument:Instrument, id:number = getNewId()): Track {
   const publisher = createPublisher();
   const notes:Note[] = [];
   const polyrhythms:Polyrhythm[] = [];
-  const colour = getColour(instrument.colourGroup);
   const track:Track = {
-    id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm, getNoteAt, clear, getNoteIterator, colour,
+    id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm, getNoteAt, clear, getNoteIterator,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
   };
 
@@ -51,20 +46,20 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
   }
 
 
-  function addPolyrhythm(start:Note, end:Note, length:number) {
+  function addPolyrhythm(start:Note, end:Note, length:number, id:number = getNewId(), index?:number) {
     if (length < 1)
       return;
 
-    const polyrhythm = {
-      start, end,
-      id: `${++polyrhythmCounter}`,
-      notes:[]
-    };
+    const polyrhythm = {start, end, id, notes:[]};
 
     polyrhythm.notes = Array.from(Array(length))
       .map((_, index) => createNote(track, {bar:1, step:index}, polyrhythm));
 
-    polyrhythms.push(polyrhythm);
+    if (exists(index))
+      polyrhythms.splice(index, 0, polyrhythm);
+    else
+      polyrhythms.push(polyrhythm);
+
     publisher.publish();
   }
 
@@ -217,28 +212,4 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument): Tra
     arrangement.timeParams.unsubscribe(handleTimeParamsChange);
     arrangement.unsubscribe(destroySelfIfNeeded);
   }
-}
-
-
-
-
-
-
-// ==================================================================
-//                       Private Static Functions
-// ==================================================================
-
-
-
-
-// Track-ids need to be unique, so we simply bung a globally increasing counter on them
-let trackCounter = 0;
-// We need unique identifiers for tracks, even if their instrument is the same
-// This needs to work even if instruments have been deleted
-
-// Even though these are strings, ArrangementViewer relies on them being numbers!
-// Bad, I know...
-function getNewId(): string {
-  trackCounter++;
-  return `${trackCounter}`;
 }

@@ -4,6 +4,7 @@ import { getShareLink } from 'bananadrum-core';
 import { toggleOverlay } from './Overlay.js';
 import { ArrangementPlayerContext } from './arrangement/ArrangementViewer.js';
 import { useStateSubscription } from '../hooks/useStateSubscription.js';
+import { BananaDrumContext } from '../BananaDrumUi.js';
 
 
 const haveNativeSharing = navigator.share !== undefined;
@@ -12,15 +13,14 @@ const haveClipboardAccess = navigator.clipboard !== undefined;
 
 export function Share(): JSX.Element {
   const [url, setUrl] = useState('');
-  const arrangementPlayer = useContext(ArrangementPlayerContext);
-  const arrangement = arrangementPlayer.arrangement;
+  const bananaDrum = useContext(BananaDrumContext);
 
   const close = () => {
     toggleOverlay('share', 'hide');
     setUrl('');
   }
 
-  const showLink = () => setUrl(getShareLink(arrangement));
+  const showLink = () => setUrl(getShareLink(bananaDrum.currentState));
   const selectContent = useCallback(event => window.getSelection().selectAllChildren(event.currentTarget), []);
 
   return (

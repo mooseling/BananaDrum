@@ -1,9 +1,8 @@
 import bigInt from 'big-integer';
 import { assert } from 'chai';
 import { describe, it } from 'mocha';
-import { testableFunctions } from '../../prod/serialisation.js';
+import { convertToBaseN, interpretAsBaseN, urlDecodeNumber, urlEncodeNumber } from '../../prod/serialisation/numeric_functions.js';
 
-const {urlEncodeNumber, urlDecodeNumber, interpretAsBaseN, convertToBaseN} = testableFunctions;
 
 
 describe('URL encoding numbers', function() {

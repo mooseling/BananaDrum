@@ -164,7 +164,13 @@ input, select {
 }
 
 input.short, select.short {
-    width: 40pt;
+  width: 40pt;
+}
+
+@media only screen and (max-width: 600px) {
+  input.short, select.short {
+    width: 30pt;
+  }
 }
 
 input.long, select.long {
@@ -190,6 +196,38 @@ input.long, select.long {
 
   #share-button img {
     display: inline-block;
+  }
+}
+
+.other-controls-wrapper {
+  display: flex;
+}
+
+button.push-button.edit-title-button {
+  font-size: 20.5pt;
+  font-family: serif;
+  text-transform: capitalize; /* .push-button normally lower-cases contents */
+  line-height: 1em;
+}
+
+.undo-redo-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+@media only screen and (max-width: 430px) {
+  .other-controls-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  button.push-button.edit-title-button {
+    font-size: 15pt;
+    margin-bottom: 5pt;
+  }
+
+  .undo-redo-wrapper {
+    height: 23pt;
   }
 }
 
@@ -693,13 +731,14 @@ button.push-button.dark-blue {
   background-color: var(--dark-blue);
 }
 
-button.push-button:active {
+button.push-button:not(:disabled):active {
   top: 2px;
   box-shadow: inset 0px 2px 1px 0px rgba(0, 0, 0, .1);
 }
 
 button.push-button:disabled {
   cursor: auto;
+  filter: brightness(0.5);
 }
 
 /* anchor buttons are just meant to look like anchors */

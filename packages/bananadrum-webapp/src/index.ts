@@ -1,8 +1,9 @@
-import { createBananaDrum } from 'bananadrum-core';
+import { createBananaDrum, getSerialisedArrangementFromParams } from 'bananadrum-core';
 import { createBananaDrumPlayer } from 'bananadrum-player';
 import { createBananaDrumUi } from 'bananadrum-ui';
 import { bateriaInstruments } from './bateria-instruments';
 import { demoSongString } from './demo-song';
+import { SerialisedArrangement } from 'bananadrum-core/dist/prod/serialisation/serialisers';
 
 
 // Once this script is loaded, we replace "Loading..." with the load button
@@ -43,25 +44,16 @@ function createLoadingMessage() {
 }
 
 
-function getSerialisedArrangement() {
+function getSerialisedArrangement(): SerialisedArrangement {
   const searchParams = new URLSearchParams(window.location.search);
+  const serialisedArrangement = getSerialisedArrangementFromParams(searchParams);
 
-  const title = searchParams.get('t') || undefined; // SearchParams.get can return null, but we prefer undefined
-
-  const sharedArrangement2 = searchParams.get('a2');
-  if (sharedArrangement2) {
-    // Want to prevent people copying the url thinking it encodes their latest changes
+  if (serialisedArrangement) {
     removeSharedArrangementFromUrl();
-    return {serialisedArrangement:sharedArrangement2, version:2, title};
+    return serialisedArrangement;
   }
 
-  const sharedArrangementV1 = searchParams.get('a');
-  if (sharedArrangementV1) {
-    removeSharedArrangementFromUrl();
-    return {serialisedArrangement:sharedArrangementV1, version:1, title};
-  }
-
-  return {serialisedArrangement:demoSongString, version:2, title};
+  return {composition:demoSongString, version:2, title: ''};
 }
 
 
