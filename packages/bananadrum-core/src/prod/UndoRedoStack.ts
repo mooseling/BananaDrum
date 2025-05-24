@@ -115,7 +115,7 @@ export function createUndoRedoStack(arrangement:ArrangementView): UndoRedoStack 
     queuedSquashTimeout = setTimeout(() => {
       squashRecentNoteCycling(past);
       squashIsQueued = false;
-    }, 5_000);
+    }, 2500);
     squashIsQueued = true;
   }
 }
