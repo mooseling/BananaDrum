@@ -5,6 +5,7 @@ import { toggleOverlay } from './Overlay.js';
 import { ArrangementPlayerContext } from './arrangement/ArrangementViewer.js';
 import { useStateSubscription } from '../hooks/useStateSubscription.js';
 import { BananaDrumContext } from '../BananaDrumUi.js';
+import { SmallSpacer } from './SmallSpacer.js';
 
 
 const haveNativeSharing = navigator.share !== undefined;
@@ -56,28 +57,37 @@ export function Share(): JSX.Element {
 
 
 function ShareOrCopyButton({url}:{url:string}): JSX.Element {
-  const arrangementPlayer = useContext(ArrangementPlayerContext);
-  const arrangement = arrangementPlayer.arrangement;
+  return (
+    <div id="share-link-buttons" style={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
+      {haveNativeSharing ? <NativeShareButton url={url} /> : null}
+      {haveNativeSharing && haveClipboardAccess ? <SmallSpacer /> : null}
+      {haveClipboardAccess ? <CopyUrlButton url={url} /> : null}
+    </div>
+  );
+}
 
-  const [copyText, setCopyText] = useState('copy');
 
+function NativeShareButton({url}:{url:string}): JSX.Element {
+  const arrangement = useContext(ArrangementPlayerContext).arrangement;
   const arrangementTitle = useStateSubscription(arrangement, arrangement => arrangement.title);
   const sharedTitle = arrangementTitle ? arrangementTitle + ' - Banana Drum' : 'Banana Drum - Samba Rhythms';
 
-  if (haveNativeSharing) {
-    return (
+  return (
       <button
-        className="push-button shiny-link"
+        className="push-button"
         onClick={() => navigator.share({
           url,
           title: sharedTitle
         })}
       >share</button>
     );
-  }
+}
 
-  if (haveClipboardAccess) {
-    return (
+
+function CopyUrlButton({url}:{url:string}): JSX.Element {
+  const [copyText, setCopyText] = useState('copy');
+
+  return (
       <button
         className="push-button"
         onClick={
@@ -93,7 +103,4 @@ function ShareOrCopyButton({url}:{url:string}): JSX.Element {
         }
       >{copyText}</button>
     );
-  }
-
-  return null;
 }
