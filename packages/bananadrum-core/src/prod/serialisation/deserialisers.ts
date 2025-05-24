@@ -19,13 +19,13 @@ export function deserialiseArrangement(serialisedArrangement:SerialisedArrangeme
 
   const baseNoteCount = calculateStepsPerBar(timeParams.timeSignature, timeParams.stepResolution) * timeParams.length;
   const tracks = chunks.slice(5)
-    .map(serialisedTrack => deserlialiseTrack(serialisedTrack, baseNoteCount, serialisedArrangement.version));
+    .map(serialisedTrack => deserialiseTrack(serialisedTrack, baseNoteCount, serialisedArrangement.version));
 
   return {title, timeParams, tracks};
 }
 
 
-function deserlialiseTrack(serialisedTrack:string, baseNoteCount:number, version:number): TrackSnapshot {
+function deserialiseTrack(serialisedTrack:string, baseNoteCount:number, version:number): TrackSnapshot {
   const instrumentId = serialisedTrack[0];
 
   let splitterIndex = serialisedTrack.indexOf('-');
@@ -50,7 +50,7 @@ function deserialisePolyrhythms(serialisedPolyrhythms:string, version:number): P
   if (serialisedPolyrhythms === '')
     return [];
 
-  if (version >= 2) // On version 2, we compacted the string. See comment on unpackPolyrhythmString
+  if (version >= 2) // On version 2, we compacted the string. See comment above
     serialisedPolyrhythms = unpackPolyrhythmString(serialisedPolyrhythms);
 
   const interpretChunk = version >= 2
@@ -74,7 +74,8 @@ function deserialisePolyrhythms(serialisedPolyrhythms:string, version:number): P
 }
 
 
-
+// Returns a string like 0-7-6-2-13-19...
+// This string was compacted using our url-encoding approach that we use for notes
 function unpackPolyrhythmString(packedPolyrhythmsString:string): string {
   const polyrhythmsAsBigInt = urlDecodeNumber(packedPolyrhythmsString);
   const polyrhythmStringAsNumbers = convertToBaseN(polyrhythmsAsBigInt, 11);
@@ -112,6 +113,7 @@ function deserialiseNotes(serialisedNotes:string, instrumentId:string, trackNote
   const musicInBaseN = convertToBaseN(notesAsNumber, base);
 
   // Since the notes are "concatted" into a number, any rests at the start become leading zeroes, and disappear
+  // We have to work out how many there were, and put them back
   const leadingZeroesRequired = trackNoteCount - musicInBaseN.length;
   musicInBaseN.unshift(...Array.from(new Array(leadingZeroesRequired)).map(() => 0));
 
