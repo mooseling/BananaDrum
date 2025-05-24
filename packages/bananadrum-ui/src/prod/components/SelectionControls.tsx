@@ -8,6 +8,7 @@ import { OverlayStateContext } from "./Overlay";
 import { SmallSpacer } from "./SmallSpacer";
 import { useEditCommand, EditFunction } from '../hooks/useEditCommand';
 import { ArrangementPlayerContext } from './arrangement/ArrangementViewer';
+import { ArrangementView } from 'bananadrum-core';
 
 
 
@@ -93,7 +94,7 @@ export function SelectionControls(): JSX.Element {
 }
 
 
-function createPolyrhythm(inputValue:string, selectionManager:SelectionManager, arrangement, edit:EditFunction): void {
+function createPolyrhythm(inputValue:string, selectionManager:SelectionManager, arrangement:ArrangementView, edit:EditFunction): void {
   const length = Number(inputValue);
   if (!length)
     return;
