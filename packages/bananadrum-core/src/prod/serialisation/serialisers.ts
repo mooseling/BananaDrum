@@ -1,4 +1,4 @@
-import { getLibrary } from '../Library.js';
+import { getNoteStyleCount } from '../Library.js';
 import { ArrangementSnapshot, TrackSnapshot } from '../types/snapshots.js';
 import { polyrhythmCharacterToNumber, serialisationVersion, urlCharacterToNumber } from './constants.js';
 import { interpretAsBaseN, urlEncodeNumber } from './numeric_functions.js';
@@ -39,8 +39,7 @@ function serialiseTrackSnapshot(trackSnapshot:TrackSnapshot): string {
 
 function serialiseNotes(trackSnapshot:TrackSnapshot): string {
   const notesStylesAsNumbers = trackSnapshot.notes.map(noteChar => urlCharacterToNumber[noteChar]);
-  const instrument = getLibrary().getInstrument(trackSnapshot.instrumentId);
-  const base:number = Object.keys(instrument.noteStyles).length + 1; // + 1 for rests
+  const base = getNoteStyleCount(trackSnapshot.instrumentId);
   const notesAsNumber = interpretAsBaseN(notesStylesAsNumbers, base);
 
   return urlEncodeNumber(notesAsNumber);

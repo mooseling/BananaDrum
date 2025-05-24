@@ -78,3 +78,9 @@ function createInstrument(packedInstrument:PackedInstrument): Instrument {
 
   return instrument;
 }
+
+
+export function getNoteStyleCount(instrumentId:string): number {
+  const instrument = getLibrary().getInstrument(instrumentId);
+  return Object.keys(instrument.noteStyles).length + 1; // + 1 for rests
+}

@@ -1,4 +1,4 @@
-import { getLibrary } from '../Library.js';
+import { getNoteStyleCount } from '../Library.js';
 import { ArrangementSnapshot, PolyrhythmSnapshot, TrackSnapshot } from '../types/snapshots.js';
 import { calculateStepsPerBar, getNewId } from '../utils.js';
 import { polyrhythmNumberToCharacter, urlNumberToCharacter } from './constants.js';
@@ -108,8 +108,7 @@ function getNoteCountWithPolyrhythms(baseNoteCount:number, polyrhythmSnapshots:P
 
 function deserialiseNotes(serialisedNotes:string, instrumentId:string, trackNoteCount:number): string[] {
   const notesAsNumber = urlDecodeNumber(serialisedNotes);
-  const instrument = getLibrary().getInstrument(instrumentId);
-  const base = Object.keys(instrument.noteStyles).length + 1; // + 1 for rests
+  const base = getNoteStyleCount(instrumentId);
   const musicInBaseN = convertToBaseN(notesAsNumber, base);
 
   // Since the notes are "concatted" into a number, any rests at the start become leading zeroes, and disappear
