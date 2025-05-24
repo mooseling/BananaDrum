@@ -17,7 +17,12 @@ export interface SerialisedArrangement {
 export function serialiseArrangementSnapshot(arrangementSnapshot:ArrangementSnapshot): SerialisedArrangement {
   const tp = arrangementSnapshot.timeParams;
   let serialisedArrangement = `${tp.timeSignature}.${tp.tempo}.${tp.length}.${tp.pulse}.${tp.stepResolution}`;
+
+  // We can't have "/" in the url, but it appears in timeSignature and stepResolution
   serialisedArrangement = serialisedArrangement.replaceAll('/', '-');
+
+  // First character is instrument-ID, with no separator after
+  // We assume that more than 64 instruments is a long way off, and we can introduce a new serialisation version then
   arrangementSnapshot.tracks.forEach(trackSnapshot => serialisedArrangement += '.' + serialiseTrackSnapshot(trackSnapshot));
 
   return {
@@ -47,11 +52,11 @@ function serialiseNotes(trackSnapshot:TrackSnapshot): string {
 
 
 function serialisePolyrhythms(trackSnapshot:TrackSnapshot): string {
-  const unpackedPolyrhythms = trackSnapshot.polyrhythms
+  const polyrhythmString = trackSnapshot.polyrhythms
     .map(({start, end, length}) => `${start}-${end - start}-${length}`)
     .join('-');
 
-  return packPolyrhythmString(unpackedPolyrhythms);
+  return packPolyrhythmString(polyrhythmString);
 }
 
 
