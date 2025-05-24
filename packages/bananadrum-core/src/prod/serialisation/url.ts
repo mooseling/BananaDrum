@@ -19,13 +19,11 @@ export function getShareLink(arrangementSnapshot:ArrangementSnapshot): string {
 export function getSerialisedArrangementFromParams(searchParams:URLSearchParams): SerialisedArrangement {
   const title = searchParams.get('t') || undefined; // SearchParams.get can return null, but we prefer undefined
 
-  const sharedArrangement2 = searchParams.get('a2');
-  if (sharedArrangement2)
-    return {composition:sharedArrangement2, version:2, title};
+  if (searchParams.get('a2'))
+    return {composition:searchParams.get('a2'), version:2, title};
 
-  const sharedArrangementV1 = searchParams.get('a');
-  if (sharedArrangementV1)
-    return {composition:sharedArrangementV1, version:1, title};
+  if (searchParams.get('a'))
+    return {composition:searchParams.get('a'), version:1, title};
 
   return null;
 }
