@@ -81,7 +81,7 @@ export function NoteViewer({note}:{note:NoteView}): JSX.Element {
       style={{backgroundColor}}
     >
       <TouchHoldDetector
-          holdLength={500}
+          holdLength={1100}
           callback={handleTouchHold}
         >
         <div className="note-details-viewer" >
