@@ -50,8 +50,12 @@ export function NoteViewer({note}:{note:NoteView}): JSX.Element {
       modeManager.selectByMouseOverMode
       && event.buttons === 1 // Primary button, and no others, is held down
     ) {
-      selectionManager.handleClick(note);
+      selectionManager.handleDragSelect(note);
     }
+  }, []);
+
+  const handleMouseDown = useCallback(() => {
+    selectionManager.handleMouseDown(note);
   }, []);
 
   const handleTouchHold = useCallback(() => {
@@ -69,6 +73,7 @@ export function NoteViewer({note}:{note:NoteView}): JSX.Element {
       id={idString}
       className={classString}
       onClick={handleClick}
+      onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       style={{backgroundColor}}
     >
