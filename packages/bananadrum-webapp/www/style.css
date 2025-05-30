@@ -530,6 +530,9 @@ So we're putting them in each track-viewer, where we can position them with no p
   user-select: none;
   background-color: white;
   overflow-x: hidden;
+
+  /* Some browsers use this. It's a nice effect but confusing when selecting. */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .note-viewer * {
