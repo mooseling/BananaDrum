@@ -556,7 +556,7 @@ So we're putting them in each track-viewer, where we can position them with no p
 }
 
 .note-viewer:active .hold-detector {
-  opacity: 20%;
+  opacity: 30%;
 }
 
 .note-viewer * {
