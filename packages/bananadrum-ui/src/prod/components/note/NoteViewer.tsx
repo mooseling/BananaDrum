@@ -36,12 +36,10 @@ export function NoteViewer({note}:{note:NoteView}): JSX.Element {
     if (event.shiftKey || modeManager.mobileSelectionMode) {
       selectionManager.handleClick(note);
     } else if (!modeManager.selectByMouseOverMode) { // We ignore the click event at the end of a select-by-mouseover action
-      if (selectionManager.selections.size) {
+      if (selectionManager.selections.size)
         selectionManager.deselectAll();
-      } else {
+      else
         cycleNoteStyle(note, edit);
-        selectionManager.deselectAll();
-      }
     }
 
     event.stopPropagation();
@@ -52,13 +50,12 @@ export function NoteViewer({note}:{note:NoteView}): JSX.Element {
       modeManager.selectByMouseOverMode
       && event.buttons === 1 // Primary button, and no others, is held down
     ) {
-      selectionManager.handleClick(note);
+      selectionManager.handleDragSelect(note);
     }
   }, []);
 
-  const handleMouseDown = useCallback((event:React.MouseEvent) => {
-    if (!event.shiftKey && !modeManager.mobileSelectionMode)
-      selectionManager.deselectAll();
+  const handleMouseDown = useCallback(() => {
+    selectionManager.handleMouseDown(note);
   }, []);
 
   const handleTouchHold = useCallback(() => {
@@ -76,12 +73,12 @@ export function NoteViewer({note}:{note:NoteView}): JSX.Element {
       id={idString}
       className={classString}
       onClick={handleClick}
-      onMouseMove={handleMouseMove}
       onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
       style={{backgroundColor}}
     >
       <TouchHoldDetector
-          holdLength={500}
+          holdLength={1100}
           callback={handleTouchHold}
         >
         <div className="note-details-viewer" >

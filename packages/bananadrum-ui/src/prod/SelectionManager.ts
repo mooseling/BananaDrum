@@ -3,6 +3,8 @@ import { createPublisher, NoteView, Subscribable, TrackView } from "bananadrum-c
 export interface SelectionManager extends Subscribable {
   isSelected(note:NoteView): boolean
   handleClick(note:NoteView): void
+  handleMouseDown(note:NoteView)
+  handleDragSelect(note:NoteView)
   deselectAll(): void
   selections: Map<TrackView, TrackSelection>
 }
@@ -18,10 +20,11 @@ export function createSelectionManager(): SelectionManager {
   const publisher = createPublisher();
   const trackSelections:Map<TrackView, TrackSelection> = new Map();
   let anchor:NoteView|null = null;
-  let lastClickedNote:NoteView|null = null;
+  let lastClickedNote:NoteView|null = null; // lastClickedNote is so we can skip rejigging selection when nothing will change
+  let lastMouseDownNote:NoteView|null = null; // In select-by-drag mode, this will be the anchor
 
   return {
-    isSelected, handleClick, deselectAll, selections: trackSelections,
+    isSelected, handleClick, handleMouseDown, handleDragSelect, deselectAll, selections: trackSelections,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
   };
 
@@ -35,11 +38,19 @@ export function createSelectionManager(): SelectionManager {
 
 
   function handleClick(clickedNote:NoteView) {
-    if (clickedNote === lastClickedNote)
-      return;
+    if (clickedNote === lastClickedNote) {
+      // Special case: Deselect when clicking the anchor, if it's the only note selected
+      // This should only be the case if the anchor was clicked last
+      if (clickedNote === anchor)
+        deselectAll();
+
+      return; // No new work to do, so just return
+    }
 
     lastClickedNote = clickedNote;
 
+    // Selecting one note is much easier than selecting more
+    // So if we're starting a selection, or dropping down to just the anchor, we can use a simpler function
     if (!trackSelections.size || clickedNote === anchor)
       return restartSelection(clickedNote);
 
@@ -95,6 +106,18 @@ export function createSelectionManager(): SelectionManager {
     }
 
     publisher.publish();
+  }
+
+
+  function handleMouseDown(note:NoteView): void {
+    lastMouseDownNote = note;
+  }
+
+
+  function handleDragSelect(note:NoteView): void {
+    if (anchor !== lastMouseDownNote)
+      restartSelection(lastMouseDownNote);
+    handleClick(note);
   }
 
 
