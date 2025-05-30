@@ -535,6 +535,30 @@ So we're putting them in each track-viewer, where we can position them with no p
   -webkit-tap-highlight-color: transparent;
 }
 
+.track-viewer[data-colour-group="yellow"] .note-viewer:active .hold-detector {
+  background-color: var(--secondary-purple);
+}
+
+.track-viewer[data-colour-group="orange"] .note-viewer:active .hold-detector {
+  background-color: var(--secondary-blue);
+}
+
+.track-viewer[data-colour-group="green"] .note-viewer:active .hold-detector {
+  background-color: var(--secondary-red);
+}
+
+.track-viewer[data-colour-group="blue"] .note-viewer:active .hold-detector {
+  background-color: var(--secondary-orange);
+}
+
+.track-viewer[data-colour-group="purple"] .note-viewer:active .hold-detector {
+  background-color: var(--secondary-green);
+}
+
+.note-viewer:active .hold-detector {
+  opacity: 20%;
+}
+
 .note-viewer * {
   -webkit-user-select: none;
   user-select: none;
