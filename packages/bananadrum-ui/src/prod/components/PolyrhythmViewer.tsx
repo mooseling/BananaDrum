@@ -1,6 +1,6 @@
 import { PolyrhythmView } from "bananadrum-core";
 import { useContext, useState } from "react";
-import { ModeManagerContext } from "../BananaDrumUi";
+import { ModeManagerContext } from "../components/BananaDrumViewer.js";
 import { useSubscription } from "../hooks/useSubscription";
 import { NoteViewer } from "./note/NoteViewer";
 import { useEditCommand } from '../hooks/useEditCommand';

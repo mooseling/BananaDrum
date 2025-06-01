@@ -2,7 +2,7 @@ import { NoteView, NoteStyle, Subscribable, isSameTiming, EditCommand } from 'ba
 import { createAudioBufferPlayer, TrackPlayer, ArrangementPlayer } from 'bananadrum-player';
 import { useState, useContext, useCallback, useMemo } from 'react';
 import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer.js';
-import { ModeManagerContext, SelectionManagerContext } from '../../BananaDrumUi.js';
+import { ModeManagerContext, SelectionManagerContext } from '../../components/BananaDrumViewer.js';
 import { useSubscription } from '../../hooks/useSubscription.js';
 import { TrackPlayerContext } from '../track/TrackViewer.js';
 import { TouchHoldDetector } from '../TouchHoldDetector.js';

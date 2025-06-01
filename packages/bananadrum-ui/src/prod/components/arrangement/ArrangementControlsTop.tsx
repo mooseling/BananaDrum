@@ -1,7 +1,7 @@
 import { ArrangementView } from "bananadrum-core";
 import { getEventEngine } from "bananadrum-player";
 import { useCallback, useContext, useRef, useState } from "react";
-import { SelectionManagerContext } from "../../BananaDrumUi";
+import { SelectionManagerContext } from "../../components/BananaDrumViewer.js";
 import { useSubscription } from "../../hooks/useSubscription";
 import { ExpandingSpacer } from "../ExpandingSpacer";
 import { Overlay, toggleOverlay } from "../Overlay";

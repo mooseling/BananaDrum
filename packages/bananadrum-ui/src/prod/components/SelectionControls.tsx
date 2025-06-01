@@ -1,5 +1,5 @@
 import { useContext, useRef, useState } from "react";
-import { SelectionManagerContext } from "../BananaDrumUi";
+import { SelectionManagerContext } from "../components/BananaDrumViewer.js";
 import { useKeyboardEvent } from "../hooks/useKeyboardEvent";
 import { useSubscription } from "../hooks/useSubscription";
 import { SelectionManager } from "../SelectionManager";

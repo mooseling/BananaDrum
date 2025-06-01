@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { BananaDrumContext } from '../../BananaDrumUi';
+import { BananaDrumContext } from '../BananaDrumViewer.js';
 import { useStateSubscription } from '../../hooks/useStateSubscription';
 import { SmallSpacer } from '../SmallSpacer.js';
 
