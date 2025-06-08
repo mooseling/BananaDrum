@@ -6,7 +6,7 @@ import { ExpandingSpacer } from '../ExpandingSpacer.js';
 import { SmallSpacer } from '../SmallSpacer.js';
 import { useSubscription } from '../../hooks/useSubscription.js'
 import { useArrangementAndTracksSubscription } from '../../hooks/useArrangementAndTracksSubscription.js'
-import { ModeManagerContext } from '../../BananaDrumUi.js';
+import { ModeManagerContext } from "../BananaDrumViewer.js";
 import { useEditCommand } from '../../hooks/useEditCommand.js';
 
 
