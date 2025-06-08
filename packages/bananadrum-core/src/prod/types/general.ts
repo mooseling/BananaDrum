@@ -13,6 +13,7 @@ export interface BananaDrum {
   topics: {
     canUndo: Subscribable
     canRedo: Subscribable
+    currentState: Subscribable
   }
 }
 
