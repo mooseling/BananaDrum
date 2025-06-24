@@ -6,14 +6,14 @@ import { ExpandingSpacer } from '../ExpandingSpacer.js';
 import { SmallSpacer } from '../SmallSpacer.js';
 import { useSubscription } from '../../hooks/useSubscription.js'
 import { useArrangementAndTracksSubscription } from '../../hooks/useArrangementAndTracksSubscription.js'
-import { ModeManagerContext } from "../BananaDrumViewer.js";
+import { ServicesContext } from "../BananaDrumViewer.js";
 import { useEditCommand } from '../../hooks/useEditCommand.js';
 
 
 
 export function ArrangementControlsBottom(): JSX.Element {
   const arrangement:ArrangementView = useContext(ArrangementPlayerContext).arrangement;
-  const modeManager = useContext(ModeManagerContext);
+  const modeManager = useContext(ServicesContext).modeManager;
   const edit = useEditCommand();
 
   const [arePolyrhythms, setArePolyrhythms] = useState(hasPolyrhythms(arrangement));

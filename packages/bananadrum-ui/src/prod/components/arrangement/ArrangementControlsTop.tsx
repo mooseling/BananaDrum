@@ -1,7 +1,7 @@
 import { ArrangementView } from "bananadrum-core";
 import { getEventEngine } from "bananadrum-player";
 import { useCallback, useContext, useRef, useState } from "react";
-import { SelectionManagerContext } from "../../components/BananaDrumViewer.js";
+import { ServicesContext } from "../../components/BananaDrumViewer.js";
 import { useSubscription } from "../../hooks/useSubscription";
 import { ExpandingSpacer } from "../ExpandingSpacer";
 import { Overlay, toggleOverlay } from "../Overlay";
@@ -25,7 +25,7 @@ export function ArrangementControlsTop(): JSX.Element {
 
   const arrangement:ArrangementView = useContext(ArrangementPlayerContext).arrangement;
 
-  const selectionManager = useContext(SelectionManagerContext);
+  const selectionManager = useContext(ServicesContext).selectionManager;
   useSubscription(selectionManager, () => toggleOverlay('selection_controls', selectionManager.selections.size ? 'show' : 'hide'));
 
   const [editingTitle, setEditingTitle] = useState(false);
