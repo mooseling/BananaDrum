@@ -1,17 +1,8 @@
 import { getNoteStyleCount } from '../Library.js';
-import { ArrangementSnapshot, TrackSnapshot } from '../types/snapshots.js';
+import { ArrangementSnapshot, SerialisedArrangement, TrackSnapshot } from '../types/snapshots.js';
 import { polyrhythmCharacterToNumber, serialisationVersion, urlCharacterToNumber } from './constants.js';
 import { interpretAsBaseN, urlEncodeNumber } from './numeric_functions.js';
 
-
-
-// The main purpose of this object is to turn into a shareable link
-// So the properties line up with what will be separate query params
-export interface SerialisedArrangement {
-  title: string
-  composition: string
-  version: number
-}
 
 
 export function serialiseArrangementSnapshot(arrangementSnapshot:ArrangementSnapshot): SerialisedArrangement {

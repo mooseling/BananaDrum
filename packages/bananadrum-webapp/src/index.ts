@@ -1,9 +1,9 @@
-import { createBananaDrum, getSerialisedArrangementFromParams } from 'bananadrum-core';
+import { createBananaDrum, getSerialisedArrangementFromParams, SerialisedArrangement } from 'bananadrum-core';
 import { createBananaDrumPlayer } from 'bananadrum-player';
 import { createBananaDrumUi } from 'bananadrum-ui';
 import { bateriaInstruments } from './bateria-instruments';
 import { demoSongString } from './demo-song';
-import { SerialisedArrangement } from 'bananadrum-core/dist/prod/serialisation/serialisers';
+
 
 
 // Once this script is loaded, we replace "Loading..." with the load button

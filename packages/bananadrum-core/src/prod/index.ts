@@ -8,3 +8,4 @@ export { errorLog } from './ErrorLog.js';
 
 export { BananaDrum, ArrangementView, TrackView, NoteView, NoteStyle, Polyrhythm, PolyrhythmView, InstrumentMeta, RealTime, Timing, TimeParamsView, Publisher, Subscribable, Subscription, MutingRule, MutingRuleOtherInstrument, PackedInstrument } from './types/general.js';
 export * from './types/edit_commands.js';
+export { SerialisedArrangement } from './types/snapshots.js'

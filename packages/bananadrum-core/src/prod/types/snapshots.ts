@@ -29,3 +29,12 @@ export interface TimeParamsSnapshot {
   pulse: string,
   stepResolution: number
 }
+
+
+// The main purpose of this object is to turn into a shareable link
+// So the properties line up with what will be separate query params
+export interface SerialisedArrangement {
+  title: string
+  composition: string
+  version: number
+}
