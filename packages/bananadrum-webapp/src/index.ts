@@ -1,4 +1,4 @@
-import { createBananaDrum, getSerialisedArrangementFromParams, SerialisedArrangement } from 'bananadrum-core';
+import { ArrangementSnapshot, createBananaDrum, deserialiseArrangement, getLibrary, getSerialisedArrangementFromParams } from 'bananadrum-core';
 import { createBananaDrumPlayer } from 'bananadrum-player';
 import { createBananaDrumUi } from 'bananadrum-ui';
 import { bateriaInstruments } from './bateria-instruments';
@@ -15,12 +15,15 @@ loadButton.innerText = 'Yes!';
 loadButton.addEventListener('click', function() {
   this.replaceWith(createLoadingMessage());
 
-  const bananaDrum = createBananaDrum(bateriaInstruments, getSerialisedArrangement());
+  const library = getLibrary();
+  library.load(bateriaInstruments);
+
+  const bananaDrum = createBananaDrum(library, getArrangementSnapshot());
   const bananaDrumPlayer = createBananaDrumPlayer(bananaDrum);
   const bananaDrumUi = createBananaDrumUi(bananaDrumPlayer, document.getElementById('wrapper'));
 
   // Expose some things for testing:
-  const {arrangement, library} = bananaDrum;
+  const {arrangement} = bananaDrum;
   const {arrangementPlayer} = bananaDrumPlayer;
   Object.assign(window, {arrangement, arrangementPlayer, library, bananaDrum, bananaDrumPlayer, bananaDrumUi});
 
@@ -44,16 +47,16 @@ function createLoadingMessage() {
 }
 
 
-function getSerialisedArrangement(): SerialisedArrangement {
+function getArrangementSnapshot(): ArrangementSnapshot {
   const searchParams = new URLSearchParams(window.location.search);
   const serialisedArrangement = getSerialisedArrangementFromParams(searchParams);
 
   if (serialisedArrangement) {
     removeSharedArrangementFromUrl();
-    return serialisedArrangement;
+    return deserialiseArrangement(serialisedArrangement);
   }
 
-  return {composition:demoSongString, version:2, title: ''};
+  return deserialiseArrangement({composition:demoSongString, version:2, title: ''});
 }
 
 
