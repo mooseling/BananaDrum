@@ -13,12 +13,8 @@ if (sharedArrangement) {
   // We don't need to reset the tab-ID, we are expecting this to be a new tab
   loadButtonWrapper.innerHTML = "<p>Ready to load this beat?</p>"
 
-  if (sharedArrangement.title) {
-    const titleElement = document.createElement('h4');
-    titleElement.innerText = sharedArrangement.title;
-    loadButtonWrapper.append(titleElement);
-  }
-  
+  showBeatTitle(loadButtonWrapper, sharedArrangement.title);
+
   const loadButton = createButton('Yes!');
   loadButton.addEventListener('click', () => load(sharedArrangement));
   loadButtonWrapper.append(loadButton);
@@ -28,6 +24,8 @@ if (sharedArrangement) {
 
   if (snapshotInTabState) {
     loadButtonWrapper.innerHTML = "<p>There was already a beat in this tab. Load it?</p>"
+
+    showBeatTitle(loadButtonWrapper, snapshotInTabState.title);
 
     const loadSnapshotButton = createButton('Continue beat');
     loadSnapshotButton.addEventListener('click', () => load(snapshotInTabState));
@@ -107,4 +105,13 @@ function load(arrangementToLoad:ArrangementSnapshot|SerialisedArrangement) {
     document.title = arrangement.title + ' - Banana Drum';
 
   arrangement.subscribe(() => document.title = arrangement.title ? arrangement.title + ' - Banana Drum' : 'Banana Drum');
+}
+
+
+function showBeatTitle(wrapper:HTMLDivElement, title:string): void {
+  if (title) {
+    const titleElement = document.createElement('h4');
+    titleElement.innerText = title;
+    loadButtonWrapper.append(titleElement);
+  }
 }
