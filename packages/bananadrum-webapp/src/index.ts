@@ -20,7 +20,7 @@ if (sharedArrangement) {
   const demoArrangement = {composition:demoSongString, version:2, title: ''};
 
   if (snapshotInTabState) {
-    loadButtonWrapper.innerHTML = "<p>There's a beat in progress here. Load it?</p>"
+    loadButtonWrapper.innerHTML = "<p>There was already a beat in this tab. Load it?</p>"
 
     const loadSnapshotButton = createButton('Continue beat');
     loadSnapshotButton.addEventListener('click', () => load(snapshotInTabState));
@@ -31,6 +31,7 @@ if (sharedArrangement) {
       startNewState();
       load(demoArrangement);
     });
+    loadDemoButton.style.marginLeft = '8pt'
     loadButtonWrapper.append(loadDemoButton);
   } else {
     loadButtonWrapper.innerHTML = "<p>Ready to make some beats?</p>"
