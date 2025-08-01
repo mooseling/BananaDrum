@@ -4,19 +4,21 @@ import { StrictMode, createElement } from 'react';
 import { BananaDrumViewer } from "./components/BananaDrumViewer.js";
 import { AnimationEngine, BananaDrumUi } from './types.js';
 import { getAnimationEngine } from './AnimationEngine.js';
-import { HistoryController } from './HistoryController.js';
 import { createKeyboardHandler } from './KeyboardHandler.js';
 import { createModeManager, ModeManager } from './ModeManager.js';
 import { createMouseHandler } from './MouseHandler.js';
 import { createSelectionManager, SelectionManager } from './SelectionManager.js';
+import { initTabStateTracking } from './tab-state.js';
+import { initBackButtonHandling } from './window-history.js';
+import { handleMobilePopstate } from './components/Overlay.js';
+import { isMobile } from './isMobile.js';
 
 
 export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HTMLElement): BananaDrumUi {
-  const services = instantiateServices(bananaDrumPlayer)
+  const services = initServices(bananaDrumPlayer)
 
   createRoot(wrapper).render(
     createElement(StrictMode, {},
-      // There used to be lots of context providers here, but they are in <BananaDrumViewer> now
       createElement(BananaDrumViewer, {bananaDrumPlayer, services})
     )
   );
@@ -32,15 +34,18 @@ export interface BananaDrumUiServices {
 }
 
 
-function instantiateServices(bananaDrumPlayer:BananaDrumPlayer): BananaDrumUiServices {
-  HistoryController.init();
-  
+function initServices(bananaDrumPlayer:BananaDrumPlayer): BananaDrumUiServices {
+
   const animationEngine = getAnimationEngine(bananaDrumPlayer.eventEngine);
   const selectionManager = createSelectionManager();
   const modeManager = createModeManager(selectionManager);
 
   createKeyboardHandler(bananaDrumPlayer.eventEngine, bananaDrumPlayer.bananaDrum, selectionManager, modeManager);
   createMouseHandler(modeManager, selectionManager);
+  initTabStateTracking(bananaDrumPlayer.bananaDrum);
+
+  if (isMobile)
+    initBackButtonHandling(handleMobilePopstate);
 
   return {animationEngine, selectionManager, modeManager}
 }
