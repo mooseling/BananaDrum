@@ -12,6 +12,13 @@ const sharedArrangement = getSharedArrangement();
 if (sharedArrangement) {
   // We don't need to reset the tab-ID, we are expecting this to be a new tab
   loadButtonWrapper.innerHTML = "<p>Ready to load this beat?</p>"
+
+  if (sharedArrangement.title) {
+    const titleElement = document.createElement('h4');
+    titleElement.innerText = sharedArrangement.title;
+    loadButtonWrapper.append(titleElement);
+  }
+  
   const loadButton = createButton('Yes!');
   loadButton.addEventListener('click', () => load(sharedArrangement));
   loadButtonWrapper.append(loadButton);
