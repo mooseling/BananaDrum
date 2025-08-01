@@ -2,19 +2,19 @@ import { BananaDrum, ArrangementSnapshot } from 'bananadrum-core';
 
 
 // TabID is generated and saved in window.history as soon as the bundle runs
-export const [tabId, loadedWithTabId] = getOrGenerateTabId();
-const STATE_KEY = `${tabId}-state`;
+let tabId:string, stateKey:string;
+initVariables();
 
 
 export function initTabStateTracking(bananadrum:BananaDrum) {
   bananadrum.topics.currentState.subscribe(() => {
-    setTimeout(() => localStorage.setItem(STATE_KEY, JSON.stringify(bananadrum.currentState)), 0)
+    setTimeout(() => localStorage.setItem(stateKey, JSON.stringify(bananadrum.currentState)), 0)
   });
 }
 
 
 export function getSavedState(): ArrangementSnapshot | null {
-  const stateString = localStorage.getItem(STATE_KEY);
+  const stateString = localStorage.getItem(stateKey);
   if (stateString === null)
     return null;
 
@@ -22,21 +22,27 @@ export function getSavedState(): ArrangementSnapshot | null {
 }
 
 
-function getOrGenerateTabId(): [string, boolean] {
+function initVariables(): void {
   const tabIdInHistoryState = window.history.state?.tabId;
   if (tabIdInHistoryState) {
-    return [
-      tabIdInHistoryState,
-      true // Indicates page loaded with existing TabID
-    ];
+    tabId = tabIdInHistoryState;
+    setStateKey();
+  } else {
+    startNewState();
   }
-
   // TODO: Investigate also saving tabID into sessionStorage, which might cover some other browser cases
+}
 
-  const tabId = generateUniqueId();
+
+export function startNewState(): void {
+  tabId = generateUniqueId();
+  setStateKey();
   window.history.replaceState({tabId}, '');
+}
 
-  return [tabId, false]; // False indicates page was not loaded with an existing TabID
+
+function setStateKey(): void {
+  stateKey = `${tabId}-state`;
 }
 
 

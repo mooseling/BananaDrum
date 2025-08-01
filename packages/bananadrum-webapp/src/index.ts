@@ -1,6 +1,6 @@
 import { ArrangementSnapshot, createBananaDrum, deserialiseArrangement, getLibrary, getSerialisedArrangementFromParams, SerialisedArrangement } from 'bananadrum-core';
 import { createBananaDrumPlayer } from 'bananadrum-player';
-import { createBananaDrumUi, getSavedState, loadedWithTabId, tabId } from 'bananadrum-ui';
+import { createBananaDrumUi, getSavedState, startNewState } from 'bananadrum-ui';
 import { bateriaInstruments } from './bateria-instruments';
 import { demoSongString } from './demo-song';
 
@@ -10,6 +10,7 @@ const loadButtonWrapper = document.createElement('div');
 // We need to know if there's a shared beat, or a beat to reload in this tab, or neither
 const sharedArrangement = getSharedArrangement();
 if (sharedArrangement) {
+  // We don't need to reset the tab-ID, we are expecting this to be a new tab
   loadButtonWrapper.innerHTML = "<p>Ready to load this beat?</p>"
   const loadButton = createButton('Yes!');
   loadButton.addEventListener('click', () => load(sharedArrangement));
@@ -26,9 +27,11 @@ if (sharedArrangement) {
     loadButtonWrapper.append(loadSnapshotButton);
 
     const loadDemoButton = createButton('Start fresh');
-    loadDemoButton.addEventListener('click', () => load(demoArrangement));
+    loadDemoButton.addEventListener('click', () => {
+      startNewState();
+      load(demoArrangement);
+    });
     loadButtonWrapper.append(loadDemoButton);
-    // TODO: Generate new tabID?
   } else {
     loadButtonWrapper.innerHTML = "<p>Ready to make some beats?</p>"
     const loadButton = createButton('Yes!');
@@ -90,7 +93,7 @@ function load(arrangementToLoad:ArrangementSnapshot|SerialisedArrangement) {
   // Expose some things for testing:
   const {arrangement} = bananaDrum;
   const {arrangementPlayer} = bananaDrumPlayer;
-  Object.assign(window, {arrangement, arrangementPlayer, library, bananaDrum, bananaDrumPlayer, bananaDrumUi, loadedWithTabId, tabId});
+  Object.assign(window, {arrangement, arrangementPlayer, library, bananaDrum, bananaDrumPlayer, bananaDrumUi});
 
   if (arrangement.title)
     document.title = arrangement.title + ' - Banana Drum';

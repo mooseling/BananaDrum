@@ -8,9 +8,9 @@ export function initBackButtonHandling(handler:()=>boolean): void {
   // We should have tabID in history.state as soon as the script executes, so we preserve the state
   window.history.pushState(window.history.state, '');
 
-  window.addEventListener('popstate', () => {
-    // If we ever store more data in history, we will have to make sure to copy it to the new state at this point
-    // But currently it's just tabID, which doesn't change
+  window.addEventListener('popstate', (event) => {
+    // It's possible that tabID changed
+    window.history.replaceState(event.state, '');
 
     const shouldGoBack = handler();
     if (shouldGoBack)
