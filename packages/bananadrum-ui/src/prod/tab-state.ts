@@ -29,7 +29,7 @@ function initVariables(): void {
 
   if (retrievedTabId) {
     tabId = retrievedTabId;
-    setStateKey();
+    stateKey = `${tabId}-state`;
   } else {
     startNewState();
   }
@@ -38,14 +38,9 @@ function initVariables(): void {
 
 export function startNewState(): void {
   tabId = generateUniqueId();
-  setStateKey();
+  stateKey = `${tabId}-state`;
   window.history.replaceState({tabId}, '');
   sessionStorage.setItem('tabId', tabId);
-}
-
-
-function setStateKey(): void {
-  stateKey = `${tabId}-state`;
 }
 
 
