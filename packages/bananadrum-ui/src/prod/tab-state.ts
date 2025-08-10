@@ -23,14 +23,16 @@ export function getSavedState(): ArrangementSnapshot | null {
 
 
 function initVariables(): void {
-  const tabIdInHistoryState = window.history.state?.tabId;
-  if (tabIdInHistoryState) {
-    tabId = tabIdInHistoryState;
+  let retrievedTabId = window.history.state?.tabId;
+  if (!retrievedTabId)
+    retrievedTabId = sessionStorage.getItem('tabId');
+
+  if (retrievedTabId) {
+    tabId = retrievedTabId;
     setStateKey();
   } else {
     startNewState();
   }
-  // TODO: Investigate also saving tabID into sessionStorage, which might cover some other browser cases
 }
 
 
@@ -38,6 +40,7 @@ export function startNewState(): void {
   tabId = generateUniqueId();
   setStateKey();
   window.history.replaceState({tabId}, '');
+  sessionStorage.setItem('tabId', tabId);
 }
 
 
