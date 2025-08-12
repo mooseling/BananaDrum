@@ -7,9 +7,32 @@ initVariables();
 
 
 export function initTabStateTracking(bananadrum:BananaDrum) {
-  bananadrum.topics.currentState.subscribe(() => {
-    setTimeout(() => localStorage.setItem(stateKey, JSON.stringify(bananadrum.currentState)), 0)
-  });
+  const existingState = localStorage.getItem(stateKey);
+
+  if (existingState) {
+    // If we're continuing previous work, we want to start tracking immediately
+    bananadrum.topics.currentState.subscribe(() => {
+      setTimeout(() => localStorage.setItem(stateKey, JSON.stringify(bananadrum.currentState)), 0)
+    });
+  } else {
+    // If starting fresh, wait for a few changes to happen before tracking the state
+    // No sense gumming up the history with nothings
+    let changeCounter = 0;
+
+    const countDownToStartTracking = () => {
+      changeCounter++;
+      if (changeCounter === 4) {
+        bananadrum.topics.currentState.unsubscribe(countDownToStartTracking);
+
+        // Tracking won't start until next change, here we are just turning it on.
+        bananadrum.topics.currentState.subscribe(() => {
+          setTimeout(() => localStorage.setItem(stateKey, JSON.stringify(bananadrum.currentState)), 0)
+        });
+      }
+    }
+
+    bananadrum.topics.currentState.subscribe(countDownToStartTracking);
+  }
 }
 
 
