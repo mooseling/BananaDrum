@@ -52,7 +52,7 @@ function getExistingSessionId(): string | null {
 
 
 export function resetSessionVariables(desiredSessionId?:string): void {
-  sessionId = desiredSessionId || generateUniqueId();
+  sessionId = desiredSessionId || generateSessionId();
   stateKey = `state-${sessionId}`;
   startedAtKey = `startedAt-${sessionId}`;
   window.history.replaceState({sessionId}, '');
@@ -60,18 +60,25 @@ export function resetSessionVariables(desiredSessionId?:string): void {
 }
 
 
-function generateUniqueId(): string {
+function generateSessionId(): string {
+  let id: string;
+
   // We should basically always have access to crypto.randomUUID, despite tsc warnings
-  if (window.crypto.randomUUID)
-    return window.crypto.randomUUID();
+  if (window.crypto.randomUUID) {
+    id = window.crypto.randomUUID();
+  } else {
+    // Otherwise, we do our best to generate a non-clashing string
+    const randomNumber1 = Math.floor(Math.random() * 10_000_000_000); // 10 characters
+    const timeNow = Date.now(); // Should be 13 characters for the next 300 years or so
 
-  // Otherwise, we do our best to generate a non-clashing string
-  const randomNumber1 = Math.floor(Math.random() * 10_000_000_000); // 10 characters
-  const timeNow = Date.now(); // Should be 13 characters for the next 300 years or so
+    id = `${randomNumber1}-${timeNow}`; // 24 characters
+  }
 
-  // TODO: Check localStorage to see if this key is used. Simple.
+  // A clash seems really impossible but let's mitigate it anyway.
+  for (let i = 0; localStorage.getItem(`state-${id}`) && i < 100; i++)
+    id = id + '-';
 
-  return `${randomNumber1}-${timeNow}`; // 24 characters
+  return id;
 }
 
 
