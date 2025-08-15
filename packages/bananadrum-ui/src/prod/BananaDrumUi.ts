@@ -8,7 +8,7 @@ import { createKeyboardHandler } from './KeyboardHandler.js';
 import { createModeManager, ModeManager } from './ModeManager.js';
 import { createMouseHandler } from './MouseHandler.js';
 import { createSelectionManager, SelectionManager } from './SelectionManager.js';
-import { initTabStateTracking } from './tab-state.js';
+import { initSessionRecovery } from './session-recovery.js';
 import { initBackButtonHandling } from './window-history.js';
 import { handleMobilePopstate } from './components/Overlay.js';
 import { isMobile } from './isMobile.js';
@@ -42,7 +42,7 @@ function initServices(bananaDrumPlayer:BananaDrumPlayer): BananaDrumUiServices {
 
   createKeyboardHandler(bananaDrumPlayer.eventEngine, bananaDrumPlayer.bananaDrum, selectionManager, modeManager);
   createMouseHandler(modeManager, selectionManager);
-  initTabStateTracking(bananaDrumPlayer.bananaDrum);
+  initSessionRecovery(bananaDrumPlayer.bananaDrum);
 
   if (isMobile)
     initBackButtonHandling(handleMobilePopstate);

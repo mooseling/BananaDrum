@@ -1,2 +1,2 @@
 export { createBananaDrumUi } from './BananaDrumUi.js';
-export { getSavedState, setOrResetStateVariables} from './tab-state.js'
+export { getSessionSnapshot, resetSessionVariables} from './session-recovery.js'

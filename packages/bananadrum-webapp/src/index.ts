@@ -1,6 +1,6 @@
 import { ArrangementSnapshot, createBananaDrum, deserialiseArrangement, getLibrary, getSerialisedArrangementFromParams, SerialisedArrangement } from 'bananadrum-core';
 import { createBananaDrumPlayer } from 'bananadrum-player';
-import { createBananaDrumUi, getSavedState, setOrResetStateVariables } from 'bananadrum-ui';
+import { createBananaDrumUi, getSessionSnapshot, resetSessionVariables } from 'bananadrum-ui';
 import { bateriaInstruments } from './bateria-instruments';
 import { demoSongString } from './demo-song';
 
@@ -19,21 +19,21 @@ if (sharedArrangement) {
   loadButton.addEventListener('click', () => load(sharedArrangement));
   loadButtonWrapper.append(loadButton);
 } else {
-  const snapshotInTabState = getSavedState();
+  const sessionSnapshot = getSessionSnapshot();
   const demoArrangement = {composition:demoSongString, version:2, title: ''};
 
-  if (snapshotInTabState) {
+  if (sessionSnapshot) {
     loadButtonWrapper.innerHTML = "<p>There was already a beat in this tab. Load it?</p>"
 
-    showBeatTitle(loadButtonWrapper, snapshotInTabState.title);
+    showBeatTitle(loadButtonWrapper, sessionSnapshot.title);
 
     const loadSnapshotButton = createButton('Continue beat');
-    loadSnapshotButton.addEventListener('click', () => load(snapshotInTabState));
+    loadSnapshotButton.addEventListener('click', () => load(sessionSnapshot));
     loadButtonWrapper.append(loadSnapshotButton);
 
     const loadDemoButton = createButton('Start fresh');
     loadDemoButton.addEventListener('click', () => {
-      setOrResetStateVariables();
+      resetSessionVariables();
       load(demoArrangement);
     });
     loadDemoButton.style.marginLeft = '8pt'
