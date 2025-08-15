@@ -1,6 +1,6 @@
 import { ArrangementSnapshot, createBananaDrum, deserialiseArrangement, getLibrary, getSerialisedArrangementFromParams, SerialisedArrangement } from 'bananadrum-core';
 import { createBananaDrumPlayer } from 'bananadrum-player';
-import { createBananaDrumUi, getSavedState, startNewState } from 'bananadrum-ui';
+import { createBananaDrumUi, getSavedState, setOrResetStateVariables } from 'bananadrum-ui';
 import { bateriaInstruments } from './bateria-instruments';
 import { demoSongString } from './demo-song';
 
@@ -33,7 +33,7 @@ if (sharedArrangement) {
 
     const loadDemoButton = createButton('Start fresh');
     loadDemoButton.addEventListener('click', () => {
-      startNewState();
+      setOrResetStateVariables();
       load(demoArrangement);
     });
     loadDemoButton.style.marginLeft = '8pt'
