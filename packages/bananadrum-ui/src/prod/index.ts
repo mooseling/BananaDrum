@@ -1,2 +1,2 @@
 export { createBananaDrumUi } from './BananaDrumUi.js';
-export { getSessionSnapshot, resetSessionVariables} from './session-recovery.js'
+export { getSessionSnapshot, resetSessionVariables, areAnySavedSessions } from './session-recovery.js'

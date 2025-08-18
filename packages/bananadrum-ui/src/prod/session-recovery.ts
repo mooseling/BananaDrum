@@ -87,3 +87,13 @@ function saveSession(bananadrum:BananaDrum): void {
   const state = bananadrum.currentState;
   localStorage.setItem(stateKey, JSON.stringify({state, updatedAt}));
 }
+
+
+export function areAnySavedSessions(): boolean {
+  for(let index = 0; index < localStorage.length; index++) {
+    if (localStorage.key(index)?.startsWith('state-'))
+      return true;
+  }
+
+  return false;
+}
