@@ -39,8 +39,8 @@ if (sharedArrangement) {
     loadDemoButton.style.marginLeft = '8pt'
     loadButtonWrapper.append(loadDemoButton);
   } else {
-    loadButtonWrapper.innerHTML = "<p>Ready to make some beats?</p>"
-    const loadButton = createButton('Yes!');
+    const loadButton = createButton("start!");
+    loadButton.classList.add('shiny');
     loadButton.addEventListener('click', () => load(demoArrangement));
     loadButtonWrapper.append(loadButton);
   }
