@@ -1,6 +1,6 @@
 import { ArrangementSnapshot, createBananaDrum, deserialiseArrangement, getLibrary, getSerialisedArrangementFromParams, SerialisedArrangement } from 'bananadrum-core';
 import { createBananaDrumPlayer } from 'bananadrum-player';
-import { createBananaDrumUi, getSessionSnapshot, resetSessionVariables } from 'bananadrum-ui';
+import { areAnySavedSessions, createBananaDrumUi, getSessionSnapshot, resetSessionVariables } from 'bananadrum-ui';
 import { bateriaInstruments } from './bateria-instruments';
 import { demoSongString } from './demo-song';
 
@@ -47,6 +47,9 @@ if (sharedArrangement) {
 }
 
 document.getElementById('load-button-wrapper').replaceWith(loadButtonWrapper);
+
+if(areAnySavedSessions())
+  document.getElementById('if-old-beats').classList.remove('hidden');
 
 
 function createLoadingMessage() {
