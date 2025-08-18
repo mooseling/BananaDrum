@@ -39,7 +39,7 @@ export function Share(): JSX.Element {
               </>) :
               (<>
                 <h2>Ready to share this beat?</h2>
-                <button className="push-button shiny-link" onClick={showLink}>generate link!</button>
+                <button className="push-button shiny" onClick={showLink}>generate link!</button>
               </>)
             }
             <p>Send to your friends, save for yourself, or post it on <a href="https://www.facebook.com/bananadrum.net" target="_blank" rel="noreferrer">Banana Drum's Facebook page</a>!</p>
