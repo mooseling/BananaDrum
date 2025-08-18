@@ -9,6 +9,16 @@ let sessionId:string, stateKey:string, startedAtKey:string;
 resetSessionVariables(getExistingSessionId());
 
 
+interface SessionUpdate {
+  updatedAt: number
+  state: ArrangementSnapshot
+}
+
+interface SavedSession extends SessionUpdate {
+  startedAt: number
+}
+
+
 export function initSessionRecovery(bananadrum:BananaDrum) {
   const existingState = localStorage.getItem(stateKey);
 
@@ -40,7 +50,7 @@ export function getSessionSnapshot(): ArrangementSnapshot | null {
   if (stateString === null)
     return null;
 
-  return JSON.parse(stateString).state as ArrangementSnapshot;
+  return (JSON.parse(stateString) as SessionUpdate).state;
 }
 
 
@@ -96,4 +106,22 @@ export function areAnySavedSessions(): boolean {
   }
 
   return false;
+}
+
+
+export function getSessionList(): SavedSession[] {
+  const savedSessions:SavedSession[] = []
+
+  for (let index = 0; index < localStorage.length; index++) {
+    const key = localStorage.key(index);
+    if (key?.startsWith('state-')) {
+      const startedAt = Number(localStorage.getItem(`startedAt-${key.substring(6)}`));
+      const sessionUpdate = JSON.parse(localStorage.getItem(key)) as SessionUpdate;
+      savedSessions.push({startedAt, ...sessionUpdate});
+    }
+  }
+
+  const sortedSessions = savedSessions.sort((a, b) => b.updatedAt - a.updatedAt);
+
+  return sortedSessions;
 }
