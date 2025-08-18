@@ -47,8 +47,8 @@ import { demoSongString } from './demo-song';
       loadDemoButton.style.marginLeft = '8pt'
       loadButtonWrapper.append(loadDemoButton);
     } else {
-      loadButtonWrapper.innerHTML = "<p>Ready to make some beats?</p>"
-      const loadButton = createButton('Yes!');
+      const loadButton = createButton('Start!');
+      loadButton.classList.add('shiny');
       loadButton.addEventListener('click', () => load(loadButtonWrapper, demoArrangement));
       loadButtonWrapper.append(loadButton);
     }
