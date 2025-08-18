@@ -88,6 +88,10 @@ body {
   margin-right: auto;
 }
 
+.old-beat-link {
+  cursor: pointer
+}
+
 #wrapper {
   height: 100%;
 }
