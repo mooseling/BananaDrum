@@ -621,7 +621,7 @@ So we're putting them in each track-viewer, where we can position them with no p
   100% {background-color: hsl(29, 88%, 69%)}
 }
 
-.shiny-link {
+.shiny {
   animation: shinyLink 3s infinite alternate;
 }
 
