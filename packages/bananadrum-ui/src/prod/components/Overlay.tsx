@@ -107,7 +107,7 @@ function anyOverlaysAreOpen(): boolean {
 
 
 export function handleMobilePopstate() {
-  if (anyOverlaysAreOpen) {
+  if (anyOverlaysAreOpen()) {
     closeAllOverlays();
     return false; // False means we didn't really mean to go back
   }
