@@ -95,22 +95,3 @@ export function closeAllOverlays(): void {
   for (const name in overlayStates)
     overlayStates[name].visible = false;
 }
-
-
-function anyOverlaysAreOpen(): boolean {
-  for (const name in overlayStates) {
-    if (overlayStates[name].visible)
-      return true;
-  }
-  return false;
-}
-
-
-export function handleMobilePopstate() {
-  if (anyOverlaysAreOpen()) {
-    closeAllOverlays();
-    return false; // False means no, don't go back
-  }
-
-  return true; // True means yes, go back
-}

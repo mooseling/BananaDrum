@@ -9,9 +9,6 @@ import { createModeManager, ModeManager } from './ModeManager.js';
 import { createMouseHandler } from './MouseHandler.js';
 import { createSelectionManager, SelectionManager } from './SelectionManager.js';
 import { initSessionRecovery } from './session-recovery.js';
-import { initBackButtonHandling } from './window-history.js';
-import { handleMobilePopstate } from './components/Overlay.js';
-import { isMobile } from './isMobile.js';
 
 
 export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HTMLElement): BananaDrumUi {
@@ -43,9 +40,6 @@ function initServices(bananaDrumPlayer:BananaDrumPlayer): BananaDrumUiServices {
   createKeyboardHandler(bananaDrumPlayer.eventEngine, bananaDrumPlayer.bananaDrum, selectionManager, modeManager);
   createMouseHandler(modeManager, selectionManager);
   initSessionRecovery(bananaDrumPlayer.bananaDrum);
-
-  if (isMobile)
-    initBackButtonHandling(handleMobilePopstate);
 
   return {animationEngine, selectionManager, modeManager}
 }
