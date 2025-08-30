@@ -5,48 +5,50 @@ import { bateriaInstruments } from './bateria-instruments';
 import { demoSongString } from './demo-song';
 
 
-const loadButtonWrapper = document.createElement('div');
+window.addEventListener('load', () => {
+  const loadButtonWrapper = document.createElement('div');
 
-// We need to know if there's a shared beat, or a beat to reload in this tab, or neither
-const sharedArrangement = getSharedArrangement();
-if (sharedArrangement) {
-  // We don't need to reset the tab-ID, we are expecting this to be a new tab
-  loadButtonWrapper.innerHTML = "<p>Ready to load this beat?</p>"
+  // We need to know if there's a shared beat, or a beat to reload in this tab, or neither
+  const sharedArrangement = getSharedArrangement();
+  if (sharedArrangement) {
+    // We don't need to reset the tab-ID, we are expecting this to be a new tab
+    loadButtonWrapper.innerHTML = "<p>Ready to load this beat?</p>"
 
-  showBeatTitle(loadButtonWrapper, sharedArrangement.title);
+    showBeatTitle(loadButtonWrapper, sharedArrangement.title);
 
-  const loadButton = createButton('Yes!');
-  loadButton.addEventListener('click', () => load(sharedArrangement));
-  loadButtonWrapper.append(loadButton);
-} else {
-  const sessionSnapshot = getSessionSnapshot();
-  const demoArrangement = {composition:demoSongString, version:2, title: ''};
-
-  if (sessionSnapshot) {
-    loadButtonWrapper.innerHTML = "<p>There was already a beat in this tab. Load it?</p>"
-
-    showBeatTitle(loadButtonWrapper, sessionSnapshot.title);
-
-    const loadSnapshotButton = createButton('Continue beat');
-    loadSnapshotButton.addEventListener('click', () => load(sessionSnapshot));
-    loadButtonWrapper.append(loadSnapshotButton);
-
-    const loadDemoButton = createButton('Start fresh');
-    loadDemoButton.addEventListener('click', () => {
-      resetSessionVariables();
-      load(demoArrangement);
-    });
-    loadDemoButton.style.marginLeft = '8pt'
-    loadButtonWrapper.append(loadDemoButton);
-  } else {
-    loadButtonWrapper.innerHTML = "<p>Ready to make some beats?</p>"
     const loadButton = createButton('Yes!');
-    loadButton.addEventListener('click', () => load(demoArrangement));
+    loadButton.addEventListener('click', () => load(loadButtonWrapper, sharedArrangement));
     loadButtonWrapper.append(loadButton);
-  }
-}
+  } else {
+    const sessionSnapshot = getSessionSnapshot();
+    const demoArrangement = {composition:demoSongString, version:2, title: ''};
 
-document.getElementById('load-button-wrapper').replaceWith(loadButtonWrapper);
+    if (sessionSnapshot) {
+      loadButtonWrapper.innerHTML = "<p>There was already a beat in this tab. Load it?</p>"
+
+      showBeatTitle(loadButtonWrapper, sessionSnapshot.title);
+
+      const loadSnapshotButton = createButton('Continue beat');
+      loadSnapshotButton.addEventListener('click', () => load(loadButtonWrapper, sessionSnapshot));
+      loadButtonWrapper.append(loadSnapshotButton);
+
+      const loadDemoButton = createButton('Start fresh');
+      loadDemoButton.addEventListener('click', () => {
+        resetSessionVariables();
+        load(loadButtonWrapper, demoArrangement);
+      });
+      loadDemoButton.style.marginLeft = '8pt'
+      loadButtonWrapper.append(loadDemoButton);
+    } else {
+      loadButtonWrapper.innerHTML = "<p>Ready to make some beats?</p>"
+      const loadButton = createButton('Yes!');
+      loadButton.addEventListener('click', () => load(loadButtonWrapper, demoArrangement));
+      loadButtonWrapper.append(loadButton);
+    }
+  }
+
+  document.getElementById('loading-message-wrapper')?.replaceWith(loadButtonWrapper);
+});
 
 
 function createLoadingMessage() {
@@ -83,7 +85,7 @@ function createButton(innerText:string): HTMLButtonElement {
 }
 
 
-function load(arrangementToLoad:ArrangementSnapshot|SerialisedArrangement) {
+function load(loadButtonWrapper:HTMLDivElement, arrangementToLoad:ArrangementSnapshot|SerialisedArrangement) {
   loadButtonWrapper.replaceWith(createLoadingMessage());
 
   const library = getLibrary();
@@ -112,6 +114,6 @@ function showBeatTitle(wrapper:HTMLDivElement, title:string): void {
   if (title) {
     const titleElement = document.createElement('h4');
     titleElement.innerText = title;
-    loadButtonWrapper.append(titleElement);
+    wrapper.append(titleElement);
   }
 }
