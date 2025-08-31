@@ -31,7 +31,7 @@ import { demoSongString } from './demo-song';
     const demoArrangement = {composition:demoSongString, version:2, title: ''};
 
     if (sessionSnapshot) {
-      loadButtonWrapper.innerHTML = "<p>There was already a beat in this tab. Load it?</p>"
+      loadButtonWrapper.innerHTML = "<p>You've got a beat here. Pick up where you left off?</p>"
 
       showBeatTitle(loadButtonWrapper, sessionSnapshot.title);
 
