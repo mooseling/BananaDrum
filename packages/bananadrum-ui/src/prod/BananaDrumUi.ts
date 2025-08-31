@@ -1,44 +1,45 @@
 import { BananaDrumPlayer } from 'bananadrum-player';
 import { createRoot } from 'react-dom/client';
-import { StrictMode, createElement, createContext } from 'react';
-import { getAnimationEngine } from './AnimationEngine.js';
-import { HistoryController } from "./HistoryController.js";
-import { createKeyboardHandler } from "./KeyboardHandler.js";
+import { StrictMode, createElement } from 'react';
 import { BananaDrumViewer } from "./components/BananaDrumViewer.js";
-import { BananaDrumUi } from './types.js';
-import { createSelectionManager, SelectionManager } from './SelectionManager.js';
+import { AnimationEngine, BananaDrumUi } from './types.js';
+import { getAnimationEngine } from './AnimationEngine.js';
+import { createKeyboardHandler } from './KeyboardHandler.js';
 import { createModeManager, ModeManager } from './ModeManager.js';
 import { createMouseHandler } from './MouseHandler.js';
-import { BananaDrum } from 'bananadrum-core';
-
-export const SelectionManagerContext = createContext<SelectionManager>(null);
-export const ModeManagerContext = createContext<ModeManager>(null);
-export const BananaDrumContext = createContext<BananaDrum>(null);
+import { createSelectionManager, SelectionManager } from './SelectionManager.js';
+import { initSessionRecovery } from './session-recovery.js';
 
 
 export function createBananaDrumUi(bananaDrumPlayer:BananaDrumPlayer, wrapper:HTMLElement): BananaDrumUi {
-  HistoryController.init();
+  const services = initServices(bananaDrumPlayer)
 
+  createRoot(wrapper).render(
+    createElement(StrictMode, {},
+      createElement(BananaDrumViewer, {bananaDrumPlayer, services})
+    )
+  );
+
+  return {bananaDrumPlayer, wrapper};
+}
+
+
+export interface BananaDrumUiServices {
+  animationEngine: AnimationEngine
+  selectionManager: SelectionManager
+  modeManager: ModeManager
+}
+
+
+function initServices(bananaDrumPlayer:BananaDrumPlayer): BananaDrumUiServices {
+
+  const animationEngine = getAnimationEngine(bananaDrumPlayer.eventEngine);
   const selectionManager = createSelectionManager();
   const modeManager = createModeManager(selectionManager);
 
   createKeyboardHandler(bananaDrumPlayer.eventEngine, bananaDrumPlayer.bananaDrum, selectionManager, modeManager);
   createMouseHandler(modeManager, selectionManager);
+  initSessionRecovery(bananaDrumPlayer.bananaDrum);
 
-  const animationEngine = getAnimationEngine(bananaDrumPlayer.eventEngine);
-  const root = createRoot(wrapper);
-
-  root.render(
-    createElement(StrictMode, {},
-      createElement(BananaDrumContext.Provider, {value:bananaDrumPlayer.bananaDrum},
-        createElement(SelectionManagerContext.Provider, {value:selectionManager},
-          createElement(ModeManagerContext.Provider, {value:modeManager},
-            createElement(BananaDrumViewer, {arrangementPlayer: bananaDrumPlayer.arrangementPlayer, animationEngine})
-          )
-        )
-      )
-    )
-  );
-
-  return {bananaDrumPlayer, wrapper};
+  return {animationEngine, selectionManager, modeManager}
 }

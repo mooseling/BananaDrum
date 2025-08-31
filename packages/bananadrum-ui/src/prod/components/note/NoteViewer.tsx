@@ -2,7 +2,7 @@ import { NoteView, NoteStyle, Subscribable, isSameTiming, EditCommand } from 'ba
 import { createAudioBufferPlayer, TrackPlayer, ArrangementPlayer } from 'bananadrum-player';
 import { useState, useContext, useCallback, useMemo } from 'react';
 import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer.js';
-import { ModeManagerContext, SelectionManagerContext } from '../../BananaDrumUi.js';
+import { ServicesContext } from '../../components/BananaDrumViewer.js';
 import { useSubscription } from '../../hooks/useSubscription.js';
 import { TrackPlayerContext } from '../track/TrackViewer.js';
 import { TouchHoldDetector } from '../TouchHoldDetector.js';
@@ -16,8 +16,7 @@ const audioContext = new AudioContext();
 export function NoteViewer({note}:{note:NoteView}): JSX.Element {
   const arrangementPlayer = useContext(ArrangementPlayerContext);
   const trackPlayer = useContext(TrackPlayerContext);
-  const selectionManager = useContext(SelectionManagerContext);
-  const modeManager = useContext(ModeManagerContext);
+  const {selectionManager, modeManager} = useContext(ServicesContext);
   const timingPublisher:Subscribable = note.polyrhythm
     ? trackPlayer.currentPolyrhythmNotePublisher
     : arrangementPlayer.currentTimingPublisher;

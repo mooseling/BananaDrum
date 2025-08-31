@@ -1,5 +1,5 @@
 import { useContext, useRef, useState } from "react";
-import { SelectionManagerContext } from "../BananaDrumUi";
+import { ServicesContext } from "../components/BananaDrumViewer.js";
 import { useKeyboardEvent } from "../hooks/useKeyboardEvent";
 import { useSubscription } from "../hooks/useSubscription";
 import { SelectionManager } from "../SelectionManager";
@@ -17,7 +17,7 @@ const digitMatcher = /^\d$/;
 
 export function SelectionControls(): JSX.Element {
   const arrangement = useContext(ArrangementPlayerContext).arrangement;
-  const selectionManager = useContext(SelectionManagerContext);
+  const selectionManager = useContext(ServicesContext).selectionManager;
   const overlayState = useContext(OverlayStateContext);
   const polyrhythmInputRef = useRef<HTMLInputElement>(null);
   const edit = useEditCommand();

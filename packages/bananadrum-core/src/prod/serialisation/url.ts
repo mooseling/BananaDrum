@@ -1,6 +1,6 @@
-import { ArrangementSnapshot } from '../types/snapshots.js';
+import { ArrangementSnapshot, SerialisedArrangement } from '../types/snapshots.js';
 import { baseUrl } from './constants.js';
-import { serialiseArrangementSnapshot, SerialisedArrangement } from './serialisers.js';
+import { serialiseArrangementSnapshot } from './serialisers.js';
 
 
 

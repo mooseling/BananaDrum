@@ -1,39 +1,61 @@
-import { createBananaDrum, getSerialisedArrangementFromParams } from 'bananadrum-core';
+import { ArrangementSnapshot, createBananaDrum, deserialiseArrangement, getLibrary, getSerialisedArrangementFromParams, SerialisedArrangement } from 'bananadrum-core';
 import { createBananaDrumPlayer } from 'bananadrum-player';
-import { createBananaDrumUi } from 'bananadrum-ui';
+import { createBananaDrumUi, getSessionSnapshot, resetSessionVariables } from 'bananadrum-ui';
 import { bateriaInstruments } from './bateria-instruments';
 import { demoSongString } from './demo-song';
-import { SerialisedArrangement } from 'bananadrum-core/dist/prod/serialisation/serialisers';
 
 
-// Once this script is loaded, we replace "Loading..." with the load button
-const loadButton = document.createElement('button');
-loadButton.id = 'load-button';
-loadButton.className = 'push-button';
-loadButton.innerText = 'Yes!';
+// When this script executes, we update the existing DOM to show the "go!" button
+(function () {
+  // On Firefox iOS, on close/reopen, the DOM is reloaded from cache, but the script executes again
+  // We need to prevent that, so we check if the DOM is in the initial state first
+  const loadingMessageWrapper = document.getElementById('loading-message-wrapper');
+  if (!loadingMessageWrapper)
+    return;
 
-loadButton.addEventListener('click', function() {
-  this.replaceWith(createLoadingMessage());
+  const loadButtonWrapper = document.createElement('div');
 
-  const bananaDrum = createBananaDrum(bateriaInstruments, getSerialisedArrangement());
-  const bananaDrumPlayer = createBananaDrumPlayer(bananaDrum);
-  const bananaDrumUi = createBananaDrumUi(bananaDrumPlayer, document.getElementById('wrapper'));
+  // We need to know if there's a shared beat, or a beat to reload in this tab, or neither
+  const sharedArrangement = getSharedArrangement();
+  if (sharedArrangement) {
+    // We don't need to reset the tab-ID, we are expecting this to be a new tab
+    loadButtonWrapper.innerHTML = "<p>Ready to load this beat?</p>"
 
-  // Expose some things for testing:
-  const {arrangement, library} = bananaDrum;
-  const {arrangementPlayer} = bananaDrumPlayer;
-  Object.assign(window, {arrangement, arrangementPlayer, library, bananaDrum, bananaDrumPlayer, bananaDrumUi});
+    showBeatTitle(loadButtonWrapper, sharedArrangement.title);
 
-  if (arrangement.title)
-    document.title = arrangement.title + ' - Banana Drum';
+    const loadButton = createButton('Yes!');
+    loadButton.addEventListener('click', () => load(loadButtonWrapper, sharedArrangement));
+    loadButtonWrapper.append(loadButton);
+  } else {
+    const sessionSnapshot = getSessionSnapshot();
+    const demoArrangement = {composition:demoSongString, version:2, title: ''};
 
-  arrangement.subscribe(() => document.title = arrangement.title ? arrangement.title + ' - Banana Drum' : 'Banana Drum');
-});
+    if (sessionSnapshot) {
+      loadButtonWrapper.innerHTML = "<p>You've got a beat here. Pick up where you left off?</p>"
 
-const loadButtonWrapper = document.createElement('div');
-loadButtonWrapper.innerHTML = "<p>Ready to make some beats?</p>"
-loadButtonWrapper.append(loadButton);
-document.getElementById('load-button-wrapper').replaceWith(loadButtonWrapper);
+      showBeatTitle(loadButtonWrapper, sessionSnapshot.title);
+
+      const loadSnapshotButton = createButton('Continue beat');
+      loadSnapshotButton.addEventListener('click', () => load(loadButtonWrapper, sessionSnapshot));
+      loadButtonWrapper.append(loadSnapshotButton);
+
+      const loadDemoButton = createButton('Start fresh');
+      loadDemoButton.addEventListener('click', () => {
+        resetSessionVariables();
+        load(loadButtonWrapper, demoArrangement);
+      });
+      loadDemoButton.style.marginLeft = '8pt'
+      loadButtonWrapper.append(loadDemoButton);
+    } else {
+      loadButtonWrapper.innerHTML = "<p>Ready to make some beats?</p>"
+      const loadButton = createButton('Yes!');
+      loadButton.addEventListener('click', () => load(loadButtonWrapper, demoArrangement));
+      loadButtonWrapper.append(loadButton);
+    }
+  }
+
+  loadingMessageWrapper.replaceWith(loadButtonWrapper);
+})();
 
 
 function createLoadingMessage() {
@@ -44,7 +66,7 @@ function createLoadingMessage() {
 }
 
 
-function getSerialisedArrangement(): SerialisedArrangement {
+function getSharedArrangement(): SerialisedArrangement {
   const searchParams = new URLSearchParams(window.location.search);
   const serialisedArrangement = getSerialisedArrangementFromParams(searchParams);
 
@@ -52,12 +74,53 @@ function getSerialisedArrangement(): SerialisedArrangement {
     removeSharedArrangementFromUrl();
     return serialisedArrangement;
   }
-
-  return {composition:demoSongString, version:2, title: ''};
 }
 
 
 function removeSharedArrangementFromUrl() {
   const {origin, pathname} = window.location;
   window.history.replaceState({}, '', origin + pathname);
+}
+
+
+function createButton(innerText:string): HTMLButtonElement {
+  const button = document.createElement('button');
+  button.classList.add('push-button');
+  button.innerText = innerText
+
+  return button;
+}
+
+
+function load(loadButtonWrapper:HTMLDivElement, arrangementToLoad:ArrangementSnapshot|SerialisedArrangement) {
+  loadButtonWrapper.replaceWith(createLoadingMessage());
+
+  const library = getLibrary();
+  library.load(bateriaInstruments);
+
+  if ('composition' in arrangementToLoad)
+    arrangementToLoad = deserialiseArrangement(arrangementToLoad)
+
+  const bananaDrum = createBananaDrum(library, arrangementToLoad);
+  const bananaDrumPlayer = createBananaDrumPlayer(bananaDrum);
+  const bananaDrumUi = createBananaDrumUi(bananaDrumPlayer, document.getElementById('wrapper'));
+
+  // Expose some things for testing:
+  const {arrangement} = bananaDrum;
+  const {arrangementPlayer} = bananaDrumPlayer;
+  Object.assign(window, {arrangement, arrangementPlayer, library, bananaDrum, bananaDrumPlayer, bananaDrumUi});
+
+  if (arrangement.title)
+    document.title = arrangement.title + ' - Banana Drum';
+
+  arrangement.subscribe(() => document.title = arrangement.title ? arrangement.title + ' - Banana Drum' : 'Banana Drum');
+}
+
+
+function showBeatTitle(wrapper:HTMLDivElement, title:string): void {
+  if (title) {
+    const titleElement = document.createElement('h4');
+    titleElement.innerText = title;
+    wrapper.append(titleElement);
+  }
 }

@@ -1,13 +1,13 @@
 import { PolyrhythmView } from "bananadrum-core";
 import { useContext, useState } from "react";
-import { ModeManagerContext } from "../BananaDrumUi";
+import { ServicesContext } from "../components/BananaDrumViewer.js";
 import { useSubscription } from "../hooks/useSubscription";
 import { NoteViewer } from "./note/NoteViewer";
 import { useEditCommand } from '../hooks/useEditCommand';
 
 export function PolyrhythmViewer({polyrhythm}:{polyrhythm:PolyrhythmView}): JSX.Element {
   const track = polyrhythm.start.track;
-  const modeManager = useContext(ModeManagerContext);
+  const modeManager = useContext(ServicesContext).modeManager;
   const edit = useEditCommand();
 
   const [deleteMode, setDeleteMode] = useState(modeManager.deletePolyrhythmMode);

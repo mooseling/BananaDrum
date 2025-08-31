@@ -83,7 +83,7 @@ export function toggleOverlay(name:string, mode:'toggle'|'show'|'hide' = 'toggle
   }
 
   if (mode === 'show' || (mode === 'toggle' && !state.visible)) {
-    closeAllOverlays(name); // Not sure why we do this...
+    closeAllOverlays();
     state.visible = true;
   } else {
     state.visible = false;
@@ -91,18 +91,7 @@ export function toggleOverlay(name:string, mode:'toggle'|'show'|'hide' = 'toggle
 }
 
 
-export function closeAllOverlays(ignoreName?:string): void {
-  for (const name in overlayStates) {
-    if (!ignoreName || ignoreName !== name)
-      overlayStates[name].visible = false;
-  }
-}
-
-
-export function anyOverlaysAreOpen(): boolean {
-  for (const name in overlayStates) {
-    if (overlayStates[name].visible)
-      return true;
-  }
-  return false;
+export function closeAllOverlays(): void {
+  for (const name in overlayStates)
+    overlayStates[name].visible = false;
 }

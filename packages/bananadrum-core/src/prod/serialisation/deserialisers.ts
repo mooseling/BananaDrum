@@ -1,9 +1,10 @@
 import { getNoteStyleCount } from '../Library.js';
-import { ArrangementSnapshot, PolyrhythmSnapshot, TrackSnapshot } from '../types/snapshots.js';
+import { ArrangementSnapshot, PolyrhythmSnapshot, SerialisedArrangement, TrackSnapshot } from '../types/snapshots.js';
 import { calculateStepsPerBar, getNewId } from '../utils.js';
 import { polyrhythmNumberToCharacter, urlNumberToCharacter } from './constants.js';
 import { convertToBaseN, urlDecodeNumber } from './numeric_functions.js';
-import { SerialisedArrangement } from './serialisers.js';
+
+
 
 export function deserialiseArrangement(serialisedArrangement:SerialisedArrangement): ArrangementSnapshot {
   const {title, composition} = serialisedArrangement;

@@ -1,5 +1,5 @@
 import { useCallback, useContext } from 'react';
-import { BananaDrumContext } from '../BananaDrumUi';
+import { BananaDrumContext } from '../components/BananaDrumViewer.js';
 import { EditCommand } from 'bananadrum-core';
 
 

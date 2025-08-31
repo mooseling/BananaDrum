@@ -4,7 +4,7 @@ import { getShareLink } from 'bananadrum-core';
 import { toggleOverlay } from './Overlay.js';
 import { ArrangementPlayerContext } from './arrangement/ArrangementViewer.js';
 import { useStateSubscription } from '../hooks/useStateSubscription.js';
-import { BananaDrumContext } from '../BananaDrumUi.js';
+import { BananaDrumContext } from '../components/BananaDrumViewer.js';
 import { SmallSpacer } from './SmallSpacer.js';
 
 

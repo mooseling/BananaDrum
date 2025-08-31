@@ -7,7 +7,7 @@ import { Share } from '../Share.js';
 import { InstrumentBrowser } from '../InstrumentBrowser.js';
 import { Overlay, toggleOverlay } from '../Overlay.js';
 import { useState, useEffect, createContext, useRef, useContext, TouchEvent, Dispatch, SetStateAction } from 'react';
-import { AnimationEngineContext } from '../BananaDrumViewer.js';
+import { ServicesContext } from '../BananaDrumViewer.js';
 import { AnimationEngine } from '../../types.js';
 import { useSubscription } from '../../hooks/useSubscription.js';
 import { ArrangementControlsTop } from './ArrangementControlsTop.js';
@@ -26,7 +26,7 @@ export const NoteLineMinWidth = createContext<number>(null);
 export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:ArrangementPlayer}): JSX.Element {
   const {arrangement} = arrangementPlayer;
   const [, setTrackPlayerCount] = useState(arrangementPlayer.trackPlayers.size);
-  const animationEngine = useContext(AnimationEngineContext);
+  const animationEngine = useContext(ServicesContext).animationEngine;
 
   // Scroll-shadows over the track-viewers
   // We need to recalculate these classes when:
