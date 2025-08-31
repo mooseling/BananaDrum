@@ -5,7 +5,14 @@ import { bateriaInstruments } from './bateria-instruments';
 import { demoSongString } from './demo-song';
 
 
-window.addEventListener('load', () => {
+// When this script executes, we update the existing DOM to show the "go!" button
+(function () {
+  // On Firefox iOS, on close/reopen, the DOM is reloaded from cache, but the script executes again
+  // We need to prevent that, so we check if the DOM is in the initial state first
+  const loadingMessageWrapper = document.getElementById('loading-message-wrapper');
+  if (!loadingMessageWrapper)
+    return;
+
   const loadButtonWrapper = document.createElement('div');
 
   // We need to know if there's a shared beat, or a beat to reload in this tab, or neither
@@ -47,8 +54,8 @@ window.addEventListener('load', () => {
     }
   }
 
-  document.getElementById('loading-message-wrapper')?.replaceWith(loadButtonWrapper);
-});
+  loadingMessageWrapper.replaceWith(loadButtonWrapper);
+})();
 
 
 function createLoadingMessage() {
