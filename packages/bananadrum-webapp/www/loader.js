@@ -1,5 +1,5 @@
 (function() {
-  const bananaDrumVersion = '1.8.0snapshot8';
+  const bananaDrumVersion = '1.8.0snapshot10';
 
   let errorLog = "Sorry to hear you had problems running Banana Drum! Please copy this whole page and send it to James.\nDon't know James? Get in touch with Banana Drum on Facebook: https://facebook.com/bananadrum.net/\n\n\n";
   window.onerror =  function(message, url, lineNumber, columnNumber, error) {
