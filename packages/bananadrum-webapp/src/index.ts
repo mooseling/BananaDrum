@@ -55,32 +55,32 @@ import { demoSongString } from './demo-song';
   }
 
   loadingMessageWrapper.replaceWith(loadButtonWrapper);
-})();
 
-if(areAnySavedSessions()) {
-  document.getElementById('if-old-beats').classList.remove('hidden');
-  document.getElementById('toggle-old-beats').addEventListener('click', () => {
-    const oldSessions = getSessionList();
-    const wrapper = document.createElement('div');
+  if(areAnySavedSessions()) {
+    document.getElementById('if-old-beats').classList.remove('hidden');
+    document.getElementById('toggle-old-beats').addEventListener('click', () => {
+      const oldSessions = getSessionList();
+      const wrapper = document.createElement('div');
 
-    oldSessions.forEach(oldSession => {
-      const div = document.createElement('div');
-      const updatedAt = new Date(oldSession.updatedAt);
-      const startedAt = new Date(oldSession.startedAt);
-      const title = oldSession.state.title;
-      div.innerText = `${title || 'No title'} - Created ${startedAt.toLocaleDateString()} ${startedAt.toLocaleTimeString()} - Updated ${updatedAt.toLocaleDateString()} ${updatedAt.toLocaleTimeString()}`
-      div.classList.add('old-beat-link');
-      div.addEventListener('click', () => {
-        resetSessionVariables(); // TODO - use session ID here. Or not? We can have clashes if we do.
-        load(oldSession.state);
+      oldSessions.forEach(oldSession => {
+        const div = document.createElement('div');
+        const updatedAt = new Date(oldSession.updatedAt);
+        const startedAt = new Date(oldSession.startedAt);
+        const title = oldSession.state.title;
+        div.innerText = `${title || 'No title'} - Created ${startedAt.toLocaleDateString()} ${startedAt.toLocaleTimeString()} - Updated ${updatedAt.toLocaleDateString()} ${updatedAt.toLocaleTimeString()}`
+        div.classList.add('old-beat-link');
+        div.addEventListener('click', () => {
+          resetSessionVariables(); // TODO - use session ID here. Or not? We can have clashes if we do.
+          load(loadButtonWrapper, oldSession.state);
+        });
+        wrapper.append(div);
       });
-      wrapper.append(div);
-    });
 
-    document.getElementById('old-beats').replaceChildren(wrapper);
-    document.getElementById('old-beats').classList.remove('hidden');
-  });
-}
+      document.getElementById('old-beats').replaceChildren(wrapper);
+      document.getElementById('old-beats').classList.remove('hidden');
+    });
+  }
+})();
 
 
 function createLoadingMessage() {
