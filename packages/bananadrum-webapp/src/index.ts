@@ -60,20 +60,20 @@ import { demoSongString } from './demo-song';
     document.getElementById('if-old-beats').classList.remove('hidden');
     document.getElementById('toggle-old-beats').addEventListener('click', () => {
       const oldSessions = getSessionList();
+      const oldBeatTemplate = document.getElementById('old-beat-template') as HTMLTemplateElement;
       const wrapper = document.createElement('div');
 
       oldSessions.forEach(oldSession => {
-        const div = document.createElement('div');
+        const oldBeatDiv = oldBeatTemplate.content.cloneNode(true) as HTMLDivElement;
         const updatedAt = new Date(oldSession.updatedAt);
         const startedAt = new Date(oldSession.startedAt);
         const title = oldSession.state.title;
-        div.innerText = `${title || 'No title'} - Created ${startedAt.toLocaleDateString()} ${startedAt.toLocaleTimeString()} - Updated ${updatedAt.toLocaleDateString()} ${updatedAt.toLocaleTimeString()}`
-        div.classList.add('old-beat-link');
-        div.addEventListener('click', () => {
+        oldBeatDiv.innerText = `${title || 'No title'} - Created ${startedAt.toLocaleDateString()} ${startedAt.toLocaleTimeString()} - Updated ${updatedAt.toLocaleDateString()} ${updatedAt.toLocaleTimeString()}`
+        oldBeatDiv.addEventListener('click', () => {
           resetSessionVariables(); // TODO - use session ID here. Or not? We can have clashes if we do.
           load(loadButtonWrapper, oldSession.state);
         });
-        wrapper.append(div);
+        wrapper.append(oldBeatDiv);
       });
 
       document.getElementById('old-beats').replaceChildren(wrapper);
