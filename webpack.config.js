@@ -1,11 +1,14 @@
 import path from 'path';
-import {fileURLToPath} from 'url';
+import { fileURLToPath } from 'url';
+import { VanillaExtractPlugin } from '@vanilla-extract/webpack-plugin';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const production = false;
+
 
 const config = {
-  mode: 'development',
+  mode: production ? 'production' : 'development',
   context: __dirname,
   entry: {
     prod: {
@@ -40,6 +43,11 @@ const config = {
       }
     ]
   },
+  plugins: [
+    new VanillaExtractPlugin({
+      identifiers: production ? 'short' : 'debug'
+    })
+  ],
   resolve: {
     extensions: ['.js']
   }
