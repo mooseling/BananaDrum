@@ -261,6 +261,7 @@ button.push-button.edit-title-button {
   min-width: 100%;
   display: flex;
   -webkit-user-select: none; /* On safari, dragging to select notes causes a native selection of lots of stuff. So we prevent it. */
+  user-select: none;
 }
 
 @keyframes loadingPulse {
