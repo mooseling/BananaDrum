@@ -2,6 +2,7 @@ import { ArrangementView, TimeParamsView } from 'bananadrum-core';
 import { useStateSubscription } from '../../hooks/useStateSubscription';
 import { TimingViewer } from './TimingViewer';
 import { createContext } from 'react';
+import * as styles from './style.module.css'
 
 
 export type BarDivisibility = 1 | 2 | 4;
@@ -22,9 +23,9 @@ export function Guiderail({arrangement}:{arrangement:ArrangementView}): JSX.Elem
 
   return (
     <BarDivisibilityContext.Provider value={barDivisibility}>
-    <div className='guiderail-wrapper' style={{display}}>
-      <div className='guiderail-meta'></div>
-      <div className='guiderail'>
+    <div className={styles.guiderailWrapper} style={{display}}>
+      <div className={styles.guiderailMeta}></div>
+      <div className={styles.guiderail}>
         {arrangement.timeParams.timings.map(timing => <TimingViewer timing={timing} key={`${timing.bar}.${timing.step}`}/>)}
       </div>
       <div className="scrollshadow left-scrollshadow" />

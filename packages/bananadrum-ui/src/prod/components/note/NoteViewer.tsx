@@ -112,46 +112,50 @@ function useClasses(note:NoteView): string {
 }
 
 
-export function getParityClass(bar:number, step:number, timeSignature:string, stepResolution:number): string|null {
-    if (timeSignature === '4/4' && stepResolution === 16) {
-      const beat = Math.floor((step - 1) / 4) + 1;
-      const beatIsEven = beat % 2 === 0;
-      return beatIsEven ? 'even-beat' : 'odd-beat';
-    }
-
-    if (timeSignature === '6/8' && stepResolution === 8) {
-      const beat = Math.floor((step - 1) / 3) + 1;
-      const beatIsEven = beat % 2 === 0;
-      return beatIsEven ? 'even-beat' : 'odd-beat';
-    }
-
-    if (timeSignature === '5/4' && stepResolution === 8) {
-      const beat = Math.floor((step - 1) / 2) + 1;
-      let beatIsEven = beat % 2 === 0;
-      if (bar % 2 === 0)
-        beatIsEven = !beatIsEven; // 5 groups in each bar, so swap every bar
-      return beatIsEven ? 'even-beat' : 'odd-beat';
-    }
-
-    if (timeSignature === '7/8' && stepResolution === 8) {
-      return (step === 1 || step === 3 || step === 5) ? 'odd-beat' : 'even-beat';
-    }
-
-    const [beatsPerBar, beatUnit] = timeSignature.split('/').map(str => Number(str));
-    const stepsPerBeat = stepResolution / beatUnit;
-    if (stepsPerBeat > 1) {
-      const beat = Math.floor((step - 1) / stepsPerBeat) + 1;
-      let beatIsEven = beat % 2 === 0;
-      if (beatsPerBar % 2 === 1 && bar % 2 === 0)
-        beatIsEven = !beatIsEven; // odd number of groups in each bar, so swap every bar
-      return beatIsEven ? 'even-beat' : 'odd-beat';
-    }
-
-    // If all else fails, we just alternate each note
-    const stepsPerBar = stepsPerBeat * beatsPerBar;
-    const stepIsEven = ((bar - 1) * stepsPerBar + step - 1) % 2 === 0;
-    return stepIsEven ? 'even-beat' : 'odd-beat';
+function getParityClass(bar:number, step:number, timeSignature:string, stepResolution:number): string {
+  return isEvenBeat(bar, step, timeSignature, stepResolution) ? 'even-beat' : 'odd-beat';
 }
+
+
+export function isEvenBeat(bar:number, step:number, timeSignature:string, stepResolution:number): boolean {
+  if (timeSignature === '4/4' && stepResolution === 16) {
+    const beat = Math.floor((step - 1) / 4) + 1;
+    return beat % 2 === 0;
+  }
+
+  if (timeSignature === '6/8' && stepResolution === 8) {
+    const beat = Math.floor((step - 1) / 3) + 1;
+    return beat % 2 === 0;
+  }
+
+  if (timeSignature === '5/4' && stepResolution === 8) {
+    const beat = Math.floor((step - 1) / 2) + 1;
+    let beatIsEven = beat % 2 === 0;
+    if (bar % 2 === 0)
+      beatIsEven = !beatIsEven; // 5 groups in each bar, so swap every bar
+    return beatIsEven;
+  }
+
+  if (timeSignature === '7/8' && stepResolution === 8) {
+    return !(step === 1 || step === 3 || step === 5);
+  }
+
+  const [beatsPerBar, beatUnit] = timeSignature.split('/').map(str => Number(str));
+  const stepsPerBeat = stepResolution / beatUnit;
+  if (stepsPerBeat > 1) {
+    const beat = Math.floor((step - 1) / stepsPerBeat) + 1;
+    let beatIsEven = beat % 2 === 0;
+    if (beatsPerBar % 2 === 1 && bar % 2 === 0)
+      beatIsEven = !beatIsEven; // odd number of groups in each bar, so swap every bar
+    return beatIsEven;
+  }
+
+  // If all else fails, we just alternate each note
+  const stepsPerBar = stepsPerBeat * beatsPerBar;
+  const stepIsEven = ((bar - 1) * stepsPerBar + step - 1) % 2 === 0;
+  return stepIsEven;
+}
+
 
 function useBackgroundColor(note:NoteView, isCurrent:boolean, selected:boolean) {
   const selectedColour = useMemo(() => getSelectedColour(note.track.instrument.colourGroup), []);

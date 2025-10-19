@@ -2,7 +2,8 @@ import { Timing } from 'bananadrum-core';
 import { useContext, useMemo } from 'react';
 import { BarDivisibilityContext } from './Guiderail';
 import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer';
-import { getParityClass } from '../note/NoteViewer';
+import { isEvenBeat } from '../note/NoteViewer';
+import * as styles from './style.module.css';
 
 
 export function TimingViewer({timing}:{timing:Timing}): JSX.Element {
@@ -12,7 +13,7 @@ export function TimingViewer({timing}:{timing:Timing}): JSX.Element {
   const timingLabel = useTimingLabel(timing, isStartOfBar);
 
   return (<div className={classes}>
-    <div className='guiderail-timing-content'>
+    <div className={styles.guiderailTimingContent}>
       {timingLabel}
     </div>
   </div>);
@@ -24,7 +25,7 @@ function useClasses(timing:Timing, isStartOfBar:boolean): string {
   const {timeSignature, stepResolution} = useContext(ArrangementPlayerContext).arrangement.timeParams;
 
   return useMemo(
-    () => `guiderail-timing note-width ${getParityClass(bar, step, timeSignature, stepResolution)} ${isStartOfBar ? 'start-of-bar' : ''}`,
+    () => `${styles.guiderailTiming} note-width ${isEvenBeat(bar, step, timeSignature, stepResolution) ? '' : styles.oddBeat} ${isStartOfBar ? styles.startOfBar : ''}`,
     [bar, step, timeSignature, stepResolution, isStartOfBar]
   );
 }

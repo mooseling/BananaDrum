@@ -1,0 +1,54 @@
+.guiderailWrapper {
+  flex-grow: 1;
+}
+
+.guiderailMeta {
+  border-right: var(--thick-border);
+  width: var(--track-meta-width);
+  background-color: var(--lighter-gray);
+  height: 20pt;
+  position: absolute;
+  z-index: 100;
+}
+
+.guiderail {
+  display: flex;
+  margin-left: calc(var(--track-meta-width) + var(--thick-border-width));
+  flex-direction: row;
+  height: 20pt;
+}
+
+.guiderailTiming {
+  margin-top: calc(-1 * var(--thick-border-width));
+  border-color: var(--lighter-gray);
+}
+
+.oddBeat {
+  background-color: var(--lightest-gray);
+}
+
+.guiderailTiming:last-child {
+  border-right: var(--thick-border)
+}
+
+.startOfBar:not(:first-child) {
+  border-left: var(--start-of-bar-border);
+}
+
+.guiderailTimingContent {
+  line-height: 20pt;
+  text-align: center;
+}
+
+@media only screen and (min-width: 1000px) {
+  /* We label the bar numbers always. On smaller screens only, we show the sub-bar labels too */
+  .guiderailTiming:not(.startOfBar) .guiderailTimingContent {
+    display: none;
+  }
+}
+
+/* Scrollshadow positioning is super weird. In track-viewers, we have to NOT specify top, but that doesn't work here.*/
+.guiderailWrapper :global(.scrollshadow) {
+  top: 1px; /* Only works because the guiderail is at the top of the wrapper */
+  height: 20pt;
+}
