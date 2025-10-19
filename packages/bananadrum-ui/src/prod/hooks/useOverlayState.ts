@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { OverlayStateContext } from "../components/Overlay";
+import { OverlayStateContext } from "../components/overlay/Overlay";
 import { useSubscription } from "./useSubscription";
 
 interface OverlayCallbacks {

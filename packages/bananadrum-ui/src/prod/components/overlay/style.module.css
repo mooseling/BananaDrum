@@ -1,0 +1,19 @@
+.overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1000;
+  top: 0px;
+  left: 0px;
+  background: white;
+  box-sizing: border-box; /* For when it has added padding */
+  transition: opacity 0.2s;
+}
+
+.overlay.visible {
+  opacity: 1;
+}
+
+.overlay.invisible {
+  opacity: 0;
+}

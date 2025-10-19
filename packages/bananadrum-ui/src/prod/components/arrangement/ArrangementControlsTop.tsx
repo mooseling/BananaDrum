@@ -4,7 +4,7 @@ import { useCallback, useContext, useRef, useState } from "react";
 import { ServicesContext } from "../../components/BananaDrumViewer.js";
 import { useSubscription } from "../../hooks/useSubscription";
 import { ExpandingSpacer } from "../ExpandingSpacer";
-import { Overlay, toggleOverlay } from "../Overlay";
+import { Overlay, toggleOverlay } from "../overlay/Overlay.js";
 import { SelectionControls } from "../SelectionControls";
 import { ShareButton } from "../ShareButton";
 import { SmallSpacer } from "../SmallSpacer";

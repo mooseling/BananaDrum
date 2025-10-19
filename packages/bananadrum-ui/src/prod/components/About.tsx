@@ -1,7 +1,7 @@
 import { errorLog } from "bananadrum-core";
 import { useState } from "react";
 import { useSubscription } from "../hooks/useSubscription";
-import { toggleOverlay } from "./Overlay";
+import { toggleOverlay } from "./overlay/Overlay";
 
 export function About(): JSX.Element {
   const [errorCount, setErrorCount] = useState(errorLog.getEntryCount());

@@ -1,7 +1,7 @@
 import { ArrangementView } from 'bananadrum-core';
 import { useContext, useState } from 'react';
 import { ArrangementPlayerContext } from './ArrangementViewer.js';
-import { Overlay, toggleOverlay } from '../Overlay.js';
+import { Overlay, toggleOverlay } from '../overlay/Overlay.js';
 import { ExpandingSpacer } from '../ExpandingSpacer.js';
 import { SmallSpacer } from '../SmallSpacer.js';
 import { useSubscription } from '../../hooks/useSubscription.js'

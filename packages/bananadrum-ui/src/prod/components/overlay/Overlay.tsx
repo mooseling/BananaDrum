@@ -1,22 +1,23 @@
 import { useState, useEffect, createContext, useMemo } from 'react';
 import { Subscribable } from 'bananadrum-core';
 import { createPublisher } from 'bananadrum-core';
+import * as styles from './style.module.css'
 
 
 export const OverlayStateContext = createContext<OverlayState>(null);
 
 
 export function Overlay({name, children}:{name:string, children:JSX.Element}): JSX.Element {
-  const [visibilityClass, setVisibilityClass] = useState('invisible hidden');
+  const [visibilityClass, setVisibilityClass] = useState(`${styles.invisible} hidden`);
   const overlayState = useMemo(() => createOverlayState(), []);
 
   useEffect(() => {
     const overlaySubscription = () => {
       if (overlayState.visible) {
-        setVisibilityClass('invisible'); // First remove hidden class, so we remove display:none
-        setTimeout(() => setVisibilityClass('visible'), 0); // Then fade in
+        setVisibilityClass(styles.invisible); // First remove hidden class, so we remove display:none
+        setTimeout(() => setVisibilityClass(styles.visible), 0); // Then fade in
       } else {
-        setVisibilityClass('invisible'); // hidden class will be set after animation ends
+        setVisibilityClass(styles.invisible); // hidden class will be set after animation ends
       }
     };
 
@@ -29,17 +30,18 @@ export function Overlay({name, children}:{name:string, children:JSX.Element}): J
     };
   }, []);
 
-  const className = `overlay ${visibilityClass}`;
+  // We add a hard-coded class "overlay" here, because currently we let parent elements configure some things
+  const className = `overlay ${styles.overlay} ${visibilityClass}`;
 
   function handleTransitionEnd(event:React.SyntheticEvent) {
     const elem = event.target as HTMLElement;
 
     // Only want to catch the overlay fading
-    if (!elem?.classList.contains('overlay'))
+    if (!elem?.classList.contains(styles.overlay))
       return;
 
-    if (visibilityClass === 'invisible')
-      setVisibilityClass('invisible hidden');
+    if (visibilityClass === styles.invisible)
+      setVisibilityClass(`${styles.invisible} hidden`);
 
     event.stopPropagation(); // Don't want to catch this if we have overlays within overlays... ee gads
   }

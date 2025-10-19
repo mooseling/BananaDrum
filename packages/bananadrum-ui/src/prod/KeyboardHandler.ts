@@ -1,5 +1,5 @@
 import { EventEngine } from 'bananadrum-player';
-import { closeAllOverlays } from './components/Overlay.js';
+import { closeAllOverlays } from './components/overlay/Overlay.js';
 import { ModeManager } from './ModeManager.js';
 import { SelectionManager } from './SelectionManager.js';
 import { BananaDrum } from 'bananadrum-core';

@@ -5,7 +5,7 @@ import { TrackViewer } from '../track/TrackViewer.js';
 import { Scrollbar } from '../scrollbar/Scrollbar.js';
 import { Share } from '../Share.js';
 import { InstrumentBrowser } from '../InstrumentBrowser.js';
-import { Overlay, toggleOverlay } from '../Overlay.js';
+import { Overlay, toggleOverlay } from '../overlay/Overlay.js';
 import { useState, useEffect, createContext, useRef, useContext, TouchEvent, Dispatch, SetStateAction } from 'react';
 import { ServicesContext } from '../BananaDrumViewer.js';
 import { AnimationEngine } from '../../types.js';

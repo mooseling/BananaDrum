@@ -1,6 +1,6 @@
 import { BananaDrumPlayer } from 'bananadrum-player';
 import { ArrangementViewer } from './arrangement/ArrangementViewer.js';
-import { Overlay, toggleOverlay } from './Overlay.js';
+import { Overlay, toggleOverlay } from './overlay/Overlay.js';
 import { createContext } from 'react';
 import { About } from './About.js';
 import { BananaDrumUiServices } from '../BananaDrumUi.js';

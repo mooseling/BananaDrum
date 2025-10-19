@@ -4,7 +4,7 @@ import { useKeyboardEvent } from "../hooks/useKeyboardEvent";
 import { useSubscription } from "../hooks/useSubscription";
 import { SelectionManager } from "../SelectionManager";
 import { ExpandingSpacer } from "./ExpandingSpacer";
-import { OverlayStateContext } from "./Overlay";
+import { OverlayStateContext } from "./overlay/Overlay.js";
 import { SmallSpacer } from "./SmallSpacer";
 import { useEditCommand, EditFunction } from '../hooks/useEditCommand';
 import { ArrangementPlayerContext } from './arrangement/ArrangementViewer';

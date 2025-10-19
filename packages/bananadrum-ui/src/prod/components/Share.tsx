@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useState, useContext, useCallback } from 'react';
 import { getShareLink } from 'bananadrum-core';
-import { toggleOverlay } from './Overlay.js';
+import { toggleOverlay } from './overlay/Overlay.js';
 import { ArrangementPlayerContext } from './arrangement/ArrangementViewer.js';
 import { useStateSubscription } from '../hooks/useStateSubscription.js';
 import { BananaDrumContext } from '../components/BananaDrumViewer.js';
