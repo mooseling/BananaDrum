@@ -2,7 +2,7 @@ import { RealTime, TimeParamsView } from 'bananadrum-core';
 import { ArrangementPlayer } from 'bananadrum-player';
 import { createPublisher } from 'bananadrum-core';
 import { TrackViewer } from '../track/TrackViewer.js';
-import { Scrollbar } from '../Scrollbar.js';
+import { Scrollbar } from '../scrollbar/Scrollbar.js';
 import { Share } from '../Share.js';
 import { InstrumentBrowser } from '../InstrumentBrowser.js';
 import { Overlay, toggleOverlay } from '../Overlay.js';

@@ -1,0 +1,32 @@
+.customScrollbar {
+  /* Some properties dynamic for hide/show */
+  height: var(--scrollbar-height);
+  opacity: var(--scrollbar-opacity);
+  pointer-events: var(--scrollbar-pointer-events);
+
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.track {
+    left: 0;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: var(--lightest-gray);
+}
+
+.thumb {
+    left: 0;
+    position: absolute;
+    height: 100%;
+    background-color: var(--blue);
+    border-radius: 4pt;
+}

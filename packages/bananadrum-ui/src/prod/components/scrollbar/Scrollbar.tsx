@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Publisher } from 'bananadrum-core';
-import { useSubscription } from '../hooks/useSubscription';
+import { useSubscription } from '../../hooks/useSubscription';
+import * as styles from './style.module.css';
 
 
 type ScrollbarCallbacks = {
@@ -33,12 +34,12 @@ export function Scrollbar({wrapperRef, contentWidthPublisher, callbacks}:
   }, []);
 
   return (
-    <div className="custom-scrollbar">
-      <div className="track"
+    <div className={styles.customScrollbar}>
+      <div className={styles.track}
         onMouseDown={event => handleTrackMousedown(event, wrapperRef.current, thumbWidth)}
         onTouchStart={event => handleTrackTouchStart(event, wrapperRef.current, thumbWidth, callbacks.onGrab)}
       />
-      <div className="thumb"
+      <div className={styles.thumb}
         style={{width:thumbWidth + 'px', left: thumbLeft + 'px'}}
         onMouseDown={event => handleThumbMouseDown(event, wrapperRef.current, thumbWidth)}
         onTouchStart={event => handleThumbTouchStart(event, wrapperRef.current, thumbWidth, callbacks.onGrab)}
@@ -54,7 +55,7 @@ function calculateThumbWidth(wrapper:HTMLElement): number {
 
   // offsetWidth includes borders, clientWidth does not. Not important in this case anyway.
   const ratio = wrapper.offsetWidth / wrapper.scrollWidth; // Not accounting for track-meta but maybe that's fine?
-  const scrollbar = wrapper.getElementsByClassName('custom-scrollbar')[0]; // Let's pass this directly if possible
+  const scrollbar = wrapper.getElementsByClassName(styles.customScrollbar)[0]; // Let's pass this directly if possible
   return ratio * scrollbar.clientWidth;
 }
 
@@ -64,7 +65,7 @@ function calculateThumbLeft(wrapper:HTMLElement): number {
     return 0;
 
   const scrollLeft = wrapper.scrollLeft;
-  const scrollbarWidth = wrapper.getElementsByClassName('custom-scrollbar')[0].clientWidth;
+  const scrollbarWidth = wrapper.getElementsByClassName(styles.customScrollbar)[0].clientWidth;
 
   return (scrollLeft * scrollbarWidth) / wrapper.scrollWidth;
 }
@@ -117,7 +118,7 @@ function ScrollHandler(wrapper:HTMLElement, thumbWidth:number, touch:boolean) : 
   if (!wrapper?.scrollWidth)
     return fakeScrollHandler;
 
-  const scrollbar = wrapper.getElementsByClassName('custom-scrollbar')[0];
+  const scrollbar = wrapper.getElementsByClassName(styles.customScrollbar)[0];
   const scrollbarWidth = scrollbar.clientWidth;
   if (!scrollbarWidth)
     return fakeScrollHandler;
