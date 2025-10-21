@@ -1,0 +1,40 @@
+.arrangementViewerBody > :global(.overlay) {
+  padding: 5pt;
+}
+
+.trackViewersWrapper {
+  --scrollbar-height: 20pt;
+  --scrollbar-opacity: 1;
+  --scrollbar-pointer-events: default;
+  overflow-x: auto;
+
+  /* Hide scrollbars on a couple browsers */
+  -ms-overflow-style: none;  /* IE */
+  scrollbar-width: none;  /* Firefox */
+
+  /* Default scrollshadow vars for when they are not shown */
+  --left-scrollshadow-display: none;
+  --right-scrollshadow-display: none;
+}
+
+.trackViewersWrapper:not(.overflowingLeft):not(.overflowingRight) {
+  --scrollbar-height:0;
+  --scrollbar-opacity: 0;
+  --scrollbar-pointer-events: none;
+}
+
+.trackViewersWrapper::-webkit-scrollbar {
+  display: none; /* Chrome, Edge, Safari */
+}
+
+.trackViewersWrapper.overflowingLeft, .trackViewersWrapper.overflowingRight {
+  padding-bottom: var(--scrollbar-height);
+}
+
+.trackViewersWrapper.overflowingLeft {
+  --left-scrollshadow-display: block;
+}
+
+.trackViewersWrapper.overflowingRight {
+  --right-scrollshadow-display: block;
+}

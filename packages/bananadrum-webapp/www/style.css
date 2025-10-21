@@ -232,31 +232,6 @@ button.push-button.edit-title-button {
   }
 }
 
-.track-viewers-wrapper {
-  --scrollbar-height: 20pt;
-  --scrollbar-opacity: 1;
-  --scrollbar-pointer-events: default;
-  overflow-x: auto;
-
-  /* Hide scrollbars on a couple browsers */
-  -ms-overflow-style: none;  /* IE */
-  scrollbar-width: none;  /* Firefox */
-}
-
-.track-viewers-wrapper:not(.overflowing-left):not(.overflowing-right) {
-  --scrollbar-height:0;
-  --scrollbar-opacity: 0;
-  --scrollbar-pointer-events: none;
-}
-
-.track-viewers-wrapper::-webkit-scrollbar {
-  display: none; /* Chrome, Edge, Safari */
-}
-
-.track-viewers-wrapper.overflowing-left, .track-viewers-wrapper.overflowing-right {
-  padding-bottom: var(--scrollbar-height);
-}
-
 .track-viewer {
   min-width: 100%;
   display: flex;
@@ -294,34 +269,6 @@ button.push-button.edit-title-button {
   display: inline-block;
 }
 
-/*
-Scrollshadows: An Enormous Faff
-Very difficult to get them to the right height, right position, and not overlapping a scrollbar
-So we're putting them in each track-viewer, where we can position them with no problems
-*/
-
-.scrollshadow {
-  display: none;
-  width: 20pt;
-  pointer-events: none;
-  z-index: 1;
-  position: absolute;
-  /* Vertically offset shadows slightly to cover borders */
-  margin-top: calc(-0.5 * var(--thick-border-width));
-  height: calc(var(--thick-border-width) + var(--note-height))
-}
-
-.track-viewers-wrapper.overflowing-left .scrollshadow.left-scrollshadow {
-  background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0) 70%);
-  display: block;
-  left: var(--track-meta-width);
-}
-
-.track-viewers-wrapper.overflowing-right .scrollshadow.right-scrollshadow {
-  background: linear-gradient(to left, rgba(0,0,0,0.6), rgba(0,0,0,0) 70%);
-  display: block;
-  right: 0;
-}
 
 .track-meta {
   display: flex;
@@ -545,10 +492,6 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 .note-details-viewer img.note-style-symbol {
   height: 70%;
-}
-
-.arrangement-viewer-body > .overlay {
-  padding: 5pt;
 }
 
 .instrument-chooser {

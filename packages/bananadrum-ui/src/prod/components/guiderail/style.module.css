@@ -48,7 +48,7 @@
 }
 
 /* Scrollshadow positioning is super weird. In track-viewers, we have to NOT specify top, but that doesn't work here.*/
-.guiderailWrapper :global(.scrollshadow) {
+.guiderailWrapper .guiderailScrollshadow {
   top: 1px; /* Only works because the guiderail is at the top of the wrapper */
   height: 20pt;
 }

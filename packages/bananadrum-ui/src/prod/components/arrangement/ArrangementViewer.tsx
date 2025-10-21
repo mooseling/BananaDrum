@@ -14,6 +14,7 @@ import { ArrangementControlsTop } from './ArrangementControlsTop.js';
 import { ArrangementControlsBottom } from './ArrangementControlsBottom.js';
 import { Guiderail } from '../guiderail/Guiderail.js';
 import { useStateSubscription } from '../../hooks/useStateSubscription.js';
+import * as styles from './style.module.css'
 
 
 const baseNoteWidth = 55.5; // 54pt flex-basis + 1.5pt for border
@@ -68,10 +69,10 @@ export function ArrangementViewer({arrangementPlayer}:{arrangementPlayer:Arrange
         <div className="arrangement-viewer-head">
           <ArrangementControlsTop />
         </div>
-        <div className="arrangement-viewer-body overlay-wrapper">
+        <div className={styles.arrangementViewerBody + " overlay-wrapper"}>
           <div>
             <div
-              className={`track-viewers-wrapper ${scrollShadowClasses}`}
+              className={`${styles.trackViewersWrapper} ${scrollShadowClasses}`}
               ref={ref}
               onScroll={updateScrollShadows}
               onWheel={handleWheel}
@@ -125,11 +126,11 @@ function getScrollShadowClasses(trackViewersWrapper: HTMLElement): string {
   // This works much better with a little bit of tolerance, so we do a little subtraction
   if (notesWrapperRight - wrapperRight > 2) {
     if (metaRight - notesWrapperLeft > 2)
-      return 'overflowing-left overflowing-right';
-    return 'overflowing-right';
+      return `${styles.overflowingLeft} ${styles.overflowingRight}`;
+    return styles.overflowingRight;
   }
   if (metaRight - notesWrapperLeft > 2)
-    return 'overflowing-left';
+    return styles.overflowingLeft;
   return '';
 }
 

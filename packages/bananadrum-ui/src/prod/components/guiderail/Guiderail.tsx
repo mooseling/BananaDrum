@@ -3,6 +3,7 @@ import { useStateSubscription } from '../../hooks/useStateSubscription';
 import { TimingViewer } from './TimingViewer';
 import { createContext } from 'react';
 import * as styles from './style.module.css'
+import * as scrollshadows from '../../styles/scrollshadows.module.css'
 
 
 export type BarDivisibility = 1 | 2 | 4;
@@ -28,8 +29,8 @@ export function Guiderail({arrangement}:{arrangement:ArrangementView}): JSX.Elem
       <div className={styles.guiderail}>
         {arrangement.timeParams.timings.map(timing => <TimingViewer timing={timing} key={`${timing.bar}.${timing.step}`}/>)}
       </div>
-      <div className="scrollshadow left-scrollshadow" />
-      <div className="scrollshadow right-scrollshadow" />
+      <div className={`${scrollshadows.scrollshadow} ${styles.guiderailScrollshadow} ${scrollshadows.leftScrollshadow}`} />
+      <div className={`${scrollshadows.scrollshadow} ${styles.guiderailScrollshadow} ${scrollshadows.rightScrollshadow}`} />
     </div>
     </BarDivisibilityContext.Provider>
   );

@@ -1,0 +1,28 @@
+/*
+Scrollshadows: An Enormous Faff
+Very difficult to get them to the right height, right position, and not overlapping a scrollbar
+So we're putting them in each track-viewer, where we can position them with no problems
+*/
+
+.scrollshadow {
+  display: none;
+  width: 20pt;
+  pointer-events: none;
+  z-index: 1;
+  position: absolute;
+  /* Vertically offset shadows slightly to cover borders */
+  margin-top: calc(-0.5 * var(--thick-border-width));
+  height: calc(var(--thick-border-width) + var(--note-height))
+}
+
+.leftScrollshadow {
+  background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0) 70%);
+  left: var(--track-meta-width);
+  display: var(--left-scrollshadow-display);
+}
+
+.rightScrollshadow {
+  background: linear-gradient(to left, rgba(0,0,0,0.6), rgba(0,0,0,0) 70%);
+  right: 0;
+  display: var(--right-scrollshadow-display);
+}

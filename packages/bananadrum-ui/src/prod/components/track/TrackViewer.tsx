@@ -8,6 +8,7 @@ import { useSubscription } from '../../hooks/useSubscription.js';
 import { PolyrhythmViewer } from '../PolyrhythmViewer.js';
 import { TrackMeta } from './TrackMeta.js';
 import { TrackControls } from './TrackControls.js';
+import * as scrollshadows from '../../styles/scrollshadows.module.css'
 
 
 type TrackViewerCallbacks = {
@@ -44,8 +45,8 @@ export function TrackViewer({trackPlayer, callbacks}:{trackPlayer:TrackPlayer, c
             <TrackControls track={track} overlayName={overlayName}/>
           </Overlay>
         </div>
-        <div className="scrollshadow left-scrollshadow" />
-        <div className="scrollshadow right-scrollshadow" />
+        <div className={`${scrollshadows.scrollshadow} ${scrollshadows.leftScrollshadow}`} />
+        <div className={`${scrollshadows.scrollshadow} ${scrollshadows.rightScrollshadow}`} />
         <TrackMeta track={track} toggleControls={() => toggleOverlay(overlayName)}/>
       </div>
     </TrackPlayerContext.Provider>
