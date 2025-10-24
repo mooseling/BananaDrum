@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { BananaDrumContext } from '../BananaDrumViewer.js';
 import { useStateSubscription } from '../../hooks/useStateSubscription';
 import { SmallSpacer } from '../SmallSpacer.js';
+import * as styles from './style.module.css'
 
 export function UndoRedo(): JSX.Element {
   const bananaDrum = useContext(BananaDrumContext);
@@ -9,7 +10,7 @@ export function UndoRedo(): JSX.Element {
    const canUndo = useStateSubscription(bananaDrum.topics.canUndo, () => bananaDrum.canUndo);
    const canRedo = useStateSubscription(bananaDrum.topics.canRedo, () => bananaDrum.canRedo);
 
-   return (<div className='undo-redo-wrapper'>
+   return (<div className={styles.undoRedoWrapper}>
     <button className='push-button medium gray' disabled={!canUndo} onClick={bananaDrum.undo}>
       <img src="images/icons/undo_white.svg" style={{height:'0.78em'}} />
     </button>

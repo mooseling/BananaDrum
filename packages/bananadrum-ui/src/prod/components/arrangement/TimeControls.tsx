@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import { useSubscription } from "../../hooks/useSubscription";
 import { NumberInput } from "../NumberInput";
 import { useEditCommand } from '../../hooks/useEditCommand';
+import * as styles from './style.module.css'
 
 
 
@@ -41,8 +42,8 @@ export function TimeControls({arrangement}:{arrangement:ArrangementView}): JSX.E
   }, []);
 
   return (
-    <div className="time-controls-wrapper">
-      <div className="time-control">
+    <div className={styles.timeControlsWrapper}>
+      <div className={styles.timeControl}>
         <select className="short" onChange={changeTimeSignature} value={timeParams.timeSignature}>
           <option>4/4</option>
           <option>6/8</option>
@@ -50,14 +51,14 @@ export function TimeControls({arrangement}:{arrangement:ArrangementView}): JSX.E
           <option>7/8</option>
         </select> time
       </div>
-      <div className="time-control">
+      <div className={styles.timeControl}>
         <NumberInput
           getValue={() => String(timeParams.tempo)}
           setValue={(newValue:string) => edit({timeParams, tempo:Number(newValue)})}
           subscribable={timeParams}
         /> bpm
       </div>
-      <div className="time-control">
+      <div className={styles.timeControl}>
         <NumberInput
           getValue={() => String(timeParams.length)}
           setValue={(newValue:string) => edit({timeParams, length:Number(newValue)})}

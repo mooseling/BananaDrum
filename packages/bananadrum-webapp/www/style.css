@@ -122,43 +122,6 @@ body {
   overflow-wrap: anywhere;
 }
 
-.arrangement-title h1 {
-  text-align: center;
-  margin-bottom: 0;
-}
-
-.arrangement-controls {
-  display: flex;
-  padding: 20pt;
-  border-bottom: var(--thick-border);
-  align-items: center;
-}
-
-.arrangement-controls .overlay {
-  padding: 20pt;
-}
-
-.playback-control {
-  max-height: 57pt;
-}
-
-.playback-control img {
-  height: 18pt;
-  width: 18pt;
-}
-
-.time-controls-wrapper {
-  display: flex;
-}
-
-.time-control {
-  padding: 9.75pt 12pt;
-}
-
-#share-button img {
-  display: none;
-}
-
 input, select {
   height: 25pt;
   box-sizing: border-box;
@@ -176,60 +139,6 @@ input.short, select.short {
 
 input.long, select.long {
     width: 180pt;
-}
-
-@media only screen and (max-width: 600px) {
-  .time-controls-wrapper {
-    flex-direction: column;
-  }
-
-  .time-control {
-    padding: 0;
-  }
-
-  .time-control input, select {
-    height: unset;
-  }
-
-  #share-button span {
-    display: none;
-  }
-
-  #share-button img {
-    display: inline-block;
-  }
-}
-
-.other-controls-wrapper {
-  display: flex;
-}
-
-button.push-button.edit-title-button {
-  font-size: 20.5pt;
-  font-family: serif;
-  text-transform: capitalize; /* .push-button normally lower-cases contents */
-  line-height: 1em;
-}
-
-.undo-redo-wrapper {
-  display: flex;
-  flex-direction: row;
-}
-
-@media only screen and (max-width: 430px) {
-  .other-controls-wrapper {
-    display: flex;
-    flex-direction: column;
-  }
-
-  button.push-button.edit-title-button {
-    font-size: 15pt;
-    margin-bottom: 5pt;
-  }
-
-  .undo-redo-wrapper {
-    height: 23pt;
-  }
 }
 
 .track-viewer {

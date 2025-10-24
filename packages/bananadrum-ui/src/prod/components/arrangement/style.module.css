@@ -38,3 +38,89 @@
 .trackViewersWrapper.overflowingRight {
   --right-scrollshadow-display: block;
 }
+
+.controls {
+  display: flex;
+  padding: 20pt;
+  border-bottom: var(--thick-border);
+  align-items: center;
+}
+
+.controls :global(.overlay) {
+  padding: 20pt;
+}
+
+.playbackControl {
+  max-height: 57pt;
+}
+
+.playbackControl img {
+  height: 18pt;
+  width: 18pt;
+}
+
+.timeControlsWrapper {
+  display: flex;
+}
+
+.timeControl {
+  padding: 9.75pt 12pt;
+}
+
+#shareButton img {
+  display: none;
+}
+
+@media only screen and (max-width: 600px) {
+  .timeControlsWrapper {
+    flex-direction: column;
+  }
+
+  .timeControl {
+    padding: 0;
+  }
+
+  .timeControl input, select {
+    height: unset;
+  }
+
+  #shareButton span {
+    display: none;
+  }
+
+  #shareButton img {
+    display: inline-block;
+  }
+}
+
+.otherControlsWrapper {
+  display: flex;
+}
+
+button:global(.push-button).editTitleButton {
+  font-size: 20.5pt;
+  font-family: serif;
+  text-transform: capitalize; /* .push-button normally lower-cases contents */
+  line-height: 1em;
+}
+
+.undoRedoWrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+@media only screen and (max-width: 430px) {
+  .otherControlsWrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  button:global(.push-button).editTitleButton {
+    font-size: 15pt;
+    margin-bottom: 5pt;
+  }
+
+  .undoRedoWrapper {
+    height: 23pt;
+  }
+}

@@ -8,7 +8,7 @@ import { useSubscription } from '../../hooks/useSubscription.js'
 import { useArrangementAndTracksSubscription } from '../../hooks/useArrangementAndTracksSubscription.js'
 import { ServicesContext } from "../BananaDrumViewer.js";
 import { useEditCommand } from '../../hooks/useEditCommand.js';
-
+import * as styles from './style.module.css'
 
 
 export function ArrangementControlsBottom(): JSX.Element {
@@ -32,7 +32,7 @@ export function ArrangementControlsBottom(): JSX.Element {
   });
 
   return (
-    <div className="arrangement-controls arrangement-controls-bottom overlay-wrapper">
+    <div className={`${styles.controls} overlay-wrapper`}>
       <button
         className="push-button"
         onClick={() => toggleOverlay('instrument_browser', 'show')}

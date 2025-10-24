@@ -6,13 +6,14 @@ import { useSubscription } from "../../hooks/useSubscription";
 import { ExpandingSpacer } from "../ExpandingSpacer";
 import { Overlay, toggleOverlay } from "../overlay/Overlay.js";
 import { SelectionControls } from "../SelectionControls";
-import { ShareButton } from "../ShareButton";
+import { ShareButton } from "./ShareButton.js";
 import { SmallSpacer } from "../SmallSpacer";
 import { ArrangementPlayerContext } from "./ArrangementViewer";
 import { TimeControls } from "./TimeControls";
 import { ArrangementTitle } from "./ArrangementTitle";
 import { useStateSubscription } from "../../hooks/useStateSubscription";
 import { UndoRedo } from './UndoRedo';
+import * as styles from './style.module.css'
 
 
 
@@ -49,14 +50,14 @@ export function ArrangementControlsTop(): JSX.Element {
       <div className={titleVisible ? '' : 'hidden'}>
         <ArrangementTitle editMode={editingTitle} onEditEnd={onEditEnd} />
       </div>
-      <div className="arrangement-controls arrangement-controls-top overlay-wrapper">
+      <div className={`${styles.controls} overlay-wrapper`}>
         {
           playing ? (
-            <button className="playback-control push-button" onClick={() => eventEngine.stop()}>
+            <button className={`${styles.playbackControl} push-button`} onClick={() => eventEngine.stop()}>
               <img src="images/icons/pause.svg" alt="stop" />
             </button>
           ) : (
-            <button className="playback-control push-button" onClick={() => eventEngine.play()}>
+            <button className={`${styles.playbackControl} push-button`} onClick={() => eventEngine.play()}>
               <img src="images/icons/play.svg" alt="play" />
             </button>
           )
@@ -64,9 +65,9 @@ export function ArrangementControlsTop(): JSX.Element {
         <SmallSpacer />
         <TimeControls arrangement={arrangement} />
         <SmallSpacer />
-        <div className='other-controls-wrapper'>
+        <div className={styles.otherControlsWrapper}>
           <button
-            className="push-button medium gray edit-title-button"
+            className={`push-button medium gray ${styles.editTitleButton}`}
             onClick={onClickEditTitle}
             >
             T&nbsp;<img src="images/icons/pencil_white.svg" style={{height:'0.78em'}} />
