@@ -1,4 +1,4 @@
-import { ArrangementView, Instrument, NoteStyle, NoteView, PolyrhythmView, TimeParamsView, TrackView } from './general'
+import { ArrangementView, CopyRequest, Instrument, NoteStyle, NoteView, PasteRequest, PolyrhythmView, TimeParamsView, TrackView } from './general'
 
 
 export interface EditCommand_ArrangementTitle {
@@ -33,6 +33,15 @@ export interface EditCommand_ArrangementAddPolyrhythms {
     selection: Map<TrackView, {range:[NoteView, NoteView]}>
   }
 }
+
+export interface EditCommand_ArrangementCopyPaste {
+  arrangement: ArrangementView,
+  copyPaste: {
+    copyFrom: CopyRequest,
+    pasteTo: PasteRequest
+  }
+}
+
 
 export interface EditCommand_TrackRemovePolyrhythm {
   track: TrackView
@@ -81,6 +90,7 @@ export type EditCommand_Arrangement =
   | EditCommand_ArrangementRemoveTrack
   | EditCommand_ArrangementClear
   | EditCommand_ArrangementClearSelection
+  | EditCommand_ArrangementCopyPaste
 
 export type EditCommand_Track =
   EditCommand_TrackRemovePolyrhythm

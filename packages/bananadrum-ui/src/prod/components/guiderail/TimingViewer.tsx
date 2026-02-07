@@ -1,30 +1,90 @@
-import { Timing } from 'bananadrum-core';
+import { Timing, CopyRequest, PasteRequest } from 'bananadrum-core';
 import { useContext, useMemo } from 'react';
 import { BarDivisibilityContext } from './Guiderail';
 import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer';
 import { getParityClass } from '../note/NoteViewer';
+import { BananaDrumContext } from '../BananaDrumViewer.js';
+
+enum PasteDirection {
+  Left,
+  Right
+}
+
+type AdjacentCopyPasteRequest = {
+  copyFrom: CopyRequest
+  direction: PasteDirection
+}
+
+function AdjacentCopyBarControl({ copyFrom, direction }: AdjacentCopyPasteRequest): JSX.Element {
+  let bananaDrum = useContext(BananaDrumContext);
+    
+  return (<div>
+    {direction == PasteDirection.Left &&
+      <button className='push-button medium gray' onClick={() => {copyPaste(copyFrom, copyFrom.start.bar - 1)}}>
+        <img src="images/icons/undo_white.svg" style={{ height: '0.78em' }} />
+      </button>
+    }
+    {direction == PasteDirection.Right &&
+      <button className='push-button medium gray' onClick={() => {copyPaste(copyFrom, copyFrom.end.bar + 1)}}>
+        <img src="images/icons/redo_white.svg" style={{ height: '0.78em' }} />
+      </button>
+    }
+  </div>
+  )
+  
+
+  function copyPaste(copyFrom: CopyRequest, pasteStartBar: number): void{
+    let pasteStartTiming: Timing = { bar: pasteStartBar, step: 1 };
+    let pasteTo: PasteRequest = { start: pasteStartTiming };
+
+    bananaDrum.edit({
+      arrangement: bananaDrum.arrangement,
+      copyPaste: {
+        copyFrom: copyFrom,
+        pasteTo: pasteTo
+      }
+    });
+  }
+}
+
 
 
 export function TimingViewer({timing}:{timing:Timing}): JSX.Element {
   const isStartOfBar = timing.step === 1;
+  // compute end of bar  
+  const {timeSignature, stepResolution, length} = useContext(ArrangementPlayerContext).arrangement.timeParams;
+  const [beatsPerBar, beatUnit] = timeSignature.split('/').map(value => Number(value));
+  const stepsPerBeat = stepResolution / beatUnit;
+  const stepsPerBar = stepsPerBeat * beatsPerBar;
+  const isEndOfBar = timing.step === stepsPerBar;
 
-  const classes = useClasses(timing, isStartOfBar);
+  const classes = useClasses(timing, isStartOfBar, isEndOfBar);
   const timingLabel = useTimingLabel(timing, isStartOfBar);
 
-  return (<div className={classes}>
-    <div className='guiderail-timing-content'>
-      {timingLabel}
-    </div>
-  </div>);
+  return (
+    <div className={classes}>
+      <div className='guiderail-timing-content'>
+        {timingLabel}
+      </div>
+      { (isStartOfBar || isEndOfBar) &&
+        <div className='guiderail-control'>
+          {
+            isStartOfBar && timing.bar !== 1 && <AdjacentCopyBarControl copyFrom={{start: {bar: timing.bar, step: 1}, end: {bar: timing.bar, step: stepsPerBar}}} direction={PasteDirection.Left} />
+          }
+          {
+            isEndOfBar && timing.bar !== length && <AdjacentCopyBarControl copyFrom={{start: {bar: timing.bar, step: 1}, end: {bar: timing.bar, step: stepsPerBar}}} direction={PasteDirection.Right} />
+          }
+        </div>
+      }
+    </div>);
 }
 
-
-function useClasses(timing:Timing, isStartOfBar:boolean): string {
+function useClasses(timing:Timing, isStartOfBar:boolean, isEndOfBar:boolean): string {
   const {bar, step} = timing;
   const {timeSignature, stepResolution} = useContext(ArrangementPlayerContext).arrangement.timeParams;
 
   return useMemo(
-    () => `guiderail-timing note-width ${getParityClass(bar, step, timeSignature, stepResolution)} ${isStartOfBar ? 'start-of-bar' : ''}`,
+    () => `guiderail-timing note-width ${getParityClass(bar, step, timeSignature, stepResolution)} ${isStartOfBar ? 'start-of-bar' : ''} ${isEndOfBar ? 'end-of-bar' : ''}`,
     [bar, step, timeSignature, stepResolution, isStartOfBar]
   );
 }

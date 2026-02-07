@@ -1,4 +1,4 @@
-import { Arrangement, Instrument, Note, Polyrhythm, Timing, Track } from './types/general.js';
+import { Arrangement, Instrument, Note, Polyrhythm, Timing, Track, CopyRequest, PasteRequest } from './types/general.js';
 import { createNote } from './Note.js';
 import { createPublisher } from './Publisher.js';
 import { TrackClipboard } from './TrackClipboard.js';
@@ -10,7 +10,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, id:n
   const notes:Note[] = [];
   const polyrhythms:Polyrhythm[] = [];
   const track:Track = {
-    id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm, getNoteAt, clear, getNoteIterator,
+    id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm, getNoteAt, clear, getNoteIterator, copyPaste,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
   };
 
@@ -31,6 +31,17 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, id:n
   //                          Public Functions
   // ==================================================================
 
+  function copyPaste(copyFrom: CopyRequest, pasteTo: PasteRequest): void {
+        const clipboard = new TrackClipboard(track);
+    clipboard.copy(copyFrom);
+    let numNotesCovered = clipboard.length;
+
+    while (numNotesCovered < track.notes.length) {
+      const pasteStart = track.notes[numNotesCovered].timing;
+      clipboard.paste(pasteTo);
+      numNotesCovered += clipboard.length;
+    }    
+  }
 
   function getNoteAt(timing:Timing): Note {
     for (const note of notes) {
@@ -100,9 +111,6 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, id:n
     }
   }
 
-
-
-
   // ==================================================================
   //                          Private Functions
   // ==================================================================
@@ -142,7 +150,6 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, id:n
 
     removeBrokenPolyrhythms();
   }
-
 
   function copyComposition(originalNoteCount:number): void {
     const lastTiming = track.notes[originalNoteCount - 1].timing;

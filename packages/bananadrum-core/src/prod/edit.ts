@@ -1,4 +1,4 @@
-import { EditCommand, EditCommand_Arrangement, EditCommand_ArrangementAddPolyrhythms, EditCommand_ArrangementAddTrack, EditCommand_ArrangementClear, EditCommand_ArrangementClearSelection, EditCommand_ArrangementRemoveTrack, EditCommand_ArrangementTitle, EditCommand_Note, EditCommand_TimeParams, EditCommand_TimeParamsLength, EditCommand_TimeParamsTempo, EditCommand_TimeParamsTimeSignature, EditCommand_Track, EditCommand_TrackClear, EditCommand_TrackRemovePolyrhythm } from './types/edit_commands';
+import { EditCommand, EditCommand_Arrangement, EditCommand_ArrangementAddPolyrhythms, EditCommand_ArrangementAddTrack, EditCommand_ArrangementClear, EditCommand_ArrangementClearSelection, EditCommand_ArrangementRemoveTrack, EditCommand_ArrangementTitle, EditCommand_Note, EditCommand_TimeParams, EditCommand_TimeParamsLength, EditCommand_TimeParamsTempo, EditCommand_TimeParamsTimeSignature, EditCommand_Track, EditCommand_TrackClear, EditCommand_TrackRemovePolyrhythm, EditCommand_ArrangementCopyPaste } from './types/edit_commands';
 import { Arrangement, Note, TimeParams, Track } from './types/general';
 
 
@@ -83,6 +83,12 @@ function editArrangement(command:EditCommand_Arrangement): boolean {
       const track = start.track;
       track.addPolyrhythm(start, end, addPolyrhythms.length);
     });
+    return true;
+  }
+
+  const copyPaste = (command as EditCommand_ArrangementCopyPaste).copyPaste;
+  if (copyPaste) {
+    arrangement.copyPaste(copyPaste.copyFrom, copyPaste.pasteTo);
     return true;
   }
 }

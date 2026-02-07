@@ -93,6 +93,7 @@ export interface Arrangement extends ArrangementView {
   tracks: Track[]
   addTrack(instrument:Instrument, id?:number): Track
   removeTrack(track:Track): void
+  copyPaste(copyFrom: CopyRequest, pasteTo: PasteRequest): void
 }
 
 export interface TimeParamsView extends Subscribable {
@@ -139,6 +140,7 @@ export interface Track extends TrackView {
   addPolyrhythm(start:Note, end:Note, length:number, id?:number, index?:number): void
   removePolyrhythm(polyrhythm:PolyrhythmView): void
   clear(): void
+  copyPaste(copyFrom: CopyRequest, pasteTo: PasteRequest): void
 }
 
 export interface PolyrhythmView {
@@ -166,4 +168,14 @@ export interface Note extends NoteView {
   readonly track: Track
   polyrhythm: Polyrhythm
   noteStyle: NoteStyle|null // null means this is a rest
+}
+
+export type CopyRequest = {
+  start:Timing,
+  end:Timing
+}
+
+export type PasteRequest = {
+  start:Timing,
+  end?:Timing
 }

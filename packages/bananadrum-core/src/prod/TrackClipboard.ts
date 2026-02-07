@@ -1,18 +1,5 @@
-import { Timing, NoteStyle, Track } from './types/general.js';
+import { Timing, NoteStyle, Track, CopyRequest, PasteRequest } from './types/general.js';
 import { isSameTiming } from './utils.js';
-
-
-type CopyRequest = {
-  start:Timing,
-  end:Timing
-}
-
-
-type PasteRequest = {
-  start:Timing,
-  end?:Timing
-}
-
 
 export class TrackClipboard {
   private track:Track;
