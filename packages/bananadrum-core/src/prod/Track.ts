@@ -1,4 +1,4 @@
-import { Arrangement, Instrument, Note, Polyrhythm, Timing, Track, CopyRequest, PasteRequest } from './types/general.js';
+import { Arrangement, Instrument, Note, NoteStyle, Polyrhythm, Timing, Track, CopyRequest, PasteRequest } from './types/general.js';
 import { createNote } from './Note.js';
 import { createPublisher } from './Publisher.js';
 import { TrackClipboard } from './TrackClipboard.js';
@@ -57,7 +57,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, id:n
   }
 
 
-  function addPolyrhythm(start:Note, end:Note, length:number, id:number = getNewId(), index?:number) {
+  function addPolyrhythm(start:Note, end:Note, length:number, id:number = getNewId(), index?:number, noteStyles?: (NoteStyle|null)[]) {
     if (length < 1)
       return;
 
@@ -65,7 +65,10 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, id:n
 
     polyrhythm.notes = Array.from(Array(length))
       .map((_, index) => createNote(track, {bar:1, step:index}, polyrhythm));
-
+      
+    if (noteStyles !== undefined)
+      polyrhythm.notes.forEach((note, i) => note.noteStyle = noteStyles[i]);
+    
     if (exists(index))
       polyrhythms.splice(index, 0, polyrhythm);
     else

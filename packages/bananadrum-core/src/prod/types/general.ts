@@ -119,6 +119,7 @@ export interface TimeParams extends TimeParamsView {
 // When we bring in polyrhythms that will change
 // It may also change for other time signatures but I'm not sure yet
 export type Timing = {readonly bar:number, readonly step:number}
+export type TimingDelta = {readonly bars: number, readonly steps: number}
 export type RealTime = number
 
 export interface TrackView extends Subscribable {
@@ -137,7 +138,7 @@ export interface Track extends TrackView {
   polyrhythms: Polyrhythm[]
   getNoteAt(timing:Timing): Note
   getNoteIterator(polyrhythmsToIgnore?:PolyrhythmView[]): IterableIterator<Note>
-  addPolyrhythm(start:Note, end:Note, length:number, id?:number, index?:number): void
+  addPolyrhythm(start:Note, end:Note, length:number, id?:number, index?:number, noteStyles?: (NoteStyle|null)[]): void
   removePolyrhythm(polyrhythm:PolyrhythmView): void
   clear(): void
   copyPaste(copyFrom: CopyRequest, pasteTo: PasteRequest): void
