@@ -1,4 +1,4 @@
-import { ArrangementSnapshot, createBananaDrum, deserialiseArrangement, getLibrary, getSerialisedArrangementFromParams, SerialisedArrangement } from 'bananadrum-core';
+import { type ArrangementSnapshot, createBananaDrum, deserialiseArrangement, getLibrary, getSerialisedArrangementFromParams, type SerialisedArrangement } from 'bananadrum-core';
 import { createBananaDrumPlayer } from 'bananadrum-player';
 import { createBananaDrumUi, getSessionSnapshot, resetSessionVariables } from 'bananadrum-ui';
 import { bateriaInstruments } from './bateria-instruments';

@@ -1,4 +1,4 @@
-import { TrackView } from 'bananadrum-core';
+import type { TrackView } from 'bananadrum-core';
 
 
 const colourCount = {blue:0, purple:0, green:0, orange:0, yellow:0};
@@ -66,4 +66,3 @@ const allColours: {[colourName:string]:string[]} = {
     'hsl(288, 100%, 89%)'
   ]
 };
-

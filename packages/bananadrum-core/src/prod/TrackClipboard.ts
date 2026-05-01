@@ -1,4 +1,4 @@
-import { Timing, NoteStyle, Track } from './types/general.js';
+import type { Timing, NoteStyle, Track } from './types/general.js';
 import { isSameTiming } from './utils.js';
 
 

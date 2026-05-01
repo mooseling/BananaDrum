@@ -1,6 +1,6 @@
 import { isMobile } from "./isMobile";
-import { ModeManager } from "./ModeManager";
-import { SelectionManager } from "./SelectionManager";
+import type { ModeManager } from "./ModeManager";
+import type { SelectionManager } from "./SelectionManager";
 
 export function createMouseHandler(modeManager:ModeManager, selectionManager:SelectionManager) {
   if (!isMobile)

@@ -1,5 +1,5 @@
-import { RealTime } from 'bananadrum-core';
-import { ArrangementPlayer } from 'bananadrum-player';
+import type { RealTime } from 'bananadrum-core';
+import type { ArrangementPlayer } from 'bananadrum-player';
 import { createPublisher } from 'bananadrum-core';
 import { TrackViewer } from '../track/TrackViewer.js';
 import { Scrollbar } from '../Scrollbar.js';
@@ -8,7 +8,7 @@ import { InstrumentBrowser } from '../InstrumentBrowser.js';
 import { Overlay, toggleOverlay } from '../Overlay.js';
 import { useState, useEffect, createContext, useRef, useContext, TouchEvent, Dispatch, SetStateAction } from 'react';
 import { ServicesContext } from '../BananaDrumViewer.js';
-import { AnimationEngine } from '../../types.js';
+import type { AnimationEngine } from '../../types.js';
 import { useSubscription } from '../../hooks/useSubscription.js';
 import { ArrangementControlsTop } from './ArrangementControlsTop.js';
 import { ArrangementControlsBottom } from './ArrangementControlsBottom.js';

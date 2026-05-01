@@ -1,4 +1,4 @@
-import { Timing } from 'bananadrum-core';
+import type { Timing } from 'bananadrum-core';
 import { useContext, useMemo } from 'react';
 import { BarDivisibilityContext } from './Guiderail';
 import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer';

@@ -1,8 +1,8 @@
 import { createPublisher } from './Publisher.js'
 import { getArrangementSnapshot } from './serialisation/snapshots.js'
-import { EditCommand, EditCommand_ArrangementTitle } from './types/edit_commands.js'
-import { ArrangementSnapshot } from './types/snapshots.js'
-import { ArrangementView, NoteStyle, Subscribable } from './types/general.js'
+import type { EditCommand, EditCommand_ArrangementTitle } from './types/edit_commands.js'
+import type { ArrangementSnapshot } from './types/snapshots.js'
+import type { ArrangementView, NoteStyle, Subscribable } from './types/general.js'
 import { squashRecentNoteCycling } from './undo-redo-utils.js'
 import { exists } from './utils.js'
 

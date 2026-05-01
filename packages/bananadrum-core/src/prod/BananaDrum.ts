@@ -1,11 +1,11 @@
-import { BananaDrum, Library } from "./types/general.js";
+import type { BananaDrum, Library } from "./types/general.js";
 import { edit } from './edit.js';
-import { EditCommand } from './types/edit_commands.js';
+import type { EditCommand } from './types/edit_commands.js';
 import { createUndoRedoStack } from './UndoRedoStack.js';
 import { applyArrangementSnapshot, createArrangementFromSnapshot } from './serialisation/snapshot_appliers.js';
 import { extractOldValue } from './undo-redo-utils.js';
 import { createPublisher } from './Publisher.js';
-import { ArrangementSnapshot } from './types/snapshots.js';
+import type { ArrangementSnapshot } from './types/snapshots.js';
 
 
 export function createBananaDrum(library:Library, arrangementSnapshot:ArrangementSnapshot): BananaDrum {

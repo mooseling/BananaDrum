@@ -1,6 +1,6 @@
-import { EditCommand, EditCommand_Note } from './types/edit_commands.js';
-import { NoteStyle } from './types/general.js';
-import { HistoryState } from './UndoRedoStack.js';
+import type { EditCommand, EditCommand_Note } from './types/edit_commands.js';
+import type { NoteStyle } from './types/general.js';
+import type { HistoryState } from './UndoRedoStack.js';
 
 
 

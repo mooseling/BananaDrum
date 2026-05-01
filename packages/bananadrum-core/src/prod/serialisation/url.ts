@@ -1,4 +1,4 @@
-import { ArrangementSnapshot, SerialisedArrangement } from '../types/snapshots.js';
+import type { ArrangementSnapshot, SerialisedArrangement } from '../types/snapshots.js';
 import { baseUrl } from './constants.js';
 import { serialiseArrangementSnapshot } from './serialisers.js';
 

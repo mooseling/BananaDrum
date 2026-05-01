@@ -7,7 +7,8 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "types": [],
-    "noEmit": true
+    "noEmit": true,
+    "verbatimModuleSyntax": true
   },
   "references": [
     { "path": "packages/bananadrum-core" },

@@ -1,4 +1,4 @@
-import { Subscribable } from "bananadrum-core";
+import type { Subscribable } from "bananadrum-core";
 import { useState } from "react";
 import { useSubscription } from "./useSubscription";
 

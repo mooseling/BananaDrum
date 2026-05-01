@@ -1,4 +1,4 @@
-import { TimeParams, Timing } from './types/general.js';
+import type { TimeParams, Timing } from './types/general.js';
 import { createPublisher } from './Publisher.js';
 import { calculateStepsPerBar } from './utils.js';
 

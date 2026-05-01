@@ -1,5 +1,5 @@
 import { getNoteStyleCount } from '../Library.js';
-import { ArrangementSnapshot, SerialisedArrangement, TrackSnapshot } from '../types/snapshots.js';
+import type { ArrangementSnapshot, SerialisedArrangement, TrackSnapshot } from '../types/snapshots.js';
 import { polyrhythmCharacterToNumber, serialisationVersion, urlCharacterToNumber } from './constants.js';
 import { interpretAsBaseN, urlEncodeNumber } from './numeric_functions.js';
 

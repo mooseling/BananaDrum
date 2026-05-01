@@ -1,4 +1,4 @@
-import { ArrangementView, BananaDrum, NoteView, RealTime, Subscribable, Timing, TrackView } from 'bananadrum-core'
+import type { ArrangementView, BananaDrum, NoteView, RealTime, Subscribable, Timing, TrackView } from 'bananadrum-core'
 
 export interface BananaDrumPlayer {
   bananaDrum: BananaDrum

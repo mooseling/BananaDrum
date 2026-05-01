@@ -1,4 +1,4 @@
-import { createPublisher, NoteView, Subscribable, TrackView } from "bananadrum-core";
+import { createPublisher, type NoteView, type Subscribable, type TrackView } from "bananadrum-core";
 
 export interface SelectionManager extends Subscribable {
   isSelected(note:NoteView): boolean

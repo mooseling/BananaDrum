@@ -2,9 +2,9 @@
   "name": "bananadrum-player",
   "version": "1.0.0",
   "description": "Allows playing a composition",
-  "main": "dist/prod/index.js",
+  "main": "src/prod/index.ts",
   "dependencies": {
-    "bananadrum-core": "^1.0.0"
+    "bananadrum-core": "*"
   },
   "repository": {
     "type": "git",

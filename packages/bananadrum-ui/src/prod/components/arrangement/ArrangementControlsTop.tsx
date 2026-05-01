@@ -1,4 +1,4 @@
-import { ArrangementView } from "bananadrum-core";
+import type { ArrangementView } from "bananadrum-core";
 import { getEventEngine } from "bananadrum-player";
 import { useCallback, useContext, useRef, useState } from "react";
 import { ServicesContext } from "../../components/BananaDrumViewer.js";

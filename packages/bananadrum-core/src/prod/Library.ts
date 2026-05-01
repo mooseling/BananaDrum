@@ -1,4 +1,4 @@
-import { PackedInstrument, Instrument, NoteStyleBase, NoteStyle, Library, InstrumentMeta } from './types/general.js';
+import type { PackedInstrument, Instrument, NoteStyleBase, NoteStyle, Library, InstrumentMeta } from './types/general.js';
 import { loadAudio } from './loadAudio.js';
 import { createPublisher } from './Publisher.js';
 

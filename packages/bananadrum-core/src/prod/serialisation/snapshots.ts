@@ -1,5 +1,5 @@
-import { ArrangementSnapshot, PolyrhythmSnapshot, TrackSnapshot } from '../types/snapshots.js';
-import { ArrangementView, PolyrhythmView, TrackView } from '../types/general.js';
+import type { ArrangementSnapshot, PolyrhythmSnapshot, TrackSnapshot } from '../types/snapshots.js';
+import type { ArrangementView, PolyrhythmView, TrackView } from '../types/general.js';
 
 
 

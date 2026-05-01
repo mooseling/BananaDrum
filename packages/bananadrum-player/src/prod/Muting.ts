@@ -1,6 +1,6 @@
-import { MutingRule, MutingRuleOtherInstrument, NoteView, RealTime } from 'bananadrum-core';
+import type { MutingRule, MutingRuleOtherInstrument, NoteView, RealTime } from 'bananadrum-core';
 import { isSameTiming, exists } from 'bananadrum-core';
-import { AudioEvent, MuteEvent, MuteFilter } from './types';
+import type { AudioEvent, MuteEvent, MuteFilter } from './types';
 
 
 export function getMuteEvents(note:NoteView, realTime:RealTime): MuteEvent[] {

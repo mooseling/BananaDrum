@@ -1,5 +1,5 @@
-import { EditCommand } from './edit_commands'
-import { ArrangementSnapshot } from './snapshots'
+import type { EditCommand } from './edit_commands'
+import type { ArrangementSnapshot } from './snapshots'
 
 export interface BananaDrum {
   library: Library
