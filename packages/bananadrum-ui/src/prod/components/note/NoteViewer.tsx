@@ -1,4 +1,4 @@
-import type { NoteView, NoteStyle, Subscribable, isSameTiming, EditCommand } from 'bananadrum-core';
+import { type NoteView, type NoteStyle, type Subscribable, type EditCommand, isSameTiming } from 'bananadrum-core';
 import { createAudioBufferPlayer, type TrackPlayer, type ArrangementPlayer } from 'bananadrum-player';
 import { useState, useContext, useCallback, useMemo } from 'react';
 import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer.js';
