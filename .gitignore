@@ -1,7 +1,6 @@
 dist
 node_modules
 bundle.js
-.vscode/settings.json
 tsconfig.tsbuildinfo
 packages/bananadrum-webapp/www/bundle.js.LICENSE.txt
 .DS_Store
