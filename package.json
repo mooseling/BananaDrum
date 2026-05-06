@@ -21,7 +21,7 @@
     "dev": "npm run dev -w bananadrum-webapp",
     "build": "npm run build -w bananadrum-webapp",
     "preview": "npm run preview -w bananadrum-webapp",
-    "test": "npm run test -w core",
+    "test": "npm run test -w bananadrum-core",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "eslint ."
   },

@@ -1,4 +1,4 @@
-import { assert } from 'chai';
+import { describe, it, assert } from 'vitest';
 import { getUniqueTiming } from '../lib/getUniqueTiming.js';
 
 describe('Test lib', function() {
