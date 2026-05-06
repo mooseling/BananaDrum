@@ -12,3 +12,6 @@ Check it out! [bananadrum.net](https://bananadrum.net)
 
 ## Build bundle.js for production
 ```npm run build```
+
+## Run tests
+```npm test```
