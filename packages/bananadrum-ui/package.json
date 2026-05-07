@@ -1,26 +1,17 @@
 {
   "name": "bananadrum-ui",
-  "version": "1.0.0",
-  "description": "Allows interacting with Banana Drum",
-  "main": "src/prod/index.js",
+  "type": "module",
   "dependencies": {
     "bananadrum-core": "*",
     "bananadrum-player": "*",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mooseling/BananaDrum.git"
-  },
-  "author": "James Stevenson",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mooseling/BananaDrum/issues"
-  },
-  "homepage": "https://github.com/mooseling/BananaDrum",
   "devDependencies": {
     "@types/react": "19.2.0",
     "@types/react-dom": "19.2.0"
+  },
+  "exports": {
+    ".": "./src/prod/index.ts"
   }
 }

@@ -1,13 +1,6 @@
 {
   "name": "banana-drum",
-  "version": "0.0.1",
-  "description": "Music sequencer web-app designed for samba bands",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/mooseling/BananaDrum.git"
-  },
   "license": "ISC",
-  "type": "module",
   "devDependencies": {
     "@types/react": "17.0.37",
     "@types/react-dom": "17.0.11",
