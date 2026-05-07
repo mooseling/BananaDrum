@@ -1,4 +1,4 @@
-import type { NoteStyle } from "bananadrum-core";
+import type { NoteStyle } from "bananadrum-core/types";
 
 export function NoteStyleSymbolViewer({noteStyle}:{noteStyle:NoteStyle}): JSX.Element {
   if (!noteStyle)

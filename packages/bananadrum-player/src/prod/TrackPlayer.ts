@@ -1,4 +1,4 @@
-import type { RealTime, NoteView, TrackView, PolyrhythmView } from 'bananadrum-core';
+import type { RealTime, NoteView, TrackView, PolyrhythmView } from 'bananadrum-core/types';
 import { createPublisher } from 'bananadrum-core';
 import { getMuteEvents } from './Muting.js';
 import type { CallbackEvent, Event, Interval, SoloMute, TimeCoordinator, TrackPlayer } from './types.js';

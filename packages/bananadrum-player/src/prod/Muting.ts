@@ -1,4 +1,4 @@
-import type { MutingRule, MutingRuleOtherInstrument, NoteView, RealTime } from 'bananadrum-core';
+import type { MutingRule, MutingRuleOtherInstrument, NoteView, RealTime } from 'bananadrum-core/types';
 import { isSameTiming, exists } from 'bananadrum-core';
 import type { AudioEvent, MuteEvent, MuteFilter } from './types';
 

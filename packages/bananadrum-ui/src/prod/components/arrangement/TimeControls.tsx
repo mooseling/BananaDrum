@@ -1,4 +1,4 @@
-import type { ArrangementView, EditCommand_TimeParamsTimeSignature } from "bananadrum-core";
+import type { ArrangementView, EditCommand_TimeParamsTimeSignature } from "bananadrum-core/types";
 import { useCallback, useState } from "react";
 import { useSubscription } from "../../hooks/useSubscription";
 import { NumberInput } from "../NumberInput";

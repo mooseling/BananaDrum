@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { Publisher } from 'bananadrum-core';
+import type { Publisher } from 'bananadrum-core/types';
 import { useSubscription } from '../hooks/useSubscription';
 
 

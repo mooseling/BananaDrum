@@ -6,6 +6,10 @@
   "dependencies": {
     "bananadrum-core": "*"
   },
+  "exports": {
+    ".": "./src/prod/index.ts",
+    "./types": "./src/prod/types.ts"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mooseling/BananaDrum.git"

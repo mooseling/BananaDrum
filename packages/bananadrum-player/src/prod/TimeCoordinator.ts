@@ -1,4 +1,4 @@
-import type { RealTime, TimeParamsView, Timing } from 'bananadrum-core';
+import type { RealTime, TimeParamsView, Timing } from 'bananadrum-core/types';
 import { createPublisher } from 'bananadrum-core';
 import { getEventEngine } from './EventEngine.js';
 import type { Interval, LoopInterval, TimeCoordinator } from './types.js';

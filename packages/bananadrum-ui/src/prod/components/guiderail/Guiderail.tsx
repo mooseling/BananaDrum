@@ -1,4 +1,4 @@
-import type { ArrangementView, TimeParamsView } from 'bananadrum-core';
+import type { ArrangementView, TimeParamsView } from 'bananadrum-core/types';
 import { useStateSubscription } from '../../hooks/useStateSubscription';
 import { TimingViewer } from './TimingViewer';
 import { createContext } from 'react';

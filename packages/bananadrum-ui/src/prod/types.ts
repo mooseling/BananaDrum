@@ -1,5 +1,5 @@
-import type { RealTime, Subscribable } from 'bananadrum-core'
-import type { BananaDrumPlayer, EventEngineState } from 'bananadrum-player'
+import type { RealTime, Subscribable } from 'bananadrum-core/types'
+import type { BananaDrumPlayer, EventEngineState } from 'bananadrum-player/types'
 
 export interface BananaDrumUi {
   bananaDrumPlayer: BananaDrumPlayer

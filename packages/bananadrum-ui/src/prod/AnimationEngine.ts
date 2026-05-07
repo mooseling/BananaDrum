@@ -1,6 +1,6 @@
 import type { AnimationEngine } from './types';
 import { createPublisher } from 'bananadrum-core';
-import type { EventEngine, EventEngineState } from 'bananadrum-player';
+import type { EventEngine, EventEngineState } from 'bananadrum-player/types';
 
 
 // Currently this is just doing auto-scroll

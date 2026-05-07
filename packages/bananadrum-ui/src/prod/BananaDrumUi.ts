@@ -1,4 +1,4 @@
-import type { BananaDrumPlayer } from 'bananadrum-player';
+import type { BananaDrumPlayer } from 'bananadrum-player/types';
 import { createRoot } from 'react-dom/client';
 import { StrictMode, createElement } from 'react';
 import { BananaDrumViewer } from "./components/BananaDrumViewer.js";

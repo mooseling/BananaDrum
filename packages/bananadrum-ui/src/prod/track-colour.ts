@@ -1,4 +1,4 @@
-import type { TrackView } from 'bananadrum-core';
+import type { TrackView } from 'bananadrum-core/types';
 
 
 const colourCount = {blue:0, purple:0, green:0, orange:0, yellow:0};

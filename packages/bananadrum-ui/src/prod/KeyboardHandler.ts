@@ -1,8 +1,8 @@
-import type { EventEngine } from 'bananadrum-player';
+import type { EventEngine } from 'bananadrum-player/types';
 import { closeAllOverlays } from './components/Overlay.js';
 import type { ModeManager } from './ModeManager.js';
 import type { SelectionManager } from './SelectionManager.js';
-import type { BananaDrum } from 'bananadrum-core';
+import type { BananaDrum } from 'bananadrum-core/types';
 
 
 export function createKeyboardHandler(eventEngine:EventEngine, bananaDrum:BananaDrum, selectionManager:SelectionManager, modeManager:ModeManager) {

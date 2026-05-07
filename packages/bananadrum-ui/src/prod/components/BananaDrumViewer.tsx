@@ -1,10 +1,10 @@
-import type { BananaDrumPlayer } from 'bananadrum-player';
+import type { BananaDrumPlayer } from 'bananadrum-player/types';
 import { ArrangementViewer } from './arrangement/ArrangementViewer.js';
 import { Overlay, toggleOverlay } from './Overlay.js';
 import { createContext } from 'react';
 import { About } from './About.js';
 import type { BananaDrumUiServices } from '../BananaDrumUi.js';
-import type { BananaDrum } from 'bananadrum-core';
+import type { BananaDrum } from 'bananadrum-core/types';
 
 
 export const ServicesContext = createContext<BananaDrumUiServices>(null);

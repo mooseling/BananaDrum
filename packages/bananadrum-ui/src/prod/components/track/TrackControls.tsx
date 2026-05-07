@@ -1,4 +1,4 @@
-import type { TrackView } from 'bananadrum-core';
+import type { TrackView } from 'bananadrum-core/types';
 import { useEditCommand } from '../../hooks/useEditCommand.js';
 import { toggleOverlay } from '../Overlay.js';
 

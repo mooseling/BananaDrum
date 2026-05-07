@@ -1,4 +1,4 @@
-import type { TrackView } from 'bananadrum-core';
+import type { TrackView } from 'bananadrum-core/types';
 import { SoloMuteButtons } from './SoloMuteButtons.js';
 import { getTrackColour } from '../../track-colour.js';
 

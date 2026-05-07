@@ -8,7 +8,7 @@ import { OverlayStateContext } from "./Overlay";
 import { SmallSpacer } from "./SmallSpacer";
 import { useEditCommand, type EditFunction } from '../hooks/useEditCommand';
 import { ArrangementPlayerContext } from './arrangement/ArrangementViewer';
-import type { ArrangementView } from 'bananadrum-core';
+import type { ArrangementView } from 'bananadrum-core/types';
 
 
 

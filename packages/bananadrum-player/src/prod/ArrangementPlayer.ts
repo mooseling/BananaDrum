@@ -1,4 +1,4 @@
-import type { ArrangementView, RealTime, Timing, TrackView } from 'bananadrum-core';
+import type { ArrangementView, RealTime, Timing, TrackView } from 'bananadrum-core/types';
 import { createPublisher } from 'bananadrum-core';
 import { createTimeCoordinator } from './TimeCoordinator.js';
 import { createTrackPlayer } from './TrackPlayer.js';

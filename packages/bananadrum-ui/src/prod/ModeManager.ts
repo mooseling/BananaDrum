@@ -1,4 +1,5 @@
-import { createPublisher, type Subscribable } from "bananadrum-core";
+import { createPublisher } from "bananadrum-core";
+import type { Subscribable } from "bananadrum-core/types";
 import type { SelectionManager } from "./SelectionManager";
 
 export interface ModeManager extends Subscribable {

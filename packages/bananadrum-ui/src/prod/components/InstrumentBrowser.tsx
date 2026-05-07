@@ -1,4 +1,4 @@
-import type { ArrangementView, InstrumentMeta } from 'bananadrum-core';
+import type { ArrangementView, InstrumentMeta } from 'bananadrum-core/types';
 import { getLibrary } from 'bananadrum-core';
 import { ArrangementPlayerContext } from './arrangement/ArrangementViewer.js';
 import { useContext } from 'react';
