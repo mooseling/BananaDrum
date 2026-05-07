@@ -10,5 +10,8 @@
   "exports": {
     ".": "./src/prod/index.ts",
     "./types": "./src/prod/types/index.ts"
+  },
+  "dependencies": {
+    "big-integer": "1.6.52"
   }
 }
