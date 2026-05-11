@@ -138,7 +138,7 @@ export class TrackClipboard {
             let pastedPoly = this.track.addPolyrhythm(startNote, endNote,
               polyrhythm.notes.length, undefined, undefined, polyrhythm.notes.map(n => n.noteStyle));
             
-            if (pastedPoly != null)
+            if (pastedPoly)
               copiedToPastedPolyId.set(polyrhythm.id, pastedPoly.id);
             else
               console.log("Error: could not add polyrhythm");
