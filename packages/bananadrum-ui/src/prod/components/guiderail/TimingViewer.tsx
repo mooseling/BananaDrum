@@ -16,7 +16,7 @@ type AdjacentCopyPasteRequest = {
 }
 
 function AdjacentCopyBarControl({ copyFrom, direction }: AdjacentCopyPasteRequest): JSX.Element {
-  let bananaDrum = useContext(BananaDrumContext);
+  const bananaDrum = useContext(BananaDrumContext);
     
   return (<div>
     {direction == PasteDirection.Left &&
