@@ -60,7 +60,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, id:n
     polyrhythm.notes = Array.from(Array(length))
       .map((_, index) => createNote(track, {bar:1, step:index}, polyrhythm));
       
-    if (noteStyles !== undefined)
+    if (noteStyles)
       polyrhythm.notes.forEach((note, i) => note.noteStyle = noteStyles[i]);
     
     if (exists(index))
