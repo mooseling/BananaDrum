@@ -61,10 +61,10 @@ export class TrackClipboard {
   }
 
   paste({ start, end }: PasteRequest) {
-    if (end === undefined)
-      end = this.track.notes[this.track.notes.length - 1].timing;
     if (this.buffer.length === 0)
       return;
+    if (end === undefined)
+      end = this.track.notes[this.track.notes.length - 1].timing;
     
     const notes = this.track.notes;
     let note = this.track.getNoteAt(start);
