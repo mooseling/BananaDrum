@@ -5,10 +5,7 @@ import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer';
 import { getParityClass } from '../note/NoteViewer';
 import { BananaDrumContext } from '../BananaDrumViewer.js';
 
-enum PasteDirection {
-  Left,
-  Right
-}
+type PasteDirection = 'left' | 'right';
 
 type AdjacentCopyPasteRequest = {
   copyFrom: CopyRequest
@@ -19,12 +16,12 @@ function AdjacentCopyBarControl({ copyFrom, direction }: AdjacentCopyPasteReques
   const bananaDrum = useContext(BananaDrumContext);
     
   return (<div>
-    {direction == PasteDirection.Left &&
+    {direction === 'left' &&
       <button className='push-button medium gray' onClick={() => { copyPaste(copyFrom, { start: { bar: copyFrom.start.bar - 1, step: 1}, end: { bar: copyFrom.start.bar - 1, step: copyFrom.end.step } })}}>
         <img src="images/icons/undo_white.svg" style={{ height: '0.78em' }} />
       </button>
     }
-    {direction == PasteDirection.Right &&
+    {direction === 'right' &&
       <button className='push-button medium gray' onClick={() => { copyPaste(copyFrom, { start: { bar: copyFrom.start.bar + 1, step: 1 }, end: { bar: copyFrom.start.bar + 1, step: copyFrom.end.step } })}}>
         <img src="images/icons/redo_white.svg" style={{ height: '0.78em' }} />
       </button>
@@ -67,10 +64,10 @@ export function TimingViewer({timing}:{timing:Timing}): JSX.Element {
       { (isStartOfBar || isEndOfBar) &&
         <div className='guiderail-control'>
           {
-            isStartOfBar && timing.bar !== 1 && <AdjacentCopyBarControl copyFrom={{start: {bar: timing.bar, step: 1}, end: {bar: timing.bar, step: stepsPerBar}}} direction={PasteDirection.Left} />
+            isStartOfBar && timing.bar !== 1 && <AdjacentCopyBarControl copyFrom={{start: {bar: timing.bar, step: 1}, end: {bar: timing.bar, step: stepsPerBar}}} direction={'left'} />
           }
           {
-            isEndOfBar && timing.bar !== length && <AdjacentCopyBarControl copyFrom={{start: {bar: timing.bar, step: 1}, end: {bar: timing.bar, step: stepsPerBar}}} direction={PasteDirection.Right} />
+            isEndOfBar && timing.bar !== length && <AdjacentCopyBarControl copyFrom={{start: {bar: timing.bar, step: 1}, end: {bar: timing.bar, step: stepsPerBar}}} direction={'right'} />
           }
         </div>
       }
