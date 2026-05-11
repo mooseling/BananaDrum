@@ -111,7 +111,7 @@ export class TrackClipboard {
     let firstCopiedTiming = this.buffer[0].timing;
     let delta = subtractTimings(start, firstCopiedTiming);
 
-    // we assume parents are paste before children because of ordering imposed in copy()
+    // we assume parents are pasted before children because of ordering imposed in copy()
     this.polyrhythmsToCopy.forEach(polyrhythm => {
       if (!isPolyrhythmNested(polyrhythm)) {
         let pastedPolyStart = addDelta(polyrhythm.start.timing, delta);
