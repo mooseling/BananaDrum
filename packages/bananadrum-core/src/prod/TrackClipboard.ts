@@ -109,13 +109,13 @@ export class TrackClipboard {
     //    NOTE: only pasted if fully within paste area
     let copiedToPastedPolyId: Map<number, number> = new Map();
     let firstCopiedTiming = this.buffer[0].timing;
-    let delta = subtractTimings(start, firstCopiedTiming);
+    let copyToPasteDistance = subtractTimings(start, firstCopiedTiming);
 
     // we assume parents are pasted before children because of ordering imposed in copy()
     this.polyrhythmsToCopy.forEach(polyrhythm => {
       if (!isPolyrhythmNested(polyrhythm)) {
-        let pastedPolyStart = addDelta(polyrhythm.start.timing, delta);
-        let pastedPolyEnd = addDelta(polyrhythm.end.timing, delta);
+        let pastedPolyStart = addDelta(polyrhythm.start.timing, copyToPasteDistance);
+        let pastedPolyEnd = addDelta(polyrhythm.end.timing, copyToPasteDistance);
         
         if (isIntervalWithinLimits(pastedPolyStart, pastedPolyEnd, start, end)) {
           let pastedPoly = this.track.addPolyrhythm(this.track.getNoteAt(pastedPolyStart), this.track.getNoteAt(pastedPolyEnd),
