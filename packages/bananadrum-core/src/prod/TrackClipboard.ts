@@ -1,11 +1,11 @@
 import { Timing, Note, Track, CopyRequest, PasteRequest, Polyrhythm } from './types/general.js';
 import { isSameTiming, subtractTimings, addDelta, isIntervalWithinLimits } from './utils.js';
 
-function isPolyrhytmWithinLimits(polyrhythm: Polyrhythm, start: Timing, end: Timing): boolean {
+function isPolyrhythmWithinLimits(polyrhythm: Polyrhythm, start: Timing, end: Timing): boolean {
     return isIntervalWithinLimits(polyrhythm.start.timing, polyrhythm.end.timing, start, end);
 }
 
-function isPolyrhytmNested(polyrhythm: Polyrhythm): boolean {
+function isPolyrhythmNested(polyrhythm: Polyrhythm): boolean {
   return polyrhythm.start.polyrhythm !== undefined;
 }
 
@@ -18,7 +18,7 @@ function getNestedLevel(p: Polyrhythm): number {
 export class TrackClipboard {
   private track: Track;
   private buffer: Note[] = [];
-  private polyrhytmsToCopy: Polyrhythm[] = [];
+  private polyrhythmsToCopy: Polyrhythm[] = [];
 
   constructor(track: Track) {
     this.track = track;
@@ -35,16 +35,16 @@ export class TrackClipboard {
     let index = notes.indexOf(note);
     this.buffer = [];
 
-    // copy polyrhytms 
+    // copy polyrhythms 
     //     NOTE: only copied if fully within selection
-    this.polyrhytmsToCopy = [];
+    this.polyrhythmsToCopy = [];
     // Order polyrhythms from least to most nested
     //    This is to ensures that parents are checked before children in following operations
     this.track.polyrhythms.sort((a, b) => getNestedLevel(a) - getNestedLevel(b));
     this.track.polyrhythms.forEach(p => {
-      if (isPolyrhytmWithinLimits(p, start, end)
-        || (isPolyrhytmNested(p) && this.polyrhytmsToCopy.includes(p.start.polyrhythm)))
-        this.polyrhytmsToCopy.push(p);
+      if (isPolyrhythmWithinLimits(p, start, end)
+        || (isPolyrhythmNested(p) && this.polyrhythmsToCopy.includes(p.start.polyrhythm)))
+        this.polyrhythmsToCopy.push(p);
     });
 
     // copy notes
@@ -91,29 +91,29 @@ export class TrackClipboard {
     }
 
     // POLYRHYTHMS
-    if (this.polyrhytmsToCopy.length === 0)
+    if (this.polyrhythmsToCopy.length === 0)
       return;
     // delete existing polyrhythms in the paste area
     let toDelete: Polyrhythm[] = [];
     this.track.polyrhythms.forEach(p => {
       if(
-        (!isPolyrhytmNested(p) && isPolyrhytmWithinLimits(p, start, end))  // for first-level polys
-        || (isPolyrhytmNested(p) && toDelete.includes(p.start.polyrhythm)) // for nested polys
+        (!isPolyrhythmNested(p) && isPolyrhythmWithinLimits(p, start, end))  // for first-level polys
+        || (isPolyrhythmNested(p) && toDelete.includes(p.start.polyrhythm)) // for nested polys
       )
       toDelete.push(p);
     });
 
     toDelete.forEach(p => this.track.removePolyrhythm(p));
 
-    // paste polyrhytms
+    // paste polyrhythms
     //    NOTE: only pasted if fully within paste area
     let copiedToPastedPolyId: Map<number, number> = new Map();
     let firstCopiedTiming = this.buffer[0].timing;
     let delta = subtractTimings(start, firstCopiedTiming);
 
     // we assume parents are paste before children because of ordering imposed in copy()
-    this.polyrhytmsToCopy.forEach(polyrhythm => {
-      if (!isPolyrhytmNested(polyrhythm)) {
+    this.polyrhythmsToCopy.forEach(polyrhythm => {
+      if (!isPolyrhythmNested(polyrhythm)) {
         let pastedPolyStart = addDelta(polyrhythm.start.timing, delta);
         let pastedPolyEnd = addDelta(polyrhythm.end.timing, delta);
         
