@@ -1,4 +1,4 @@
-import { ArrangementView } from 'bananadrum-core';
+import type { ArrangementView } from 'bananadrum-core/types';
 import { useContext, useState } from 'react';
 import { ArrangementPlayerContext } from './ArrangementViewer.js';
 import { Overlay, toggleOverlay } from '../Overlay.js';

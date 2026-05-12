@@ -2,13 +2,13 @@ import { useContext, useRef, useState } from "react";
 import { ServicesContext } from "../components/BananaDrumViewer.js";
 import { useKeyboardEvent } from "../hooks/useKeyboardEvent";
 import { useSubscription } from "../hooks/useSubscription";
-import { SelectionManager } from "../SelectionManager";
+import type { SelectionManager } from "../SelectionManager";
 import { ExpandingSpacer } from "./ExpandingSpacer";
 import { OverlayStateContext } from "./Overlay";
 import { SmallSpacer } from "./SmallSpacer";
-import { useEditCommand, EditFunction } from '../hooks/useEditCommand';
+import { useEditCommand, type EditFunction } from '../hooks/useEditCommand';
 import { ArrangementPlayerContext } from './arrangement/ArrangementViewer';
-import { ArrangementView } from 'bananadrum-core';
+import type { ArrangementView } from 'bananadrum-core/types';
 
 
 

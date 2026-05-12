@@ -1,4 +1,4 @@
-import { BananaDrum, ArrangementSnapshot } from 'bananadrum-core';
+import type { BananaDrum, ArrangementSnapshot } from 'bananadrum-core/types';
 
 
 // Tracking state all comes down to knowing the Session ID

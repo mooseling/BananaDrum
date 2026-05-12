@@ -1,4 +1,4 @@
-import { ArrangementView, Subscription, TrackView } from "bananadrum-core";
+import type { ArrangementView, Subscription, TrackView } from "bananadrum-core/types";
 import { useEffect } from "react";
 import { useSubscription } from "./useSubscription";
 

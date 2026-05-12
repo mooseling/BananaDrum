@@ -1,4 +1,4 @@
-import { PackedInstrument } from 'bananadrum-core';
+import type { PackedInstrument } from 'bananadrum-core';
 
 export const bateriaInstruments:PackedInstrument[] = [
   {

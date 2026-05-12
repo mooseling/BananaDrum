@@ -1,4 +1,4 @@
-import { PolyrhythmView } from "bananadrum-core";
+import type { PolyrhythmView } from "bananadrum-core/types";
 import { useContext, useState } from "react";
 import { ServicesContext } from "../components/BananaDrumViewer.js";
 import { useSubscription } from "../hooks/useSubscription";

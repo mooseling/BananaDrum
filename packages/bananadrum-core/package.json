@@ -1,17 +1,17 @@
 {
   "name": "bananadrum-core",
-  "version": "1.0.0",
-  "description": "Allows creating and editing a composition",
-  "main": "dist/prod/index.js",
-  "type":"module",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mooseling/BananaDrum.git"
+  "type": "module",
+  "scripts": {
+    "test": "vitest"
   },
-  "author": "James Stevenson",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mooseling/BananaDrum/issues"
+  "devDependencies": {
+    "vitest": "4.1.5"
   },
-  "homepage": "https://github.com/mooseling/BananaDrum"
+  "exports": {
+    ".": "./src/prod/index.ts",
+    "./types": "./src/prod/types/index.ts"
+  },
+  "dependencies": {
+    "big-integer": "1.6.52"
+  }
 }

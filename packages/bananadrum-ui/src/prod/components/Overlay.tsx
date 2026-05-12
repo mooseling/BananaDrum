@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext, useMemo } from 'react';
-import { Subscribable } from 'bananadrum-core';
+import type { Subscribable } from 'bananadrum-core/types';
 import { createPublisher } from 'bananadrum-core';
 
 

@@ -1,13 +1,13 @@
-import { BananaDrumPlayer } from 'bananadrum-player';
+import type { BananaDrumPlayer } from 'bananadrum-player/types';
 import { createRoot } from 'react-dom/client';
 import { StrictMode, createElement } from 'react';
 import { BananaDrumViewer } from "./components/BananaDrumViewer.js";
-import { AnimationEngine, BananaDrumUi } from './types.js';
+import type { AnimationEngine, BananaDrumUi } from './types.js';
 import { getAnimationEngine } from './AnimationEngine.js';
 import { createKeyboardHandler } from './KeyboardHandler.js';
-import { createModeManager, ModeManager } from './ModeManager.js';
+import { createModeManager, type ModeManager } from './ModeManager.js';
 import { createMouseHandler } from './MouseHandler.js';
-import { createSelectionManager, SelectionManager } from './SelectionManager.js';
+import { createSelectionManager, type SelectionManager } from './SelectionManager.js';
 import { initSessionRecovery } from './session-recovery.js';
 
 

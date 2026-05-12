@@ -1,12 +1,11 @@
 import bigInt from 'big-integer';
-import { assert } from 'chai';
-import { describe, it } from 'mocha';
+import { describe, it, assert } from 'vitest'
 import { convertToBaseN, interpretAsBaseN, urlDecodeNumber, urlEncodeNumber } from '../../prod/serialisation/numeric_functions.js';
 
 
 
 describe('URL encoding numbers', function() {
-  it ('decodes up to 100000 back to the same number', () => {
+  it('decodes up to 100000 back to the same number', () => {
     const limit = bigInt(100000);
 
     for (let integer = bigInt.zero; integer.lesser(limit); integer = integer.plus(1)) {

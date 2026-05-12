@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ArrangementPlayerContext } from "./ArrangementViewer";
 import { useStateSubscription } from "../../hooks/useStateSubscription";
-import { ArrangementView } from "bananadrum-core";
+import type { ArrangementView } from "bananadrum-core/types";
 import { useSubscription } from "../../hooks/useSubscription";
 import { useEditCommand } from '../../hooks/useEditCommand';
 

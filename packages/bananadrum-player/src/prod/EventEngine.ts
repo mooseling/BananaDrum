@@ -1,6 +1,6 @@
-import { AudioEvent, CallbackEvent, EventEngineState, EventEngine, Interval, MuteEvent, EventSource, MuteFilter } from './types';
+import type { AudioEvent, CallbackEvent, EventEngineState, EventEngine, Interval, MuteEvent, EventSource, MuteFilter } from './types';
 import { createPublisher } from 'bananadrum-core';
-import { AudioBufferPlayer, createAudioBufferPlayer } from './AudioBufferPlayer.js';
+import { type AudioBufferPlayer, createAudioBufferPlayer } from './AudioBufferPlayer.js';
 
 
 // The core of the Banana Drum Player is the EventEngine

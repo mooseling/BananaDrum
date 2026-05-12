@@ -1,4 +1,4 @@
-import { ArrangementView, Instrument, NoteStyle, NoteView, PolyrhythmView, TimeParamsView, TrackView } from './general'
+import type { ArrangementView, Instrument, NoteStyle, NoteView, PolyrhythmView, TimeParamsView, TrackView } from './general'
 
 
 export interface EditCommand_ArrangementTitle {

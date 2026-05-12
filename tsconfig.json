@@ -4,10 +4,11 @@
     "module": "es6",
     "lib": ["esnext", "dom"],
     "target": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "types": [],
-    "noEmit": true
+    "noEmit": true,
+    "verbatimModuleSyntax": true
   },
   "references": [
     { "path": "packages/bananadrum-core" },

@@ -1,4 +1,4 @@
-import { Note, NoteStyle, Polyrhythm, Timing, Track } from './types/general.js';
+import type { Note, NoteStyle, Polyrhythm, Timing, Track } from './types/general.js';
 import { createPublisher } from './Publisher.js';
 
 let noteCount = 0;

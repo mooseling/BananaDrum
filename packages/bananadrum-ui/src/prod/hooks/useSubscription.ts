@@ -1,4 +1,4 @@
-import { Subscribable } from 'bananadrum-core';
+import type { Subscribable } from 'bananadrum-core/types';
 import { useEffect } from 'react';
 
 export function useSubscription(subscribable:Subscribable, callback:() => void, dependencyList:React.DependencyList = []) {

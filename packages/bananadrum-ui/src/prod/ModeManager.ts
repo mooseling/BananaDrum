@@ -1,5 +1,6 @@
-import { createPublisher, Subscribable } from "bananadrum-core";
-import { SelectionManager } from "./SelectionManager";
+import { createPublisher } from "bananadrum-core";
+import type { Subscribable } from "bananadrum-core/types";
+import type { SelectionManager } from "./SelectionManager";
 
 export interface ModeManager extends Subscribable {
   deletePolyrhythmMode: boolean

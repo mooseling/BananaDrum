@@ -1,6 +1,6 @@
 import { useCallback, useContext } from 'react';
 import { BananaDrumContext } from '../components/BananaDrumViewer.js';
-import { EditCommand } from 'bananadrum-core';
+import type { EditCommand } from 'bananadrum-core/types';
 
 
 export type EditFunction = (command:EditCommand) => void
