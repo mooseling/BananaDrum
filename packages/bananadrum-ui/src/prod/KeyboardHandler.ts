@@ -29,7 +29,7 @@ export function createKeyboardHandler(eventEngine:EventEngine, bananaDrum:Banana
         break;
       case 'Backspace':
       case 'Delete':
-        if (!(event.target instanceof HTMLInputElement)){
+        if (!(event.target instanceof HTMLInputElement)) {
           bananaDrum.edit({arrangement:bananaDrum.arrangement, clearSelection:selectionManager.selections});
           selectionManager.deselectAll();
         }
@@ -41,10 +41,13 @@ export function createKeyboardHandler(eventEngine:EventEngine, bananaDrum:Banana
       // We allow overlap for maximum cross-browser consistency, except where it actually causes confusion
       case 'z':
         if (event.ctrlKey || event.metaKey) {
-          if (event.shiftKey)
-            bananaDrum.redo(); // Standard redo on Mac, and no problem to allow it on Windows
-          else
-            bananaDrum.undo(); // With ctrl, this doesn't even trigger on Mac. Seems harmless to include it anyway.
+          if (!(event.target instanceof HTMLInputElement)) {
+            if (event.shiftKey)
+              bananaDrum.redo(); // Standard redo on Mac, and no problem to allow it on Windows
+            else
+              bananaDrum.undo(); // With ctrl, this doesn't even trigger on Mac. Seems harmless to include it anyway.
+            event.preventDefault(); // otherwise ctrl+z can undo typing in inputs
+          }
         }
         break;
       case 'y':
