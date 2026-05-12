@@ -102,7 +102,7 @@ function useClasses(timing:Timing, isStartOfBar:boolean, isEndOfBar:boolean): st
 
   return useMemo(
     () => `guiderail-timing note-width ${getParityClass(bar, step, timeSignature, stepResolution)} ${isStartOfBar ? 'start-of-bar' : ''} ${isEndOfBar ? 'end-of-bar' : ''}`,
-    [bar, step, timeSignature, stepResolution, isStartOfBar]
+    [bar, step, timeSignature, stepResolution, isStartOfBar, isEndOfBar]
   );
 }
 
