@@ -1,48 +1,79 @@
 import path from 'path';
-import {fileURLToPath} from 'url';
+import { fileURLToPath } from 'url';
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
+const isDev = true;
 
 const config = {
   mode: 'development',
   context: __dirname,
-  entry: {
-    prod: {
-      import: './packages/bananadrum-webapp/dist/index.js',
-      filename: 'bundle.js'
-    }
-    // test: './packages/bananadrum-core/src/test/index.ts'
-  },
+
+  entry: './packages/bananadrum-webapp/src/index.ts',
+
   output: {
-    path: path.resolve(__dirname, './packages/bananadrum-webapp/www')
+    path: path.resolve(__dirname, './packages/bananadrum-webapp/www'),
+    filename: 'bundle.js',
+    publicPath: '/',
+    clean: false,
   },
+
   module: {
     rules: [
       {
-        test: /\.js/,
+        test: /\.[jt]sx?$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options:{
+          options: {
             presets: [
               [
-                "@babel/env", //  this is the same as @babel/preset-env
+                '@babel/preset-env',
                 {
-                  useBuiltIns: "usage",
+                  useBuiltIns: 'usage',
                   corejs: 3,
-                  targets: {"ios":"14.4"} //"> 0.5%, not dead"
-                }
-              ]
-            ]
-          }
-        }
-      }
-    ]
+                  targets: { ios: '14.4' },
+                },
+              ],
+              '@babel/preset-react',
+              '@babel/preset-typescript',
+            ],
+            plugins: [
+              isDev && require.resolve('react-refresh/babel'),
+            ].filter(Boolean),
+          },
+        },
+      },
+    ],
   },
+
+  plugins: [
+    isDev && new ReactRefreshWebpackPlugin(),
+  ].filter(Boolean),
+
+  devServer: {
+    static: {
+      directory: path.resolve(
+        __dirname,
+        './packages/bananadrum-webapp/www'
+      ),
+    },
+    allowedHosts: 'all',
+    // watchFiles: [
+    //   'packages/bananadrum-core/src/**/*',
+    //   'packages/bananadrum-player/src/**/*',
+    //   'packages/bananadrum-ui/src/**/*',
+    //   'packages/bananadrum-webapp/src/**/*',
+    // ],
+    hot: true,
+    historyApiFallback: true,
+  },
+
   resolve: {
-    extensions: ['.js']
-  }
+    extensions: ['.ts', '.tsx', '.js'],
+  },
 };
 
 export default config;

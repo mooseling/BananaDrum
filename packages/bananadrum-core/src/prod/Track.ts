@@ -1,4 +1,4 @@
-import { Arrangement, Instrument, Note, Polyrhythm, Timing, Track } from './types/general.js';
+import { Arrangement, Instrument, Note, NoteStyle, Polyrhythm, Timing, Track, CopyRequest, PasteRequest } from './types/general.js';
 import { createNote } from './Note.js';
 import { createPublisher } from './Publisher.js';
 import { TrackClipboard } from './TrackClipboard.js';
@@ -10,7 +10,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, id:n
   const notes:Note[] = [];
   const polyrhythms:Polyrhythm[] = [];
   const track:Track = {
-    id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm, getNoteAt, clear, getNoteIterator,
+    id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm, removePolyrhythmBatch, getNoteAt, clear, getNoteIterator, copyPaste,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
   };
 
@@ -31,6 +31,11 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, id:n
   //                          Public Functions
   // ==================================================================
 
+  function copyPaste(copyFrom: CopyRequest, pasteTo: PasteRequest): void {
+    const clipboard = new TrackClipboard(track);
+    clipboard.copy(copyFrom);
+    clipboard.paste(pasteTo);
+  }
 
   function getNoteAt(timing:Timing): Note {
     for (const note of notes) {
@@ -46,7 +51,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, id:n
   }
 
 
-  function addPolyrhythm(start:Note, end:Note, length:number, id:number = getNewId(), index?:number) {
+  function addPolyrhythm(start: Note, end: Note, length: number, id: number = getNewId(), index?: number, noteStyles?: (NoteStyle | null)[]): Polyrhythm | undefined {
     if (length < 1)
       return;
 
@@ -54,13 +59,17 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, id:n
 
     polyrhythm.notes = Array.from(Array(length))
       .map((_, index) => createNote(track, {bar:1, step:index}, polyrhythm));
-
+      
+    if (noteStyles)
+      polyrhythm.notes.forEach((note, i) => note.noteStyle = noteStyles[i]);
+    
     if (exists(index))
       polyrhythms.splice(index, 0, polyrhythm);
     else
       polyrhythms.push(polyrhythm);
 
     publisher.publish();
+    return polyrhythm;
   }
 
 
@@ -69,6 +78,12 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, id:n
     publisher.publish();
   }
 
+  // Better performance compared to single remove
+  function removePolyrhythmBatch(polyrhythmsToRemove: Polyrhythm[]) {
+    const toRemove = new Set(polyrhythmsToRemove);
+    polyrhythms.splice(0, polyrhythms.length, ...polyrhythms.filter(p => !toRemove.has(p)));
+    publisher.publish();
+  }
 
   // The note-iterator is what makes polyrhythms work
   // polyrhythmsToIgnore is for serialising, so we can walk the notes as if the polyrhythm hasn't been crated yet
@@ -99,9 +114,6 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, id:n
       }
     }
   }
-
-
-
 
   // ==================================================================
   //                          Private Functions
@@ -142,7 +154,6 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, id:n
 
     removeBrokenPolyrhythms();
   }
-
 
   function copyComposition(originalNoteCount:number): void {
     const lastTiming = track.notes[originalNoteCount - 1].timing;

@@ -1,8 +1,24 @@
-import { Timing } from "./types/general.js";
+import { Timing, TimingDelta } from "./types/general.js";
 
 // Comparing timings is easy, but long winded and mistake-prone
 export function isSameTiming(timing1:Timing, timing2:Timing): boolean {
   return (timing1.bar === timing2.bar) && (timing1.step === timing2.step);
+}
+
+export function subtractTimings(minuend: Timing, subtrahend: Timing): TimingDelta {
+  return { bars: minuend.bar - subtrahend.bar, steps: minuend.step - subtrahend.step };
+}
+
+export function addDelta(timing: Timing, delta: TimingDelta): Timing {
+  return { bar: timing.bar + delta.bars, step: timing.step + delta.steps };
+}
+
+export function isTimingLessThanOrEqual(a: Timing, b: Timing): boolean {
+  return a.bar < b.bar || (a.bar === b.bar && a.step <= b.step);
+}
+
+export function isIntervalWithinLimits(intervalStart: Timing, intervalEnd: Timing, lowerLimit: Timing, upperLimit: Timing): boolean {
+    return isTimingLessThanOrEqual(lowerLimit, intervalStart) && isTimingLessThanOrEqual(intervalEnd, upperLimit);
 }
 
 

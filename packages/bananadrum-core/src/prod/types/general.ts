@@ -93,6 +93,7 @@ export interface Arrangement extends ArrangementView {
   tracks: Track[]
   addTrack(instrument:Instrument, id?:number): Track
   removeTrack(track:Track): void
+  copyPaste(copyFrom: CopyRequest, pasteTo: PasteRequest): void
 }
 
 export interface TimeParamsView extends Subscribable {
@@ -118,6 +119,7 @@ export interface TimeParams extends TimeParamsView {
 // When we bring in polyrhythms that will change
 // It may also change for other time signatures but I'm not sure yet
 export type Timing = {readonly bar:number, readonly step:number}
+export type TimingDelta = {readonly bars: number, readonly steps: number}
 export type RealTime = number
 
 export interface TrackView extends Subscribable {
@@ -136,9 +138,11 @@ export interface Track extends TrackView {
   polyrhythms: Polyrhythm[]
   getNoteAt(timing:Timing): Note
   getNoteIterator(polyrhythmsToIgnore?:PolyrhythmView[]): IterableIterator<Note>
-  addPolyrhythm(start:Note, end:Note, length:number, id?:number, index?:number): void
+  addPolyrhythm(start:Note, end:Note, length:number, id?:number, index?:number, noteStyles?: (NoteStyle|null)[]): Polyrhythm | undefined
   removePolyrhythm(polyrhythm:PolyrhythmView): void
+  removePolyrhythmBatch(polyrhythmsToRemove:PolyrhythmView[]): void
   clear(): void
+  copyPaste(copyFrom: CopyRequest, pasteTo: PasteRequest): void
 }
 
 export interface PolyrhythmView {
@@ -166,4 +170,14 @@ export interface Note extends NoteView {
   readonly track: Track
   polyrhythm: Polyrhythm
   noteStyle: NoteStyle|null // null means this is a rest
+}
+
+export type CopyRequest = {
+  start:Timing,
+  end:Timing
+}
+
+export type PasteRequest = {
+  start:Timing,
+  end?:Timing
 }

@@ -1,4 +1,4 @@
-import { EditCommand, EditCommand_Arrangement, EditCommand_ArrangementAddPolyrhythms, EditCommand_ArrangementAddTrack, EditCommand_ArrangementClear, EditCommand_ArrangementClearSelection, EditCommand_ArrangementRemoveTrack, EditCommand_ArrangementTitle, EditCommand_Note, EditCommand_TimeParams, EditCommand_TimeParamsLength, EditCommand_TimeParamsTempo, EditCommand_TimeParamsTimeSignature, EditCommand_Track, EditCommand_TrackClear, EditCommand_TrackRemovePolyrhythm } from './types/edit_commands';
+import { EditCommand, EditCommand_Arrangement, EditCommand_ArrangementAddPolyrhythms, EditCommand_ArrangementAddTrack, EditCommand_ArrangementClear, EditCommand_ArrangementClearSelection, EditCommand_ArrangementRemoveTrack, EditCommand_ArrangementTitle, EditCommand_Note, EditCommand_TimeParams, EditCommand_TimeParamsLength, EditCommand_TimeParamsTempo, EditCommand_TimeParamsTimeSignature, EditCommand_Track, EditCommand_TrackClear, EditCommand_TrackRemovePolyrhythm, EditCommand_TrackRemovePolyrhythmBatch, EditCommand_ArrangementCopyPaste } from './types/edit_commands';
 import { Arrangement, Note, TimeParams, Track } from './types/general';
 
 
@@ -85,6 +85,12 @@ function editArrangement(command:EditCommand_Arrangement): boolean {
     });
     return true;
   }
+
+  const copyPaste = (command as EditCommand_ArrangementCopyPaste).copyPaste;
+  if (copyPaste) {
+    arrangement.copyPaste(copyPaste.copyFrom, copyPaste.pasteTo);
+    return true;
+  }
 }
 
 
@@ -95,6 +101,17 @@ function editTrack(command:EditCommand_Track): boolean {
   if (removePolyrhythm) {
     if (track.polyrhythms.find(polyrhythm => polyrhythm === removePolyrhythm)) {
       track.removePolyrhythm(removePolyrhythm);
+      return true;
+    }
+    return false;
+  }
+
+  const removePolyrhythmBatch = (command as EditCommand_TrackRemovePolyrhythmBatch).removePolyrhythmBatch;
+  if (removePolyrhythmBatch) {
+    const batch = new Set(removePolyrhythmBatch);
+    const toRemove = track.polyrhythms.filter(p => batch.has(p))
+    if (toRemove.length > 0) {
+      track.removePolyrhythmBatch(toRemove);
       return true;
     }
     return false;

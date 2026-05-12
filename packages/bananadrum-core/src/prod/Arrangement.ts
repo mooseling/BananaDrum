@@ -1,4 +1,4 @@
-import { TimeParams, Arrangement, Track, Instrument } from './types/general.js';
+import { TimeParams, Arrangement, Track, Instrument, CopyRequest, PasteRequest } from './types/general.js';
 import { createTrack } from './Track.js';
 import { createPublisher } from './Publisher.js';
 
@@ -6,7 +6,7 @@ export function createArrangement(timeParams:TimeParams, title?:string): Arrange
   const publisher = createPublisher();
   const tracks:Track[] = [];
   const arrangement:Arrangement = {
-    timeParams, tracks, addTrack, removeTrack,
+    timeParams, tracks, addTrack, removeTrack, copyPaste,
     get title() {return title;},
     set title(newTitle:string) {title = newTitle; publisher.publish();},
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
@@ -47,5 +47,9 @@ export function createArrangement(timeParams:TimeParams, title?:string): Arrange
       console.warn("Tried to remove a track but no reference to it. id: " + trackToRemove.id);
       throw new Error();
     }
+  }
+
+  function copyPaste(copyFrom: CopyRequest, pasteTo: PasteRequest): void {
+    tracks.forEach(track => track.copyPaste(copyFrom, pasteTo))
   }
 }

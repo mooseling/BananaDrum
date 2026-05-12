@@ -412,7 +412,7 @@ So we're putting them in each track-viewer, where we can position them with no p
   border-right: var(--thick-border);
   width: var(--track-meta-width);
   background-color: var(--lighter-gray);
-  height: 20pt;
+  height: 50pt;
   position: absolute;
   z-index: 100;
 }
@@ -421,12 +421,15 @@ So we're putting them in each track-viewer, where we can position them with no p
   display: flex;
   margin-left: calc(var(--track-meta-width) + var(--thick-border-width));
   flex-direction: row;
-  height: 20pt;
+  height: 50pt;
 }
 
 .guiderail-timing {
   margin-top: calc(-1 * var(--thick-border-width));
   border-color: var(--lighter-gray);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .guiderail-timing.odd-beat {
@@ -439,6 +442,11 @@ So we're putting them in each track-viewer, where we can position them with no p
 
 .guiderail-timing-content {
   line-height: 20pt;
+  text-align: center;
+}
+
+.guiderail-control {
+  line-height: 15pt;
   text-align: center;
 }
 
