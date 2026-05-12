@@ -61,15 +61,10 @@ function applyTimeParams(arrangement:Arrangement, arrangementSnapshot:Arrangemen
 function applyTrackSnapshot(track:Track, trackSnapshot:TrackSnapshot): void {
 
   // First we remove polyrhythms, since this won't affect indexing
-  let polyrhythmIndex = 0;
-  while (polyrhythmIndex < track.polyrhythms.length) {
-    const polyrhythm = track.polyrhythms[polyrhythmIndex];
-
-    if (!trackSnapshot.polyrhythms.some(polyrhthmSnapshot => polyrhthmSnapshot.id === polyrhythm.id))
-      track.removePolyrhythm(polyrhythm);
-    else
-      polyrhythmIndex++;
-  }
+  const snapshotIds = new Set(trackSnapshot.polyrhythms.map(s => s.id));
+  const toRemove = track.polyrhythms.filter(p => !snapshotIds.has(p.id));
+  if (toRemove.length)
+    track.removePolyrhythmBatch(toRemove)
 
   // Then we add missing polyrhythms, being careful to specify ID and index
   trackSnapshot.polyrhythms.forEach((polyrhythmSnapshot, polyrhythmIndex) => {

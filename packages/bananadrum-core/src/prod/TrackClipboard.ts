@@ -103,7 +103,7 @@ export class TrackClipboard {
       toDelete.push(p);
     });
 
-    toDelete.forEach(p => this.track.removePolyrhythm(p));
+    this.track.removePolyrhythmBatch(toDelete);
 
     // paste polyrhythms
     //    NOTE: only pasted if fully within paste area

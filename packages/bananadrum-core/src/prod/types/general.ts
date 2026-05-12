@@ -140,6 +140,7 @@ export interface Track extends TrackView {
   getNoteIterator(polyrhythmsToIgnore?:PolyrhythmView[]): IterableIterator<Note>
   addPolyrhythm(start:Note, end:Note, length:number, id?:number, index?:number, noteStyles?: (NoteStyle|null)[]): Polyrhythm | undefined
   removePolyrhythm(polyrhythm:PolyrhythmView): void
+  removePolyrhythmBatch(polyrhythmsToRemove:PolyrhythmView[]): void
   clear(): void
   copyPaste(copyFrom: CopyRequest, pasteTo: PasteRequest): void
 }

@@ -48,6 +48,11 @@ export interface EditCommand_TrackRemovePolyrhythm {
   removePolyrhythm: PolyrhythmView
 }
 
+export interface EditCommand_TrackRemovePolyrhythmBatch {
+  track: TrackView
+  removePolyrhythmBatch: PolyrhythmView[]
+}
+
 export interface EditCommand_TrackClear {
   track: TrackView
   command: 'clear'
@@ -94,6 +99,7 @@ export type EditCommand_Arrangement =
 
 export type EditCommand_Track =
   EditCommand_TrackRemovePolyrhythm
+  | EditCommand_TrackRemovePolyrhythmBatch
   | EditCommand_TrackClear
 
 export type EditCommand_TimeParams =

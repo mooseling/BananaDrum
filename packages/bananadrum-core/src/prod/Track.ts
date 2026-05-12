@@ -10,7 +10,7 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, id:n
   const notes:Note[] = [];
   const polyrhythms:Polyrhythm[] = [];
   const track:Track = {
-    id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm, getNoteAt, clear, getNoteIterator, copyPaste,
+    id, arrangement, instrument, notes, polyrhythms, addPolyrhythm, removePolyrhythm, removePolyrhythmBatch, getNoteAt, clear, getNoteIterator, copyPaste,
     subscribe:publisher.subscribe, unsubscribe:publisher.unsubscribe
   };
 
@@ -78,6 +78,12 @@ export function createTrack(arrangement:Arrangement, instrument:Instrument, id:n
     publisher.publish();
   }
 
+  // Better performance compared to single remove
+  function removePolyrhythmBatch(polyrhythmsToRemove: Polyrhythm[]) {
+    const toRemove = new Set(polyrhythmsToRemove);
+    polyrhythms.splice(0, polyrhythms.length, ...polyrhythms.filter(p => !toRemove.has(p)));
+    publisher.publish();
+  }
 
   // The note-iterator is what makes polyrhythms work
   // polyrhythmsToIgnore is for serialising, so we can walk the notes as if the polyrhythm hasn't been crated yet
