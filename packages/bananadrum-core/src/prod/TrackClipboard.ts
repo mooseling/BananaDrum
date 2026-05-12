@@ -107,7 +107,7 @@ export class TrackClipboard {
 
     // paste polyrhythms
     //    NOTE: only pasted if fully within paste area
-    let copiedToPastedPolyId: Map<number, number> = new Map();
+    let copiedToPastedPoly: Map<Polyrhythm, Polyrhythm> = new Map();
     let firstCopiedTiming = this.buffer[0].timing;
     let copyToPasteDistance = subtractTimings(start, firstCopiedTiming);
 
@@ -122,14 +122,14 @@ export class TrackClipboard {
             polyrhythm.notes.length, undefined, undefined, polyrhythm.notes.map(n => n.noteStyle));
           // update mapping of copied to pasted polys, that we need for nested
           if (pastedPoly != null)
-            copiedToPastedPolyId.set(polyrhythm.id, pastedPoly.id);
+            copiedToPastedPoly.set(polyrhythm, pastedPoly);
           else
             console.log("Error: could not add polyrhythm");
         }
       } else {
         // NESTED POLY
         let originalParent = polyrhythm.start.polyrhythm;
-        let pastedParent = this.track.polyrhythms.find(p => p.id == copiedToPastedPolyId.get(originalParent.id));
+        let pastedParent = copiedToPastedPoly.get(originalParent);
         if (pastedParent)
         {
           let startNote = pastedParent.notes.at(polyrhythm.start.timing.step);
@@ -139,7 +139,7 @@ export class TrackClipboard {
               polyrhythm.notes.length, undefined, undefined, polyrhythm.notes.map(n => n.noteStyle));
             
             if (pastedPoly)
-              copiedToPastedPolyId.set(polyrhythm.id, pastedPoly.id);
+              copiedToPastedPoly.set(polyrhythm, pastedPoly);
             else
               console.log("Error: could not add polyrhythm");
           }
