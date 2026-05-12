@@ -1,5 +1,5 @@
 import { Timing, CopyRequest, PasteRequest } from 'bananadrum-core';
-import { useContext, useMemo } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 import { BarDivisibilityContext } from './Guiderail';
 import { ArrangementPlayerContext } from '../arrangement/ArrangementViewer';
 import { getParityClass } from '../note/NoteViewer';
@@ -14,15 +14,37 @@ type AdjacentCopyPasteRequest = {
 
 function AdjacentCopyBarControl({ copyFrom, direction }: AdjacentCopyPasteRequest): JSX.Element {
   const bananaDrum = useContext(BananaDrumContext);
-    
+  
+  let clickLeft = useCallback(() => {
+    copyPaste(
+      copyFrom,
+      {
+        start: { bar: copyFrom.start.bar - 1, step: 1 },
+        end: { bar: copyFrom.start.bar - 1, step: copyFrom.end.step }
+      }
+    )
+  },
+    [copyFrom.start.bar, copyFrom.start.step, copyFrom.end.bar, copyFrom.end.step]);
+
+  let clickRight = useCallback(() => {
+    copyPaste(
+      copyFrom,
+      {
+        start: { bar: copyFrom.start.bar + 1, step: 1 },
+        end: { bar: copyFrom.start.bar + 1, step: copyFrom.end.step }
+      }
+    )
+  },
+    [copyFrom.start.bar, copyFrom.start.step, copyFrom.end.bar, copyFrom.end.step]);
+  
   return (<div>
     {direction === 'left' &&
-      <button className='push-button medium gray' onClick={() => { copyPaste(copyFrom, { start: { bar: copyFrom.start.bar - 1, step: 1}, end: { bar: copyFrom.start.bar - 1, step: copyFrom.end.step } })}}>
+      <button className='push-button medium gray' onClick={clickLeft}>
         <img src="images/icons/undo_white.svg" style={{ height: '0.78em' }} />
       </button>
     }
     {direction === 'right' &&
-      <button className='push-button medium gray' onClick={() => { copyPaste(copyFrom, { start: { bar: copyFrom.start.bar + 1, step: 1 }, end: { bar: copyFrom.start.bar + 1, step: copyFrom.end.step } })}}>
+      <button className='push-button medium gray' onClick={clickRight}>
         <img src="images/icons/redo_white.svg" style={{ height: '0.78em' }} />
       </button>
     }
