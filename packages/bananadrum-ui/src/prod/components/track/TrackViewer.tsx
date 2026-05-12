@@ -73,7 +73,7 @@ function NoteLine({track, callbacks}:{track:TrackView, callbacks:TrackViewerCall
       const polyrhythmViewer = noteLineRef.current.querySelector(`#polyrhythm-${polyrhythm.id}`) as HTMLDivElement;
       repositionPolyrhythmViewer(polyrhythm, polyrhythmViewer);
     });
-  }, [polyrhythms, useContext(NoteWidthContext)]);
+  }, [polyrhythms.map(p => p.id).join('.'), useContext(NoteWidthContext)]);
 
   return (
     <div className="note-line" ref={noteLineRef} onTouchStart={callbacks.noteLineTouchStart} onTouchMove={callbacks.noteLineTouchMove} onTouchEnd={callbacks.noteLineTouchEnd}>
